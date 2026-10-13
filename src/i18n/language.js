@@ -1,11 +1,11 @@
 /*
- * Site language. Russian is the default; English is one click away in the top
+ * Site language. English is the default; Russian is one click away in the top
  * bar. The choice is remembered per browser, and `?lang=en` in a link wins over
  * both — so an English link can be sent to someone without them having to find
  * the switch.
  */
 export const LANGUAGES = ['ru', 'en'];
-export const DEFAULT_LANGUAGE = 'ru';
+export const DEFAULT_LANGUAGE = 'en';
 
 const STORAGE_KEY = 'site-lang';
 
