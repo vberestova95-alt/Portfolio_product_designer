@@ -276,6 +276,28 @@ button {
   font-weight: 400;
 }
 
+/*
+ * Russian version: the pairing from the photo portfolio — Inter for the text,
+ * Cormorant Garamond for the serif accents. Instrument Serif and Manrope's
+ * Cyrillic did not sit well together, and Instrument Serif has no Cyrillic at
+ * all. The English version keeps its own pair.
+ */
+html[lang='ru'] body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Headings at the photo portfolio's .headline weight — Inter at the browser's
+   default bold read far heavier than Manrope did. */
+html[lang='ru'] :is(h1, h2, h3, h4) {
+  font-weight: 500;
+}
+
+html[lang='ru'] .serif-accent,
+html[lang='ru'] .error-page__visual > span {
+  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  font-weight: 300;
+}
+
 .section {
   padding-bottom: var(--gap-section);
 }
@@ -351,11 +373,56 @@ button {
   border: 1px solid var(--inverse-line);
   border-radius: var(--r-shell);
   padding: clamp(36px, 3.5vw, 62px) clamp(32px, 2.8vw, 48px) var(--hero-pad-bottom);
+  /*
+   * A slow shimmer, kept inside the panel's own blues: three soft pools — two
+   * lighter, one deeper — drift over the base gradient. The pools are drawn on
+   * oversized layers, so moving their position moves the light across the panel
+   * without ever showing a layer edge.
+   */
   background:
-    radial-gradient(circle at 12% 82%, rgba(255, 255, 255, 0.12), transparent 30%),
-    radial-gradient(circle at 88% 18%, rgba(255, 255, 255, 0.12), transparent 26%),
+    radial-gradient(closest-side, rgba(84, 190, 255, 0.78), transparent),
+    radial-gradient(closest-side, rgba(140, 205, 255, 0.62), transparent),
+    radial-gradient(closest-side, rgba(8, 18, 110, 0.7), transparent),
     linear-gradient(135deg, #1324a2 0%, #2550ff 42%, #15238a 100%);
+  background-repeat: no-repeat;
+  background-size:
+    120% 130%,
+    90% 110%,
+    110% 120%,
+    100% 100%;
+  background-position:
+    -20% 110%,
+    110% -10%,
+    60% 50%,
+    0 0;
   color: var(--inverse);
+  animation: hero-shimmer 18s ease-in-out infinite alternate;
+}
+
+@keyframes hero-shimmer {
+  0% {
+    background-position:
+      -20% 110%,
+      110% -10%,
+      60% 50%,
+      0 0;
+  }
+
+  50% {
+    background-position:
+      40% 70%,
+      40% 20%,
+      110% 100%,
+      0 0;
+  }
+
+  100% {
+    background-position:
+      110% 120%,
+      -10% 40%,
+      0% 0%,
+      0 0;
+  }
 }
 
 /* Film grain — keeps the large flat gradients from looking machine-smooth. */
@@ -380,18 +447,6 @@ button {
   pointer-events: none;
 }
 
-.hero-panel::before {
-  content: '';
-  position: absolute;
-  inset: -18% auto auto 42%;
-  width: 58%;
-  height: 74%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 28%, transparent 68%);
-  filter: blur(12px);
-  opacity: 0.72;
-  animation: hero-glow 11s ease-in-out infinite alternate;
-  pointer-events: none;
-}
 
 /*
  * Hero object. The file is trimmed to the artwork, so the wrapper is simply the
@@ -471,23 +526,23 @@ button {
 }
 
 /*
- * The copy is centred in the leftover height. Reserving some of that height at
- * the bottom lifts the block above dead centre, which reads better against the
- * headline's weight.
- *
- * The top padding is a floor, not a spacer: once the panel runs out of slack the
- * centring gives back nothing, and the headline ended up 20px under the menu —
- * closer to it than to its own paragraph, which reads as though the menu belongs
- * to the headline.
+ * Editorial layout: the copy sinks to the floor of the panel — a ruled row of
+ * small text first, the headline set large underneath — and the empty field
+ * above it is left as air. The headline leads in the markup, so the grid areas
+ * do the reordering.
  */
 .hero-panel__grid {
   position: relative;
   z-index: 1;
   flex: 1;
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-areas:
+    'intro'
+    'title';
+  align-content: end;
+  gap: clamp(48px, 9vh, 120px);
   padding-top: clamp(30px, 3vw, 48px);
-  padding-bottom: clamp(24px, 2.4vh, 40px);
+  padding-bottom: clamp(4px, 1vh, 12px);
 }
 
 /*
@@ -499,50 +554,36 @@ button {
   padding-bottom: clamp(48px, 9vh, 120px);
 }
 
-.hero-panel__copy {
-  position: relative;
-  z-index: 1;
-  max-width: 1320px;
-}
-
 .hero-panel h1 {
+  grid-area: title;
   margin: 0;
-  max-width: 12ch;
-  font-size: clamp(50px, 6.8vw, 110px);
-  line-height: 0.9;
+  font-size: clamp(56px, 7.6vw, 150px);
+  line-height: 0.88;
   letter-spacing: -0.055em;
 }
 
 /*
- * Inner/outer spacing: the portrait and the paragraphs belong to one block, so
- * the gap that separates them from the headline is wider than any gap inside.
+ * One ruled row, every item hung from the same top edge: the portrait and the
+ * two summary paragraphs as narrow columns.
  */
 .hero-panel__intro {
-  --lead-size: clamp(17px, 1.55vw, 22px);
+  --lead-size: clamp(15px, 1.1vw, 18px);
 
+  grid-area: intro;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
   align-items: start;
-  gap: clamp(18px, 1.6vw, 26px);
-  margin-top: clamp(34px, 3.6vw, 56px);
-  /*
-   * The percentage is what actually holds the text clear of the knot on the
-   * right; the ch cap only kicks in on very wide screens, where 66% would run
-   * past a comfortable measure.
-   */
-  max-width: min(100ch, 63%);
+  gap: clamp(20px, 2.4vw, 44px);
+  padding-top: 20px;
+  border-top: 1px solid var(--inverse-line);
 }
 
 .hero-panel__lead {
   margin: 0;
+  max-width: 38ch;
   font-size: var(--lead-size);
   line-height: 1.55;
-  color: rgba(247, 248, 252, 0.92);
-}
-
-.hero-panel__intro-copy {
-  display: grid;
-  gap: 14px;
+  color: rgba(247, 248, 252, 0.86);
 }
 
 /* The headline breaks differently on a phone — see the mobile block. */
@@ -550,10 +591,6 @@ button {
   display: none;
 }
 
-/* Phone only — see the mobile block. */
-.hero-panel__next {
-  display: none;
-}
 
 .client-band,
 .home-footer__links {
@@ -634,6 +671,52 @@ button {
   border-color: rgba(247, 248, 252, 0.28);
 }
 
+/*
+ * RU / EN. Same height as the pills beside it, so the row keeps one line; the
+ * active language is the filled half.
+ */
+.lang-switch {
+  display: inline-flex;
+  align-items: stretch;
+  padding: 3px;
+  border: 1px solid var(--inverse-line);
+  border-radius: 999px;
+}
+
+.lang-switch__option {
+  min-width: 40px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: var(--tracking-caps);
+  opacity: 0.68;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    opacity 160ms ease;
+}
+
+.lang-switch__option:hover {
+  opacity: 1;
+}
+
+.lang-switch__option.is-active {
+  background: rgba(247, 248, 252, 0.18);
+  opacity: 1;
+  cursor: default;
+}
+
+.lang-switch__option:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+
 .hero-panel__footer {
   position: relative;
   z-index: 1;
@@ -652,7 +735,7 @@ button {
  * flush with the box reads as sitting too high.
  */
 .hero-panel__portrait {
-  width: clamp(104px, 8.6vw, 136px);
+  width: clamp(120px, 10vw, 168px);
   aspect-ratio: 4 / 3;
   margin-top: calc(var(--lead-size) * 0.42);
   overflow: hidden;
@@ -720,23 +803,6 @@ button {
   gap: var(--gap-block);
   margin-top: 4px;
   position: relative;
-}
-
-@keyframes hero-glow {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.56;
-  }
-
-  50% {
-    transform: translate3d(-4%, 3%, 0) scale(1.05);
-    opacity: 0.78;
-  }
-
-  100% {
-    transform: translate3d(5%, -3%, 0) scale(1.02);
-    opacity: 0.62;
-  }
 }
 
 @keyframes hero-glow-secondary {
@@ -871,7 +937,8 @@ button {
 
 .work-card__meta {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: baseline;
   gap: 16px;
   margin-bottom: 24px;
   text-transform: uppercase;
@@ -898,18 +965,11 @@ button {
 }
 
 /*
- * The tag keeps the top-left corner, opposite the year. Everything below it is
- * centred in the space that is left rather than pinned to the bottom edge,
- * which is where the next sticky card slides in over the content — the auto
- * margin under the metrics is the other half of that centring.
+ * The tag sits alone in the top-right corner and takes the row's own caps
+ * style, so there is one label treatment on the card, not two.
  */
 .work-card__kicker {
-  margin: 0 0 auto;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  font-size: 12px;
-  line-height: 1.4;
-  opacity: 0.74;
+  margin: 0;
 }
 
 .work-card h3,
@@ -921,7 +981,7 @@ button {
 }
 
 .work-card__copy h3 {
-  margin-top: 16px;
+  margin-top: 0;
 }
 
 .work-card__description,
@@ -936,22 +996,50 @@ button {
   line-height: 1.7;
 }
 
+/*
+ * Metrics share the top row with the category and take its caps style, so the
+ * row reads as one line of labels: figures on the left, category on the right.
+ */
 .work-card__stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 28px 0 auto;
+  gap: 4px 10px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.work-card__stats li {
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  padding: 10px 14px;
+.work-card__stats li:not(:last-child)::after {
+  content: '/';
+  margin-left: 10px;
+}
+
+.work-card__kicker {
+  text-align: right;
+}
+
+/*
+ * Reads as the card's button, but the whole card is the link already, so it is
+ * a plain label; the arrow nudges on card hover, like the concept teaser's.
+ */
+.work-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  margin-top: 28px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
   font-size: 13px;
   line-height: 1.4;
-  opacity: 0.82;
+}
+
+.work-card__cta-arrow {
+  transition: transform 380ms cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+.work-card:hover .work-card__cta-arrow {
+  transform: translateX(6px);
 }
 
 .case-back-link {
@@ -1126,6 +1214,21 @@ button {
     /* Leaves room for the stacked cards peeking above the top one. */
     min-height: max(600px, calc(100vh - 90px));
   }
+
+  /*
+   * Side by side with the cover: metrics at the top of the column, heading and
+   * description centred in its height, the CTA on its floor — lifted off it so
+   * the next card sliding over does not cover it first.
+   */
+  .work-card__copy h3 {
+    margin-top: auto;
+  }
+
+  .work-card__cta {
+    margin-top: auto;
+    margin-bottom: clamp(16px, 4vh, 48px);
+    padding-top: 40px;
+  }
 }
 
 /*
@@ -1292,10 +1395,87 @@ button {
   max-width: 12ch;
 }
 
+/*
+ * The same drifting light as the hero, so the two blue panels read as one
+ * material: two azure pools and a deep one moving over the base gradient.
+ */
 .editorial-card--practice {
   display: flex;
   flex-direction: column;
   min-height: clamp(420px, 52vw, 560px);
+  background:
+    radial-gradient(closest-side, rgba(96, 196, 255, 0.62), transparent),
+    radial-gradient(closest-side, rgba(150, 190, 255, 0.5), transparent),
+    radial-gradient(closest-side, rgba(8, 18, 110, 0.66), transparent),
+    linear-gradient(135deg, #1a32c6 0%, #2550ff 45%, #10228f 100%);
+  background-repeat: no-repeat;
+  background-size:
+    120% 120%,
+    100% 110%,
+    110% 120%,
+    100% 100%;
+  animation: hero-shimmer 20s ease-in-out infinite alternate;
+}
+
+/* Above the cube pool, so cubes falling past the copy go behind it. */
+.editorial-card--blue.editorial-card--practice .editorial-card__title,
+.editorial-card--blue.editorial-card--practice .editorial-card__copy {
+  z-index: 2;
+}
+
+/*
+ * Cube pool. It covers the whole card so cubes can fall in from above its top
+ * edge; the card's own clipping hides them until they enter. Pointer input is
+ * read off the card itself (lib/logoPool.js), so the pool never blocks the copy.
+ */
+.logo-pool {
+  --cube-size: 64px;
+
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.logo-cube {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: var(--cube-size);
+  height: var(--cube-size);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: calc(var(--cube-size) * 0.2);
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.98) 0%, rgba(226, 234, 255, 0.94) 100%);
+  box-shadow:
+    inset 0 -3px 0 rgba(37, 80, 255, 0.12),
+    0 10px 24px rgba(6, 14, 70, 0.28);
+  opacity: 0;
+  transform: translate3d(0, -200%, 0);
+  will-change: transform;
+}
+
+.logo-pool.is-active .logo-cube {
+  opacity: 1;
+}
+
+.logo-cube img {
+  width: 56%;
+  height: 56%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Placeholder mark until the logos are in — a soft inner tile. */
+.logo-cube:empty::before {
+  content: '';
+  width: 42%;
+  height: 42%;
+  border-radius: 28%;
+  background: linear-gradient(135deg, rgba(37, 80, 255, 0.22), rgba(96, 196, 255, 0.3));
 }
 
 /*
@@ -1313,9 +1493,6 @@ button {
 
 .editorial-card--practice .editorial-card__copy {
   max-width: 44ch;
-  /* Definite gap under the copy — the tools' own padding collapses away when
-     the card is exactly content-height. */
-  margin-bottom: clamp(26px, 3vw, 44px);
 }
 
 .editorial-card__graphic {
@@ -1355,42 +1532,8 @@ button {
     bottom: -19%;
     width: min(60%, 415px);
   }
-
-  /*
-   * The tags sit on the card floor, as they do on the concept card next to it.
-   * A guard column keeps them out of the artwork's dense middle — they wrap
-   * inside the left half instead of running under it.
-   */
-  .editorial-card--practice .editorial-card__tools {
-    padding-right: min(44%, 280px);
-  }
 }
 
-/*
- * In flow rather than absolute: the list now sets the card's floor, so it can
- * never be overlapped by the copy above it however narrow the column gets.
- */
-.editorial-card__tools {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px 10px;
-  margin: auto 0 0;
-  padding: clamp(28px, 3vw, 52px) 0 0;
-  list-style: none;
-  color: rgba(247, 248, 252, 0.76);
-  font-size: 12px;
-  line-height: 1.4;
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-}
-
-.editorial-card__tools li:not(:last-child)::after {
-  content: '/';
-  margin-left: 10px;
-  color: rgba(247, 248, 252, 0.38);
-}
 
 @media (prefers-reduced-motion: reduce) {
   .editorial-card__graphic {
@@ -1732,6 +1875,16 @@ ol.case-bullet-list li::before {
 .site-topbar .contact-link:hover {
   border-color: rgba(13, 17, 23, 0.28);
   background: rgba(13, 17, 23, 0.05);
+  color: var(--ink);
+}
+
+.site-topbar .lang-switch {
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+.site-topbar .lang-switch__option.is-active {
+  background: rgba(13, 17, 23, 0.08);
   color: var(--ink);
 }
 
@@ -2616,9 +2769,11 @@ ol.case-bullet-list li::before {
     transform: none;
   }
 
+  .hero-panel,
   .hero-panel::before,
   .hero-panel__object::before,
-  .hero-panel__object img {
+  .hero-panel__object img,
+  .editorial-card--practice {
     animation: none;
   }
 }
@@ -2761,8 +2916,14 @@ ol.case-bullet-list li::before {
     max-width: none;
   }
 
+  /* Portrait and one column of copy; the second paragraph folds under the
+     first. */
   .hero-panel__intro {
-    max-width: none;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .hero-panel__intro > :nth-child(n + 3) {
+    grid-column: 2;
   }
 
   /* Wrapped rows read better packed left than stretched edge to edge. */
@@ -2878,6 +3039,18 @@ ol.case-bullet-list li::before {
     text-align: center;
   }
 
+  /* Inside the panel the switch spans it, halves equal, like the pills above. */
+  .nav-menu__links .lang-switch {
+    display: flex;
+    margin-top: 4px;
+  }
+
+  .nav-menu__links .lang-switch__option {
+    flex: 1;
+    min-height: 36px;
+  }
+
+
   /* Ink variant: the internal pages are light, so the panel flips to paper. */
   .nav-menu--ink .nav-menu__burger {
     border-color: var(--line);
@@ -2909,10 +3082,30 @@ ol.case-bullet-list li::before {
     width: 130px;
   }
 
-  /* The flat card padding puts the menu on the panel edge; the hero buys back
-     the same breathing room it has on desktop. */
-  .hero-panel {
-    padding-top: 34px;
+  /*
+   * Full bleed on a phone: the panel drops its gutter and outline and fills the
+   * screen edge to edge and top to bottom. The top corners go with the frame —
+   * they would sit against the screen edge — but the bottom keeps the card
+   * radius used everywhere else, where the panel meets the page. The deeper
+   * bottom padding lifts the copy off that rounded edge.
+   */
+  .hero-shell {
+    padding: 0 0 16px;
+  }
+
+  /*
+   * Shorter than the screen on purpose: the top of the first case card shows
+   * under the panel, so it is clear at a glance that the page goes on.
+   */
+  .hero-shell .hero-panel {
+    --hero-pad-bottom: 32px;
+
+    width: 100%;
+    min-height: min(78svh, 640px);
+    padding-top: 24px;
+    padding-bottom: var(--hero-pad-bottom);
+    border: 0;
+    border-radius: 0 0 22px 22px;
   }
 
   /*
@@ -2923,13 +3116,15 @@ ol.case-bullet-list li::before {
    * wrapping back under it.
    */
   .hero-panel__grid {
-    padding-top: 24px;
+    gap: 28px;
+    padding-top: 16px;
   }
 
   .hero-panel__intro {
-    grid-template-columns: auto minmax(0, 1fr);
+    --lead-size: 16px;
+
     gap: 14px;
-    margin-top: 32px;
+    padding-top: 16px;
   }
 
   /* One paragraph is enough on a phone — the experience line carries it. */
@@ -2943,7 +3138,12 @@ ol.case-bullet-list li::before {
    * without breaking on its own.
    */
   .hero-panel h1 {
-    font-size: calc((100vw - 76px) / 8);
+    font-size: calc((100vw - 40px) / 8);
+  }
+
+  /* Cyrillic runs wider in Manrope, and «дизайнер сложных» is the long line. */
+  :lang(ru) .hero-panel h1 {
+    font-size: calc((100vw - 40px) / 9.4);
   }
 
   .hero-br--desktop {
@@ -2966,36 +3166,13 @@ ol.case-bullet-list li::before {
     width: 104px;
   }
 
-  /*
-   * A closing step: text, not a filled button, which would outweigh the
-   * headline. Pinned to the bottom-left corner, opposite the object, so the two
-   * close the panel together. Padded to a 44px target without looking bigger.
-   */
-  .hero-panel__next {
-    position: absolute;
-    z-index: 2;
-    left: 20px;
-    bottom: 10px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    padding: 10px 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--inverse);
+  /* No room for the category beside the metrics here — the category goes. */
+  .work-card__meta {
+    margin-bottom: 18px;
   }
 
-  /* Underlined on the words only, so the rule stops short of the arrow. */
-  .hero-panel__next-label {
-    text-decoration: underline;
-    text-decoration-color: rgba(247, 248, 252, 0.4);
-    text-underline-offset: 5px;
-    transition: text-decoration-color 160ms ease;
-  }
-
-  .hero-panel__next:hover .hero-panel__next-label {
-    text-decoration-color: currentColor;
+  .work-card__kicker {
+    display: none;
   }
 
   /*
@@ -3583,22 +3760,11 @@ ol.case-bullet-list li::before {
   }
 
   /*
-   * Single-column layout: the card keeps a real height so the tools land on its
-   * floor rather than floating in the middle of the panel, and the illustration
-   * takes the right half of that floor at close to its desktop scale.
+   * Single-column layout: the card keeps a real height, and the floor under
+   * the copy is left for the cube pile (see lib/logoPool.js).
    */
   .editorial-card--practice {
-    min-height: clamp(430px, 70vw, 640px);
-  }
-
-  /* The copy keeps the left column so its lines stop before the artwork. */
-  .editorial-card--practice .editorial-card__copy {
-    max-width: 58%;
-  }
-
-  .editorial-card--practice .editorial-card__tools {
-    /* Guard column for the artwork — the tags stop before it starts. */
-    padding-right: min(48%, 300px);
+    min-height: clamp(520px, 92vw, 720px);
   }
 
   /* Grows with the viewport, so the landscape card doesn't end up with a small
@@ -3619,20 +3785,13 @@ ol.case-bullet-list li::before {
     --teaser-pad: 20px;
   }
 
+  /* Copy on top, then a floor for the cubes about as tall as the copy. */
   .editorial-card--practice {
-    min-height: 0;
-  }
-
-  .editorial-card--practice .editorial-card__copy {
-    margin-bottom: 0;
+    min-height: max(560px, 128vw);
   }
 
   .editorial-card--practice .editorial-card__copy {
     max-width: none;
-  }
-
-  .editorial-card--practice .editorial-card__tools {
-    padding-right: 0;
   }
 
   /* In flow, pushed out through the right padding so it still bleeds off the edge. */
@@ -3644,11 +3803,5 @@ ol.case-bullet-list li::before {
     align-self: flex-end;
     width: min(48%, 194px);
     margin: 12px -20px 0 0;
-  }
-
-  .editorial-card--practice .editorial-card__tools {
-    order: 2;
-    margin-top: 0;
-    padding-top: 12px;
   }
 }

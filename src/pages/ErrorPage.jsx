@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import editorialObject from '../assets/editorial-object.webp';
+import { useUi } from '../i18n/LanguageContext.jsx';
+import { SHOW_OBJECT_GRAPHICS } from '../lib/siteGraphics.js';
 
 export function ErrorPage({
   code,
@@ -12,12 +14,15 @@ export function ErrorPage({
   primaryHref = '/',
   onPrimaryAction,
 }) {
+  const text = useUi().error;
+  const brand = useUi().meta.nameSuffix;
+
   useEffect(() => {
     const previousTitle = document.title;
     const robotsMeta = document.querySelector('meta[name="robots"]');
     const previousRobots = robotsMeta?.getAttribute('content');
 
-    document.title = `${code} - Vladislava Berestova`;
+    document.title = `${code} - ${brand}`;
     robotsMeta?.setAttribute('content', 'noindex, nofollow');
 
     return () => {
@@ -27,14 +32,14 @@ export function ErrorPage({
         robotsMeta?.setAttribute('content', previousRobots);
       }
     };
-  }, [code]);
+  }, [code, brand]);
 
   return (
     <div className="error-page">
       <main className="error-page__panel">
         <div className="error-page__topline">
-          <a href="/">Vladislava Berestova</a>
-          <span>{code} / Product portfolio</span>
+          <a href="/">{brand}</a>
+          <span>{code} / {text.portfolio}</span>
         </div>
 
         <div className="error-page__copy">
@@ -58,18 +63,18 @@ export function ErrorPage({
                 <span aria-hidden="true">&#8599;</span>
               </a>
             )}
-            <a href="mailto:vberestova95@gmail.com">Report an issue</a>
+            <a href="mailto:vberestova95@gmail.com">{text.report}</a>
           </div>
         </div>
 
         <div className="error-page__visual" aria-hidden="true">
           <span>{code}</span>
-          <img src={editorialObject} alt="" />
+          {SHOW_OBJECT_GRAPHICS ? <img src={editorialObject} alt="" /> : null}
         </div>
 
         <div className="error-page__footer">
-          <span>Designing complex digital systems</span>
-          <span>Armenia / 2026</span>
+          <span>{text.footerLeft}</span>
+          <span>{text.footerRight}</span>
         </div>
       </main>
     </div>
@@ -77,30 +82,13 @@ export function ErrorPage({
 }
 
 export function NotFoundPage() {
-  return (
-    <ErrorPage
-      code="404"
-      label="Page not found"
-      titleStart="This page slipped"
-      titleAccent="out of"
-      titleEnd=" the system"
-      description="The link may be outdated, or the page may have moved. The selected work is still exactly where it should be."
-      primaryLabel="Back to selected work"
-    />
-  );
+  const text = useUi().error.notFound;
+
+  return <ErrorPage code="404" {...text} />;
 }
 
 export function RuntimeErrorPage() {
-  return (
-    <ErrorPage
-      code="500"
-      label="Unexpected interface error"
-      titleStart="Something went"
-      titleAccent="off-grid"
-      titleEnd=""
-      description="The interface hit an unexpected error. Reloading usually puts everything back in place."
-      primaryLabel="Reload the page"
-      onPrimaryAction={() => window.location.reload()}
-    />
-  );
+  const text = useUi().error.runtime;
+
+  return <ErrorPage code="500" {...text} onPrimaryAction={() => window.location.reload()} />;
 }

@@ -4,7 +4,6 @@
  * target — see deploy-targets.mjs.
  */
 import { copyFile, mkdir } from 'node:fs/promises'
-import { join } from 'node:path'
 import { resolveDeployTarget } from './deploy-targets.mjs'
 
 const { routes } = resolveDeployTarget()
@@ -16,6 +15,6 @@ await Promise.all(
   routes.map(async (route) => {
     const routeDirectory = new URL(`${route}/`, distDirectory)
     await mkdir(routeDirectory, { recursive: true })
-    await copyFile(source, join(routeDirectory.pathname, 'index.html'))
+    await copyFile(source, new URL('index.html', routeDirectory))
   }),
 )

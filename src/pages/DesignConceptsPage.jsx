@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { SiteFooter } from '../components/SiteFooter.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
+import { useUi } from '../i18n/LanguageContext.jsx';
 
 function Lightbox({ src, alt, onClose }) {
+  const text = useUi().case;
+
   useEffect(() => {
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -21,7 +24,7 @@ function Lightbox({ src, alt, onClose }) {
 
   return (
     <div className="case-lightbox" onClick={onClose}>
-      <button className="case-lightbox__close" onClick={onClose} aria-label="Close image">
+      <button className="case-lightbox__close" onClick={onClose} aria-label={text.closeImage}>
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M18 6L6 18M6 6L18 18"

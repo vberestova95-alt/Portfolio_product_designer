@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SiteFooter } from '../components/SiteFooter.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
+import { useUi } from '../i18n/LanguageContext.jsx';
 
 function LazyVideo({ src, alt, className = '', playbackRate = 1 }) {
   const videoRef = useRef(null);
@@ -72,6 +73,7 @@ function LazyVideo({ src, alt, className = '', playbackRate = 1 }) {
 }
 
 function BeforeAfterSlider({ before, after }) {
+  const text = useUi().case;
   const [position, setPosition] = useState(50);
   const [animated, setAnimated] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -142,7 +144,7 @@ function BeforeAfterSlider({ before, after }) {
             setTimeout(() => setAnimated(false), 480);
           }}
         >
-          Before
+          {text.before}
         </button>
         <button
           className={`case-ba-tab${activeTab === 'after' ? ' is-active' : ''}`}
@@ -152,7 +154,7 @@ function BeforeAfterSlider({ before, after }) {
             setTimeout(() => setAnimated(false), 480);
           }}
         >
-          After
+          {text.after}
         </button>
       </div>
 
@@ -186,7 +188,7 @@ function BeforeAfterSlider({ before, after }) {
           }}
         >
           <div className="case-ba-slider__line" />
-          <div className="case-ba-slider__grip" aria-label="Drag to compare">
+          <div className="case-ba-slider__grip" aria-label={text.dragToCompare}>
             <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path
                 d="M7 5L2 10L7 15"
@@ -436,6 +438,8 @@ function NoteCard({ card }) {
 }
 
 function SectionPart({ part }) {
+  const text = useUi().case;
+
   if (part.type === 'richTextLead') {
     return (
       <div className="case-rich-text case-rich-text--lead">
@@ -528,7 +532,7 @@ function SectionPart({ part }) {
   if (part.type === 'siteLink') {
     return (
       <div className="case-site-link">
-        <span>{part.label || 'Project link'}</span>
+        <span>{part.label || text.projectLink}</span>
         <a href={part.href} target="_blank" rel="noopener noreferrer">
           {part.text || part.href}
         </a>
@@ -545,6 +549,8 @@ function SectionPart({ part }) {
  * case id for the per-project image fitting.
  */
 function NextProjects({ items }) {
+  const text = useUi().case;
+
   if (!items.length) {
     return null;
   }
@@ -552,8 +558,8 @@ function NextProjects({ items }) {
   return (
     <section className="case-next" data-reveal>
       <header className="case-next__header">
-        <p className="section-label">More work</p>
-        <h2>Other projects</h2>
+        <p className="section-label">{text.moreWork}</p>
+        <h2>{text.otherProjects}</h2>
       </header>
 
       <div className="case-next__grid">
@@ -571,7 +577,7 @@ function NextProjects({ items }) {
               <span className="case-next__category">{item.category}</span>
               <span className="case-next__title">{item.title}</span>
               <span className="case-next__cta">
-                Open case
+                {text.openCase}
                 <span aria-hidden="true"> →</span>
               </span>
             </span>
@@ -583,6 +589,8 @@ function NextProjects({ items }) {
 }
 
 function Lightbox({ src, alt, onClose }) {
+  const text = useUi().case;
+
   useEffect(() => {
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -601,7 +609,7 @@ function Lightbox({ src, alt, onClose }) {
 
   return (
     <div className="case-lightbox" onClick={onClose}>
-      <button className="case-lightbox__close" onClick={onClose} aria-label="Close image">
+      <button className="case-lightbox__close" onClick={onClose} aria-label={text.closeImage}>
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M18 6L6 18M6 6L18 18"
@@ -630,6 +638,7 @@ export function CaseStudyPage({
   showReturnHome = true,
   showSectionBackLink = true,
 }) {
+  const text = useUi().case;
   const [lightbox, setLightbox] = useState(null);
 
   const otherCases = cases.filter((item) => item.href !== `/${caseStudy.slug}`);
@@ -694,7 +703,7 @@ export function CaseStudyPage({
                 {showSectionBackLink ? (
                   <a className="case-back-link case-section-back" href={caseStudy.backHref}>
                     <span aria-hidden="true">←</span>
-                    <span>All work</span>
+                    <span>{text.allWork}</span>
                   </a>
                 ) : null}
               </div>

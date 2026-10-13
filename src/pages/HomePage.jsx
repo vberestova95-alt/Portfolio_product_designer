@@ -8,7 +8,10 @@ import React, { useEffect, useRef } from 'react';
 import editorialObject from '../assets/editorial-object.webp';
 import { NavMenu } from '../components/NavMenu.jsx';
 import { SiteFooter } from '../components/SiteFooter.jsx';
+import { useLanguage, useUi } from '../i18n/LanguageContext.jsx';
 import { attachHeroObject } from '../lib/heroObject.js';
+import { attachLogoPool } from '../lib/logoPool.js';
+import { SHOW_OBJECT_GRAPHICS } from '../lib/siteGraphics.js';
 import { attachShotTrail } from '../lib/shotTrail.js';
 import { attachWorkStack } from '../lib/workStack.js';
 
@@ -109,6 +112,8 @@ function CoverMotion({ motion }) {
 }
 
 function WorkCard({ item, index, total }) {
+  const text = useUi().home;
+
   return (
     <article
       className={`work-card work-card--${item.surface} work-card--${item.id}`}
@@ -118,22 +123,26 @@ function WorkCard({ item, index, total }) {
       }}
     >
       <a className="work-card__hit" href={item.href}>
-        <span className="visually-hidden">{`Open case study: ${item.title}`}</span>
+        <span className="visually-hidden">{`${text.openCase}: ${item.title}`}</span>
       </a>
 
       <div className="work-card__meta">
-        <span>{item.year}</span>
+        <ul className="work-card__stats">
+          {item.metrics.map((metric) => (
+            <li key={metric}>{metric}</li>
+          ))}
+        </ul>
+        <span className="work-card__kicker">{item.category}</span>
       </div>
       <div className="work-card__body">
         <div className="work-card__copy">
-          <p className="work-card__kicker">{item.category}</p>
           <h3>{item.title}</h3>
           <p className="work-card__description">{item.description}</p>
-          <ul className="work-card__stats">
-            {item.metrics.map((metric) => (
-              <li key={metric}>{metric}</li>
-            ))}
-          </ul>
+          {/* Visual only — the whole card is already the link (work-card__hit). */}
+          <span className="work-card__cta" aria-hidden="true">
+            {text.viewProject}
+            <span className="work-card__cta-arrow">→</span>
+          </span>
         </div>
         <div className={`work-card__visual${item.motion ? ' work-card__visual--stage' : ''}`}>
           {item.motion ? (
@@ -170,6 +179,67 @@ function WorkCard({ item, index, total }) {
   );
 }
 
+/*
+ * The headline is set line by line, so each language gets its own breaks: one
+ * set for the wide two-line layout, one for the phone's three lines.
+ */
+function HeroTitle() {
+  const { lang } = useLanguage();
+
+  if (lang === 'ru') {
+    return (
+      <h1>
+        Продуктовый
+        <br className="hero-br--mobile" /> <span className="serif-accent">дизайнер</span>
+        <br className="hero-br--desktop" /> сложных
+        <br className="hero-br--mobile" /> цифровых систем
+      </h1>
+    );
+  }
+
+  return (
+    <h1>
+      Product <span className="serif-accent">Designer</span>
+      <br className="hero-br--mobile" /> for
+      <br className="hero-br--desktop" /> complex
+      <br className="hero-br--mobile" /> digital systems
+    </h1>
+  );
+}
+
+/*
+ * The blue practice card. Its floor is a pool of logo cubes that tumble in as
+ * the card scrolls into view and can be pushed around with the pointer — see
+ * lib/logoPool.js. The cubes are blank tiles for now; logos go into LOGO_CUBES.
+ */
+const LOGO_CUBES = Array.from({ length: 14 }, (_, index) => ({ id: `cube-${index}` }));
+
+function PracticeCard() {
+  const text = useUi().home;
+  const poolRef = useRef(null);
+
+  useEffect(() => attachLogoPool(poolRef.current), []);
+
+  return (
+    <article className="editorial-card editorial-card--blue editorial-card--practice" data-reveal>
+      <h3 className="editorial-card__title">
+        {text.practiceTitle.start}{' '}
+        <span className="serif-accent">{text.practiceTitle.accent}</span>
+        {text.practiceTitle.end}
+      </h3>
+      <p className="editorial-card__copy">{text.practiceCopy}</p>
+
+      <div className="logo-pool" ref={poolRef} aria-hidden="true">
+        {LOGO_CUBES.map((cube) => (
+          <span key={cube.id} className="logo-cube" data-cube>
+            {cube.logo ? <img src={cube.logo} alt="" draggable={false} /> : null}
+          </span>
+        ))}
+      </div>
+    </article>
+  );
+}
+
 function ConceptTeaser({ teaser }) {
   const trailRef = useRef(null);
 
@@ -199,7 +269,6 @@ function ConceptTeaser({ teaser }) {
       </div>
 
       <div className="concept-teaser__footer">
-        <span>{teaser.footer}</span>
         <span className="concept-teaser__cta">
           {teaser.linkLabel}
           <span aria-hidden="true">→</span>
@@ -217,6 +286,7 @@ export function HomePage({
   achievements,
   experiences,
 }) {
+  const text = useUi().home;
   const heroRef = useRef(null);
   const objectRef = useRef(null);
   const stackRef = useRef(null);
@@ -235,43 +305,37 @@ export function HomePage({
             <NavMenu contacts={profile.contacts} />
           </div>
 
+          {/*
+            * Editorial composition: a ruled row of small copy — portrait and the
+            * two summary lines — and the headline set large on
+            * the panel floor. The headline still comes first in the document;
+            * the grid areas move it under the row.
+            */}
           <div className="hero-panel__grid">
-            <div className="hero-panel__copy">
-              <h1>
-                Product <span className="serif-accent">Designer</span>
-                <br className="hero-br--mobile" /> for
-                <br className="hero-br--desktop" /> complex
-                <br className="hero-br--mobile" /> digital systems
-              </h1>
+            <HeroTitle />
 
-              <div className="hero-panel__intro">
-                <div className="hero-panel__portrait">
-                  <img src={profile.photo.src} alt={profile.photo.alt} />
-                </div>
-
-                <div className="hero-panel__intro-copy">
-                  {profile.summary.map((paragraph) => (
-                    <p key={paragraph} className="hero-panel__lead">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
+            <div className="hero-panel__intro">
+              <div className="hero-panel__portrait">
+                <img src={profile.photo.src} alt={profile.photo.alt} />
               </div>
+
+              {profile.summary.map((paragraph) => (
+                <p key={paragraph} className="hero-panel__lead">
+                  {paragraph}
+                </p>
+              ))}
             </div>
           </div>
 
-          <div className="hero-panel__object" aria-hidden="true">
-            <img ref={objectRef} src={editorialObject} alt="" />
-          </div>
-
-          <a className="hero-panel__next" href="#work">
-            <span className="hero-panel__next-label">View selected work</span>{' '}
-            <span aria-hidden="true">↓</span>
-          </a>
+          {SHOW_OBJECT_GRAPHICS ? (
+            <div className="hero-panel__object" aria-hidden="true">
+              <img ref={objectRef} src={editorialObject} alt="" />
+            </div>
+          ) : null}
 
           {SHOW_CLIENT_LOGOS ? (
             <div className="hero-panel__footer">
-              <ul className="hero-clients" aria-label="Clients and products">
+              <ul className="hero-clients" aria-label={text.clientsLabel}>
                 {clients.map((client) => (
                   <li key={client.name} className="hero-client">
                     <img
@@ -302,32 +366,13 @@ export function HomePage({
         <div className="two-column-section">
           <ConceptTeaser teaser={designConceptTeaser} />
 
-          <article className="editorial-card editorial-card--blue editorial-card--practice" data-reveal>
-            <h3 className="editorial-card__title">
-              Focused on <span className="serif-accent">design systems</span>, AI-assisted
-              workflows, and internal tools
-            </h3>
-            <p className="editorial-card__copy">
-              I enjoy solving complex product challenges from discovery to delivery, working
-              closely with product managers, engineers, researchers, and stakeholders to turn
-              ambiguity into a coherent product direction.
-            </p>
-            <ul className="editorial-card__tools" aria-label="AI tools">
-              <li>Claude Code</li>
-              <li>Codex</li>
-              <li>Figma AI</li>
-            </ul>
-            <img className="editorial-card__graphic" src={editorialObject} alt="" aria-hidden="true" />
-          </article>
+          <PracticeCard />
         </div>
       </section>
 
       {SHOW_ACHIEVEMENTS_SECTION ? (
         <section className="section home-shell">
-          <SectionHeader
-            label="Key Achievements"
-            title="A track record of shipping, scaling, validating, and improving the way teams design"
-          />
+          <SectionHeader label={text.achievementsLabel} title={text.achievementsTitle} />
 
           <div className="achievement-grid">
             {achievements.map((item, index) => (
@@ -343,7 +388,7 @@ export function HomePage({
       ) : null}
 
       <section className="section home-shell experience-section">
-        <SectionHeader title="Product work across in-house teams, agencies, startup environments, and freelance delivery" />
+        <SectionHeader title={text.experienceTitle} />
 
         <div className="experience-table">
           {experiences.map((item) => (
