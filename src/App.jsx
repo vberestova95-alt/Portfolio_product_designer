@@ -4,6 +4,7 @@ import { useLanguage, useUi } from './i18n/LanguageContext.jsx';
 import { observeReveal } from './lib/reveal.js';
 import { attachReturnNavigation } from './lib/returnNavigation.js';
 import { AiProjectsPage } from './pages/AiProjectsPage.jsx';
+import { ExperiencePage } from './pages/ExperiencePage.jsx';
 import { HomePage } from './pages/HomePage.jsx';
 import { CaseStudyPage } from './pages/BetboomPassPage.jsx';
 import { DesignConceptsPage } from './pages/DesignConceptsPage.jsx';
@@ -28,11 +29,14 @@ const CASE_STUDY_KEYS_BY_PATH = {
 // the other AI projects rather than the main selected work.
 const AI_CASE_PATHS = new Set(['/ds-plugins', '/design-cringe']);
 const AI_PROJECTS_PATH = '/ai-projects';
+const LISTING_PATHS = new Set([AI_PROJECTS_PATH]);
+const EXPERIENCE_PATH = '/experience';
 
 const DETAIL_PATHS = new Set([
   ...Object.keys(CASE_STUDY_KEYS_BY_PATH),
   '/design-concepts',
   AI_PROJECTS_PATH,
+  EXPERIENCE_PATH,
 ]);
 const PET_INJECTION_TRACKER_PATH = '/pet-injection-tracker';
 
@@ -62,6 +66,13 @@ function getPageMetadata(pathname, currentCaseStudy, petCaseStudy, meta) {
     return {
       title: meta.conceptsTitle,
       description: meta.conceptsDescription,
+    };
+  }
+
+  if (pathname === EXPERIENCE_PATH) {
+    return {
+      title: meta.experienceTitle,
+      description: meta.experienceDescription,
     };
   }
 
@@ -130,6 +141,7 @@ export function App() {
     return attachReturnNavigation({
       pathname,
       detailPaths: DETAIL_PATHS,
+      listingPaths: LISTING_PATHS,
       normalizePathname,
     });
   }, [pathname]);
@@ -174,6 +186,10 @@ export function App() {
 
   if (pathname === '/design-concepts') {
     return <DesignConceptsPage archive={designConcepts} profile={profile} />;
+  }
+
+  if (pathname === EXPERIENCE_PATH) {
+    return <ExperiencePage experiences={experiences} profile={profile} />;
   }
 
   if (pathname === AI_PROJECTS_PATH) {

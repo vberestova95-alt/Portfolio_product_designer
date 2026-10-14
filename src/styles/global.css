@@ -305,6 +305,7 @@ html[lang='ru'] :is(h1, h2, h3, h4) {
 }
 
 html[lang='ru'] .serif-accent,
+html[lang='ru'] .logo-cube--label,
 html[lang='ru'] .error-page__visual > span {
   font-family: inherit;
   font-style: normal;
@@ -442,6 +443,7 @@ html[lang='ru'] .error-page__visual > span {
 .work-card--blue::after,
 .work-card--mint::after,
 .work-card--pet::after,
+.work-card--lavender::after,
 .work-card--graphite::after,
 .editorial-card--blue::after,
 .editorial-card--dark::after,
@@ -630,6 +632,195 @@ html[lang='ru'] .error-page__visual > span {
   display: none;
 }
 
+/*
+ * Site sections sit next to the logo, contacts at the far right. The menu
+ * takes the rest of the row so the two groups can part.
+ */
+.nav-menu:has(.site-nav) {
+  flex: 1;
+}
+
+.nav-menu:has(.site-nav) .nav-menu__links {
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2vw, 32px);
+  padding-left: clamp(24px, 4vw, 72px);
+}
+
+.site-nav__link {
+  font-size: 14px;
+  line-height: 1.4;
+  opacity: 0.68;
+  transition: opacity 160ms ease;
+}
+
+/* The current section is simply at full strength — no underline. */
+.site-nav__link:hover,
+.site-nav__link[aria-current='page'] {
+  opacity: 1;
+}
+
+/*
+ * The header row on one centre line: logo, sections, language switch and
+ * pills all centred on the same axis, and the sections' text box trimmed to
+ * the pill height so their optical centre matches.
+ */
+.hero-panel__top,
+.site-topbar,
+.nav-menu,
+.nav-menu__contacts,
+.site-nav {
+  align-items: center;
+}
+
+.hero-panel__brand,
+.site-topbar__brand,
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/*
+ * Pinned header (lib/pinnedHeader.js): once the row has scrolled away it comes
+ * back on scroll up as a light bar across the top, on every page, the home
+ * hero's included. Parked above the viewport until then.
+ */
+.hero-panel__top.is-pinned,
+.site-topbar.is-pinned {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  margin: 0;
+  padding: 10px max(var(--gutter), calc((100% - var(--shell-width)) / 2));
+  border-bottom: 1px solid var(--line);
+  background: rgba(242, 244, 248, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: var(--ink-soft);
+  transform: translateY(-100%);
+  transition: transform 260ms cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+.hero-panel__top.is-pinned.is-shown,
+.site-topbar.is-pinned.is-shown {
+  transform: none;
+}
+
+/* On the bar the home row takes the light-page ink, like the inner pages. */
+.hero-panel__top.is-pinned .hero-panel__brand,
+.hero-panel__top.is-pinned .site-nav__link {
+  color: var(--ink);
+}
+
+.hero-panel__top.is-pinned .contact-link,
+.hero-panel__top.is-pinned .nav-menu__burger {
+  border-color: var(--line);
+  color: var(--ink-soft);
+}
+
+.hero-panel__top.is-pinned .contact-link:hover {
+  border-color: rgba(13, 17, 23, 0.28);
+  background: rgba(13, 17, 23, 0.05);
+  color: var(--ink);
+}
+
+.hero-panel__top.is-pinned .contact-link--primary {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.nav-menu__contacts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* The one filled pill: writing to me is the main action in the row. */
+.contact-link--primary {
+  border-color: var(--inverse);
+  background: var(--inverse);
+  color: var(--ink);
+}
+
+.contact-link--primary:hover {
+  border-color: rgba(247, 248, 252, 0.86);
+  background: rgba(247, 248, 252, 0.86);
+}
+
+/*
+ * "Contact me" ways to reach me (ContactMenu in NavMenu.jsx): a small paper
+ * card under the pill, the same on the dark hero and the light pages.
+ */
+.contact-menu {
+  position: relative;
+  display: flex;
+}
+
+.contact-menu__toggle {
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.contact-menu__list {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 200px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: 0 18px 40px rgba(13, 17, 23, 0.14);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    visibility 160ms;
+}
+
+.contact-menu.is-open .contact-menu__list {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.contact-menu__option {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.4;
+  transition: background-color 160ms ease;
+}
+
+.contact-menu__option:hover,
+.contact-menu__option:focus-visible {
+  background: rgba(13, 17, 23, 0.06);
+  outline: none;
+}
+
 /* Carries the "v.b." logo (components/BrandLogo.jsx), in full ink. */
 .hero-panel__brand {
   font-size: 14px;
@@ -665,47 +856,78 @@ html[lang='ru'] .error-page__visual > span {
 }
 
 /*
- * RU / EN. Same height as the pills beside it, so the row keeps one line; the
- * active language is the filled half.
+ * RU / EN. Plain text like the section links next to it; the active language
+ * is the one at full strength.
  */
 .lang-switch {
   display: inline-flex;
-  align-items: stretch;
-  padding: 3px;
-  border: 1px solid var(--inverse-line);
-  border-radius: 999px;
+  align-items: center;
+  gap: 10px;
 }
 
 .lang-switch__option {
-  min-width: 40px;
-  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
   border: 0;
-  border-radius: 999px;
   background: transparent;
   color: inherit;
   font: inherit;
-  font-size: 13px;
-  line-height: 1;
+  font-size: 14px;
+  line-height: 1.4;
   opacity: 0.68;
   cursor: pointer;
-  transition:
-    background-color 160ms ease,
-    opacity 160ms ease;
+  transition: opacity 160ms ease;
 }
 
-.lang-switch__option:hover {
+.lang-switch__option:hover,
+.lang-switch__option.is-active {
   opacity: 1;
 }
 
 .lang-switch__option.is-active {
-  background: rgba(247, 248, 252, 0.18);
-  opacity: 1;
   cursor: default;
 }
 
 .lang-switch__option:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
+}
+
+/* A language that isn't ready yet: dimmed, inert, with a tooltip above. */
+.lang-switch__option.is-disabled {
+  position: relative;
+  /* Dimmed through color, not opacity, so the tooltip stays fully opaque. */
+  opacity: 1;
+  color: color-mix(in srgb, currentColor 36%, transparent);
+  cursor: not-allowed;
+}
+
+.lang-switch__option.is-disabled::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 10;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--inverse);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.lang-switch__option.is-disabled:hover::after,
+.lang-switch__option.is-disabled:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 
@@ -880,6 +1102,20 @@ html[lang='ru'] .error-page__visual > span {
  * within a shade of the page background (#f2f4f8), so with the outline gone the
  * card had no edge left to read against.
  */
+/*
+ * Lavender, for the cringe-meter: a light surface its dark navy panel stands
+ * out against, in the violet of the tool's own button.
+ */
+.work-card--lavender,
+.case-next__card--lavender .case-next__media {
+  background:
+    radial-gradient(circle at 15% 16%, rgba(255, 255, 255, 0.5), transparent 28%),
+    radial-gradient(circle at 84% 14%, rgba(245, 242, 255, 0.4), transparent 32%),
+    linear-gradient(135deg, #ebe6fb 0%, #dad1f6 50%, #c7bbef 100%);
+  color: #1e1a3a;
+  border-color: transparent;
+}
+
 .work-card--pet,
 .case-next__card--pet .case-next__media {
   background:
@@ -1154,13 +1390,17 @@ html[lang='ru'] .error-page__visual > span {
 }
 
 .work-card--yandex-news .work-card__visual,
-.work-card--cat-app .work-card__visual {
+.work-card--cat-app .work-card__visual,
+.work-card--ds-plugins .work-card__visual,
+.work-card--design-cringe .work-card__visual {
   border: 0;
   background: transparent;
 }
 
 .work-card--yandex-news .work-card__visual > img,
-.work-card--cat-app .work-card__visual > img {
+.work-card--cat-app .work-card__visual > img,
+.work-card--ds-plugins .work-card__visual > img,
+.work-card--design-cringe .work-card__visual > img {
   left: 0;
   top: 0;
   width: 100%;
@@ -1507,22 +1747,32 @@ html[lang='ru'] .error-page__visual > span {
 
 /*
  * A word on a cube ("About me", "Projects", "Contacts"): set to the cube's
- * size so it fits on two short lines at any scale, in the cube's ink.
+ * size so it fits on two short lines at any scale, in the headings' italic
+ * serif and the primary ink.
  */
 .logo-cube--label {
   /* In cube units: a % padding would resolve against the pool's width. */
   padding: calc(var(--cube-size) * 0.08);
-  color: #1a32c6;
-  font-size: calc(var(--cube-size) * 0.17);
-  font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  color: var(--ink);
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: calc(var(--cube-size) * 0.2);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
   text-align: center;
   user-select: none;
 }
 
 .logo-pool--ink .logo-cube--label {
   color: var(--inverse);
+}
+
+/* Russian: no serif (see above) — Inter at its own, smaller size. */
+html[lang='ru'] .logo-cube--label {
+  font-size: calc(var(--cube-size) * 0.17);
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 /* Photo cubes in the hero: a square film frame filling the tile edge to edge. */
@@ -2039,6 +2289,9 @@ ol.case-bullet-list li::before {
  * instead of following it. The name is the way home.
  */
 .site-topbar {
+  /* Over the sticky case cards, so the open menu panel is never covered. */
+  position: relative;
+  z-index: 40;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2073,13 +2326,28 @@ ol.case-bullet-list li::before {
   color: var(--ink);
 }
 
-.site-topbar .lang-switch {
-  border-color: var(--line);
-  color: var(--ink-soft);
+.site-topbar .nav-menu__contacts {
+  gap: 8px;
 }
 
-.site-topbar .lang-switch__option.is-active {
-  background: rgba(13, 17, 23, 0.08);
+.site-topbar .site-nav__link {
+  color: var(--ink);
+}
+
+.site-topbar .contact-link--primary {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.site-topbar .contact-link--primary:hover {
+  border-color: var(--ink-soft);
+  background: var(--ink-soft);
+  color: var(--paper);
+}
+
+.site-topbar .lang-switch,
+.hero-panel__top.is-pinned .lang-switch {
   color: var(--ink);
 }
 
@@ -2491,6 +2759,23 @@ ol.case-bullet-list li::before {
 .case-feature-media img,
 .case-feature-media video {
   border-radius: var(--r-card);
+}
+
+/*
+ * Plugin windows are cut out on transparency: no frame or plate around them,
+ * and fitted whole rather than cropped to the slot.
+ */
+.case-page--ds-plugins .case-hero__media {
+  border: 0;
+  background: none;
+}
+
+.case-page--ds-plugins .case-hero__media img {
+  object-fit: contain;
+}
+
+.case-page--ds-plugins .case-feature-media img {
+  border-radius: 0;
 }
 
 /* Some exported Yandex boards contain a dark matte in their outermost pixels. */
@@ -3124,41 +3409,12 @@ ol.case-bullet-list li::before {
   }
 }
 
-@media (max-width: 640px) {
-  .hero-shell,
-  .case-page {
-    padding-top: 16px;
-  }
-
-  .hero-panel,
-  .work-card,
-  .editorial-card,
-  .home-footer__panel,
-  .case-hero {
-    padding: 20px;
-  }
-
-  /* Keeps the cube strip under the pills (see .home-footer__cubes). */
-  .home-footer__panel {
-    padding-bottom: calc(20px + 96px);
-  }
-
-  /*
-   * Three plates across is too narrow for a phone. Two, with a lone third
-   * spanning the row, keeps them looking placed rather than left over.
-   */
-  .case-stat-grid--hero {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .case-stat-grid--hero .case-stat-card:last-child:nth-child(odd) {
-    grid-column: span 2;
-  }
-
-  .hero-panel {
-    --hero-pad-bottom: 20px;
-  }
-
+/*
+ * Header collapse. With the site sections in the row it no longer fits a
+ * tablet, so below this width everything moves into a panel behind the burger
+ * and the row stays one line: logo and toggle.
+ */
+@media (max-width: 1024px) {
   /*
    * Below this width the pills no longer fit next to the logo, so they move
    * into a panel behind the burger and the row stays one line.
@@ -3209,7 +3465,7 @@ ol.case-bullet-list li::before {
     z-index: 6;
     flex-direction: column;
     align-items: stretch;
-    min-width: 170px;
+    min-width: 220px;
     gap: 6px;
     padding: 10px;
     border: 1px solid var(--inverse-line);
@@ -3235,15 +3491,86 @@ ol.case-bullet-list li::before {
     text-align: center;
   }
 
-  /* Inside the panel the switch spans it, halves equal, like the pills above. */
+  /* In the burger panel the ways to reach me unfold under the pill. */
+  .nav-menu__links .contact-menu {
+    flex-direction: column;
+  }
+
+  .nav-menu__links .contact-menu__toggle {
+    width: 100%;
+  }
+
+  .nav-menu__links .contact-menu__list {
+    position: static;
+    display: none;
+    min-width: 0;
+    margin-top: 6px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .nav-menu__links .contact-menu.is-open .contact-menu__list {
+    display: block;
+  }
+
+  .nav-menu__links .contact-menu__option {
+    justify-content: center;
+    color: inherit;
+  }
+
+  .nav-menu:has(.site-nav) .nav-menu__links {
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  /* Panel order: site sections as rows, a rule, then contacts and language. */
+  .nav-menu__links .site-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 0 0 6px;
+    padding: 0 0 6px;
+    border-bottom: 1px solid var(--inverse-line);
+  }
+
+  .nav-menu__links .site-nav__link {
+    padding: 10px 8px;
+    font-size: 16px;
+  }
+
+  .nav-menu__links .nav-menu__contacts {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .nav-menu--ink .nav-menu__links .site-nav {
+    border-bottom-color: var(--line);
+  }
+
+  .hero-panel__top.is-pinned .nav-menu__links {
+    border-color: var(--line);
+    background: var(--paper);
+    box-shadow: 0 18px 40px rgba(13, 17, 23, 0.14);
+  }
+
+  .hero-panel__top.is-pinned .nav-menu__links .site-nav {
+    border-bottom-color: var(--line);
+  }
+
+  /* In the panel the switch is the last row of the sections. */
   .nav-menu__links .lang-switch {
-    display: flex;
-    margin-top: 4px;
+    gap: 16px;
+    padding: 0 8px;
   }
 
   .nav-menu__links .lang-switch__option {
-    flex: 1;
-    min-height: 36px;
+    font-size: 16px;
   }
 
 
@@ -3261,6 +3588,42 @@ ol.case-bullet-list li::before {
     border-color: var(--line);
     background: var(--paper);
     box-shadow: 0 18px 40px rgba(13, 17, 23, 0.14);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-shell,
+  .case-page {
+    padding-top: 16px;
+  }
+
+  .hero-panel,
+  .work-card,
+  .editorial-card,
+  .home-footer__panel,
+  .case-hero {
+    padding: 20px;
+  }
+
+  /* Keeps the cube strip under the pills (see .home-footer__cubes). */
+  .home-footer__panel {
+    padding-bottom: calc(20px + 96px);
+  }
+
+  /*
+   * Three plates across is too narrow for a phone. Two, with a lone third
+   * spanning the row, keeps them looking placed rather than left over.
+   */
+  .case-stat-grid--hero {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-stat-grid--hero .case-stat-card:last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+
+  .hero-panel {
+    --hero-pad-bottom: 20px;
   }
 
   .case-hero__media {
@@ -3422,6 +3785,15 @@ ol.case-bullet-list li::before {
     height: auto;
     object-fit: initial;
     transform: translate(-50%, -9%);
+  }
+
+  /*
+   * The AI project covers are window cut-outs with no backdrop: fitted whole
+   * and pinned to the top, so they sit inside the three quarters on show.
+   */
+  .work-card--ds-plugins .work-card__visual > img,
+  .work-card--design-cringe .work-card__visual > img {
+    object-position: center top;
   }
 
   /*
@@ -3860,6 +4232,16 @@ ol.case-bullet-list li::before {
   color: var(--ink-faint);
 }
 
+/* The AI projects page runs straight from the intro into the first card. */
+.ai-projects-page .concept-hero {
+  border-bottom: 0;
+}
+
+/* Sits where the eyebrow did on the AI projects page, with the same gap below. */
+.concept-hero__back {
+  margin-bottom: 16px;
+}
+
 .concept-hero__description {
   margin: 24px 0 0;
   max-width: 62ch;
@@ -4157,6 +4539,11 @@ ol.case-bullet-list li::before {
   .work-card--iquoto .work-card__visual > img {
     --iquoto-art-width: 100cqw;
   }
+
+  .work-card--ds-plugins .work-card__visual > img,
+  .work-card--design-cringe .work-card__visual > img {
+    object-position: center top;
+  }
 }
 
 /*
@@ -4186,4 +4573,134 @@ ol.case-bullet-list li::before {
   .hero-panel__lead + .hero-panel__lead {
     display: none;
   }
+}
+
+/*
+ * Concept card on tablets and phones (up to 1240px): copy, the link straight
+ * under it, then two large shots — the first and fourth — that fill the rest
+ * of the card and run out past its floor. Always visible. The desktop keeps the
+ * six-shot hover scatter above.
+ */
+@media (max-width: 1240px) {
+  .concept-teaser.concept-teaser--pair {
+    --teaser-pad: clamp(28px, 2.6vw, 44px);
+
+    min-height: 0;
+  }
+
+  .concept-teaser--pair .concept-teaser__copy {
+    order: 1;
+  }
+
+  .concept-teaser--pair .concept-teaser__footer {
+    order: 2;
+    margin-top: 0;
+    padding-top: 28px;
+  }
+
+  .concept-teaser--pair .concept-teaser__shots {
+    order: 3;
+    position: relative;
+    inset: auto;
+    flex: none;
+    height: clamp(300px, 34vw, 400px);
+    margin: 36px calc(var(--teaser-pad) * -1) calc(var(--teaser-pad) * -1);
+    overflow: visible;
+    border-radius: 0;
+  }
+
+  .concept-teaser--pair .concept-teaser__shots::after {
+    display: none;
+  }
+
+  /*
+   * Sized off the band's height, so a shot never climbs into the copy; the 4:3
+   * ratio gives the width, capped so the two overlap rather than cover.
+   */
+  .concept-teaser.concept-teaser--pair .concept-shot {
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    height: 92%;
+    width: auto;
+    max-width: 66%;
+    transform: none;
+  }
+
+  .concept-teaser.concept-teaser--pair .concept-shot:not(:nth-child(1)):not(:nth-child(4)) {
+    display: none;
+  }
+
+  .concept-teaser.concept-teaser--pair .concept-shot__frame {
+    border-radius: 16px;
+    opacity: 1;
+    transform: rotate(var(--shot-rotate, 0deg));
+    transition: none;
+  }
+
+  /* Dark one behind on the left, light one in front, both sunk below the floor. */
+  .concept-teaser.concept-teaser--pair .concept-shot:nth-child(1) {
+    left: calc(var(--teaser-pad) - 2%);
+    bottom: -14%;
+    z-index: 1;
+    --shot-rotate: -5deg;
+  }
+
+  .concept-teaser.concept-teaser--pair .concept-shot:nth-child(4) {
+    left: 34%;
+    bottom: -26%;
+    z-index: 2;
+    --shot-rotate: 4deg;
+  }
+}
+
+@media (max-width: 900px) {
+  .concept-teaser.concept-teaser--pair {
+    --teaser-pad: 28px;
+  }
+
+  .concept-teaser--pair .concept-teaser__shots {
+    height: clamp(280px, 76vw, 420px);
+  }
+
+  .concept-teaser.concept-teaser--pair .concept-shot {
+    max-width: 70%;
+  }
+
+  .concept-teaser.concept-teaser--pair .concept-shot:nth-child(4) {
+    left: auto;
+    right: -6%;
+  }
+}
+
+@media (max-width: 640px) {
+  .concept-teaser.concept-teaser--pair {
+    --teaser-pad: 20px;
+  }
+}
+
+/* ------------------------------------------------------ experience page */
+
+.experience-page .experience-section {
+  padding-top: clamp(24px, 3vw, 48px);
+}
+
+.experience-contacts__title {
+  margin: 0 0 clamp(16px, 2vw, 28px);
+  font-size: clamp(32px, 3.4vw, 56px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.experience-contacts__link {
+  font-size: clamp(16px, 1.2vw, 20px);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 6px;
+  transition: text-decoration-color 160ms ease;
+}
+
+.experience-contacts__link:hover {
+  text-decoration-color: currentColor;
 }

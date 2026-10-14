@@ -12,6 +12,7 @@
     { "source": "/design-concepts", "destination": "/index.html" },
     { "source": "/ai-projects", "destination": "/index.html" },
     { "source": "/ds-plugins", "destination": "/index.html" },
-    { "source": "/design-cringe", "destination": "/index.html" }
+    { "source": "/design-cringe", "destination": "/index.html" },
+    { "source": "/experience", "destination": "/index.html" }
   ]
 }

@@ -150,7 +150,17 @@ function isUnmodifiedPrimaryClick(event) {
   );
 }
 
-export function attachReturnNavigation({ pathname, detailPaths, normalizePathname }) {
+/*
+ * `listingPaths` are detail pages that list cases of their own (the AI
+ * projects page). Leaving one for a case records it as the place to come back
+ * to, the way the home page is — instead of treating it as case → case.
+ */
+export function attachReturnNavigation({
+  pathname,
+  detailPaths,
+  listingPaths = new Set(),
+  normalizePathname,
+}) {
   if (typeof window === 'undefined') {
     return undefined;
   }
@@ -281,9 +291,10 @@ export function attachReturnNavigation({ pathname, detailPaths, normalizePathnam
 
     if (
       detailPaths.has(pathname) &&
+      !listingPaths.has(pathname) &&
       detailPaths.has(destinationPath) &&
       destinationPath !== pathname &&
-      returnEntry?.sourcePath === '/'
+      (returnEntry?.sourcePath === '/' || listingPaths.has(returnEntry?.sourcePath))
     ) {
       event.preventDefault();
       /*

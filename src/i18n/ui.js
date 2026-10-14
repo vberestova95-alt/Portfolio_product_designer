@@ -12,6 +12,9 @@ export const ui = {
       conceptsTitle: 'Дизайн-концепты — Владислава Берестова',
       conceptsDescription:
         'Самостоятельные исследования интерфейсов и концепты для портфолио: арт-дирекшн, визуальные системы и работа с интерфейсом.',
+      experienceTitle: 'Опыт и контакты — Владислава Берестова',
+      experienceDescription:
+        'Опыт продуктового дизайнера Владиславы Берестовой и контакты для связи.',
       aiProjectsTitle: 'AI-проекты — Владислава Берестова',
       aiProjectsDescription:
         'Продукты, которые я спроектировала и собрала сама вместе с AI: плагины для дизайн-системы, анализатор дизайна и трекер для питомца.',
@@ -19,10 +22,34 @@ export const ui = {
     },
     nav: {
       contactLinks: 'Контакты',
+      siteNav: 'Разделы сайта',
+      links: {
+        aiProjects: 'AI-проекты',
+        dribbble: 'Dribbble',
+        experience: 'Опыт',
+      },
+      contactMe: 'Связаться со мной',
+      contactVia: {
+        linkedin: 'LinkedIn',
+        email: 'Написать на почту',
+        telegram: 'Telegram',
+      },
       openMenu: 'Открыть меню',
       closeMenu: 'Закрыть меню',
       language: 'Язык сайта',
       switchTo: 'Switch to English',
+    },
+    experiencePage: {
+      title: 'Опыт и контакты',
+      description:
+        '7 лет в продуктовом дизайне: in-house команды, агентства, стартапы и фриланс. Ниже — где я работала и как со мной связаться.',
+      contactsTitle: 'Контакты',
+      emailLabel: 'Почта',
+      contactLinks: {
+        Dribbble: 'Шоты и концепты',
+        LinkedIn: 'Профиль',
+        CV: 'Скачать резюме (PDF)',
+      },
     },
     home: {
       heroTitle: {
@@ -60,6 +87,7 @@ export const ui = {
       otherProjects: 'Другие проекты',
       openCase: 'Открыть кейс',
       allWork: 'Все работы',
+      back: 'Назад',
       closeImage: 'Закрыть изображение',
     },
     pet: {
@@ -104,6 +132,9 @@ export const ui = {
       conceptsTitle: 'Design Concepts - Vladislava Berestova',
       conceptsDescription:
         'Independent interface studies and portfolio concepts exploring art direction, visual systems, and interface craft.',
+      experienceTitle: 'Experience and Contacts - Vladislava Berestova',
+      experienceDescription:
+        'Product design experience of Vladislava Berestova and ways to get in touch.',
       aiProjectsTitle: 'AI Projects - Vladislava Berestova',
       aiProjectsDescription:
         'Products I designed and built myself with AI: design system plugins for Figma, a design analyzer, and a pet care tracker.',
@@ -111,10 +142,34 @@ export const ui = {
     },
     nav: {
       contactLinks: 'Contact links',
+      siteNav: 'Site sections',
+      links: {
+        aiProjects: 'AI projects',
+        dribbble: 'Dribbble',
+        experience: 'Experience',
+      },
+      contactMe: 'Contact me',
+      contactVia: {
+        linkedin: 'LinkedIn',
+        email: 'Send an email',
+        telegram: 'Telegram',
+      },
       openMenu: 'Open menu',
       closeMenu: 'Close menu',
       language: 'Site language',
       switchTo: 'Переключить на русский',
+    },
+    experiencePage: {
+      title: 'Experience and contacts',
+      description:
+        'Seven years of product design across in-house teams, agencies, startups and freelance. Below: where I have worked and how to reach me.',
+      contactsTitle: 'Contacts',
+      emailLabel: 'Email',
+      contactLinks: {
+        Dribbble: 'Shots and concepts',
+        LinkedIn: 'Profile',
+        CV: 'Download CV (PDF)',
+      },
     },
     home: {
       heroTitle: {
@@ -151,6 +206,7 @@ export const ui = {
       otherProjects: 'Other projects',
       openCase: 'Open case',
       allWork: 'All work',
+      back: 'Back',
       closeImage: 'Close image',
     },
     pet: {

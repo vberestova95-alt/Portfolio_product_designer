@@ -69,7 +69,12 @@ export function CubePool({
     const handleCleared = () => {
       const boxRect = box.getBoundingClientRect();
       const floor = box.querySelector('[data-pool-floor]');
-      const ceiling = box.querySelector('[data-pool-ceiling]');
+      const ceilingNode = box.querySelector('[data-pool-ceiling]');
+      // A pinned header (lib/pinnedHeader.js) is fixed to the viewport; the
+      // spacer left in its place, just before it, still marks where it was.
+      const ceiling = ceilingNode?.classList.contains('is-pinned')
+        ? ceilingNode.previousElementSibling
+        : ceilingNode;
       const floorTop = floor ? floor.getBoundingClientRect().top - boxRect.top : boxRect.height;
       const ceilingBottom = ceiling ? ceiling.getBoundingClientRect().bottom - boxRect.top : 0;
 

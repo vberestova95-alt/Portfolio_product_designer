@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BrandLogo } from './BrandLogo.jsx';
 import { NavMenu } from './NavMenu.jsx';
+import { attachPinnedHeader } from '../lib/pinnedHeader.js';
 
 /*
  * Top bar for the internal pages. The home page carries the same information
- * inside its hero panel, so it does not use this. Deliberately static — it
- * scrolls away with the page instead of following it down.
+ * inside its hero panel, so it does not use this. It scrolls away with the
+ * page and comes back as a bar on scroll up (lib/pinnedHeader.js).
  */
 export function SiteHeader({ profile, brandHref = '/', showReturnHome = true }) {
+  const headerRef = useRef(null);
+
+  useEffect(() => attachPinnedHeader(headerRef.current), []);
+
   return (
-    <header className="site-topbar">
+    <header className="site-topbar" ref={headerRef}>
       <a
         className="site-topbar__brand"
         href={brandHref}
@@ -18,7 +23,13 @@ export function SiteHeader({ profile, brandHref = '/', showReturnHome = true }) 
         <BrandLogo name={profile.name} />
       </a>
 
-      <NavMenu contacts={profile.contacts} className="nav-menu--ink" />
+      <NavMenu
+        contacts={profile.contacts}
+        email={profile.email}
+        telegram={profile.telegram}
+        siteNav={showReturnHome}
+        className="nav-menu--ink"
+      />
     </header>
   );
 }

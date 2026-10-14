@@ -1,8 +1,12 @@
+import dsPluginsCover from '../assets/cases/ds-plugins-hero.webp';
+import dsPluginsChangelog from '../assets/cases/ds-plugins-changelog.webp';
+import dsPluginsManager from '../assets/cases/ds-plugins-manager.webp';
+import dsPluginsManagerBatch from '../assets/cases/ds-plugins-manager-batch.webp';
+import dsPluginsFoundation from '../assets/cases/ds-plugins-foundation.webp';
 import designCringeScore from '../assets/cases/design-cringe-score.jpg';
 import designCringeLanding from '../assets/cases/design-cringe-landing.jpg';
 import designCringeCategories from '../assets/cases/design-cringe-categories.jpg';
 import designCringeIssues from '../assets/cases/design-cringe-issues.jpg';
-import designCringeClean from '../assets/cases/design-cringe-clean.jpg';
 import designCringeMobileBad from '../assets/cases/design-cringe-mobile-bad.jpg';
 import designCringeMobileClean from '../assets/cases/design-cringe-mobile-clean.jpg';
 import redesignVideo from '../assets/redesign-cards.mp4';
@@ -1451,6 +1455,214 @@ export const designCringeCaseStudy = {
           items: [
             'Работает на designecringe.com.',
             'Следующая задача — калибровка: олдскульный сайт пока может набрать меньше, чем современный, который лучше прячет свои проблемы.',
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const dsPluginsCaseStudy = {
+  slug: 'ds-plugins',
+  backHref: '/ai-projects',
+  hero: {
+    title: 'Плагины для дизайн-системы',
+    description:
+      'Три плагина для Figma, которые снимают рутину с поддержки дизайн-системы: отслеживают изменения компонентов, ведут версии и передают токены в разработку в понятном ей формате.',
+    meta: 'Внутренние инструменты / Дизайн-системы',
+    image: {
+      src: dsPluginsCover,
+      alt: 'Окна плагинов DS Changelog, DS Manager и DS Foundation Export',
+    },
+    stats: [
+      { value: '3', label: 'плагина — от идеи до рабочей сборки' },
+      { value: '550+', label: 'автотестов' },
+      { value: 'до $12,6K', label: 'в год потенциальной экономии на софте' },
+    ],
+    points: ['Figma Plugin API', 'React', 'TypeScript'],
+  },
+  sections: [
+    {
+      id: 'problem',
+      navLabel: 'Проблема',
+      title: 'Проблема',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Когда компонент дизайн-системы меняется, фронтенд и QA узнают об этом поздно и не полностью. Пропал вариант, цвет переехал на другой токен — и кто-то узнаёт об этом из бага.',
+            'Описывать каждую правку руками долго и ненадёжно. Платные инструменты закрывают куски этой задачи, но ни один не совпадает с тем, как наша команда реально передаёт работу.',
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'Чего я хотела от инструментов',
+              items: [
+                'Замечать каждое изменение компонента, а не только те, что помнит дизайнер',
+                'Чётко говорить, какие правки сломают код',
+                'Собирать сообщение, документацию и JSON без перепечатывания',
+                'Передавать переменные и текстовые стили в разработку в структурированном виде',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'changelog',
+      navLabel: 'Changelog',
+      title: 'DS Changelog',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Первый плагин фиксирует базовое состояние компонента и потом сравнивает с ним текущее. Свойства, варианты, размеры, auto layout, заливки, типографика, привязки токенов и дерево слоёв — всего тринадцать областей.',
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: dsPluginsChangelog,
+            alt: 'DS Changelog: выбранные компоненты, список изменений и превью сообщения в Slack',
+          },
+        },
+        {
+          type: 'insightCards',
+          heading: 'Каждое изменение получает одну из четырёх пометок',
+          items: [
+            'Ломающее — сломает существующий код, фронтенд реагирует обязательно.',
+            'Визуальное — меняется внешний вид, QA перепроверяет.',
+            'Дополнение — обратно совместимо, к сведению.',
+            'Документация — не влияет ни на код, ни на пиксели.',
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Решение остаётся за дизайнером',
+              paragraphs: [
+                'Список — черновик, а не приговор. Клик по изменению перематывает холст к нужному слою, ложные срабатывания можно снять, для разработки — оставить комментарий. На выходе сообщение для Slack или в Markdown, JSON-спецификация и страница с изменениями прямо в Figma-файле.',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'manager',
+      navLabel: 'Manager',
+      title: 'DS Manager',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Первая версия каждый запуск воспринимала как новый старт. В реальной работе компонент живёт годами, поэтому второй плагин построен вокруг его жизненного цикла: постоянная запись, версии, проверка и утверждение.',
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: dsPluginsManager,
+            alt: 'DS Manager: каталог компонентов, карточка компонента с версиями и отчёт проверки',
+          },
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'Что он добавляет',
+              items: [
+                'Каталог всех компонентов файла с версиями и статусами',
+                'Базовую, утверждённую и опубликованную версии с историей',
+                'Номер следующей версии, предложенный по типу изменений',
+                'Проверку: нет состояния фокуса, маленькая зона нажатия, отступы вне сетки',
+                'Пакетную обработку и экспорт из шести файлов на каждый компонент',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: dsPluginsManagerBatch,
+            alt: 'DS Manager: история версий, дифф документации и пакетная выгрузка',
+          },
+        },
+        {
+          type: 'noteCard',
+          title: 'Маленькие правила, которые важны',
+          items: [
+            'Обновление документации показывается диффом до сохранения.',
+            'Текст, который дизайнер поправил руками, никогда не перезаписывается.',
+            'Догадка подписана как догадка — «проверьте» вместо ложной ошибки.',
+          ],
+        },
+      ],
+    },
+    {
+      id: 'foundation',
+      navLabel: 'Основы',
+      title: 'DS Foundation Export',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Третий плагин отвечает за базовый слой: коллекции переменных и режимы, текстовые стили, тени и иконки. Он раскладывает переменные по категориям, подсвечивает то, что сломает генерацию токенов, и выгружает ровно то, что прошло проверку.',
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: dsPluginsFoundation,
+            alt: 'DS Foundation Export: источники, проверка с ошибками и предупреждениями, итог выгрузки',
+          },
+        },
+      ],
+    },
+    {
+      id: 'process',
+      navLabel: 'Процесс',
+      title: 'Как я это собирала',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Сначала спецификация, потом код',
+              paragraphs: [
+                'С AI я работала так же, как с разработчиком: подробная спецификация с пронумерованными разделами, этапами и критериями готовности. Спека для DS Manager вышла больше чем на тысячу строк, и код до сих пор ссылается на её разделы.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Тесты как страховка',
+              paragraphs: [
+                'У каждого плагина есть тесты на основную логику — всего больше 550. Именно они позволили пересобрать второй плагин примерно за два дня и не сломать первый.',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'result',
+      navLabel: 'Результат',
+      title: 'Результат',
+      parts: [
+        {
+          type: 'noteCard',
+          title: 'Где это сейчас',
+          items: [
+            'Три рабочих плагина, собранных и готовых к установке в Figma.',
+            'До $12,6K в год потенциальной экономии на платных инструментах для дизайн-системы.',
+            'Дальше — публикация в Figma Community и подключение выгрузки к бэкенду команды.',
           ],
         },
       ],

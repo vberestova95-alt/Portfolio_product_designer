@@ -6,9 +6,11 @@ import React, { useEffect, useRef, useState } from 'react';
  * language — the two files are still in assets/ if that direction comes back.
  */
 import editorialObject from '../assets/editorial-object.webp';
-import logoClaudeCode from '../assets/ai-logos/claude-code.svg';
+import logoChatGpt from '../assets/ai-logos/chatgpt.svg';
+import logoClaude from '../assets/ai-logos/claude.svg';
 import logoCodex from '../assets/ai-logos/codex.svg';
 import logoFigma from '../assets/ai-logos/figma.svg';
+import logoGithub from '../assets/ai-logos/github.svg';
 import logoLuma from '../assets/ai-logos/luma.svg';
 import logoMidjourney from '../assets/ai-logos/midjourney.svg';
 import logoRecraft from '../assets/ai-logos/recraft.svg';
@@ -20,6 +22,7 @@ import { WorkCard } from '../components/WorkCard.jsx';
 import { useLanguage, useUi } from '../i18n/LanguageContext.jsx';
 import { attachHeroObject } from '../lib/heroObject.js';
 import { attachLogoPool } from '../lib/logoPool.js';
+import { attachPinnedHeader } from '../lib/pinnedHeader.js';
 import { SHOW_OBJECT_GRAPHICS } from '../lib/siteGraphics.js';
 import { attachShotTrail } from '../lib/shotTrail.js';
 import { attachWorkStack } from '../lib/workStack.js';
@@ -94,7 +97,7 @@ function HeroTitle() {
 /*
  * The blue practice card. Its floor is a pool of logo cubes that tumble in as
  * the card scrolls into view and can be pushed around with the pointer — see
- * lib/logoPool.js. Six carry the AI tools' logos, one says "Projects", the rest
+ * lib/logoPool.js. Eight carry the AI tools' logos, one says "Projects", the rest
  * are blank tiles.
  *
  * The whole card links to the AI projects page, like the concept teaser beside
@@ -108,8 +111,10 @@ function HeroTitle() {
 // The tools behind the AI projects (icons: LobeHub Icons, MIT). The rest of
 // the fourteen stay blank tiles.
 const AI_TOOL_LOGOS = [
-  logoClaudeCode,
+  logoClaude,
   logoCodex,
+  logoChatGpt,
+  logoGithub,
   logoRecraft,
   logoFigma,
   logoMidjourney,
@@ -272,13 +277,23 @@ function heroCubeSize(width) {
   return Math.min(88, Math.max(64, width * 0.055));
 }
 
+/*
+ * The concept card. On desktop the six shots are scattered and revealed on
+ * hover (lib/shotTrail.js). Up to 1240px the card shows two of them — the
+ * first and the fourth — large, under the link, running out past its floor
+ * (.concept-teaser--pair in global.css).
+ */
 function ConceptTeaser({ teaser }) {
   const trailRef = useRef(null);
 
   useEffect(() => attachShotTrail(trailRef.current), []);
 
   return (
-    <article className="editorial-card concept-teaser" ref={trailRef} data-reveal>
+    <article
+      className="editorial-card concept-teaser concept-teaser--pair"
+      ref={trailRef}
+      data-reveal
+    >
       <a className="concept-teaser__hit" href={teaser.href}>
         <span className="visually-hidden">{teaser.linkLabel}</span>
       </a>
@@ -326,15 +341,23 @@ export function HomePage({
   useEffect(() => attachHeroObject(heroRef.current, objectRef.current), []);
   useEffect(() => attachWorkStack(stackRef.current), []);
 
+  // The hero's top row comes back as a bar on scroll up, as on every page.
+  const topRef = useRef(null);
+  useEffect(() => attachPinnedHeader(topRef.current), []);
+
   return (
     <div className="home-page">
       <section className="hero-shell">
         <div className="home-shell hero-panel" ref={heroRef}>
-          <div className="hero-panel__top" data-pool-ceiling>
+          <div className="hero-panel__top" ref={topRef} data-pool-ceiling>
             <a className="hero-panel__brand" href="/" onClick={handleBrandClick}>
               <BrandLogo name={profile.name} />
             </a>
-            <NavMenu contacts={profile.contacts} />
+            <NavMenu
+              contacts={profile.contacts}
+              email={profile.email}
+              telegram={profile.telegram}
+            />
           </div>
 
           {/*

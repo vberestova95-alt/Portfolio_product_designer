@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { SiteFooter } from '../components/SiteFooter.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
 import { WorkCard } from '../components/WorkCard.jsx';
+import { useUi } from '../i18n/LanguageContext.jsx';
 import { attachWorkStack } from '../lib/workStack.js';
 
 /*
@@ -11,6 +12,7 @@ import { attachWorkStack } from '../lib/workStack.js';
  * than a separate gallery.
  */
 export function AiProjectsPage({ archive, profile }) {
+  const text = useUi().case;
   const stackRef = useRef(null);
   const { intro, items } = archive;
 
@@ -22,13 +24,13 @@ export function AiProjectsPage({ archive, profile }) {
         {profile ? <SiteHeader profile={profile} /> : null}
 
         <section className="concept-hero">
-          <p className="case-eyebrow">{intro.eyebrow}</p>
+          {/* The card that leads here is on the home page; going back returns to it. */}
+          <a className="case-back-link concept-hero__back" href="/">
+            <span aria-hidden="true">←</span>
+            <span>{text.back}</span>
+          </a>
           <h1>{intro.title}</h1>
           <p className="concept-hero__description">{intro.description}</p>
-
-          <div className="concept-hero__footer">
-            <span>{intro.meta}</span>
-          </div>
         </section>
 
         <div className="work-stack" ref={stackRef}>

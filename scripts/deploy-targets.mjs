@@ -31,6 +31,7 @@ const portfolio = {
     'design-concepts',
     'design-cringe',
     'ds-plugins',
+    'experience',
     'iquoto',
     'kokoc-group',
     'yandex-turkey',

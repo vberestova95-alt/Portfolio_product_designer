@@ -3,6 +3,8 @@ import betboomFeaturedMobile from '../assets/cases/betboom-featured-mobile.png';
 import iquotoDesktop from '../assets/cases/iquoto-desktop.png';
 import kokocMainDesktop from '../assets/cases/kokoc-main-desktop.png';
 import petTrackerCoverScreens from '../assets/cases/pet-tracker-cover-screens.png';
+import dsPluginsCard from '../assets/cases/ds-plugins-card.webp';
+import designCringeCard from '../assets/cases/design-cringe-card.webp';
 import yandexCoverScreens from '../assets/cases/yandex-cover-screens.png';
 import conceptBeauty from '../assets/concepts/beauty-commerce.png';
 import conceptEdtechTutorMarketplace from '../assets/concepts/edtech-tutor-marketplace.png';
@@ -60,6 +62,7 @@ export const profile = {
     src: profilePhoto,
     alt: 'Portrait of Vladislava Berestova',
   },
+  email: 'vberestova95@gmail.com',
   contacts: [
     { label: 'Dribbble', href: 'https://dribbble.com/Meoosh' },
     {
@@ -205,6 +208,64 @@ export const designConceptTeaser = {
     { src: conceptBeauty, alt: 'Concept shot of a beauty commerce product page' },
     { src: conceptTravelBooking, alt: 'Concept shot of a stay booking interface' },
     { src: conceptMedical, alt: 'Concept shot of a clinic booking app' },
+  ],
+};
+
+/*
+ * The page behind the blue practice card: projects designed and built end to
+ * end with AI tools. Cards share the home page's work-card format; the pet
+ * tracker is the same case as in the main list.
+ */
+export const aiProjects = {
+  intro: {
+    eyebrow: 'AI Projects',
+    title: 'Products I designed and built with AI',
+    description:
+      'Side projects and internal tools where I took the whole path myself — from the problem and the spec to working code and a launch. AI writes code with me; product decisions stay mine.',
+  },
+  items: [
+    {
+      id: 'ds-plugins',
+      title: 'Design System Plugins',
+      category: 'Figma Plugins / Design Systems',
+      description:
+        'Three Figma plugins that track component changes, version them and hand tokens to development — without retyping anything.',
+      metrics: ['3 plugins', '550+ tests'],
+      surface: 'blue',
+      image: {
+        src: dsPluginsCard,
+        alt: 'Windows of three design system plugins for Figma',
+      },
+      href: '/ds-plugins',
+    },
+    {
+      id: 'cat-app',
+      title: 'Pet Diabetes Tracker',
+      category: 'Pet Health / Side Project',
+      description:
+        'An injection tracker for a cat with diabetes, built around the pet’s photo so the whole household can use it without explanation.',
+      metrics: ['Beta', 'Care routine UX'],
+      surface: 'pet',
+      image: {
+        src: petTrackerCoverScreens,
+        alt: 'Three mobile screens from the Pet Injection Tracker',
+      },
+      href: '/cat-app',
+    },
+    {
+      id: 'design-cringe',
+      title: 'Design Cringe-meter',
+      category: 'Web Tool / Design Review',
+      description:
+        'Paste a link, get a cringe percentage and a list of exactly what is wrong — measured on the rendered page by 29 rules.',
+      metrics: ['29 rules', 'Live'],
+      surface: 'lavender',
+      image: {
+        src: designCringeCard,
+        alt: 'Cringe-meter result with a 73% score',
+      },
+      href: '/design-cringe',
+    },
   ],
 };
 

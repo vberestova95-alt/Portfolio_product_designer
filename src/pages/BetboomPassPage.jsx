@@ -703,7 +703,8 @@ export function CaseStudyPage({
                 {showSectionBackLink ? (
                   <a className="case-back-link case-section-back" href={caseStudy.backHref}>
                     <span aria-hidden="true">←</span>
-                    <span>{text.allWork}</span>
+                    {/* Cases opened from a listing other than home lead back to it. */}
+                    <span>{caseStudy.backHref === '/' ? text.allWork : text.back}</span>
                   </a>
                 ) : null}
               </div>

@@ -46,9 +46,9 @@ export function attachShotTrail(container) {
 
   const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const isCoarsePointer = window.matchMedia?.('(pointer: coarse)').matches;
-  // Below 900px there is no hover to hand the reveal around, so the shots are
-  // parked in the corner and shown outright by CSS.
-  const isNarrow = window.matchMedia?.('(max-width: 900px)').matches;
+  // Up to 1240px the card shows a fixed pair of shots instead (see
+  // .concept-teaser--pair), so there is no reveal to hand around.
+  const isNarrow = window.matchMedia?.('(max-width: 1240px)').matches;
 
   if (isCoarsePointer || isNarrow) {
     container.classList.add('is-static');

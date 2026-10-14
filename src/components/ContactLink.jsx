@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function ContactLink({ contact, className, onClick }) {
+export function ContactLink({ contact, className, onClick, children }) {
   const isExternal = contact.href.startsWith('http');
   const isCv = contact.label === 'CV';
 
@@ -13,7 +13,7 @@ export function ContactLink({ contact, className, onClick }) {
       download={isCv ? 'Vladislava-Berestova-CV.pdf' : undefined}
       onClick={onClick}
     >
-      {contact.label}
+      {children ?? contact.label}
     </a>
   );
 }

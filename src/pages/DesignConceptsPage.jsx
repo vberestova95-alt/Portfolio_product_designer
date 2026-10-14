@@ -46,6 +46,7 @@ function Lightbox({ src, alt, onClose }) {
 }
 
 export function DesignConceptsPage({ archive, profile }) {
+  const text = useUi().case;
   const [lightbox, setLightbox] = useState(null);
   const { intro, shots } = archive;
 
@@ -65,12 +66,14 @@ export function DesignConceptsPage({ archive, profile }) {
         {profile ? <SiteHeader profile={profile} /> : null}
 
         <section className="concept-hero">
-          <p className="case-eyebrow">{intro.eyebrow}</p>
+          <a className="case-back-link concept-hero__back" href="/">
+            <span aria-hidden="true">←</span>
+            <span>{text.back}</span>
+          </a>
           <h1>{intro.title}</h1>
           <p className="concept-hero__description">{intro.description}</p>
 
           <div className="concept-hero__footer">
-            <span>{intro.meta}</span>
             <a href={intro.href} target="_blank" rel="noopener noreferrer">
               {intro.hrefLabel}
               <span aria-hidden="true"> →</span>

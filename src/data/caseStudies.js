@@ -1,8 +1,12 @@
+import dsPluginsCover from '../assets/cases/ds-plugins-hero.webp';
+import dsPluginsChangelog from '../assets/cases/ds-plugins-changelog.webp';
+import dsPluginsManager from '../assets/cases/ds-plugins-manager.webp';
+import dsPluginsManagerBatch from '../assets/cases/ds-plugins-manager-batch.webp';
+import dsPluginsFoundation from '../assets/cases/ds-plugins-foundation.webp';
 import designCringeScore from '../assets/cases/design-cringe-score.jpg';
 import designCringeLanding from '../assets/cases/design-cringe-landing.jpg';
 import designCringeCategories from '../assets/cases/design-cringe-categories.jpg';
 import designCringeIssues from '../assets/cases/design-cringe-issues.jpg';
-import designCringeClean from '../assets/cases/design-cringe-clean.jpg';
 import designCringeMobileBad from '../assets/cases/design-cringe-mobile-bad.jpg';
 import designCringeMobileClean from '../assets/cases/design-cringe-mobile-clean.jpg';
 import redesignVideo from '../assets/redesign-cards.mp4';
@@ -1451,6 +1455,214 @@ export const designCringeCaseStudy = {
           items: [
             'Live at designecringe.com.',
             'Calibration is the next job: an old-school site can still score lower than a modern one that hides its problems better.',
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const dsPluginsCaseStudy = {
+  slug: 'ds-plugins',
+  backHref: '/ai-projects',
+  hero: {
+    title: 'Design System Plugins for Figma',
+    description:
+      'Three Figma plugins that take the routine out of running a design system: tracking component changes, versioning them, and handing tokens to development in a format it can use.',
+    meta: 'Internal tooling / Design systems',
+    image: {
+      src: dsPluginsCover,
+      alt: 'DS Changelog, DS Manager and DS Foundation Export plugin windows',
+    },
+    stats: [
+      { value: '3', label: 'plugins, from idea to working build' },
+      { value: '550+', label: 'automated tests' },
+      { value: 'up to $12.6K', label: 'a year in potential software savings' },
+    ],
+    points: ['Figma Plugin API', 'React', 'TypeScript'],
+  },
+  sections: [
+    {
+      id: 'problem',
+      navLabel: 'Problem',
+      title: 'The Problem',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'When a component in the design system changes, frontend and QA find out late and only in part. A variant disappears, a colour moves to another token — and someone learns about it from a bug.',
+            'Describing every change by hand is slow and unreliable. Paid tools cover pieces of this, but none of them fit how our team actually hands work over.',
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'What I wanted the tools to do',
+              items: [
+                'Notice every change to a component — not just the ones the designer remembers',
+                'Say clearly which changes will break code',
+                'Produce the message, the docs and the JSON without retyping anything',
+                'Get variables and text styles to developers in a structured format',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'changelog',
+      navLabel: 'Changelog',
+      title: 'DS Changelog',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'The first plugin records a baseline of a component and later compares the current state against it. Properties, variants, sizes, auto layout, fills, typography, token bindings and the layer tree — thirteen areas in total.',
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: dsPluginsChangelog,
+            alt: 'DS Changelog: selected components, the list of changes and a Slack message preview',
+          },
+        },
+        {
+          type: 'insightCards',
+          heading: 'Every change gets one of four marks',
+          items: [
+            'Breaking — will break existing code, frontend must react.',
+            'Visual — the look changes, QA rechecks.',
+            'Addition — backward compatible, for information.',
+            'Docs — touches neither code nor pixels.',
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'The designer stays in control',
+              paragraphs: [
+                'The list is a draft, not a verdict. Clicking a change jumps to the layer on the canvas; false positives can be unchecked and comments added for developers. The result goes out as a Slack or Markdown message, a JSON spec and a changelog page right in the Figma file.',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'manager',
+      navLabel: 'Manager',
+      title: 'DS Manager',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'The first version treated every run as a new start. In real work a component lives for years, so the second plugin is built around its lifecycle: a permanent record, versions, review and approval.',
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: dsPluginsManager,
+            alt: 'DS Manager: component catalog, component card with versions and the validation report',
+          },
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'What it adds',
+              items: [
+                'A catalog of every component in the file, with versions and statuses',
+                'Base, approved and published versions, with history',
+                'The next version number suggested from the kind of changes',
+                'A validation pass: missing focus state, small hit areas, spacing off the grid',
+                'Batch processing and a six-file export package per component',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: dsPluginsManagerBatch,
+            alt: 'DS Manager: version history, documentation diff and batch export',
+          },
+        },
+        {
+          type: 'noteCard',
+          title: 'Small rules that matter',
+          items: [
+            'Documentation updates are shown as a diff before saving.',
+            'Text the designer edited by hand is never overwritten.',
+            'A guess is labelled as a guess — "please check" instead of a false error.',
+          ],
+        },
+      ],
+    },
+    {
+      id: 'foundation',
+      navLabel: 'Foundations',
+      title: 'DS Foundation Export',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'The third plugin handles the base layer: variable collections and modes, text styles, shadows and icons. It sorts each variable into a category, flags what will break token generation, and exports exactly what was reviewed.',
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: dsPluginsFoundation,
+            alt: 'DS Foundation Export: sources, review with errors and warnings, export summary',
+          },
+        },
+      ],
+    },
+    {
+      id: 'process',
+      navLabel: 'Process',
+      title: 'How I Built It',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Spec first, code second',
+              paragraphs: [
+                'I worked with AI the way I would with a developer: a detailed spec with numbered sections, stages and acceptance criteria. The spec for DS Manager ran to over a thousand lines, and the code still refers back to its sections.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Tests as a safety net',
+              paragraphs: [
+                'Every plugin has tests on its core logic — over 550 in total. That is what made a full rebuild of the second plugin in about two days possible without breaking the first one.',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'result',
+      navLabel: 'Result',
+      title: 'Result',
+      parts: [
+        {
+          type: 'noteCard',
+          title: 'Where it is now',
+          items: [
+            'Three working plugins, built and ready to install in Figma.',
+            'Up to $12.6K a year in potential savings on paid design system tooling.',
+            'Next: publishing to Figma Community and connecting the export to the team’s backend.',
           ],
         },
       ],
