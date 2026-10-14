@@ -1433,7 +1433,7 @@ html[lang='ru'] .error-page__visual > span {
 }
 
 /*
- * The cards stack at every width. `--stack-top` is set from script only for a
+ * The cards stack above phone widths. `--stack-top` is set from script only for a
  * card taller than the screen, which has to pin by its bottom edge instead —
  * see lib/workStack.js.
  */
@@ -1452,14 +1452,17 @@ html[lang='ru'] .error-page__visual > span {
   margin-top: -8px;
 }
 
-/* Tighter steps on a phone, where every pixel of peek comes off the card. */
+/* A regular list on phones keeps cards of different heights from covering each other. */
 @media (max-width: 640px) {
   .work-stack {
-    padding-bottom: 10vh;
+    gap: 24px;
+    padding-bottom: 0;
   }
 
   .work-card {
-    top: var(--stack-top, calc(12px + (var(--stack-index) * 8px)));
+    position: relative;
+    top: auto;
+    z-index: auto;
   }
 }
 
@@ -3736,7 +3739,7 @@ ol.case-bullet-list li::before {
   }
 
   .work-card:not(:first-child) {
-    margin-top: 24px;
+    margin-top: 0;
   }
 
   .work-card__meta {

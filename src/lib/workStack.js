@@ -29,7 +29,13 @@ export function attachWorkStack(stack) {
     stack.querySelectorAll('.work-card').forEach((card) => {
       // Reset first, so the natural offset is read rather than the last override.
       card.style.removeProperty('--stack-top');
-      const natural = parseFloat(getComputedStyle(card).top) || 0;
+      const style = getComputedStyle(card);
+
+      if (style.position !== 'sticky') {
+        return;
+      }
+
+      const natural = parseFloat(style.top) || 0;
       const fit = viewport - card.offsetHeight - BOTTOM_CLEARANCE;
 
       if (fit < natural) {

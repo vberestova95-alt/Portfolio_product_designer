@@ -97,8 +97,7 @@ function HeroTitle() {
 /*
  * The blue practice card. Its floor is a pool of logo cubes that tumble in as
  * the card scrolls into view and can be pushed around with the pointer — see
- * lib/logoPool.js. Eight carry the AI tools' logos, one says "Projects", the rest
- * are blank tiles.
+ * lib/logoPool.js. Each one carries an AI tool's logo.
  *
  * The whole card links to the AI projects page, like the concept teaser beside
  * it. A click that lands on a cube is play, not navigation — the cube gets its
@@ -108,8 +107,7 @@ function HeroTitle() {
  * Kick every cube out through the top and the card says so, with a way to
  * bring them back.
  */
-// The tools behind the AI projects (icons: LobeHub Icons, MIT). The rest of
-// the fourteen stay blank tiles.
+// The tools behind the AI projects (icons: LobeHub Icons, MIT), one cube each.
 const AI_TOOL_LOGOS = [
   logoClaude,
   logoCodex,
@@ -120,13 +118,8 @@ const AI_TOOL_LOGOS = [
   logoMidjourney,
   logoLuma,
 ];
-const LOGO_CUBES = Array.from({ length: 14 }, (_, index) => ({
-  id: `cube-${index}`,
-  logo: AI_TOOL_LOGOS[index] ?? null,
-}));
+const LOGO_CUBES = AI_TOOL_LOGOS.map((logo, index) => ({ id: `cube-${index}`, logo }));
 const AI_PROJECTS_HREF = '/ai-projects';
-// One cube in the pile carries the word "Projects", upright so it stays readable.
-const PROJECTS_CUBE = AI_TOOL_LOGOS.length;
 
 function isOnCube(pool, event) {
   if (!pool) {
@@ -211,23 +204,12 @@ function PracticeCard() {
       </h3>
 
       <div className="logo-pool" ref={poolRef} aria-hidden="true">
-        {LOGO_CUBES.map((cube, index) =>
-          index === PROJECTS_CUBE ? (
-            <span key={cube.id} className="logo-cube logo-cube--label" data-cube data-upright>
-              Projects
-            </span>
-          ) : (
-            <span
-              key={cube.id}
-              className="logo-cube"
-              data-cube
-              // Logos land the right way up, like the photos and labels.
-              data-upright={cube.logo ? '' : undefined}
-            >
-              {cube.logo ? <img src={cube.logo} alt="" draggable={false} /> : null}
-            </span>
-          ),
-        )}
+        {LOGO_CUBES.map((cube) => (
+          // Logos land the right way up, like the photos.
+          <span key={cube.id} className="logo-cube" data-cube data-upright>
+            <img src={cube.logo} alt="" draggable={false} />
+          </span>
+        ))}
       </div>
 
       {isCleared ? (
@@ -253,8 +235,8 @@ function PracticeCard() {
 
 /*
  * A few of the same cubes in the hero, resting on the divider above the intro
- * row ([data-pool-floor] on .hero-panel__intro). Each round four of the five
- * carry film photos from the photo hobby, the fifth says "About me", all dealt at random from assets/film
+ * row ([data-pool-floor] on .hero-panel__intro). Each round all four carry film
+ * photos from the photo hobby, dealt at random from assets/film
  * (square 360px crops); clear them all and a button deals a new round.
  */
 const FILM_PHOTO_FILES = import.meta.glob('../assets/film/*.jpg', {
@@ -269,7 +251,7 @@ const FILM_PHOTOS_OF_ME = Object.entries(FILM_PHOTO_FILES)
 
 function heroCubeSize(width) {
   // Near desktop size on a phone too, with a cube's worth of slack left in the
-  // row so all five settle side by side rather than one perched on another.
+  // row so all four settle side by side rather than one perched on another.
   if (width <= 640) {
     return Math.min(72, width / 6);
   }
@@ -379,14 +361,13 @@ export function HomePage({
           </div>
 
           <CubePool
-            count={5}
+            count={4}
             cubeSize={heroCubeSize}
             className="hero-panel__cubes"
             photos={FILM_PHOTOS}
             photoCount={4}
             featured={FILM_PHOTOS_OF_ME}
             featuredCount={2}
-            labels={['About me']}
             restoreLabel={text.practiceCleared.restore}
           />
 

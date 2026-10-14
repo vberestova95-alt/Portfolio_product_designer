@@ -4,9 +4,8 @@ import { SHOW_OBJECT_GRAPHICS } from '../lib/siteGraphics.js';
 import { ContactLink } from './ContactLink.jsx';
 import { CubePool } from './CubePool.jsx';
 
-// Five cubes in the panel's own ink, lying on its bottom edge, one of them
-// saying "Contacts". The width is
-// the tray's — half the panel on desktop, all of it when stacked.
+// Four blank cubes in the panel's own ink, lying on its bottom edge. The width
+// is the tray's — half the panel on desktop, all of it when stacked.
 function footerCubeSize(width) {
   // Never wider than one row of five allows, so none lands on the pills.
   return Math.min(92, width / 6, Math.max(72, width * 0.11));
@@ -24,10 +23,9 @@ export function SiteFooter({ profile }) {
         {/* Their own tray, so the pile lands clear of the copy and the pills. */}
         <div className="home-footer__cubes">
           <CubePool
-            count={5}
+            count={4}
             cubeSize={footerCubeSize}
             className="logo-pool--ink"
-            labels={['Contacts']}
           />
         </div>
 
