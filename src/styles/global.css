@@ -113,10 +113,9 @@ button {
 .error-page__topline,
 .error-page__footer {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   line-height: 1.4;
   color: var(--inverse-soft);
@@ -131,8 +130,6 @@ button {
 
 .error-page__eyebrow {
   margin: 0 0 20px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   color: var(--inverse-soft);
 }
@@ -270,6 +267,22 @@ button {
   margin: 0 auto;
 }
 
+/*
+ * The "v.b." mark, as on the photo portfolio. A logo, not a text accent, so it
+ * keeps its italic serif in both languages. It sets its own case and tracking
+ * because every header it sits in is an uppercase, tracked caps row.
+ */
+.brand-logo {
+  display: block;
+  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .serif-accent {
   font-family: 'Instrument Serif', serif;
   font-style: italic;
@@ -277,10 +290,9 @@ button {
 }
 
 /*
- * Russian version: the pairing from the photo portfolio — Inter for the text,
- * Cormorant Garamond for the serif accents. Instrument Serif and Manrope's
- * Cyrillic did not sit well together, and Instrument Serif has no Cyrillic at
- * all. The English version keeps its own pair.
+ * Russian version: one face throughout — Inter, with no serif or italic
+ * accents. Instrument Serif has no Cyrillic, and a second face as a device read
+ * as noise next to Inter. The English version keeps its own pair.
  */
 html[lang='ru'] body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -294,8 +306,9 @@ html[lang='ru'] :is(h1, h2, h3, h4) {
 
 html[lang='ru'] .serif-accent,
 html[lang='ru'] .error-page__visual > span {
-  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
-  font-weight: 300;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
 }
 
 .section {
@@ -322,8 +335,6 @@ html[lang='ru'] .error-page__visual > span {
 
 .section-label {
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   line-height: 1.4;
   color: var(--ink-faint);
@@ -518,8 +529,6 @@ html[lang='ru'] .error-page__visual > span {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   line-height: 1.4;
   color: rgba(247, 248, 252, 0.72);
@@ -563,15 +572,15 @@ html[lang='ru'] .error-page__visual > span {
 }
 
 /*
- * One ruled row, every item hung from the same top edge: the portrait and the
- * two summary paragraphs as narrow columns.
+ * One ruled row, both summary paragraphs hung from the same top edge. The
+ * cubes, film photos among them, rest on its rule (see CubePool).
  */
 .hero-panel__intro {
   --lead-size: clamp(15px, 1.1vw, 18px);
 
   grid-area: intro;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: start;
   gap: clamp(20px, 2.4vw, 44px);
   padding-top: 20px;
@@ -621,27 +630,11 @@ html[lang='ru'] .error-page__visual > span {
   display: none;
 }
 
-/*
- * Set to the pills' size on purpose. At the row's inherited 12px the caps sat
- * on a different optical centre than the 14px caps inside the pills — the boxes
- * lined up but the lettering did not. Same size, same cap height, one line. It
- * also carries the full ink of the two, being the name rather than a link.
- */
+/* Carries the "v.b." logo (components/BrandLogo.jsx), in full ink. */
 .hero-panel__brand {
   font-size: 14px;
   color: var(--inverse);
   transition: opacity 160ms ease;
-}
-
-/*
- * letter-spacing inherits as a computed length, not as a ratio. Both of these
- * set their own 14px but were carrying the 12px row's 1.44px, which works out
- * to 0.103em — against the 0.12em every other caps label on the site uses.
- * Re-stating the token resolves it against their own size.
- */
-.hero-panel__brand,
-.hero-panel__top .contact-link {
-  letter-spacing: var(--tracking-caps);
 }
 
 .hero-panel__brand:hover {
@@ -693,7 +686,6 @@ html[lang='ru'] .error-page__visual > span {
   font: inherit;
   font-size: 13px;
   line-height: 1;
-  letter-spacing: var(--tracking-caps);
   opacity: 0.68;
   cursor: pointer;
   transition:
@@ -726,36 +718,6 @@ html[lang='ru'] .error-page__visual > span {
   align-items: center;
   padding-top: clamp(18px, 1.8vw, 26px);
   border-top: 1px solid var(--inverse-line);
-}
-
-/*
- * A soft-cornered landscape card, on the same radius scale as the media below.
- * Its top edge is dropped to the cap line of the first line of text rather than
- * the top of the line box — Manrope's caps start 0.42em down from it, so a card
- * flush with the box reads as sitting too high.
- */
-.hero-panel__portrait {
-  width: clamp(120px, 10vw, 168px);
-  aspect-ratio: 4 / 3;
-  margin-top: calc(var(--lead-size) * 0.42);
-  overflow: hidden;
-  border-radius: var(--r-media);
-  border: 1px solid rgba(247, 248, 252, 0.32);
-}
-
-/*
- * The source is a 3:4 portrait, so a landscape cover-fit shows the full frame
- * width and the face ends up tiny. These numbers frame the crop on the face
- * instead: the band starts 36% down the frame, and the zoom with the matching
- * shift centres the head and shoulders in the card. The shift has to track the
- * scale — it is 0.073 of it, the face's offset from the frame centre.
- */
-.hero-panel__portrait img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 36%;
-  transform: translateX(10.6%) scale(1.45);
 }
 
 .hero-clients {
@@ -941,12 +903,11 @@ html[lang='ru'] .error-page__visual > span {
   align-items: baseline;
   gap: 16px;
   margin-bottom: 24px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  font-size: 12px;
+  /* The description's size, set back by colour alone. */
+  font-size: 18px;
   line-height: 1.4;
   color: inherit;
-  opacity: 0.72;
+  opacity: 0.68;
 }
 
 .work-card__body {
@@ -1369,8 +1330,6 @@ html[lang='ru'] .error-page__visual > span {
 
 .editorial-project__meta {
   margin: 0 0 12px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   line-height: 1.4;
   color: var(--ink-faint);
@@ -1417,9 +1376,8 @@ html[lang='ru'] .error-page__visual > span {
   animation: hero-shimmer 20s ease-in-out infinite alternate;
 }
 
-/* Above the cube pool, so cubes falling past the copy go behind it. */
-.editorial-card--blue.editorial-card--practice .editorial-card__title,
-.editorial-card--blue.editorial-card--practice .editorial-card__copy {
+/* Above the cube pool, so cubes falling past the heading go behind it. */
+.editorial-card--blue.editorial-card--practice .editorial-card__title {
   z-index: 2;
 }
 
@@ -1435,6 +1393,11 @@ html[lang='ru'] .error-page__visual > span {
   inset: 0;
   z-index: 1;
   pointer-events: none;
+}
+
+/* Hero cubes: over the intro row's layer, under the top bar (z-index 5). */
+.hero-panel__cubes {
+  z-index: 2;
 }
 
 .logo-cube {
@@ -1479,6 +1442,225 @@ html[lang='ru'] .error-page__visual > span {
 }
 
 /*
+ * The card is one link, like the concept teaser beside it. The hit area covers
+ * everything but stays transparent to the pointer play: the card still reads
+ * pointermove/pointerdown through it (lib/logoPool.js).
+ */
+.editorial-card--practice {
+  cursor: pointer;
+}
+
+.practice-card__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+
+.practice-card__hit:focus-visible {
+  outline: 2px solid var(--inverse);
+  outline-offset: -6px;
+}
+
+/* Same type and placement as .concept-teaser__footer, so the two links share a line. */
+.practice-card__footer {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  margin-top: auto;
+  padding-top: 24px;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+.practice-card__cta {
+  display: inline-flex;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--inverse);
+}
+
+.practice-card__cta span {
+  transition: transform 380ms cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+.editorial-card--practice:hover .practice-card__cta span {
+  transform: translateX(5px);
+}
+
+/*
+ * Footer cubes, in the panel's own ink: a shade lifted off #090d14 with a
+ * hairline edge, so they read as part of the surface rather than objects on it.
+ */
+.logo-pool--ink .logo-cube {
+  border-color: rgba(247, 248, 252, 0.1);
+  background: linear-gradient(150deg, #1b2230 0%, #0e131c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(247, 248, 252, 0.08),
+    0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+.logo-pool--ink .logo-cube:empty::before {
+  background: rgba(247, 248, 252, 0.06);
+}
+
+/*
+ * A word on a cube ("About me", "Projects", "Contacts"): set to the cube's
+ * size so it fits on two short lines at any scale, in the cube's ink.
+ */
+.logo-cube--label {
+  /* In cube units: a % padding would resolve against the pool's width. */
+  padding: calc(var(--cube-size) * 0.08);
+  color: #1a32c6;
+  font-size: calc(var(--cube-size) * 0.17);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-align: center;
+  user-select: none;
+}
+
+.logo-pool--ink .logo-cube--label {
+  color: var(--inverse);
+}
+
+/* Photo cubes in the hero: a square film frame filling the tile edge to edge. */
+.logo-cube--photo {
+  overflow: hidden;
+  border-color: rgba(247, 248, 252, 0.7);
+}
+
+.logo-cube.logo-cube--photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * Shown once every hero cube is out: centred across the panel, halfway down
+ * the space the cubes had (CubePool sets `top`). Same pill as the practice
+ * card's restore button.
+ */
+.cube-pool__restore {
+  position: absolute;
+  left: 50%;
+  z-index: 6;
+  padding: 12px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--inverse);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: background 200ms ease;
+  animation: cube-restore-in 600ms cubic-bezier(0.22, 0.8, 0.24, 1) both;
+}
+
+.cube-pool__restore:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.cube-pool__restore:focus-visible {
+  outline: 2px solid var(--inverse);
+  outline-offset: 3px;
+}
+
+@keyframes cube-restore-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 12px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cube-pool__restore {
+    animation: none;
+  }
+}
+
+/* Kicked out through the top — see checkEscapes() in lib/logoPool.js. */
+.logo-pool.is-active .logo-cube.is-gone {
+  opacity: 0;
+}
+
+/*
+ * The easter egg: every cube is gone. It takes the floor the pile had, above
+ * the hit area so its button is reachable, and leaves the link footer alone.
+ */
+.practice-card__cleared {
+  --cleared-pad: clamp(28px, 2.6vw, 44px);
+
+  position: absolute;
+  right: var(--cleared-pad);
+  bottom: calc(var(--cleared-pad) + 56px);
+  left: var(--cleared-pad);
+  z-index: 5;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  color: var(--inverse);
+  pointer-events: none;
+  animation: practice-cleared-in 700ms cubic-bezier(0.22, 0.8, 0.24, 1) both;
+}
+
+.practice-card__cleared-title {
+  margin: 0;
+  font-size: clamp(44px, 5vw, 76px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.practice-card__cleared-copy {
+  margin: 0;
+  max-width: 32ch;
+  font-size: 16px;
+  line-height: 1.5;
+  opacity: 0.86;
+}
+
+.practice-card__restore {
+  margin-top: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 200ms ease;
+}
+
+.practice-card__restore:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.practice-card__restore:focus-visible {
+  outline: 2px solid var(--inverse);
+  outline-offset: 3px;
+}
+
+@keyframes practice-cleared-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .practice-card__cleared {
+    animation: none;
+  }
+}
+
+/*
  * Three lines is the target for this heading. Two things get it there: the 12ch
  * cap above is dropped so the card itself is the measure (it was wrapping at
  * ~650px inside a 780px card), and the type ramp is a shade shallower than the
@@ -1489,10 +1671,6 @@ html[lang='ru'] .error-page__visual > span {
   max-width: none;
   margin-top: 17px;
   font-size: clamp(42px, 4.7vw, 82px);
-}
-
-.editorial-card--practice .editorial-card__copy {
-  max-width: 44ch;
 }
 
 .editorial-card__graphic {
@@ -1511,11 +1689,6 @@ html[lang='ru'] .error-page__visual > span {
 @media (max-width: 1240px) and (min-width: 901px) {
   .editorial-card__graphic {
     width: min(40%, clamp(270px, 27vw, 335px));
-  }
-
-  /* Tighter cap so the last line clears the artwork at the low end of the range. */
-  .editorial-card--practice .editorial-card__copy {
-    max-width: 40ch;
   }
 }
 
@@ -1764,6 +1937,20 @@ ol.case-bullet-list li::before {
   max-width: 62ch;
 }
 
+/*
+ * The cube tray: the empty right half of the panel, under the pills. Full
+ * height, so cubes drop in from the panel's top edge and leave through it.
+ */
+.home-footer__cubes {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 0;
+  overflow: hidden;
+}
+
 .home-footer__graphic {
   --object-angle: 146deg;
 
@@ -1821,6 +2008,16 @@ ol.case-bullet-list li::before {
     justify-self: start;
     margin-top: 4px;
   }
+
+  /* Stacked, there is no empty half — the tray spans the panel and gets a
+     strip of floor of its own under the pills. */
+  .home-footer__panel {
+    padding-bottom: calc(clamp(28px, 3vw, 48px) + 84px);
+  }
+
+  .home-footer__cubes {
+    left: 0;
+  }
 }
 
 /* Tablets: the stacked panel is short and wide, so the knot is pulled up out
@@ -1850,8 +2047,6 @@ ol.case-bullet-list li::before {
 }
 
 .site-topbar__brand {
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   line-height: 1.4;
   color: var(--ink-soft);
@@ -2219,7 +2414,7 @@ ol.case-bullet-list li::before {
 
 .case-hero__meta {
   margin: 0;
-  font-size: 14px;
+  font-size: clamp(17px, 1.5vw, 22px);
   line-height: 1.5;
 }
 
@@ -2408,8 +2603,6 @@ ol.case-bullet-list li::before {
 .case-site-link span {
   display: block;
   margin-bottom: 14px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   line-height: 1.4;
   color: var(--ink-faint);
@@ -2435,8 +2628,6 @@ ol.case-bullet-list li::before {
 .case-bento__label {
   display: block;
   margin-bottom: 14px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   line-height: 1.4;
   color: var(--ink-faint);
@@ -2807,6 +2998,11 @@ ol.case-bullet-list li::before {
     min-height: 360px;
   }
 
+  /* Stacked, the tags sit right on the heading — give them air. */
+  .work-card__meta {
+    margin-bottom: 36px;
+  }
+
   .work-card--yandex-news .work-card__visual > img,
   .work-card--cat-app .work-card__visual > img {
     object-position: center top;
@@ -2916,14 +3112,9 @@ ol.case-bullet-list li::before {
     max-width: none;
   }
 
-  /* Portrait and one column of copy; the second paragraph folds under the
-     first. */
+  /* One column of copy; the second paragraph folds under the first. */
   .hero-panel__intro {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .hero-panel__intro > :nth-child(n + 3) {
-    grid-column: 2;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   /* Wrapped rows read better packed left than stretched edge to edge. */
@@ -2945,6 +3136,11 @@ ol.case-bullet-list li::before {
   .home-footer__panel,
   .case-hero {
     padding: 20px;
+  }
+
+  /* Keeps the cube strip under the pills (see .home-footer__cubes). */
+  .home-footer__panel {
+    padding-bottom: calc(20px + 96px);
   }
 
   /*
@@ -3097,8 +3293,9 @@ ol.case-bullet-list li::before {
    * Shorter than the screen on purpose: the top of the first case card shows
    * under the panel, so it is clear at a glance that the page goes on.
    */
+  /* 40px under the headline — the same air as above the tags on a case card. */
   .hero-shell .hero-panel {
-    --hero-pad-bottom: 32px;
+    --hero-pad-bottom: 40px;
 
     width: 100%;
     min-height: min(78svh, 640px);
@@ -3109,11 +3306,8 @@ ol.case-bullet-list li::before {
   }
 
   /*
-   * On a phone the headline leads — the specialism reads first — and the
-   * portrait drops to sit beside the short experience paragraph, so the photo
-   * is tied to the person it describes rather than floating above the title.
-   * The paragraph keeps one left edge to the right of the photo rather than
-   * wrapping back under it.
+   * On a phone the headline leads — the specialism reads first — with the
+   * short experience paragraph above it, under the cubes' rule.
    */
   .hero-panel__grid {
     gap: 28px;
@@ -3161,18 +3355,112 @@ ol.case-bullet-list li::before {
     font-weight: inherit;
   }
 
-  /* Beside the first paragraph, so it takes the cap-line drop again. */
-  .hero-panel__portrait {
-    width: 104px;
-  }
-
   /* No room for the category beside the metrics here — the category goes. */
-  .work-card__meta {
-    margin-bottom: 18px;
-  }
-
   .work-card__kicker {
     display: none;
+  }
+
+  /*
+   * Case cards on a phone. Air above the tags (40px), the tags well apart from
+   * the heading (40px), the heading and description one unit (10px), and the
+   * cover is the card's floor: larger, centred, run out through the bottom edge
+   * with only its top three quarters on show — so no padding below it.
+   */
+  .work-card {
+    --cover-h: clamp(340px, 100vw, 440px);
+
+    padding: 40px 24px 0;
+  }
+
+  .work-card:not(:first-child) {
+    margin-top: 24px;
+  }
+
+  .work-card__meta {
+    margin-bottom: 40px;
+    font-size: 16px;
+  }
+
+  .work-card__description {
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* The whole card is the link (work-card__hit), so the label goes on a phone. */
+  .work-card__cta {
+    display: none;
+  }
+
+  .work-card__body {
+    gap: 24px;
+  }
+
+  .work-card .work-card__visual {
+    min-height: 0;
+    height: var(--cover-h);
+    margin-bottom: calc(var(--cover-h) * -0.25);
+    border-bottom: 0;
+    border-radius: var(--r-media) var(--r-media) 0 0;
+  }
+
+  /* Kept inside the visible three quarters. */
+  .work-card .work-card__mobile {
+    bottom: calc(var(--cover-h) * 0.25 + 14px);
+  }
+
+  /*
+   * The phone-screen covers carry a transparent band above the screens. Set
+   * half again as wide as the slot, the screens read at a useful size: the
+   * band is lifted out of view, the middle screen is centred and the outer
+   * two run off both sides equally.
+   */
+  .work-card--yandex-news .work-card__visual > img,
+  .work-card--cat-app .work-card__visual > img {
+    left: 50%;
+    width: 150%;
+    height: auto;
+    object-fit: initial;
+    transform: translate(-50%, -9%);
+  }
+
+  /*
+   * IQuoto keeps its original cover on a phone: the whole composition in its
+   * frame, not run out through the card's floor — so the card keeps its
+   * bottom padding.
+   */
+  .work-card--iquoto {
+    padding-bottom: 24px;
+  }
+
+  /*
+   * Fitted to the frame's width rather than covering it, so the white panel is
+   * never cut at the side and shows all four of its own small corners. The
+   * frame takes the artwork's ratio below the trimmed band (1418 of 1662px).
+   */
+  .work-card--iquoto .work-card__visual {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1800 / 1418;
+    margin-bottom: 0;
+    /* Small as the panel's own corners, so the frame never rounds them more. */
+    border-radius: 6px;
+  }
+
+  .work-card--iquoto .work-card__visual > img {
+    --iquoto-art-width: 100cqw;
+  }
+
+  /*
+   * Screen-led covers run edge to edge: no side gutter and no frame, so the
+   * screens can carry on past the card's sides, still centred.
+   */
+  .work-card--yandex-news .work-card__visual,
+  .work-card--cat-app .work-card__visual {
+    margin-right: -24px;
+    margin-left: -24px;
+    border: 0;
+    border-radius: 0;
   }
 
   /*
@@ -3286,11 +3574,9 @@ ol.case-bullet-list li::before {
 }
 
 .case-next__category {
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  font-size: 12px;
+  font-size: 20px;
   line-height: 1.4;
-  color: var(--ink-faint);
+  color: var(--ink-soft);
 }
 
 .case-next__title {
@@ -3382,8 +3668,6 @@ ol.case-bullet-list li::before {
   gap: 12px;
   margin-top: auto;
   padding-top: 24px;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   line-height: 1.4;
   color: var(--ink-faint);
@@ -3392,6 +3676,8 @@ ol.case-bullet-list li::before {
 .concept-teaser__cta {
   display: inline-flex;
   gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
   color: var(--ink);
 }
 
@@ -3588,8 +3874,6 @@ ol.case-bullet-list li::before {
   justify-content: space-between;
   gap: 12px;
   margin-top: clamp(28px, 3vw, 44px);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
   font-size: 12px;
   line-height: 1.4;
   color: var(--ink-faint);
@@ -3645,11 +3929,9 @@ ol.case-bullet-list li::before {
 }
 
 .concept-card__label {
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  font-size: 12px;
+  font-size: 18px;
   line-height: 1.4;
-  color: var(--ink-faint);
+  color: var(--ink-soft);
 }
 
 .concept-card__title {
@@ -3785,13 +4067,14 @@ ol.case-bullet-list li::before {
     --teaser-pad: 20px;
   }
 
-  /* Copy on top, then a floor for the cubes about as tall as the copy. */
+  /* Heading on top, then a floor for the cubes. */
   .editorial-card--practice {
-    min-height: max(560px, 128vw);
+    min-height: max(520px, 120vw);
   }
 
-  .editorial-card--practice .editorial-card__copy {
-    max-width: none;
+  /* Matches the card's own 20px padding at this width. */
+  .practice-card__cleared {
+    --cleared-pad: 20px;
   }
 
   /* In flow, pushed out through the right padding so it still bleeds off the edge. */
@@ -3803,5 +4086,104 @@ ol.case-bullet-list li::before {
     align-self: flex-end;
     width: min(48%, 194px);
     margin: 12px -20px 0 0;
+  }
+}
+
+/*
+ * Case cards on a tablet, on the phone's principle (see the 640px block): more
+ * air above the tags and between the tags and the heading, and the cover as
+ * the card's floor — larger, centred, run out through the bottom edge with its
+ * top three quarters on show. BetBoom and Kokoc stay framed; the screen-led
+ * covers run edge to edge; IQuoto shows its whole composition, fitted.
+ */
+@media (min-width: 641px) and (max-width: 1240px) {
+  .work-card {
+    --cover-h: clamp(420px, 60vw, 620px);
+    --card-pad-x: clamp(24px, 2.4vw, 40px);
+
+    padding: 48px var(--card-pad-x) 0;
+  }
+
+  .work-card__meta {
+    margin-bottom: 48px;
+  }
+
+  .work-card__body {
+    gap: 32px;
+  }
+
+  .work-card .work-card__visual {
+    min-height: 0;
+    height: var(--cover-h);
+    margin-bottom: calc(var(--cover-h) * -0.25);
+    border-bottom: 0;
+    border-radius: var(--r-media) var(--r-media) 0 0;
+  }
+
+  .work-card .work-card__mobile {
+    bottom: calc(var(--cover-h) * 0.25 + 14px);
+  }
+
+  .work-card--yandex-news .work-card__visual,
+  .work-card--cat-app .work-card__visual {
+    margin-right: calc(var(--card-pad-x) * -1);
+    margin-left: calc(var(--card-pad-x) * -1);
+    border: 0;
+    border-radius: 0;
+  }
+
+  /* Screens across the card's width — capped, so a wide tablet does not blow
+     them up past the frame — with the transparent band above lifted out. */
+  .work-card--yandex-news .work-card__visual > img,
+  .work-card--cat-app .work-card__visual > img {
+    left: 50%;
+    width: min(100%, 820px);
+    height: auto;
+    object-fit: initial;
+    transform: translate(-50%, -9%);
+  }
+
+  .work-card--iquoto {
+    padding-bottom: var(--card-pad-x);
+  }
+
+  .work-card--iquoto .work-card__visual {
+    height: auto;
+    aspect-ratio: 1800 / 1418;
+    margin-bottom: 0;
+    border-radius: 6px;
+  }
+
+  .work-card--iquoto .work-card__visual > img {
+    --iquoto-art-width: 100cqw;
+  }
+}
+
+/*
+ * The hero on a tablet. The headline gets the same air below it as the case
+ * cards give above their tags (48px), with nothing extra from the grid.
+ */
+@media (min-width: 641px) and (max-width: 1240px) {
+  .hero-panel {
+    --hero-pad-bottom: 48px;
+  }
+
+  .hero-panel__grid {
+    padding-bottom: 0;
+  }
+}
+
+/*
+ * Narrow tablets lay the hero out like a phone: one paragraph, and a panel
+ * tall enough that the cubes on the divider have open
+ * space above them instead of sitting against the top bar.
+ */
+@media (min-width: 641px) and (max-width: 900px) {
+  .hero-shell .hero-panel {
+    min-height: min(80svh, 820px);
+  }
+
+  .hero-panel__lead + .hero-panel__lead {
+    display: none;
   }
 }

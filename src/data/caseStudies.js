@@ -1,3 +1,10 @@
+import designCringeScore from '../assets/cases/design-cringe-score.jpg';
+import designCringeLanding from '../assets/cases/design-cringe-landing.jpg';
+import designCringeCategories from '../assets/cases/design-cringe-categories.jpg';
+import designCringeIssues from '../assets/cases/design-cringe-issues.jpg';
+import designCringeClean from '../assets/cases/design-cringe-clean.jpg';
+import designCringeMobileBad from '../assets/cases/design-cringe-mobile-bad.jpg';
+import designCringeMobileClean from '../assets/cases/design-cringe-mobile-clean.jpg';
 import redesignVideo from '../assets/redesign-cards.mp4';
 import betboomCaseHero from '../assets/betboom-case-hero.png';
 import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png';
@@ -1245,6 +1252,206 @@ export const kokocCaseStudy = {
           label: 'Project site -',
           href: 'https://kokocgroup.ru/',
           text: 'kokocgroup.ru',
+        },
+      ],
+    },
+  ],
+};
+
+export const designCringeCaseStudy = {
+  slug: 'design-cringe',
+  backHref: '/ai-projects',
+  hero: {
+    title: 'Design Cringe-meter',
+    description:
+      'Paste a link, get a cringe percentage and a list of exactly what is wrong. A design review tool that measures the rendered page instead of guessing, built and shipped in a week.',
+    meta: 'Side project / Design tooling',
+    image: {
+      src: designCringeScore,
+      alt: 'Cringe-meter result: 73% for an overloaded e-commerce site',
+    },
+    stats: [
+      { value: '29', label: 'rules across 9 categories' },
+      { value: '88', label: 'automated tests' },
+      { value: '1 week', label: 'from plan to a live site' },
+    ],
+    points: ['React', 'Playwright', 'AWS Lambda', 'Tilda'],
+  },
+  sections: [
+    {
+      id: 'idea',
+      navLabel: 'Idea',
+      title: 'The Idea',
+      parts: [
+        {
+          type: 'siteLink',
+          label: 'Live -',
+          href: 'https://designecringe.com/',
+          text: 'designecringe.com',
+        },
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Every designer can tell a page is off in a second. Explaining why takes much longer — and "it feels cheap" is not feedback anyone can act on.',
+            'The cringe-meter turns that gut feeling into a number and a list: contrast that fails WCAG, tap targets too small to hit, twelve fonts, a popup in the first three seconds.',
+          ],
+        },
+        {
+          type: 'imageBand',
+          media: {
+            type: 'image',
+            src: designCringeLanding,
+            alt: 'Cringe-meter start screen with a URL field',
+          },
+        },
+      ],
+    },
+    {
+      id: 'approach',
+      navLabel: 'Approach',
+      title: 'From Regex to a Real Browser',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Version one',
+              paragraphs: [
+                'A small Node server searching the raw HTML with regular expressions: marquee and blink tags, Comic Sans, neon hex colours, autoplay, shouting caps. It was funny, and it was blind — the HTML says nothing about the contrast, spacing or layout people actually see.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Version two',
+              paragraphs: [
+                'The page is now rendered in headless Chromium twice, at 1280 and 375 pixels wide. The analyzer reads computed styles, real colours and element sizes, and returns screenshots as evidence.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'noteCard',
+          title: 'One rule I kept from the start',
+          paragraphs: [
+            'No AI judges the design. The score is deterministic: the same page always gets the same number, and every point of it traces back to a rule you can read. AI wrote the code with me; it does not get a vote on the result.',
+          ],
+        },
+      ],
+    },
+    {
+      id: 'rules',
+      navLabel: 'Rules',
+      title: 'What Counts as Cringe',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'The rules come from sources designers already trust: Nielsen Norman heuristics, WCAG 2.2, typography norms, colour theory and Harry Brignull’s catalogue of dark patterns — plus a category of web relics for the truly historic finds.',
+          ],
+        },
+        {
+          type: 'imageBand',
+          label: 'Breakdown by category',
+          media: {
+            type: 'image',
+            src: designCringeCategories,
+            alt: 'Score breakdown across nine design categories',
+          },
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'Nine categories',
+              items: [
+                'Accessibility — contrast, target size, focus, headings, alt text',
+                'Typography — line length, line height, font count, minimum size',
+                'Colour — palette size, neon clashes, gradient overload',
+                'Layout — overflow, first-screen density, whitespace',
+                'Dark patterns — confirmshaming, fake urgency, nagging popups',
+                'CTA, media, mobile and web relics',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'How the score is built',
+              paragraphs: [
+                'Each rule has a weight by severity — critical, major or minor — scaled by how far past the threshold the page goes. Every category has a cap, so one terrible area cannot decide the whole verdict. The result is a cringe percentage from 0 to 100 and a verdict that names the worst category.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: designCringeIssues,
+            alt: 'List of found issues marked critical, major and minor',
+          },
+        },
+      ],
+    },
+    {
+      id: 'mobile',
+      navLabel: 'Mobile',
+      title: 'Cringe and Not',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'An overloaded store scores 73% with a red ring. A clean product site lands at 25% and a green one. Both are measured by the same rules, on desktop and on a phone.',
+          ],
+        },
+        {
+          type: 'phonePair',
+          items: [
+            {
+              type: 'image',
+              src: designCringeMobileBad,
+              alt: 'Mobile result with a high cringe score',
+            },
+            {
+              type: 'image',
+              src: designCringeMobileClean,
+              alt: 'Mobile result with a low cringe score',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'launch',
+      navLabel: 'Launch',
+      title: 'Shipping It',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'What it took to put online',
+              items: [
+                'A headless browser in AWS Lambda behind API Gateway, set up with Terraform',
+                'Protection against requests to private networks, a cache and a limit on parallel renders',
+                'A budget alert and rate limits, so a viral day does not become a bill',
+                'The frontend embedded into a Tilda page, so the site stays easy to edit',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'noteCard',
+          title: 'Where it is now',
+          items: [
+            'Live at designecringe.com.',
+            'Calibration is the next job: an old-school site can still score lower than a modern one that hides its problems better.',
+          ],
         },
       ],
     },

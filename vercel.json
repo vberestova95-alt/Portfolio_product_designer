@@ -9,6 +9,9 @@
     { "source": "/iquoto", "destination": "/index.html" },
     { "source": "/kokoc-group", "destination": "/index.html" },
     { "source": "/yandex-turkey", "destination": "/index.html" },
-    { "source": "/design-concepts", "destination": "/index.html" }
+    { "source": "/design-concepts", "destination": "/index.html" },
+    { "source": "/ai-projects", "destination": "/index.html" },
+    { "source": "/ds-plugins", "destination": "/index.html" },
+    { "source": "/design-cringe", "destination": "/index.html" }
   ]
 }

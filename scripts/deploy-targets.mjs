@@ -25,9 +25,12 @@ const portfolio = {
    * route. Keep this in step with the rewrites in vercel.json.
    */
   routes: [
+    'ai-projects',
     'betboom-pass',
     'cat-app',
     'design-concepts',
+    'design-cringe',
+    'ds-plugins',
     'iquoto',
     'kokoc-group',
     'yandex-turkey',

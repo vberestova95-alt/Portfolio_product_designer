@@ -3,6 +3,7 @@ import { content } from './data/content.js';
 import { useLanguage, useUi } from './i18n/LanguageContext.jsx';
 import { observeReveal } from './lib/reveal.js';
 import { attachReturnNavigation } from './lib/returnNavigation.js';
+import { AiProjectsPage } from './pages/AiProjectsPage.jsx';
 import { HomePage } from './pages/HomePage.jsx';
 import { CaseStudyPage } from './pages/BetboomPassPage.jsx';
 import { DesignConceptsPage } from './pages/DesignConceptsPage.jsx';
@@ -19,9 +20,20 @@ const CASE_STUDY_KEYS_BY_PATH = {
   '/iquoto': 'iquotoCaseStudy',
   '/kokoc-group': 'kokocCaseStudy',
   '/yandex-turkey': 'yandexTurkeyCaseStudy',
+  '/ds-plugins': 'dsPluginsCaseStudy',
+  '/design-cringe': 'designCringeCaseStudy',
 };
 
-const DETAIL_PATHS = new Set([...Object.keys(CASE_STUDY_KEYS_BY_PATH), '/design-concepts']);
+// Cases that live under the AI projects page: their "more work" block lists
+// the other AI projects rather than the main selected work.
+const AI_CASE_PATHS = new Set(['/ds-plugins', '/design-cringe']);
+const AI_PROJECTS_PATH = '/ai-projects';
+
+const DETAIL_PATHS = new Set([
+  ...Object.keys(CASE_STUDY_KEYS_BY_PATH),
+  '/design-concepts',
+  AI_PROJECTS_PATH,
+]);
 const PET_INJECTION_TRACKER_PATH = '/pet-injection-tracker';
 
 function normalizePathname(pathname) {
@@ -53,6 +65,13 @@ function getPageMetadata(pathname, currentCaseStudy, petCaseStudy, meta) {
     };
   }
 
+  if (pathname === AI_PROJECTS_PATH) {
+    return {
+      title: meta.aiProjectsTitle,
+      description: meta.aiProjectsDescription,
+    };
+  }
+
   if (pathname === PET_INJECTION_TRACKER_PATH) {
     return {
       title: `${petCaseStudy.hero.title} - ${meta.nameSuffix}`,
@@ -79,6 +98,7 @@ export function App() {
     cases,
     clients,
     experiences,
+    aiProjects,
     designConceptTeaser,
     designConcepts,
     profile,
@@ -156,6 +176,10 @@ export function App() {
     return <DesignConceptsPage archive={designConcepts} profile={profile} />;
   }
 
+  if (pathname === AI_PROJECTS_PATH) {
+    return <AiProjectsPage archive={aiProjects} profile={profile} />;
+  }
+
   if (pathname === PET_INJECTION_TRACKER_PATH) {
     return (
       <PetInjectionTrackerPage caseStudy={petInjectionTrackerCaseStudy} profile={profile} />
@@ -163,7 +187,13 @@ export function App() {
   }
 
   if (currentCaseStudy) {
-    return <CaseStudyPage caseStudy={currentCaseStudy} cases={cases} profile={profile} />;
+    return (
+      <CaseStudyPage
+        caseStudy={currentCaseStudy}
+        cases={AI_CASE_PATHS.has(pathname) ? aiProjects.items : cases}
+        profile={profile}
+      />
+    );
   }
 
   if (pathname !== '/') {

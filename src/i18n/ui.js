@@ -12,6 +12,9 @@ export const ui = {
       conceptsTitle: 'Дизайн-концепты — Владислава Берестова',
       conceptsDescription:
         'Самостоятельные исследования интерфейсов и концепты для портфолио: арт-дирекшн, визуальные системы и работа с интерфейсом.',
+      aiProjectsTitle: 'AI-проекты — Владислава Берестова',
+      aiProjectsDescription:
+        'Продукты, которые я спроектировала и собрала сама вместе с AI: плагины для дизайн-системы, анализатор дизайна и трекер для питомца.',
       nameSuffix: 'Владислава Берестова',
     },
     nav: {
@@ -35,8 +38,12 @@ export const ui = {
         accent: 'дизайн-системах',
         end: ', AI-воркфлоу и внутренних инструментах',
       },
-      practiceCopy:
-        'Люблю сложные продуктовые задачи — от дискавери до запуска. Работаю в тесной связке с продакт-менеджерами, разработчиками, исследователями и стейкхолдерами, чтобы превратить неопределённость в понятное продуктовое направление.',
+      practiceLink: 'Смотреть все проекты',
+      practiceCleared: {
+        title: 'Чисто.',
+        copy: 'Вот бы так выглядел каждый файл в Figma.',
+        restore: 'Вернуть кубики',
+      },
       experienceTitle:
         'Продуктовая работа в in-house командах, агентствах, стартапах и на фрилансе',
       achievementsLabel: 'Ключевые достижения',
@@ -97,6 +104,9 @@ export const ui = {
       conceptsTitle: 'Design Concepts - Vladislava Berestova',
       conceptsDescription:
         'Independent interface studies and portfolio concepts exploring art direction, visual systems, and interface craft.',
+      aiProjectsTitle: 'AI Projects - Vladislava Berestova',
+      aiProjectsDescription:
+        'Products I designed and built myself with AI: design system plugins for Figma, a design analyzer, and a pet care tracker.',
       nameSuffix: 'Vladislava Berestova',
     },
     nav: {
@@ -119,8 +129,12 @@ export const ui = {
         accent: 'design systems',
         end: ', AI-assisted workflows, and internal tools',
       },
-      practiceCopy:
-        'I enjoy solving complex product challenges from discovery to delivery, working closely with product managers, engineers, researchers, and stakeholders to turn ambiguity into a coherent product direction.',
+      practiceLink: 'View all projects',
+      practiceCleared: {
+        title: 'Spotless.',
+        copy: 'If only every Figma file looked like this.',
+        restore: 'Bring the cubes back',
+      },
       experienceTitle:
         'Product work across in-house teams, agencies, startup environments, and freelance delivery',
       achievementsLabel: 'Key Achievements',

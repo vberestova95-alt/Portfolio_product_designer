@@ -3,6 +3,8 @@ import { useLanguage, useUi } from '../i18n/LanguageContext.jsx';
 import { LANGUAGES } from '../i18n/language.js';
 import { ContactLink } from './ContactLink.jsx';
 
+const LANGUAGE_LABELS = { ru: 'Ru', en: 'Eng' };
+
 /*
  * Two-state segmented switch. It sits at the end of the contact links, so on a
  * phone it travels into the burger panel with them instead of crowding the row.
@@ -25,7 +27,7 @@ function LanguageSwitch({ onChange }) {
             onChange?.();
           }}
         >
-          {code.toUpperCase()}
+          {LANGUAGE_LABELS[code]}
         </button>
       ))}
     </div>

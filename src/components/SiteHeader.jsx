@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrandLogo } from './BrandLogo.jsx';
 import { NavMenu } from './NavMenu.jsx';
 
 /*
@@ -14,7 +15,7 @@ export function SiteHeader({ profile, brandHref = '/', showReturnHome = true }) 
         href={brandHref}
         data-return-home={showReturnHome ? '' : undefined}
       >
-        {profile.name}
+        <BrandLogo name={profile.name} />
       </a>
 
       <NavMenu contacts={profile.contacts} className="nav-menu--ink" />

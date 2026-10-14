@@ -1,3 +1,10 @@
+import designCringeScore from '../assets/cases/design-cringe-score.jpg';
+import designCringeLanding from '../assets/cases/design-cringe-landing.jpg';
+import designCringeCategories from '../assets/cases/design-cringe-categories.jpg';
+import designCringeIssues from '../assets/cases/design-cringe-issues.jpg';
+import designCringeClean from '../assets/cases/design-cringe-clean.jpg';
+import designCringeMobileBad from '../assets/cases/design-cringe-mobile-bad.jpg';
+import designCringeMobileClean from '../assets/cases/design-cringe-mobile-clean.jpg';
 import redesignVideo from '../assets/redesign-cards.mp4';
 import betboomCaseHero from '../assets/betboom-case-hero.png';
 import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png';
@@ -1245,6 +1252,206 @@ export const kokocCaseStudy = {
           label: 'Сайт проекта -',
           href: 'https://kokocgroup.ru/',
           text: 'kokocgroup.ru',
+        },
+      ],
+    },
+  ],
+};
+
+export const designCringeCaseStudy = {
+  slug: 'design-cringe',
+  backHref: '/ai-projects',
+  hero: {
+    title: 'Дизайн-кринжометр',
+    description:
+      'Вставляешь ссылку — получаешь процент кринжа и список того, что именно не так. Инструмент дизайн-ревью, который измеряет отрисованную страницу, а не гадает. Собран и запущен за неделю.',
+    meta: 'Сайд-проект / Инструмент для дизайнеров',
+    image: {
+      src: designCringeScore,
+      alt: 'Результат кринжометра: 73% у перегруженного интернет-магазина',
+    },
+    stats: [
+      { value: '29', label: 'правил в 9 категориях' },
+      { value: '88', label: 'автотестов' },
+      { value: '1 неделя', label: 'от плана до живого сайта' },
+    ],
+    points: ['React', 'Playwright', 'AWS Lambda', 'Tilda'],
+  },
+  sections: [
+    {
+      id: 'idea',
+      navLabel: 'Идея',
+      title: 'Идея',
+      parts: [
+        {
+          type: 'siteLink',
+          label: 'Сайт -',
+          href: 'https://designecringe.com/',
+          text: 'designecringe.com',
+        },
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Любой дизайнер за секунду видит, что со страницей что-то не так. Объяснить почему — гораздо дольше, а «выглядит дёшево» — не тот фидбек, с которым можно работать.',
+            'Кринжометр превращает это ощущение в число и список: контраст ниже WCAG, кнопки, в которые не попасть пальцем, двенадцать шрифтов, попап в первые три секунды.',
+          ],
+        },
+        {
+          type: 'imageBand',
+          media: {
+            type: 'image',
+            src: designCringeLanding,
+            alt: 'Стартовый экран кринжометра с полем для ссылки',
+          },
+        },
+      ],
+    },
+    {
+      id: 'approach',
+      navLabel: 'Подход',
+      title: 'От регулярок к настоящему браузеру',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Первая версия',
+              paragraphs: [
+                'Небольшой Node-сервер искал регулярками по сырому HTML: marquee и blink, Comic Sans, неоновые цвета, автоплей, капс. Было смешно, но слепо — HTML ничего не говорит о контрасте, отступах и раскладке, которые видит человек.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Вторая версия',
+              paragraphs: [
+                'Теперь страница рендерится в headless Chromium дважды — на 1280 и на 375 пикселей. Анализатор читает вычисленные стили, реальные цвета и размеры элементов и возвращает скриншоты как доказательство.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'noteCard',
+          title: 'Правило, которое я держала с самого начала',
+          paragraphs: [
+            'Дизайн не оценивает нейросеть. Скоринг детерминированный: одна и та же страница всегда получает одно и то же число, и каждый его пункт ведёт к правилу, которое можно прочитать. AI писал со мной код, но голоса в результате у него нет.',
+          ],
+        },
+      ],
+    },
+    {
+      id: 'rules',
+      navLabel: 'Правила',
+      title: 'Что считается кринжем',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Правила взяты из источников, которым дизайнеры и так доверяют: эвристики Nielsen Norman, WCAG 2.2, нормы типографики, теория цвета и каталог дарк-паттернов Гарри Бригнулла. Плюс отдельная категория веб-реликтов — для совсем исторических находок.',
+          ],
+        },
+        {
+          type: 'imageBand',
+          label: 'Разбивка по категориям',
+          media: {
+            type: 'image',
+            src: designCringeCategories,
+            alt: 'Оценка по девяти категориям дизайна',
+          },
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'Девять категорий',
+              items: [
+                'Доступность — контраст, размер тап-зон, фокус, заголовки, alt',
+                'Типографика — длина строки, интерлиньяж, число шрифтов, минимальный кегль',
+                'Цвет — размер палитры, неоновые конфликты, перебор градиентов',
+                'Раскладка — переполнение, плотность первого экрана, воздух',
+                'Дарк-паттерны — confirmshaming, фальшивая срочность, навязчивые попапы',
+                'CTA, медиа, мобильная версия и веб-реликты',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Как считается оценка',
+              paragraphs: [
+                'У каждого правила есть вес по важности — критично, важно или мелочь — и он растёт с тем, насколько страница вышла за порог. У каждой категории есть потолок, чтобы одна провальная область не решала весь вердикт. На выходе — процент кринжа от 0 до 100 и вердикт, который называет худшую категорию.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: designCringeIssues,
+            alt: 'Список найденных проблем с пометками «критично», «важно» и «мелочь»',
+          },
+        },
+      ],
+    },
+    {
+      id: 'mobile',
+      navLabel: 'Мобильная',
+      title: 'Кринж и не кринж',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Перегруженный магазин получает 73% и красное кольцо. Чистый продуктовый сайт — 25% и зелёное. Оба измерены одними и теми же правилами, на десктопе и на телефоне.',
+          ],
+        },
+        {
+          type: 'phonePair',
+          items: [
+            {
+              type: 'image',
+              src: designCringeMobileBad,
+              alt: 'Мобильный результат с высоким процентом кринжа',
+            },
+            {
+              type: 'image',
+              src: designCringeMobileClean,
+              alt: 'Мобильный результат с низким процентом кринжа',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'launch',
+      navLabel: 'Запуск',
+      title: 'Запуск',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'Что понадобилось, чтобы выложить',
+              items: [
+                'Headless-браузер в AWS Lambda за API Gateway, инфраструктура на Terraform',
+                'Защита от запросов во внутренние сети, кэш и лимит параллельных рендеров',
+                'Бюджетный алерт и ограничение частоты запросов, чтобы вирусный день не превратился в счёт',
+                'Фронтенд встроен в страницу на Tilda, чтобы сайт было легко редактировать',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'noteCard',
+          title: 'Где он сейчас',
+          items: [
+            'Работает на designecringe.com.',
+            'Следующая задача — калибровка: олдскульный сайт пока может набрать меньше, чем современный, который лучше прячет свои проблемы.',
+          ],
         },
       ],
     },

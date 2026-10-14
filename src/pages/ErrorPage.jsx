@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import editorialObject from '../assets/editorial-object.webp';
+import { BrandLogo } from '../components/BrandLogo.jsx';
 import { useUi } from '../i18n/LanguageContext.jsx';
 import { SHOW_OBJECT_GRAPHICS } from '../lib/siteGraphics.js';
 
@@ -38,7 +39,9 @@ export function ErrorPage({
     <div className="error-page">
       <main className="error-page__panel">
         <div className="error-page__topline">
-          <a href="/">{brand}</a>
+          <a href="/">
+            <BrandLogo name={brand} />
+          </a>
           <span>{code} / {text.portfolio}</span>
         </div>
 
