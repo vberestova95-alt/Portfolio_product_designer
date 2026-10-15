@@ -3949,7 +3949,15 @@ ol.case-bullet-list li::before {
    * never cut at the side and shows all four of its own small corners. The
    * frame takes the artwork's ratio below the trimmed band (1418 of 1662px).
    */
+  /*
+   * Width set outright: with an aspect ratio Safari no longer stretches a grid
+   * item to its column, and with only an absolute image inside, the frame
+   * collapsed to nothing there. No container either — the image is the
+   * frame's width, so plain percentages do (see the image rule below).
+   */
   .work-card--iquoto .work-card__visual {
+    container-type: normal;
+    width: 100%;
     height: auto;
     min-height: 0;
     aspect-ratio: 1800 / 1418;
@@ -3958,8 +3966,10 @@ ol.case-bullet-list li::before {
     border-radius: 6px;
   }
 
+  /* The trimmed 244px band, as a share of the frame's 1418px height. */
   .work-card--iquoto .work-card__visual > img {
-    --iquoto-art-width: 100cqw;
+    top: calc(-100% * 244 / 1418);
+    width: 100%;
   }
 
   /*
@@ -4686,7 +4696,10 @@ ol.case-bullet-list li::before {
     padding-bottom: var(--card-pad-x);
   }
 
+  /* Full width and no container, as on a phone — see the note there. */
   .work-card--iquoto .work-card__visual {
+    container-type: normal;
+    width: 100%;
     height: auto;
     aspect-ratio: 1800 / 1418;
     margin-bottom: 0;
@@ -4694,7 +4707,8 @@ ol.case-bullet-list li::before {
   }
 
   .work-card--iquoto .work-card__visual > img {
-    --iquoto-art-width: 100cqw;
+    top: calc(-100% * 244 / 1418);
+    width: 100%;
   }
 
   .work-card--ds-plugins .work-card__visual > img,

@@ -9,12 +9,17 @@
  *
  * Classes: `is-pinned` (fixed, styled as a bar) and `is-shown` (slid in).
  *
+ * A change of direction only counts once the page has travelled TRAVEL px
+ * that way. A finger scroll is full of small reversals — a lifted fingertip,
+ * momentum easing out, the browser bar sliding away — and reacting to each
+ * one made the bar flick in and out while scrolling down.
+ *
  * `hideOver` (an element — the home page passes its blue hero) keeps the bar
  * away while any of that element is still on screen: a light bar over the
  * blue panel only fights it, and the panel's own row is right there anyway.
  */
 
-const DELTA = 6; // px of travel before a change of direction counts
+const TRAVEL = 60; // px of travel in one direction before the bar follows it
 
 export function attachPinnedHeader(header, { hideOver } = {}) {
   if (!header || typeof window === 'undefined') {
@@ -29,6 +34,8 @@ export function attachPinnedHeader(header, { hideOver } = {}) {
   let naturalTop = 0;
   let naturalHeight = 0;
   let lastY = window.scrollY;
+  // Travel in the current direction: positive is down, negative up.
+  let travel = 0;
   let frame = null;
 
   const measure = () => {
@@ -39,20 +46,37 @@ export function attachPinnedHeader(header, { hideOver } = {}) {
       : header.offsetHeight;
   };
 
+  /*
+   * The bar is parked above the viewport the moment it is lifted out. Without
+   * the transition held back for that one change, it would be drawn in place
+   * and then slide up out of view — a flash across the top of the screen.
+   */
   const pin = () => {
     spacer.style.height = `${header.offsetHeight}px`;
     spacer.style.display = 'block';
+    header.style.transition = 'none';
     header.classList.add('is-pinned');
+    // Commit the parked position before the transition comes back.
+    void header.offsetHeight;
+    header.style.removeProperty('transition');
   };
 
+  // Same on the way back: a parked bar drops into its own place without
+  // sliding down into it.
   const unpin = () => {
+    header.style.transition = 'none';
     header.classList.remove('is-pinned', 'is-shown');
     spacer.style.display = 'none';
+    void header.offsetHeight;
+    header.style.removeProperty('transition');
+    travel = 0;
   };
 
   const update = () => {
     frame = null;
-    const y = window.scrollY;
+    // Rubber-band overscroll past either end is not a real change of direction.
+    const maxY = document.documentElement.scrollHeight - window.innerHeight;
+    const y = Math.min(Math.max(window.scrollY, 0), Math.max(maxY, 0));
     const pinned = header.classList.contains('is-pinned');
 
     // Back where the header lives: hand it back to the page.
@@ -71,16 +95,27 @@ export function attachPinnedHeader(header, { hideOver } = {}) {
       pin();
     }
 
-    if (Math.abs(y - lastY) < DELTA) {
+    const step = y - lastY;
+    lastY = y;
+
+    if (step === 0) {
       return;
     }
 
-    if (header.classList.contains('is-pinned')) {
-      const overPanel = hideOver ? hideOver.getBoundingClientRect().bottom > 0 : false;
-      header.classList.toggle('is-shown', y < lastY && !overPanel);
+    // Same direction adds up; a reversal starts the count again.
+    travel = Math.sign(step) === Math.sign(travel) ? travel + step : step;
+
+    if (!header.classList.contains('is-pinned')) {
+      return;
     }
 
-    lastY = y;
+    const overPanel = hideOver ? hideOver.getBoundingClientRect().bottom > 0 : false;
+
+    if (overPanel || travel >= TRAVEL) {
+      header.classList.remove('is-shown');
+    } else if (travel <= -TRAVEL) {
+      header.classList.add('is-shown');
+    }
   };
 
   const onScroll = () => {
