@@ -1,4 +1,5 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useLanguage, useUi } from '../i18n/LanguageContext.jsx';
 import { LANGUAGES } from '../i18n/language.js';
 import { ContactLink } from './ContactLink.jsx';
@@ -51,13 +52,68 @@ function LanguageSwitch({ onChange }) {
  * "Contact me": a filled pill that opens a short list of ways to reach me —
  * LinkedIn, email and, where the profile has one (the Russian version),
  * Telegram. On desktop it drops down under the pill; inside the burger panel
- * it unfolds in place.
+ * it unfolds in place. The cleared hero (CubePool) offers it too. On a phone
+ * both open it as a bottom sheet.
+ *
+ * With `sheet`, a phone gets the list as a bottom sheet instead: rendered into
+ * <body>, since the pill can sit inside a transformed box that would trap a
+ * fixed element.
  */
-function ContactMenu({ email, linkedin, telegram, onPick }) {
+const SHEET_QUERY = '(max-width: 640px)';
+const SHEET_EXIT_MS = 240;
+
+function useMatchMedia(query, enabled) {
+  const [matches, setMatches] = useState(
+    () => enabled && typeof window !== 'undefined' && window.matchMedia(query).matches,
+  );
+
+  useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+
+    const media = window.matchMedia(query);
+    const handleChange = () => setMatches(media.matches);
+
+    handleChange();
+    media.addEventListener('change', handleChange);
+    return () => media.removeEventListener('change', handleChange);
+  }, [query, enabled]);
+
+  return matches;
+}
+
+export function ContactMenu({ email, linkedin, telegram, onPick, sheet = false }) {
   const [isOpen, setIsOpen] = useState(false);
+  // Mounted a frame before it is shown, so it slides in; kept mounted for the
+  // slide-out after closing.
+  const [isSheetMounted, setIsSheetMounted] = useState(false);
+  const [isSheetShown, setIsSheetShown] = useState(false);
   const rootRef = useRef(null);
+  const sheetRef = useRef(null);
   const listId = useId();
   const text = useUi().nav;
+  const asSheet = useMatchMedia(SHEET_QUERY, sheet);
+
+  useEffect(() => {
+    if (!asSheet) {
+      setIsSheetMounted(false);
+      setIsSheetShown(false);
+      return undefined;
+    }
+
+    if (isOpen) {
+      setIsSheetMounted(true);
+      let frame = requestAnimationFrame(() => {
+        frame = requestAnimationFrame(() => setIsSheetShown(true));
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+
+    setIsSheetShown(false);
+    const timer = window.setTimeout(() => setIsSheetMounted(false), SHEET_EXIT_MS);
+    return () => window.clearTimeout(timer);
+  }, [asSheet, isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -65,7 +121,10 @@ function ContactMenu({ email, linkedin, telegram, onPick }) {
     }
 
     const handlePointerDown = (event) => {
-      if (!rootRef.current?.contains(event.target)) {
+      if (
+        !rootRef.current?.contains(event.target) &&
+        !sheetRef.current?.contains(event.target)
+      ) {
         setIsOpen(false);
       }
     };
@@ -108,21 +167,63 @@ function ContactMenu({ email, linkedin, telegram, onPick }) {
         {text.contactMe}
       </button>
 
-      <ul className="contact-menu__list" id={listId}>
-        {options.map((option) => (
-          <li key={option.key}>
-            <a
-              className="contact-menu__option"
-              href={option.href}
-              target={option.external ? '_blank' : undefined}
-              rel={option.external ? 'noopener noreferrer' : undefined}
-              onClick={pick}
-            >
-              {text.contactVia[option.key]}
-            </a>
-          </li>
-        ))}
-      </ul>
+      {asSheet ? null : (
+        <ul className="contact-menu__list" id={listId}>
+          {options.map((option) => (
+            <li key={option.key}>
+              <a
+                className="contact-menu__option"
+                href={option.href}
+                target={option.external ? '_blank' : undefined}
+                rel={option.external ? 'noopener noreferrer' : undefined}
+                onClick={pick}
+              >
+                {text.contactVia[option.key]}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {asSheet && isSheetMounted
+        ? createPortal(
+            <div className={`contact-sheet${isSheetShown ? ' is-open' : ''}`} ref={sheetRef}>
+              <button
+                type="button"
+                className="contact-sheet__backdrop"
+                aria-label={text.closeMenu}
+                tabIndex={-1}
+                onClick={() => setIsOpen(false)}
+              />
+              <div
+                className="contact-sheet__panel"
+                id={listId}
+                role="dialog"
+                aria-modal="true"
+                aria-label={text.contactMe}
+              >
+                <span className="contact-sheet__handle" aria-hidden="true" />
+                <ul className="contact-sheet__list">
+                  {options.map((option) => (
+                    <li key={option.key}>
+                      <a
+                        className="contact-sheet__option"
+                        href={option.href}
+                        target={option.external ? '_blank' : undefined}
+                        rel={option.external ? 'noopener noreferrer' : undefined}
+                        onClick={pick}
+                      >
+                        {text.contactVia[option.key]}
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }
@@ -235,6 +336,7 @@ export function NavMenu({ contacts, email, telegram, siteNav = true, className =
               linkedin={contacts.find((contact) => contact.label === 'LinkedIn')?.href}
               telegram={telegram}
               onPick={() => setIsOpen(false)}
+              sheet
             />
           ) : null}
         </nav>

@@ -8,11 +8,15 @@
  * it is lifted out, so the content below never moves.
  *
  * Classes: `is-pinned` (fixed, styled as a bar) and `is-shown` (slid in).
+ *
+ * `hideOver` (an element — the home page passes its blue hero) keeps the bar
+ * away while any of that element is still on screen: a light bar over the
+ * blue panel only fights it, and the panel's own row is right there anyway.
  */
 
 const DELTA = 6; // px of travel before a change of direction counts
 
-export function attachPinnedHeader(header) {
+export function attachPinnedHeader(header, { hideOver } = {}) {
   if (!header || typeof window === 'undefined') {
     return undefined;
   }
@@ -72,7 +76,8 @@ export function attachPinnedHeader(header) {
     }
 
     if (header.classList.contains('is-pinned')) {
-      header.classList.toggle('is-shown', y < lastY);
+      const overPanel = hideOver ? hideOver.getBoundingClientRect().bottom > 0 : false;
+      header.classList.toggle('is-shown', y < lastY && !overPanel);
     }
 
     lastY = y;

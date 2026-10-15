@@ -113,7 +113,9 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
   /*
    * The floor element can move without the card changing size — a web font
    * landing or a reveal transition shifts the hero's divider after the first
-   * measure. The walls follow it rather than rebuilding the world.
+   * measure. The walls follow it rather than rebuilding the world, and the
+   * cubes go with them: they sit on that floor, so they move as the page does
+   * instead of dropping onto it again (or being shoved up by it).
    */
   function syncFloor() {
     const next = readFloor();
@@ -126,8 +128,8 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
     const shift = next - floor;
 
     floor = next;
-    walls.forEach((wall) => {
-      Body.setPosition(wall, { x: wall.position.x, y: wall.position.y + shift });
+    [...walls, ...bodies].forEach((body) => {
+      Body.setPosition(body, { x: body.position.x, y: body.position.y + shift });
     });
   }
 
@@ -513,13 +515,50 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
     pointer = null;
   }
 
-  /* A tap or click kicks the cubes around it upward — the touch version of play. */
+  /*
+   * A tap or click kicks the cubes around it upward — the touch version of play.
+   * A mouse kicks on press. A finger only kicks on a real tap, lifted where it
+   * landed: a touch that turns into a scroll is cancelled by the browser and
+   * never gets here, so scrolling past the hero leaves the cubes where they lie.
+   */
+  const TAP_SLOP = 10; // px a finger may drift and still count as a tap
+  const TAP_TIME = 350; // ms
+  let touchStart = null;
+
+  function kick(event) {
+    shove(localPoint(event), size * 2.6, 14, { x: 0, y: -6 });
+  }
+
   function handlePointerDown(event) {
     if (!engine || !hasDropped || reduceMotion) {
       return;
     }
 
-    shove(localPoint(event), size * 2.6, 14, { x: 0, y: -6 });
+    if (event.pointerType === 'touch') {
+      touchStart = { x: event.clientX, y: event.clientY, t: performance.now() };
+      return;
+    }
+
+    kick(event);
+  }
+
+  function handlePointerUp(event) {
+    const start = touchStart;
+    touchStart = null;
+
+    if (!start || event.pointerType !== 'touch' || !engine || reduceMotion) {
+      return;
+    }
+
+    const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y);
+
+    if (moved <= TAP_SLOP && performance.now() - start.t <= TAP_TIME) {
+      kick(event);
+    }
+  }
+
+  function handlePointerCancel() {
+    touchStart = null;
   }
 
   const visibility = new IntersectionObserver(
@@ -573,13 +612,27 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
   const resize = new ResizeObserver(([entry]) => {
     const { width: nextWidth, height: nextHeight } = entry.contentRect;
 
+    const sameWidth = Math.abs(nextWidth - lastWidth) < 2;
+
     // Small height shifts (font swap, reveal) are not worth a rebuild.
-    if (Math.abs(nextWidth - lastWidth) < 2 && Math.abs(nextHeight - lastHeight) < 24) {
+    if (sameWidth && Math.abs(nextHeight - lastHeight) < 24) {
       return;
     }
 
     lastWidth = nextWidth;
     lastHeight = nextHeight;
+
+    /*
+     * Only the height moved — on a phone that is the browser bar sliding away
+     * as the page scrolls. The cube size depends on the width alone, so the
+     * world stays as it is and the floor is followed; a rebuild would pick the
+     * cubes up and lay them out again from the left edge.
+     */
+    if (sameWidth && Matter && engine && cubeSize) {
+      height = nextHeight;
+      syncFloor();
+      return;
+    }
 
     if (!Matter || resizeFrame !== null) {
       return;
@@ -602,6 +655,8 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
   card.addEventListener('pointermove', handlePointerMove);
   card.addEventListener('pointerleave', handlePointerLeave);
   card.addEventListener('pointerdown', handlePointerDown);
+  card.addEventListener('pointerup', handlePointerUp);
+  card.addEventListener('pointercancel', handlePointerCancel);
   card.addEventListener('logopool:restore', handleRestore);
   document.addEventListener('visibilitychange', handleVisibilityChange);
 
@@ -620,6 +675,8 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
     card.removeEventListener('pointermove', handlePointerMove);
     card.removeEventListener('pointerleave', handlePointerLeave);
     card.removeEventListener('pointerdown', handlePointerDown);
+    card.removeEventListener('pointerup', handlePointerUp);
+    card.removeEventListener('pointercancel', handlePointerCancel);
     card.removeEventListener('logopool:restore', handleRestore);
     document.removeEventListener('visibilitychange', handleVisibilityChange);
 

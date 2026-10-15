@@ -15,8 +15,8 @@ import logoLuma from '../assets/ai-logos/luma.svg';
 import logoMidjourney from '../assets/ai-logos/midjourney.svg';
 import logoRecraft from '../assets/ai-logos/recraft.svg';
 import { BrandLogo } from '../components/BrandLogo.jsx';
-import { CubePool } from '../components/CubePool.jsx';
-import { NavMenu } from '../components/NavMenu.jsx';
+import { CubePool, ReloadIcon } from '../components/CubePool.jsx';
+import { ContactMenu, NavMenu } from '../components/NavMenu.jsx';
 import { SiteFooter } from '../components/SiteFooter.jsx';
 import { WorkCard } from '../components/WorkCard.jsx';
 import { useLanguage, useUi } from '../i18n/LanguageContext.jsx';
@@ -105,7 +105,7 @@ function HeroTitle() {
  * label is never buried under cubes.
  *
  * Kick every cube out through the top and the card says so, with a way to
- * bring them back.
+ * bring them back and a way to write — the same pair as the cleared hero.
  */
 // The tools behind the AI projects (icons: LobeHub Icons, MIT), one cube each.
 const AI_TOOL_LOGOS = [
@@ -142,7 +142,7 @@ function isOnCube(pool, event) {
   });
 }
 
-function PracticeCard() {
+function PracticeCard({ contact }) {
   const text = useUi().home;
   const cardRef = useRef(null);
   const poolRef = useRef(null);
@@ -214,11 +214,24 @@ function PracticeCard() {
 
       {isCleared ? (
         <div className="practice-card__cleared" role="status">
-          <p className="practice-card__cleared-title serif-accent">{text.practiceCleared.title}</p>
           <p className="practice-card__cleared-copy">{text.practiceCleared.copy}</p>
-          <button type="button" className="practice-card__restore" onClick={handleRestore}>
-            {text.practiceCleared.restore}
-          </button>
+          <div className="practice-card__actions">
+            <button
+              type="button"
+              className="cube-pool__reload"
+              aria-label={text.practiceCleared.restore}
+              title={text.practiceCleared.restore}
+              onClick={handleRestore}
+            >
+              <ReloadIcon />
+            </button>
+            <ContactMenu
+              email={contact.email}
+              linkedin={contact.linkedin}
+              telegram={contact.telegram}
+              sheet
+            />
+          </div>
         </div>
       ) : null}
 
@@ -319,13 +332,20 @@ export function HomePage({
   const heroRef = useRef(null);
   const objectRef = useRef(null);
   const stackRef = useRef(null);
+  // Ways to write, offered wherever the cubes have all been kicked out.
+  const contact = {
+    email: profile.email,
+    linkedin: profile.contacts.find((item) => item.label === 'LinkedIn')?.href,
+    telegram: profile.telegram,
+  };
 
   useEffect(() => attachHeroObject(heroRef.current, objectRef.current), []);
   useEffect(() => attachWorkStack(stackRef.current), []);
 
-  // The hero's top row comes back as a bar on scroll up, as on every page.
+  // The hero's top row comes back as a bar on scroll up, as on every page —
+  // once the blue hero itself has left the screen.
   const topRef = useRef(null);
-  useEffect(() => attachPinnedHeader(topRef.current), []);
+  useEffect(() => attachPinnedHeader(topRef.current, { hideOver: heroRef.current }), []);
 
   return (
     <div className="home-page">
@@ -369,6 +389,7 @@ export function HomePage({
             featured={FILM_PHOTOS_OF_ME}
             featuredCount={2}
             restoreLabel={text.practiceCleared.restore}
+            contact={contact}
           />
 
           {SHOW_OBJECT_GRAPHICS ? (
@@ -410,7 +431,7 @@ export function HomePage({
         <div className="two-column-section">
           <ConceptTeaser teaser={designConceptTeaser} />
 
-          <PracticeCard />
+          <PracticeCard contact={contact} />
         </div>
       </section>
 
