@@ -1,4 +1,4 @@
-import dsPluginsCover from '../assets/cases/ds-plugins-hero.webp';
+import dsPluginsCover from '../assets/cases/ds-plugins-card.webp';
 import dsPluginsChangelog from '../assets/cases/ds-plugins-changelog.webp';
 import dsPluginsManager from '../assets/cases/ds-plugins-manager.webp';
 import dsPluginsManagerBatch from '../assets/cases/ds-plugins-manager-batch.webp';

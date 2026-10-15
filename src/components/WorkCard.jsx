@@ -91,36 +91,54 @@ export function WorkCard({ item, index, total }) {
             <span className="work-card__cta-arrow">→</span>
           </span>
         </div>
-        <div className={`work-card__visual${item.motion ? ' work-card__visual--stage' : ''}`}>
-          {item.motion ? (
-            <div
-              className="cover-stage"
-              style={{ '--stage-w': item.stage.width, '--stage-h': item.stage.height }}
-            >
-              <img className="cover-stage__base" src={item.image.src} alt={item.image.alt} />
-              <CoverMotion motion={item.motion} />
-            </div>
-          ) : (
-            <img
-              src={item.image.src}
-              alt={item.image.alt}
-              style={
-                item.focus
-                  ? {
-                      '--zoom': item.focus.zoom,
-                      '--fx': item.focus.fx,
-                      '--fy': item.focus.fy,
-                    }
-                  : undefined
-              }
-            />
-          )}
-          {item.mobileImage && !item.motion ? (
-            <div className="work-card__mobile">
-              <img src={item.mobileImage.src} alt={item.mobileImage.alt} />
-            </div>
-          ) : null}
-        </div>
+        {item.shots ? (
+          <div
+            className="work-card__visual work-card__visual--shots"
+            role="img"
+            aria-label={item.image.alt}
+          >
+            {item.shots.map((shot) => (
+              <span
+                key={shot.src}
+                className="work-shot"
+                style={{ '--shot-ratio': shot.ratio }}
+              >
+                <img src={shot.src} alt="" loading="lazy" />
+              </span>
+            ))}
+          </div>
+        ) : (
+          <div className={`work-card__visual${item.motion ? ' work-card__visual--stage' : ''}`}>
+            {item.motion ? (
+              <div
+                className="cover-stage"
+                style={{ '--stage-w': item.stage.width, '--stage-h': item.stage.height }}
+              >
+                <img className="cover-stage__base" src={item.image.src} alt={item.image.alt} />
+                <CoverMotion motion={item.motion} />
+              </div>
+            ) : (
+              <img
+                src={item.image.src}
+                alt={item.image.alt}
+                style={
+                  item.focus
+                    ? {
+                        '--zoom': item.focus.zoom,
+                        '--fx': item.focus.fx,
+                        '--fy': item.focus.fy,
+                      }
+                    : undefined
+                }
+              />
+            )}
+            {item.mobileImage && !item.motion ? (
+              <div className="work-card__mobile">
+                <img src={item.mobileImage.src} alt={item.mobileImage.alt} />
+              </div>
+            ) : null}
+          </div>
+        )}
       </div>
     </article>
   );

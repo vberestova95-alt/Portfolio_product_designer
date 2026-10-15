@@ -5,6 +5,9 @@ import kokocMainDesktop from '../assets/cases/kokoc-main-desktop.png';
 import petTrackerCoverScreens from '../assets/cases/pet-tracker-cover-screens.png';
 import dsPluginsCard from '../assets/cases/ds-plugins-card.webp';
 import designCringeCard from '../assets/cases/design-cringe-card.webp';
+import designCringeLandingShot from '../assets/cases/design-cringe-landing.jpg';
+import designCringeMobileShot from '../assets/cases/design-cringe-mobile-clean.jpg';
+import designCringeScoreShot from '../assets/cases/design-cringe-score.jpg';
 import yandexCoverScreens from '../assets/cases/yandex-cover-screens.png';
 import conceptBeauty from '../assets/concepts/beauty-commerce.png';
 import conceptEdtechTutorMarketplace from '../assets/concepts/edtech-tutor-marketplace.png';
@@ -215,6 +218,11 @@ export const designConceptTeaser = {
  * The page behind the blue practice card: projects designed and built end to
  * end with AI tools. Cards share the home page's work-card format; the pet
  * tracker is the same case as in the main list.
+ *
+ * `shots` replaces the flat cover with framed screens fanned out like the
+ * Dribbble shots on the home page. Order is back, middle, front; `ratio` is
+ * the screenshot's own, so each frame fits its screen exactly. `image` stays
+ * as the card's accessible description and the cover used elsewhere.
  */
 export const aiProjects = {
   intro: {
@@ -264,6 +272,11 @@ export const aiProjects = {
         src: designCringeCard,
         alt: 'Cringe-meter result with a 73% score',
       },
+      shots: [
+        { src: designCringeLandingShot, ratio: '16 / 10' },
+        { src: designCringeScoreShot, ratio: '16 / 10' },
+        { src: designCringeMobileShot, ratio: '780 / 1688' },
+      ],
       href: '/design-cringe',
     },
   ],

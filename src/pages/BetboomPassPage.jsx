@@ -574,7 +574,6 @@ function NextProjects({ items }) {
               <img src={item.image.src} alt="" loading="lazy" />
             </span>
             <span className="case-next__meta">
-              <span className="case-next__category">{item.category}</span>
               <span className="case-next__title">{item.title}</span>
               <span className="case-next__cta">
                 {text.openCase}

@@ -1076,7 +1076,8 @@ html[lang='ru'] .error-page__visual > span {
   border-color: transparent;
 }
 
-.work-card--blue {
+.work-card--blue,
+.case-next__card--blue .case-next__media {
   background: linear-gradient(135deg, #1630bf 0%, #2550ff 44%, #1226a3 100%);
   color: var(--inverse);
   border-color: rgba(247, 248, 252, 0.14);
@@ -1408,6 +1409,94 @@ html[lang='ru'] .error-page__visual > span {
   object-fit: contain;
   object-position: center bottom;
   transform: none;
+}
+
+/*
+ * AI project covers: separate screens in frames, fanned out like the Dribbble
+ * shots on the home page (.concept-shot). Each shot is placed by its centre
+ * (--x / --y) and sized by width (--w) but never taller than --h, both in
+ * container units so the fan keeps its shape at any slot size. --plate is the
+ * share of the slot that is on show — below 1240px the slot runs out through
+ * the card's floor and only its top three quarters are visible.
+ */
+.work-card__visual--shots {
+  --plate: 1;
+
+  container-type: size;
+  border: 0;
+  background: transparent;
+}
+
+.work-shot {
+  position: absolute;
+  left: var(--x, 50%);
+  top: calc(var(--y, 50%) * var(--plate));
+  z-index: var(--z, 1);
+  width: min(var(--w, 70cqw), calc(var(--h, 80cqh) * var(--plate) * var(--shot-ratio)));
+  aspect-ratio: var(--shot-ratio);
+  overflow: hidden;
+  border-radius: var(--shot-radius, 14px);
+  background: var(--paper);
+  box-shadow: 0 30px 56px -24px rgba(13, 17, 23, 0.45);
+  transform: translate(-50%, -50%) rotate(var(--r, 0deg));
+}
+
+.work-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.work-card--blue .work-shot {
+  box-shadow: 0 34px 64px -24px rgba(5, 12, 60, 0.6);
+}
+
+/* Cringe-meter: landing behind, the score over it, the phone result in front. */
+.work-card--design-cringe .work-shot:nth-child(1) {
+  --x: 38%; --y: 32%; --w: 62cqw; --h: 50cqh; --r: -5deg; --z: 1;
+}
+
+.work-card--design-cringe .work-shot:nth-child(2) {
+  --x: 50%; --y: 62%; --w: 66cqw; --h: 54cqh; --r: 2deg; --z: 2;
+}
+
+.work-card--design-cringe .work-shot:nth-child(3) {
+  --x: 84%; --y: 54%; --w: 26cqw; --h: 76cqh; --r: 5deg; --z: 3;
+  --shot-radius: 20px;
+}
+
+@media (max-width: 1240px) {
+  .work-card .work-card__visual--shots {
+    --plate: 0.75;
+  }
+}
+
+/*
+ * On a phone the fan takes the Dribbble pair from the home page
+ * (.concept-teaser--pair): one shot drops out, the other two run large, edge
+ * to edge, sunk below the card's floor: the score and the phone result.
+ */
+@media (max-width: 640px) {
+  .work-card--design-cringe .work-card__visual--shots {
+    margin-right: -24px;
+    margin-left: -24px;
+    border-radius: 0;
+  }
+
+  .work-card--design-cringe .work-shot:nth-child(1) {
+    display: none;
+  }
+
+  .work-card--design-cringe .work-shot:nth-child(2) {
+    --x: 44%; --y: 46%; --w: 88cqw; --h: 100cqh; --r: -4deg;
+  }
+
+  .work-card--design-cringe .work-shot:nth-child(3) {
+    --x: 80%; --y: 76%; --w: 40cqw; --h: 120cqh; --r: 5deg;
+    --shot-radius: 18px;
+  }
 }
 
 @media (min-width: 1241px) {
@@ -2908,6 +2997,35 @@ ol.case-bullet-list li::before {
 }
 
 /*
+ * On a phone the blue plate and its metric plates drop their outline: a soft
+ * inner shadow gives them their edge instead. Wider screens keep the outline.
+ */
+@media (max-width: 640px) {
+  /* No border at all: a transparent one still shows the blue ground in a 1px
+     rim round the windows where they run out through the floor. */
+  .case-page--ds-plugins .case-hero {
+    border: 0;
+  }
+
+  /* The shadow sits on a layer above the content (::after is the grain), so
+     the edge still reads where the white windows meet the floor. */
+  .case-page--ds-plugins .case-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    box-shadow: inset 0 0 24px rgba(8, 16, 92, 0.22);
+    pointer-events: none;
+  }
+
+  .case-page--ds-plugins .case-stat-grid--hero .case-stat-card {
+    border-color: transparent;
+    box-shadow: inset 0 0 24px rgba(8, 16, 92, 0.18);
+  }
+}
+
+/*
  * Plugin windows are cut out on transparency: no frame or plate around them,
  * and fitted whole rather than cropped to the slot.
  */
@@ -2920,8 +3038,61 @@ ol.case-bullet-list li::before {
   object-fit: contain;
 }
 
+/*
+ * On a tablet the artwork sits under the copy at the hero's full width, like
+ * the /ai-projects card, and runs out through the floor: the slot reaches the
+ * bottom edge and shows all but the last 14%, so only that stretch is cut,
+ * never the windows' top corners. The desktop keeps it whole beside the copy.
+ */
+@media (min-width: 641px) and (max-width: 1240px) {
+  .case-page--ds-plugins .case-hero__media {
+    align-self: end;
+    height: auto;
+    aspect-ratio: 1472 / 826;
+    margin-bottom: calc(var(--case-hero-pad) * -1);
+  }
+
+  .case-page--ds-plugins .case-hero__media img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: auto;
+    object-fit: initial;
+    transform: none;
+  }
+}
+
 .case-page--ds-plugins .case-feature-media img {
+  border: 0;
   border-radius: 0;
+  background: none;
+}
+
+/*
+ * On a phone the hero repeats the plugins card on /ai-projects: the artwork
+ * half again as wide as the screen, the manager in the middle with its top
+ * corners whole, the two windows behind it carried past the sides.
+ */
+@media (max-width: 640px) {
+  /* 150% of the width at 1472x960 is 0.98 of it tall; 0.84 shows all but the
+     windows' last stretch, which runs out through the hero's floor. */
+  .case-page--ds-plugins .case-hero__media {
+    height: auto;
+    aspect-ratio: 100 / 84;
+    margin: 0 -20px -20px;
+    border-radius: 0;
+  }
+
+  .case-page--ds-plugins .case-hero__media img {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 150%;
+    max-width: none;
+    height: auto;
+    object-fit: initial;
+    transform: translateX(-50%);
+  }
 }
 
 /* Some exported Yandex boards contain a dark matte in their outermost pixels. */
@@ -3751,6 +3922,12 @@ ol.case-bullet-list li::before {
     padding: 20px;
   }
 
+  /* The case headline gets the same air above it as the tags on a case card
+     (40px) rather than sitting tight under the panel's top edge. */
+  .case-hero {
+    padding-top: 40px;
+  }
+
   /* Keeps the cube strip under the pills (see .home-footer__cubes). */
   .home-footer__panel {
     padding-bottom: calc(20px + 96px);
@@ -3934,12 +4111,26 @@ ol.case-bullet-list li::before {
   }
 
   /*
-   * The AI project covers are window cut-outs with no backdrop: fitted whole
-   * and pinned to the top, so they sit inside the three quarters on show.
+   * The plugin windows run large enough to read: the manager in the middle,
+   * its top corners whole, the two behind it carried past the screen's sides
+   * and all three run out through the card's floor (150% of the width at
+   * 1472x960 is 0.98 of it tall; the slot shows 0.84). The case hero matches.
    */
-  .work-card--ds-plugins .work-card__visual > img,
-  .work-card--design-cringe .work-card__visual > img {
-    object-position: center top;
+  .work-card--ds-plugins .work-card__visual {
+    height: auto;
+    aspect-ratio: 100 / 84;
+    margin: 0 -24px;
+    border-radius: 0;
+  }
+
+  /* The manager is centred in the artwork, so centring the image centres it. */
+  .work-card--ds-plugins .work-card__visual > img {
+    top: 8px;
+    left: 50%;
+    width: 150%;
+    height: auto;
+    object-fit: initial;
+    transform: translateX(-50%);
   }
 
   /*
@@ -4106,6 +4297,14 @@ ol.case-bullet-list li::before {
   object-position: center bottom;
 }
 
+/* The plugin windows whole on the blue surface, standing on its floor with
+   some air above, as on the /ai-projects card. */
+.case-next__card[data-case='ds-plugins'] .case-next__media img {
+  padding: 10% 6% 0;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
 /* Whole composition on the graphite surface — cropping it only cuts the
    desktop card in half at thumbnail size. */
 .case-next__card[data-case='iquoto'] .case-next__media img {
@@ -4117,12 +4316,6 @@ ol.case-bullet-list li::before {
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.case-next__category {
-  font-size: 20px;
-  line-height: 1.4;
-  color: var(--ink-soft);
 }
 
 .case-next__title {
