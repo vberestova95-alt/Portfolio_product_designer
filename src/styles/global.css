@@ -1463,10 +1463,17 @@ html[lang='ru'] .error-page__visual > span {
     padding-bottom: 10vh;
   }
 
+  /*
+   * The clip-path repeats the card's own rounding. Once the card is
+   * transformed, iOS Safari stops clipping composited children — the grain's
+   * blend layer, the cover video — to border-radius, and they showed as grey
+   * shadows past the top corners. A clip-path cuts every layer.
+   */
   .work-card {
     top: var(--stack-top, calc(12px + (var(--stack-index) * 8px)));
     transform: scale(calc(1 - var(--stack-cover, 0) * 0.06));
     transition: none;
+    clip-path: inset(0 round var(--r-card));
   }
 
   .work-card::before {
