@@ -265,11 +265,13 @@ const FILM_PHOTOS_OF_ME = Object.entries(FILM_PHOTO_FILES)
 function heroCubeSize(width) {
   // Near desktop size on a phone too, with a cube's worth of slack left in the
   // row so all four settle side by side rather than one perched on another.
+  // On a phone the four share the row with the reload button (about 96px of
+  // gutters, button and gap), so the size comes from what is left.
   if (width <= 640) {
-    return Math.min(72, width / 6);
+    return Math.min(80, (width - 96) / 4.3);
   }
 
-  return Math.min(88, Math.max(64, width * 0.055));
+  return Math.min(100, Math.max(72, width * 0.062));
 }
 
 /*
@@ -363,26 +365,31 @@ export function HomePage({
           </div>
 
           {/*
-            * Editorial composition: a ruled row of small copy — the two summary
-            * lines, with the cubes (film photos among them) resting on its
-            * rule — and the headline set large on the panel floor. The headline still comes first in the document;
+            * Editorial composition: the summary standing on a rule, the cubes
+            * (film photos among them) resting on the same rule to its right —
+            * and the headline set large on the panel floor. The headline still comes first in the document;
             * the grid areas move it under the row.
             */}
           <div className="hero-panel__grid">
             <HeroTitle />
 
-            <div className="hero-panel__intro" data-pool-floor>
+            {/* The summary stands on the rule, at its left; the cubes land on
+                the rule's right part (it is their floor). On a phone the rule
+                moves above the summary — see the mobile block in global.css. */}
+            <div className="hero-panel__intro">
               {profile.summary.map((paragraph) => (
-                <p key={paragraph} className="hero-panel__lead">
+                <p key={paragraph} className="hero-panel__lead" data-pool-copy>
                   {paragraph}
                 </p>
               ))}
+              <span className="hero-panel__rule" data-pool-floor />
             </div>
           </div>
 
           <CubePool
             count={4}
             cubeSize={heroCubeSize}
+            align="end"
             className="hero-panel__cubes"
             photos={FILM_PHOTOS}
             photoCount={4}

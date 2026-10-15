@@ -46,8 +46,8 @@ export const profile = {
   name: 'Vladislava Berestova',
   title: 'Product Designer',
   summary: [
-    'Product Designer with 7 years of experience designing B2C and B2B digital products across gaming, fintech, proptech, HR Tech, logistics, and SaaS.',
-    'I enjoy solving complex product challenges from user research and product discovery to scalable UX, design systems, and feature delivery.',
+    // The line break is kept on desktop (two set lines), dropped on smaller screens.
+    'Product Designer with 7 years of experience designing B2C and B2B digital\nproducts across gaming, fintech, proptech, HR Tech, logistics, and SaaS.',
   ],
   focusAreas: [
     'Design systems',

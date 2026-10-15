@@ -23,7 +23,8 @@
  * - with reduced motion the pile is settled off screen and drawn once, still.
  *
  * The hero reuses it for a handful of cubes on its divider: it passes
- * `cubeSize` to fix the size, since it has no pile area to fill.
+ * `cubeSize` to fix the size, since it has no pile area to fill, and
+ * `align: 'end'` to drop them in at the right rather than across the width.
  *
  * A tile marked [data-upright] (the hero's portrait) never turns: it is pushed,
  * kicked and lost like the rest, but always lands face up and level.
@@ -36,6 +37,8 @@ const COPY_CLEARANCE = 20; // px kept between the top of the pile and the copy
 const DROP_INTERVAL = 70; // ms between cubes on the first drop
 const STEP = 1000 / 60;
 const FLOOR_CHECK_EVERY = 20; // frames between checks that the floor has not moved
+const WALL_THICK = 200;
+const OBSTACLE_GAP = 12; // px kept clear between the cubes and an obstacle
 
 let matterPromise = null;
 
@@ -65,7 +68,7 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
-export function attachLogoPool(pool, { cubeSize } = {}) {
+export function attachLogoPool(pool, { cubeSize, align } = {}) {
   if (!pool) {
     return undefined;
   }
@@ -87,6 +90,12 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
   let width = 0;
   let height = 0;
   let floor = 0;
+  // Gap from the card's right edge to the edge the cubes stop at: the floor
+  // element's right edge, or the left of an obstacle on it with a little air.
+  let inset = 0;
+  // Left edge the cubes may not cross: the right end of copy that sits on the
+  // floor beside them ([data-pool-copy], the hero summary), with some air.
+  let leftEdge = 0;
   let framesSinceFloorCheck = 0;
   let frame = null;
   let lastTime = 0;
@@ -133,6 +142,86 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
     });
   }
 
+  /*
+   * A [data-pool-obstacle] (the hero's reload button) is walled off: the
+   * right wall stands just left of it, so no cube lands on it or is shoved
+   * over it.
+   */
+  function readInset(cardRect = card.getBoundingClientRect()) {
+    const obstacle = card.querySelector('[data-pool-obstacle]');
+
+    if (obstacle) {
+      return Math.max(0, cardRect.right - obstacle.getBoundingClientRect().left + OBSTACLE_GAP);
+    }
+
+    const floorNode = card.querySelector('[data-pool-floor]');
+    return floorNode ? Math.max(0, cardRect.right - floorNode.getBoundingClientRect().right) : 0;
+  }
+
+  /*
+   * Copy standing on the floor ([data-pool-copy] wholly above it) is walled
+   * off on its right, so the cubes keep beside it instead of over it. Copy
+   * under the floor (the phone layout) leaves the cubes the full width.
+   */
+  function readLeftEdge(cardRect = card.getBoundingClientRect()) {
+    const copy = card.querySelector('[data-pool-copy]');
+    const floorNode = card.querySelector('[data-pool-floor]');
+
+    if (!copy || !floorNode) {
+      return 0;
+    }
+
+    const copyRect = copy.getBoundingClientRect();
+
+    if (copyRect.bottom > floorNode.getBoundingClientRect().top + 1) {
+      return 0;
+    }
+
+    return Math.max(0, copyRect.right - cardRect.left + OBSTACLE_GAP * 2);
+  }
+
+  function syncInset() {
+    const next = readInset();
+    const nextLeft = readLeftEdge();
+
+    if (Math.abs(next - inset) < 1 && Math.abs(nextLeft - leftEdge) < 1) {
+      return;
+    }
+
+    inset = next;
+    leftEdge = nextLeft;
+
+    if (walls[1]) {
+      Matter.Body.setPosition(walls[1], { x: leftWallX(), y: walls[1].position.y });
+    }
+
+    if (walls[2]) {
+      Matter.Body.setPosition(walls[2], { x: rightWallX(), y: walls[2].position.y });
+    }
+  }
+
+  // How far right the cubes may go: the card's edge, or left of an obstacle.
+  function roomRight() {
+    return card.querySelector('[data-pool-obstacle]') ? width - inset : width;
+  }
+
+  function rightWallX() {
+    return roomRight() + WALL_THICK / 2;
+  }
+
+  function leftWallX() {
+    return leftEdge - WALL_THICK / 2;
+  }
+
+  /*
+   * Where the end-aligned pile starts: half a cube in from the right wall when
+   * the row has that much to spare, so it does not sit hard against it.
+   */
+  function endStart() {
+    const spare = roomRight() - leftEdge - tiles.length * size * 1.08;
+    return roomRight() - clamp(spare, 0, size * 0.5);
+  }
+
   function measure() {
     const cardRect = card.getBoundingClientRect();
     const copy =
@@ -142,6 +231,9 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
     width = cardRect.width;
     height = cardRect.height;
     floor = readFloor(cardRect);
+
+    inset = readInset(cardRect);
+    leftEdge = readLeftEdge(cardRect);
 
     const pileHeight = Math.max(
       0,
@@ -159,12 +251,12 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
     engine = Engine.create({ enableSleeping: false });
     engine.gravity.y = 1.1;
 
-    const thick = 200;
+    const thick = WALL_THICK;
     const tall = height * 4;
     walls = [
       Bodies.rectangle(width / 2, floor + thick / 2, width * 3, thick, { isStatic: true }),
-      Bodies.rectangle(-thick / 2, floor - tall / 2, thick, tall, { isStatic: true }),
-      Bodies.rectangle(width + thick / 2, floor - tall / 2, thick, tall, { isStatic: true }),
+      Bodies.rectangle(leftWallX(), floor - tall / 2, thick, tall, { isStatic: true }),
+      Bodies.rectangle(rightWallX(), floor - tall / 2, thick, tall, { isStatic: true }),
     ];
     Composite.add(engine.world, walls);
 
@@ -191,13 +283,27 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
      * with a little jitter — random x alone stacks them into towers, and an
      * upright cube cannot topple off one.
      */
-    const perRow = Math.max(1, Math.min(tiles.length, Math.floor(width / (size * 1.05))));
-    const column = width / perRow;
-    const x = clamp(
-      (index % perRow + 0.5) * column + (Math.random() - 0.5) * (column - size) * 0.8,
-      size / 2,
-      width - size / 2,
+    const span = roomRight();
+    const perRow = Math.max(
+      1,
+      Math.min(tiles.length, Math.floor((span - leftEdge) / (size * 1.05))),
     );
+    const column = (span - leftEdge) / perRow;
+    /*
+     * At the end: one column per cube, just wider than a cube, packed from
+     * the right edge in — so the pile lands there and not across the panel.
+     */
+    const x = align === 'end'
+      ? clamp(
+          endStart() - (index % perRow + 0.5) * size * 1.08 + (Math.random() - 0.5) * size * 0.06,
+          leftEdge + size / 2,
+          span - size / 2,
+        )
+      : clamp(
+          leftEdge + (index % perRow + 0.5) * column + (Math.random() - 0.5) * (column - size) * 0.8,
+          leftEdge + size / 2,
+          span - size / 2,
+        );
     // Staggered heights so they do not land as one slab.
     const y = -size * (1 + (index % 3) * 0.8) - Math.random() * size;
 
@@ -231,13 +337,19 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
   /* Rows on the floor — used when there is no time to watch them fall. */
   function placeOnFloor(body, index) {
     const { Body } = Matter;
-    const perRow = Math.max(1, Math.floor(width / (size * 1.05)));
+    const span = roomRight();
+    const perRow = Math.max(1, Math.floor((span - leftEdge) / (size * 1.05)));
     const row = Math.floor(index / perRow);
     const col = index % perRow;
     const offset = row % 2 ? size * 0.5 : 0;
+    const along = size * 0.55 + col * size * 1.05 + offset;
 
     Body.setPosition(body, {
-      x: clamp(size * 0.55 + col * size * 1.05 + offset, size / 2, width - size / 2),
+      x: clamp(
+        align === 'end' ? endStart() - along : leftEdge + along,
+        leftEdge + size / 2,
+        span - size / 2,
+      ),
       y: floor - size * 0.55 - row * size * 1.02,
     });
     Body.setAngle(body, body.isUpright ? 0 : (Math.random() - 0.5) * 0.3);
@@ -270,6 +382,7 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
     if (framesSinceFloorCheck >= FLOOR_CHECK_EVERY) {
       framesSinceFloorCheck = 0;
       syncFloor();
+      syncInset();
       slidePerched();
     }
 
@@ -286,7 +399,7 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
    * fit in one row — a full pile is meant to stack.
    */
   function slidePerched() {
-    if (bodies.length * size * 1.05 > width) {
+    if (bodies.length * size * 1.05 > roomRight() - leftEdge) {
       return;
     }
 
@@ -374,6 +487,7 @@ export function attachLogoPool(pool, { cubeSize } = {}) {
 
   function drop() {
     syncFloor();
+    syncInset();
     syncUpright();
     hasDropped = true;
     landed = new Set();

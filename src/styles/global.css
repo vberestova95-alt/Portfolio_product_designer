@@ -574,27 +574,52 @@ html[lang='ru'] .error-page__visual > span {
 }
 
 /*
- * One ruled row, both summary paragraphs hung from the same top edge. The
- * cubes, film photos among them, rest on its rule (see CubePool).
+ * The summary standing on a rule. The cubes, film photos among them, rest on
+ * the same rule to its right (see CubePool), beside the reload button pinned
+ * to the rule's right end.
  */
 .hero-panel__intro {
   --lead-size: clamp(15px, 1.1vw, 18px);
 
   grid-area: intro;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: clamp(20px, 2.4vw, 44px);
-  padding-top: 20px;
+  gap: 20px;
+}
+
+.hero-panel__rule {
+  position: relative;
+  display: block;
   border-top: 1px solid var(--inverse-line);
 }
 
 .hero-panel__lead {
   margin: 0;
-  max-width: 38ch;
+  /*
+   * Two set lines: the break is in the copy itself (portfolioData). The box
+   * hugs the text, so the cubes beside it (lib/logoPool.js walls them off at
+   * its right edge) get the rest of the rule.
+   */
+  width: fit-content;
+  white-space: pre-line;
   font-size: var(--lead-size);
   line-height: 1.55;
   color: rgba(247, 248, 252, 0.86);
+}
+
+/*
+ * Up to 900px there is no row to share: the rule goes above the summary, the
+ * cubes have its full width, and the summary wraps freely.
+ */
+@media (max-width: 900px) {
+  .hero-panel__rule {
+    order: -1;
+  }
+
+  .hero-panel__lead {
+    white-space: normal;
+  }
 }
 
 /* The headline breaks differently on a phone — see the mobile block. */
@@ -1934,9 +1959,8 @@ html[lang='ru'] .logo-cube--label {
 }
 
 /*
- * The hero's cleared state (CubePool with `contact`): "Contact me" and a round
- * reload button side by side, centred where the restore pill would sit. The
- * pair rises in as one; the reload icon turns a little on hover.
+ * The hero's cleared state (CubePool with `contact`): "Contact me", centred
+ * where the restore pill would sit, rising in.
  */
 .cube-pool__cleared {
   position: absolute;
@@ -1947,6 +1971,17 @@ html[lang='ru'] .logo-cube--label {
   gap: 10px;
   transform: translate(-50%, -50%);
   animation: cube-restore-in 600ms cubic-bezier(0.22, 0.8, 0.24, 1) both;
+}
+
+/*
+ * The hero's reload button, always there: on the divider's right end, just
+ * above it. The cubes are walled off from it (lib/logoPool.js).
+ */
+.cube-pool__reload--pinned {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 12px);
+  z-index: 6;
 }
 
 .cube-pool__reload {
@@ -2712,17 +2747,34 @@ ol.case-bullet-list li::before {
   background: transparent;
 }
 
+/*
+ * The artwork is 1800x1662 with a 244px transparent band on top, so the part
+ * that matters is 1800x1418. It is fitted whole (contain, not cover) and
+ * centred: a cover fit ran the desktop screen and the form off the right edge
+ * whenever the slot was wider than that ratio.
+ */
 .case-page--iquoto .case-hero__media img {
-  --iquoto-art-width: max(100cqw, calc(100cqh * 1800 / 1418));
+  --iquoto-art-width: min(100cqw, calc(100cqh * 1800 / 1418));
   display: block;
   position: absolute;
-  left: 0;
-  top: calc(var(--iquoto-art-width) * -244 / 1800);
+  left: calc((100cqw - var(--iquoto-art-width)) / 2);
+  top: calc(
+    (100cqh - var(--iquoto-art-width) * 1418 / 1800) / 2 - var(--iquoto-art-width) * 244 / 1800
+  );
   width: var(--iquoto-art-width);
   height: auto;
   max-width: none;
   object-fit: initial;
   transform: none;
+}
+
+/* Stacked under the copy, the slot takes the artwork's own ratio, so the fit
+   above fills the full width instead of shrinking into a short band. */
+@media (max-width: 1240px) {
+  .case-page--iquoto .case-hero__media {
+    height: auto;
+    aspect-ratio: 1800 / 1418;
+  }
 }
 
 .case-page--kokoc-group .case-image-band--kokoc-about,
@@ -4003,8 +4055,7 @@ ol.case-bullet-list li::before {
   .hero-panel__intro {
     --lead-size: 16px;
 
-    gap: 14px;
-    padding-top: 16px;
+    gap: 16px;
   }
 
   /* One paragraph is enough on a phone — the experience line carries it. */

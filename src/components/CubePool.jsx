@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { attachLogoPool } from '../lib/logoPool.js';
 import { ContactMenu } from './NavMenu.jsx';
 
@@ -14,8 +15,11 @@ import { ContactMenu } from './NavMenu.jsx';
  * `featured` (a subset of `photos`); `labels` puts a word on a cube each. Photo and
  * label cubes stay upright (data-upright), so they never land on their side. With `restoreLabel`, kicking every cube out
  * brings up a button that drops a fresh, newly dealt round. With `contact`
- * ({ email, linkedin, telegram }) as well, that button shrinks to a reload
- * icon ahead of a "Contact me" pill (a bottom sheet on a phone), so the empty panel becomes a way to write.
+ * ({ email, linkedin, telegram }) as well, the empty panel offers a "Contact
+ * me" pill instead (a bottom sheet on a phone), so it becomes a way to write,
+ * and a round reload button stays on the floor at all times — at its right
+ * end, above the divider — to deal a fresh round whenever. It is marked
+ * [data-pool-obstacle], so the cubes are walled off from it and never cover it.
  */
 function shuffle(list) {
   return [...list].sort(() => Math.random() - 0.5);
@@ -61,6 +65,7 @@ export function ReloadIcon() {
 export function CubePool({
   count,
   cubeSize,
+  align,
   className = '',
   photos = [],
   photoCount = 0,
@@ -75,8 +80,16 @@ export function CubePool({
   const [slots, setSlots] = useState(dealRound);
   const [round, setRound] = useState(0);
   const [restoreTop, setRestoreTop] = useState(null);
+  // The floor the pinned reload button is mounted into (hero only).
+  const [floorNode, setFloorNode] = useState(null);
 
-  useEffect(() => attachLogoPool(poolRef.current, { cubeSize }), [cubeSize]);
+  useEffect(() => attachLogoPool(poolRef.current, { cubeSize, align }), [cubeSize, align]);
+
+  useEffect(() => {
+    if (contact) {
+      setFloorNode(poolRef.current?.parentElement?.querySelector('[data-pool-floor]') ?? null);
+    }
+  }, [contact]);
 
   useEffect(() => {
     const box = poolRef.current?.parentElement;
@@ -143,17 +156,25 @@ export function CubePool({
         })}
       </div>
 
+      {contact && floorNode
+        ? createPortal(
+            <button
+              type="button"
+              className="cube-pool__reload cube-pool__reload--pinned"
+              aria-label={restoreLabel}
+              title={restoreLabel}
+              onClick={handleRestore}
+              onPointerDown={(event) => event.stopPropagation()}
+              data-pool-obstacle
+            >
+              <ReloadIcon />
+            </button>,
+            floorNode,
+          )
+        : null}
+
       {restoreTop !== null && contact ? (
         <div className="cube-pool__cleared" style={{ top: restoreTop }}>
-          <button
-            type="button"
-            className="cube-pool__reload"
-            aria-label={restoreLabel}
-            title={restoreLabel}
-            onClick={handleRestore}
-          >
-            <ReloadIcon />
-          </button>
           <ContactMenu
             email={contact.email}
             linkedin={contact.linkedin}
