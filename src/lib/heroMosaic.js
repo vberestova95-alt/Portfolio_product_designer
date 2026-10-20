@@ -1212,7 +1212,8 @@ export function attachHeroMosaic(
       // The gap is kept under the text's last line, wherever that ends. When
       // the headline is already too close, the summary moves up instead —
       // pushing the headline down would run it into the panel's foot.
-      copy.style.removeProperty('--copy-shift');
+      // Not every mosaic has a summary: the concept card passes an anchor only.
+      copy?.style.removeProperty('--copy-shift');
       let textBottom = headlineRow * size;
       if (plate) {
         textBottom = 0;
