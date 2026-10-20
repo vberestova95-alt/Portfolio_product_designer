@@ -466,6 +466,8 @@ html[lang='ru'] .error-page__visual > span {
 .hero-panel__plate .hero-panel__lead {
   white-space: normal;
   line-height: 1.5;
+  /* Set by lib/heroMosaic.js when the summary has to rise off the headline. */
+  transform: translateY(var(--copy-shift, 0));
 }
 
 /*
@@ -2682,16 +2684,6 @@ ol.case-bullet-list li::before {
   max-width: 62ch;
 }
 
-/*
- * Three rows of the mosaic's squares (about a tenth of the panel's width
- * each, 130–180px), so its five scattered squares have room to keep apart.
- */
-@media (min-width: 901px) {
-  .home-footer__panel:has(.home-footer__mosaic) {
-    min-height: calc(3 * clamp(130px, (100vw - 48px) / 10, 180px) + 6px);
-  }
-}
-
 /* The plain-cube mosaic under the footer's copy; the panel turns black for it. */
 .home-footer__panel:has(.home-footer__mosaic) {
   background: #06080d;
@@ -4302,7 +4294,11 @@ ol.case-bullet-list li::before {
      * summary 32px under them (up to four lines), the three-line headline and
      * its floor.
      */
-    min-height: max(min(78svh, 640px), calc(133vw + 190px));
+    min-height: max(
+      min(78svh, 640px),
+      /* Past a phone the mosaic gains columns, not height: grow slower there. */
+      min(calc(133vw + 190px), calc(46vw + 564px))
+    );
     /* 40px above the nav, as above the tags on the case card below. */
     padding-top: 40px;
     padding-bottom: var(--hero-pad-bottom);
@@ -4319,6 +4315,17 @@ ol.case-bullet-list li::before {
 
     justify-content: flex-start;
     padding-block: 29px 0;
+  }
+
+  /* A larger phone or a small tablet has the room for a bigger summary. */
+  @media (min-width: 481px) {
+    .hero-panel__plate {
+      --lead-size: 17px;
+
+      /* Hugging the headline: the text rises into the empty row above. */
+      justify-content: flex-end;
+      padding-block: 0 4px;
+    }
   }
 
   /* The copy runs the full width at the foot here, so the shade rises from the bottom. */

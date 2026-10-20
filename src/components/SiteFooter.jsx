@@ -25,7 +25,7 @@ const smooth = (a, b, x) => {
 const STACKED_QUERY = '(max-width: 900px)';
 
 /*
- * Which squares sit under the copy, where none of the five may go. Side by
+ * Which squares sit under the copy, where none may go. Side by
  * side, the copy holds the left and the pills the top right corner. Stacked,
  * the copy fills the panel, so there are no squares at all.
  */
@@ -42,8 +42,8 @@ function footerShade(xf, yf) {
 export function SiteFooter({ profile }) {
   const mosaicRef = useRef(null);
 
-  // Five plain grey cubes, scattered at random clear of the copy — no photos,
-  // no letters. None once the panel stacks (footerShade).
+  // The same plain grey squares as the rest of the site, kept clear of the
+  // copy. None once the panel stacks (footerShade).
   useEffect(
     () =>
       SHOW_FOOTER_CUBES
@@ -52,7 +52,6 @@ export function SiteFooter({ profile }) {
             maxBoards: 0,
             shade: footerShade,
             tones: PLAIN_TONES,
-            count: 5,
           }),
     [],
   );

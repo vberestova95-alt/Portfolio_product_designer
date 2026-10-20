@@ -404,7 +404,8 @@ export function attachHeroMosaic(
   let visible = true;
   let destroyed = false;
 
-  const compact = () => width < 640;
+  // Matches the stylesheet's phone block (max-width: 640px).
+  const compact = () => width <= 640;
   const tileAt = (row, col) => tiles[row * cols + col];
 
   function later(fn, ms) {
@@ -1208,15 +1209,25 @@ export function attachHeroMosaic(
      * headline is lifted to sit just under the plate instead.
      */
     if (anchor) {
-      // A summary that runs past its plate pushes the headline down by as much:
-      // the gap is kept under the text's last line, wherever that ends.
+      // The gap is kept under the text's last line, wherever that ends. When
+      // the headline is already too close, the summary moves up instead —
+      // pushing the headline down would run it into the panel's foot.
+      copy.style.removeProperty('--copy-shift');
       let textBottom = headlineRow * size;
       if (plate) {
+        textBottom = 0;
         [...copy.children].forEach((line) => {
           textBottom = Math.max(textBottom, line.getBoundingClientRect().bottom - rect.top);
         });
       }
-      const lift = compact() && plate ? anchorTop - textBottom - 32 : 0;
+      const room = compact() && plate ? anchorTop - textBottom - 32 : 0;
+      // Past a small phone the headline keeps its place at the foot and the
+      // summary follows it, either way; lifting it would leave the foot empty.
+      const follow = width > 480;
+      const lift = follow ? 0 : Math.max(0, room);
+      if (room < 0 || (follow && room)) {
+        copy.style.setProperty('--copy-shift', `${room}px`);
+      }
       anchor.dataset.lift = String(lift);
       anchor.style.transform = lift ? `translateY(${-lift}px)` : '';
     }
