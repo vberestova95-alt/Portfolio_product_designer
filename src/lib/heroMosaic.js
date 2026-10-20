@@ -1216,7 +1216,7 @@ export function attachHeroMosaic(
           textBottom = Math.max(textBottom, line.getBoundingClientRect().bottom - rect.top);
         });
       }
-      const lift = compact() && plate ? anchorTop - textBottom - 44 : 0;
+      const lift = compact() && plate ? anchorTop - textBottom - 36 : 0;
       anchor.dataset.lift = String(lift);
       anchor.style.transform = lift ? `translateY(${-lift}px)` : '';
     }
