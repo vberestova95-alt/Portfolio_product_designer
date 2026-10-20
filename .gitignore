@@ -6,3 +6,5 @@ node_modules
 .mcp.json
 *.tmp.mjs
 .netlify
+.vercel
+.env*.local

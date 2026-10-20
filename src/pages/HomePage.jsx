@@ -16,14 +16,22 @@ import logoMidjourney from '../assets/ai-logos/midjourney.svg';
 import logoRecraft from '../assets/ai-logos/recraft.svg';
 import { BrandLogo } from '../components/BrandLogo.jsx';
 import { CubePool, ReloadIcon } from '../components/CubePool.jsx';
-import { ContactMenu, NavMenu } from '../components/NavMenu.jsx';
+import { ContactMenu, NavMenu, useMatchMedia } from '../components/NavMenu.jsx';
 import { SiteFooter } from '../components/SiteFooter.jsx';
 import { WorkCard } from '../components/WorkCard.jsx';
 import { useLanguage, useUi } from '../i18n/LanguageContext.jsx';
+import { MOSAIC_PHOTOS } from '../data/mosaicMedia.js';
+import {
+  EMPTY_SQUARES,
+  LIGHT_TONES,
+  PLAIN_TONES,
+  attachHeroMosaic,
+} from '../lib/heroMosaic.js';
 import { attachHeroObject } from '../lib/heroObject.js';
 import { attachLogoPool } from '../lib/logoPool.js';
 import { attachPinnedHeader } from '../lib/pinnedHeader.js';
 import { SHOW_OBJECT_GRAPHICS } from '../lib/siteGraphics.js';
+import { attachCaseCube } from '../lib/caseCube.js';
 import { attachShotTrail } from '../lib/shotTrail.js';
 import { attachWorkStack } from '../lib/workStack.js';
 
@@ -33,6 +41,16 @@ const SHOW_ACHIEVEMENTS_SECTION = false;
 // Client logo band under the hero copy. Assets, data and styles are all still
 // in place — flip this back to true to bring the row back.
 const SHOW_CLIENT_LOGOS = false;
+
+// The film-photo cubes on the hero's rule. Hidden while the mosaic background
+// carries the photos; flip back to true to bring them (and the rule) back.
+const SHOW_HERO_CUBES = false;
+
+// The cases as one cube that rolls over on scroll (lib/caseCube.js), on a
+// desktop only — narrower screens, and anyone who asks for less motion, keep
+// the sticky stack of cards. Flip to false for the stack everywhere.
+const SHOW_CASE_CUBE = true;
+const CASE_CUBE_QUERY = '(min-width: 1241px) and (prefers-reduced-motion: no-preference)';
 
 /*
  * The brand is already on the page it links to, so a plain navigation to "/" is
@@ -70,14 +88,14 @@ function SectionHeader({ label, title, description }) {
  * The headline is set line by line, so each language gets its own breaks: one
  * set for the wide two-line layout, one for the phone's three lines.
  */
-function HeroTitle() {
+function HeroTitle({ titleRef }) {
   const { lang } = useLanguage();
 
   if (lang === 'ru') {
     return (
-      <h1>
+      <h1 ref={titleRef}>
         Продуктовый
-        <br className="hero-br--mobile" /> <span className="serif-accent">дизайнер</span>
+        <br className="hero-br--mobile" /> дизайнер
         <br className="hero-br--desktop" /> сложных
         <br className="hero-br--mobile" /> цифровых систем
       </h1>
@@ -85,8 +103,8 @@ function HeroTitle() {
   }
 
   return (
-    <h1>
-      Product <span className="serif-accent">Designer</span>
+    <h1 ref={titleRef}>
+      Product Designer
       <br className="hero-br--mobile" /> for
       <br className="hero-br--desktop" /> complex
       <br className="hero-br--mobile" /> digital systems
@@ -142,14 +160,45 @@ function isOnCube(pool, event) {
   });
 }
 
+// The tumbling logo cubes on the practice card. Hidden while the card carries
+// the mosaic; flip back to true to bring them back.
+const SHOW_LOGO_POOL = false;
+
+/*
+ * The practice card's mosaic: the copy sits at the top (the heading) and at
+ * the bottom left (the link), so those squares sit darker.
+ */
+function practiceShade(xf, yf) {
+  const heading = 1 - smoothstepUnit(0.28, 0.58, yf);
+  const link = smoothstepUnit(0.78, 0.92, yf) * (1 - smoothstepUnit(0.35, 0.6, xf));
+  return Math.max(heading * 0.85, link * 0.8);
+}
+
+function smoothstepUnit(a, b, x) {
+  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+}
+
 function PracticeCard({ contact }) {
   const text = useUi().home;
   const cardRef = useRef(null);
   const poolRef = useRef(null);
+  const mosaicRef = useRef(null);
   const pressedCubeRef = useRef(false);
   const [isCleared, setIsCleared] = useState(false);
 
-  useEffect(() => attachLogoPool(poolRef.current), []);
+  useEffect(() => (SHOW_LOGO_POOL ? attachLogoPool(poolRef.current) : undefined), []);
+  useEffect(
+    () =>
+      SHOW_LOGO_POOL
+        ? undefined
+        : attachHeroMosaic(mosaicRef.current, {
+            shade: practiceShade,
+            maxBoards: 0,
+            tones: PLAIN_TONES,
+          }),
+    [],
+  );
 
   useEffect(() => {
     const card = cardRef.current;
@@ -185,9 +234,15 @@ function PracticeCard({ contact }) {
   return (
     <article
       ref={cardRef}
-      className="editorial-card editorial-card--blue editorial-card--practice"
+      className={`editorial-card editorial-card--blue editorial-card--practice${
+        SHOW_LOGO_POOL ? '' : ' editorial-card--mosaic'
+      }`}
       data-reveal
     >
+      {SHOW_LOGO_POOL ? null : (
+        <canvas className="hero-mosaic practice-card__mosaic" ref={mosaicRef} aria-hidden="true" />
+      )}
+
       <a
         className="practice-card__hit"
         href={AI_PROJECTS_HREF}
@@ -197,20 +252,22 @@ function PracticeCard({ contact }) {
         <span className="visually-hidden">{text.practiceLink}</span>
       </a>
 
+      {/* One face throughout — the accent set in the heading's own type. */}
       <h3 className="editorial-card__title" data-pool-ceiling>
-        {text.practiceTitle.start}{' '}
-        <span className="serif-accent">{text.practiceTitle.accent}</span>
+        {text.practiceTitle.start} {text.practiceTitle.accent}
         {text.practiceTitle.end}
       </h3>
 
-      <div className="logo-pool" ref={poolRef} aria-hidden="true">
-        {LOGO_CUBES.map((cube) => (
-          // Logos land the right way up, like the photos.
-          <span key={cube.id} className="logo-cube" data-cube data-upright>
-            <img src={cube.logo} alt="" draggable={false} />
-          </span>
-        ))}
-      </div>
+      {SHOW_LOGO_POOL ? (
+        <div className="logo-pool" ref={poolRef} aria-hidden="true">
+          {LOGO_CUBES.map((cube) => (
+            // Logos land the right way up, like the photos.
+            <span key={cube.id} className="logo-cube" data-cube data-upright>
+              <img src={cube.logo} alt="" draggable={false} />
+            </span>
+          ))}
+        </div>
+      ) : null}
 
       {isCleared ? (
         <div className="practice-card__cleared" role="status">
@@ -275,44 +332,120 @@ function heroCubeSize(width) {
 }
 
 /*
- * The concept card. On desktop the six shots are scattered and revealed on
- * hover (lib/shotTrail.js). Up to 1240px the card shows two of them — the
- * first and the fourth — large, under the link, running out past its floor
- * (.concept-teaser--pair in global.css).
+ * The cases as one cube. Its first face is the word, over the grey squares;
+ * the rest are the case covers, which roll in one by one as the page
+ * scrolls. The section is tall and the cube sticks to the screen while it
+ * passes — lib/caseCube.js turns it.
+ */
+function CaseCube({ cases }) {
+  const sectionRef = useRef(null);
+  const mosaicRef = useRef(null);
+
+  useEffect(() => attachCaseCube(sectionRef.current), []);
+  // The grey squares as on the design concepts intro: the default lean, darker
+  // to the left and along the floor, where the word sits.
+  useEffect(
+    () =>
+      attachHeroMosaic(mosaicRef.current, {
+        maxBoards: 0,
+        tones: PLAIN_TONES,
+      }),
+    [],
+  );
+
+  return (
+    <div className="case-cube" ref={sectionRef} style={{ '--cube-faces': cases.length + 1 }}>
+      <div className="case-cube__stage">
+        <div className="case-cube__body" data-cube-body>
+          <div className="case-cube__face case-cube__face--title is-on is-front" data-cube-face>
+            <canvas className="hero-mosaic case-cube__mosaic" ref={mosaicRef} aria-hidden="true" />
+            <h2 className="case-cube__title">Cases</h2>
+          </div>
+
+          {cases.map((item, index) => (
+            <div key={item.id} className="case-cube__face" data-cube-face>
+              <WorkCard item={item} index={index} total={cases.length} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// The scattered Dribbble shots on the concept card. Off while the card carries
+// the squares, where the shots assemble on hover instead; flip back to true to
+// bring the scatter back.
+const SHOW_CONCEPT_SHOTS = false;
+
+/*
+ * The concept card. With the shots: on desktop the six are scattered and
+ * revealed on hover (lib/shotTrail.js); up to 1240px the card shows two of
+ * them — the first and the fourth — large, under the link, running out past
+ * its floor (.concept-teaser--pair in global.css). Without them, the card is
+ * white with light squares, as on the page it links to, and under the copy
+ * sit mosaics that assemble into the shots while the pointer is over the card.
  */
 function ConceptTeaser({ teaser }) {
   const trailRef = useRef(null);
+  const mosaicRef = useRef(null);
+  const copyRef = useRef(null);
+  const footerRef = useRef(null);
 
-  useEffect(() => attachShotTrail(trailRef.current), []);
+  useEffect(() => (SHOW_CONCEPT_SHOTS ? attachShotTrail(trailRef.current) : undefined), []);
+  useEffect(
+    () =>
+      SHOW_CONCEPT_SHOTS
+        ? undefined
+        : attachHeroMosaic(mosaicRef.current, {
+            photos: teaser.shots.map((shot) => shot.src),
+            shade: practiceShade,
+            maxBoards: 2,
+            tones: LIGHT_TONES,
+            theme: 'light',
+            assemble: true,
+            below: copyRef.current,
+            anchor: footerRef.current,
+          }),
+    [],
+  );
 
   return (
     <article
-      className="editorial-card concept-teaser concept-teaser--pair"
+      className={`editorial-card concept-teaser ${
+        SHOW_CONCEPT_SHOTS ? 'concept-teaser--pair' : 'concept-teaser--mosaic'
+      }`}
       ref={trailRef}
       data-reveal
     >
+      {SHOW_CONCEPT_SHOTS ? null : (
+        <canvas className="hero-mosaic practice-card__mosaic" ref={mosaicRef} aria-hidden="true" />
+      )}
+
       <a className="concept-teaser__hit" href={teaser.href}>
         <span className="visually-hidden">{teaser.linkLabel}</span>
       </a>
 
-      <div className="concept-teaser__shots" aria-hidden="true">
-        {teaser.shots.map((shot) => (
-          <div key={shot.src} className="concept-shot" data-shot>
-            {/* The frame carries the reveal so the wrapper is free for the
-                pointer lean — one transform each, no fighting. */}
-            <span className="concept-shot__frame">
-              <img src={shot.src} alt="" loading="lazy" />
-            </span>
-          </div>
-        ))}
-      </div>
+      {SHOW_CONCEPT_SHOTS ? (
+        <div className="concept-teaser__shots" aria-hidden="true">
+          {teaser.shots.map((shot) => (
+            <div key={shot.src} className="concept-shot" data-shot>
+              {/* The frame carries the reveal so the wrapper is free for the
+                  pointer lean — one transform each, no fighting. */}
+              <span className="concept-shot__frame">
+                <img src={shot.src} alt="" loading="lazy" />
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : null}
 
-      <div className="concept-teaser__copy">
+      <div className="concept-teaser__copy" ref={copyRef}>
         <h3 className="editorial-card__title">{teaser.title}</h3>
         <p className="editorial-card__copy">{teaser.description}</p>
       </div>
 
-      <div className="concept-teaser__footer">
+      <div className="concept-teaser__footer" ref={footerRef}>
         <span className="concept-teaser__cta">
           {teaser.linkLabel}
           <span aria-hidden="true">→</span>
@@ -341,18 +474,39 @@ export function HomePage({
     telegram: profile.telegram,
   };
 
+  const mosaicRef = useRef(null);
+  const copyRef = useRef(null);
+  const titleRef = useRef(null);
+
   useEffect(() => attachHeroObject(heroRef.current, objectRef.current), []);
-  useEffect(() => attachWorkStack(stackRef.current), []);
+  const showCube = useMatchMedia(CASE_CUBE_QUERY, SHOW_CASE_CUBE);
+  useEffect(() => (showCube ? undefined : attachWorkStack(stackRef.current)), [showCube]);
 
   // The hero's top row comes back as a bar on scroll up, as on every page —
   // once the blue hero itself has left the screen.
   const topRef = useRef(null);
   useEffect(() => attachPinnedHeader(topRef.current, { hideOver: heroRef.current }), []);
 
+  // The mosaic background, with the summary's plate cut to its grid. The
+  // squares round the game are plain grey cubes, as on the AI projects intro.
+  useEffect(
+    () =>
+      attachHeroMosaic(mosaicRef.current, {
+        photos: MOSAIC_PHOTOS,
+        tones: PLAIN_TONES,
+        copy: copyRef.current,
+        anchor: titleRef.current,
+        header: topRef.current,
+        emptySquares: EMPTY_SQUARES,
+      }),
+    [],
+  );
+
   return (
     <div className="home-page">
-      <section className="hero-shell">
+      <section className="hero-shell" data-track-area="hero">
         <div className="home-shell hero-panel" ref={heroRef}>
+          <canvas className="hero-mosaic" ref={mosaicRef} aria-hidden="true" />
           <div className="hero-panel__top" ref={topRef} data-pool-ceiling>
             <a className="hero-panel__brand" href="/" onClick={handleBrandClick}>
               <BrandLogo name={profile.name} />
@@ -365,39 +519,44 @@ export function HomePage({
           </div>
 
           {/*
-            * Editorial composition: the summary standing on a rule, the cubes
-            * (film photos among them) resting on the same rule to its right —
-            * and the headline set large on the panel floor. The headline still comes first in the document;
-            * the grid areas move it under the row.
+            * Editorial composition: the headline set large on the panel floor,
+            * at the left; the mosaic's photos fill the right. The summary sits
+            * in a plate cut to the mosaic's grid, just above the headline —
+            * lib/heroMosaic.js places it once the grid is measured. The cubes
+            * and the rule they stood on are switched off (SHOW_HERO_CUBES).
             */}
           <div className="hero-panel__grid">
-            <HeroTitle />
+            <HeroTitle titleRef={titleRef} />
 
-            {/* The summary stands on the rule, at its left; the cubes land on
-                the rule's right part (it is their floor). On a phone the rule
-                moves above the summary — see the mobile block in global.css. */}
-            <div className="hero-panel__intro">
-              {profile.summary.map((paragraph) => (
-                <p key={paragraph} className="hero-panel__lead" data-pool-copy>
-                  {paragraph}
-                </p>
-              ))}
-              <span className="hero-panel__rule" data-pool-floor />
-            </div>
+            {SHOW_HERO_CUBES ? (
+              <div className="hero-panel__intro">
+                <span className="hero-panel__rule" data-pool-floor />
+              </div>
+            ) : null}
           </div>
 
-          <CubePool
-            count={4}
-            cubeSize={heroCubeSize}
-            align="end"
-            className="hero-panel__cubes"
-            photos={FILM_PHOTOS}
-            photoCount={4}
-            featured={FILM_PHOTOS_OF_ME}
-            featuredCount={2}
-            restoreLabel={text.practiceCleared.restore}
-            contact={contact}
-          />
+          <div className="hero-panel__plate" ref={copyRef}>
+            {profile.summary.map((paragraph) => (
+              <p key={paragraph} className="hero-panel__lead">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+
+          {SHOW_HERO_CUBES ? (
+            <CubePool
+              count={4}
+              cubeSize={heroCubeSize}
+              align="end"
+              className="hero-panel__cubes"
+              photos={FILM_PHOTOS}
+              photoCount={4}
+              featured={FILM_PHOTOS_OF_ME}
+              featuredCount={2}
+              restoreLabel={text.practiceCleared.restore}
+              contact={contact}
+            />
+          ) : null}
 
           {SHOW_OBJECT_GRAPHICS ? (
             <div className="hero-panel__object" aria-hidden="true">
@@ -426,15 +585,19 @@ export function HomePage({
         </div>
       </section>
 
-      <section className="section home-shell" id="work">
-        <div className="work-stack" ref={stackRef}>
-          {cases.map((item, index) => (
-            <WorkCard key={item.id} item={item} index={index} total={cases.length} />
-          ))}
-        </div>
+      <section className="section home-shell" id="work" data-track-area="work-cards">
+        {showCube ? (
+          <CaseCube cases={cases} />
+        ) : (
+          <div className="work-stack" ref={stackRef}>
+            {cases.map((item, index) => (
+              <WorkCard key={item.id} item={item} index={index} total={cases.length} />
+            ))}
+          </div>
+        )}
       </section>
 
-      <section className="section home-shell practice-section">
+      <section className="section home-shell practice-section" data-track-area="practice">
         <div className="two-column-section">
           <ConceptTeaser teaser={designConceptTeaser} />
 
@@ -459,7 +622,7 @@ export function HomePage({
         </section>
       ) : null}
 
-      <section className="section home-shell experience-section">
+      <section className="section home-shell experience-section" data-track-area="experience">
         <SectionHeader title={text.experienceTitle} />
 
         <div className="experience-table">

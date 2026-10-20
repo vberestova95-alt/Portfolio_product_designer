@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import editorialObject from '../assets/editorial-object.webp';
 import { BrandLogo } from '../components/BrandLogo.jsx';
 import { useUi } from '../i18n/LanguageContext.jsx';
+import { track } from '../lib/analytics.js';
 import { SHOW_OBJECT_GRAPHICS } from '../lib/siteGraphics.js';
 
 export function ErrorPage({
@@ -17,6 +18,10 @@ export function ErrorPage({
 }) {
   const text = useUi().error;
   const brand = useUi().meta.nameSuffix;
+
+  useEffect(() => {
+    track('error_page', { code });
+  }, [code]);
 
   useEffect(() => {
     const previousTitle = document.title;

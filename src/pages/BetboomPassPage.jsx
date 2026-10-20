@@ -556,7 +556,7 @@ function NextProjects({ items }) {
   }
 
   return (
-    <section className="case-next" data-reveal>
+    <section className="case-next" data-reveal data-track-area="more-work">
       <header className="case-next__header">
         <p className="section-label">{text.moreWork}</p>
         <h2>{text.otherProjects}</h2>

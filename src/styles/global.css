@@ -268,16 +268,16 @@ button {
 }
 
 /*
- * The "v.b." mark, as on the photo portfolio. A logo, not a text accent, so it
- * keeps its italic serif in both languages. It sets its own case and tracking
- * because every header it sits in is an uppercase, tracked caps row.
+ * The "V.Berestova" mark, set in the site's own Manrope, as the hero summary
+ * is. It sets its own case and tracking because every header it sits in is an
+ * uppercase, tracked caps row.
  */
 .brand-logo {
   display: block;
-  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 26px;
+  font-family: 'Manrope', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
   line-height: 1;
   letter-spacing: 0;
   text-transform: none;
@@ -385,30 +385,11 @@ html[lang='ru'] .error-page__visual > span {
   border: 1px solid var(--inverse-line);
   border-radius: var(--r-shell);
   padding: clamp(36px, 3.5vw, 62px) clamp(32px, 2.8vw, 48px) var(--hero-pad-bottom);
-  /*
-   * A slow shimmer, kept inside the panel's own blues: three soft pools — two
-   * lighter, one deeper — drift over the base gradient. The pools are drawn on
-   * oversized layers, so moving their position moves the light across the panel
-   * without ever showing a layer edge.
-   */
-  background:
-    radial-gradient(closest-side, rgba(84, 190, 255, 0.78), transparent),
-    radial-gradient(closest-side, rgba(140, 205, 255, 0.62), transparent),
-    radial-gradient(closest-side, rgba(8, 18, 110, 0.7), transparent),
-    linear-gradient(135deg, #1324a2 0%, #2550ff 42%, #15238a 100%);
-  background-repeat: no-repeat;
-  background-size:
-    120% 130%,
-    90% 110%,
-    110% 120%,
-    100% 100%;
-  background-position:
-    -20% 110%,
-    110% -10%,
-    60% 50%,
-    0 0;
+  /* Black under the mosaic — its empty squares are the same ink, so no colour
+     shows at the panel's edge. The shimmer keyframes stay below if the
+     gradient comes back. */
+  background: #06080d;
   color: var(--inverse);
-  animation: hero-shimmer 18s ease-in-out infinite alternate;
 }
 
 @keyframes hero-shimmer {
@@ -435,6 +416,72 @@ html[lang='ru'] .error-page__visual > span {
       0% 0%,
       0 0;
   }
+}
+
+/*
+ * The mosaic background (lib/heroMosaic.js) fills the panel; it is clickable,
+ * so the copy above lets clicks through everywhere but the text itself. The
+ * squares fade in once the first scene is drawn.
+ */
+.hero-mosaic {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.hero-mosaic.is-ready {
+  opacity: 1;
+}
+
+/*
+ * The summary's plate: black, cut to the mosaic's grid (two squares on a
+ * desktop, the full row on a phone) and placed by lib/heroMosaic.js, with the
+ * text lined up on the headline's left edge.
+ */
+.hero-panel__plate {
+  --lead-size: clamp(14px, 1vw, 17px);
+
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px 20px 16px var(--copy-inset, 32px);
+  /* Rounding and inset set by lib/heroMosaic.js, to match the tiles. */
+  background: #06080d;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.hero-panel__plate.is-placed {
+  opacity: 1;
+}
+
+.hero-panel__plate .hero-panel__lead {
+  white-space: normal;
+  line-height: 1.5;
+}
+
+/*
+ * A soft shade over the mosaic — over the left part, where the copy sits, and
+ * under the top row — on top of the per-square darkening, so there is no step
+ * at any square's edge. The photos keep the right part to themselves.
+ */
+.hero-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(90deg, rgba(6, 8, 13, 0.72) 0, rgba(6, 8, 13, 0.5) 38%, transparent 66%),
+    linear-gradient(180deg, rgba(6, 8, 13, 0.78) 0, rgba(6, 8, 13, 0.3) 140px, transparent 220px);
+  pointer-events: none;
 }
 
 /* Film grain — keeps the large flat gradients from looking machine-smooth. */
@@ -554,6 +601,12 @@ html[lang='ru'] .error-page__visual > span {
   gap: clamp(48px, 9vh, 120px);
   padding-top: clamp(30px, 3vw, 48px);
   padding-bottom: clamp(4px, 1vh, 12px);
+  /* Clicks fall through to the mosaic everywhere but on the copy. */
+  pointer-events: none;
+}
+
+.hero-panel__grid > * {
+  pointer-events: auto;
 }
 
 /*
@@ -568,6 +621,7 @@ html[lang='ru'] .error-page__visual > span {
 .hero-panel h1 {
   grid-area: title;
   margin: 0;
+  text-shadow: 0 4px 40px rgba(6, 8, 13, 0.55);
   font-size: clamp(56px, 7.6vw, 150px);
   line-height: 0.88;
   letter-spacing: -0.055em;
@@ -603,6 +657,7 @@ html[lang='ru'] .error-page__visual > span {
    */
   width: fit-content;
   white-space: pre-line;
+  text-shadow: 0 1px 16px rgba(6, 8, 13, 0.8);
   font-size: var(--lead-size);
   line-height: 1.55;
   color: rgba(247, 248, 252, 0.86);
@@ -1613,6 +1668,101 @@ html[lang='ru'] .error-page__visual > span {
   }
 }
 
+/*
+ * The case cube (lib/caseCube.js): a screen of rest for the title face and
+ * most of a screen of scroll for every turn after it, while the stage sticks.
+ * The faces all share the cube's front; script sets each one's turn and shade,
+ * and only the two on the cube at a time show (.is-on). Only the face facing
+ * the viewer takes clicks (.is-front).
+ */
+.case-cube {
+  --cube-h: min(calc(100svh - 36px), 900px);
+
+  position: relative;
+  height: calc(100svh + (var(--cube-faces) - 1) * 80svh);
+  /* The stack's foot, which the practice section is lifted into (--practice-lift). */
+  margin-bottom: 16vh;
+}
+
+.case-cube__stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 100svh;
+  perspective: 2400px;
+}
+
+.case-cube__body {
+  position: relative;
+  width: 100%;
+  height: var(--cube-h);
+  transform-style: preserve-3d;
+}
+
+.case-cube__face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  backface-visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.case-cube__face.is-on {
+  opacity: 1;
+}
+
+.case-cube__face.is-front {
+  pointer-events: auto;
+}
+
+/* The turn's shade: darker the further the face has turned from the viewer. */
+.case-cube__face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #05070b;
+  opacity: var(--face-shade, 0);
+  pointer-events: none;
+}
+
+/* A face is the card's frame now: no pinning, no stack offsets, full height. */
+.case-cube .work-card {
+  position: relative;
+  top: auto;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  transform: none;
+}
+
+/* The title face: black like the hero, the word set large over the grey squares. */
+.case-cube__face--title {
+  background: #06080d;
+  color: var(--inverse);
+}
+
+.case-cube__mosaic {
+  cursor: inherit;
+}
+
+/* Set as a case heading, in the card's own corner — not a second hero headline. */
+.case-cube__title {
+  position: absolute;
+  left: clamp(24px, 2.4vw, 40px);
+  bottom: clamp(24px, 2.4vw, 40px);
+  z-index: 1;
+  margin: 0;
+  font-size: clamp(42px, 5vw, 82px);
+  line-height: 0.94;
+  letter-spacing: -0.05em;
+  text-shadow: 0 4px 40px rgba(6, 8, 13, 0.6);
+  pointer-events: none;
+}
+
 .work-card__mobile {
   position: absolute;
   right: 28px;
@@ -1752,6 +1902,24 @@ html[lang='ru'] .error-page__visual > span {
     110% 120%,
     100% 100%;
   animation: hero-shimmer 20s ease-in-out infinite alternate;
+}
+
+/*
+ * The practice card with the mosaic in place of the logo cubes: black like the
+ * hero, the squares filling the card under its copy.
+ */
+.editorial-card--mosaic {
+  background: #06080d;
+  animation: none;
+}
+
+.editorial-card--mosaic .editorial-card__title {
+  position: relative;
+  text-shadow: 0 2px 24px rgba(6, 8, 13, 0.6);
+}
+
+.practice-card__mosaic {
+  cursor: inherit;
 }
 
 /* Above the cube pool, so cubes falling past the heading go behind it. */
@@ -2101,6 +2269,63 @@ html[lang='ru'] .logo-cube--label {
   .contact-sheet__panel {
     transition: none;
   }
+}
+
+/*
+ * The burger menu as a bottom sheet on a phone (NavMenu): the same paper
+ * panel as "contact me" — the sections as large rows, the current one in
+ * full ink, then the language switch and the contacts as grey rows.
+ */
+.nav-menu__links[hidden] {
+  display: none;
+}
+
+.nav-sheet .contact-sheet__panel {
+  max-height: calc(100svh - 48px);
+  overflow-y: auto;
+}
+
+.nav-sheet__sections {
+  display: grid;
+  margin: 0 4px 8px;
+}
+
+.nav-sheet__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-faint);
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.nav-sheet__link[aria-current='page'] {
+  color: var(--ink);
+}
+
+.nav-sheet__link span {
+  font-size: 18px;
+}
+
+.nav-sheet__link:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+
+.nav-sheet__language {
+  margin: 4px 4px 12px;
+  color: var(--ink);
+}
+
+.nav-sheet__language .lang-switch {
+  gap: 20px;
+}
+
+.nav-sheet__language .lang-switch__option {
+  font-size: 16px;
 }
 
 @keyframes cube-restore-in {
@@ -2455,6 +2680,35 @@ ol.case-bullet-list li::before {
   position: relative;
   z-index: 1;
   max-width: 62ch;
+}
+
+/*
+ * Three rows of the mosaic's squares (about a tenth of the panel's width
+ * each, 130–180px), so its five scattered squares have room to keep apart.
+ */
+@media (min-width: 901px) {
+  .home-footer__panel:has(.home-footer__mosaic) {
+    min-height: calc(3 * clamp(130px, (100vw - 48px) / 10, 180px) + 6px);
+  }
+}
+
+/* The plain-cube mosaic under the footer's copy; the panel turns black for it. */
+.home-footer__panel:has(.home-footer__mosaic) {
+  background: #06080d;
+}
+
+.home-footer__mosaic {
+  cursor: default;
+}
+
+/* The pills get a black ground of their own, so the squares don't show through. */
+.home-footer__panel:has(.home-footer__mosaic) .home-footer__links a {
+  background: #06080d;
+}
+
+.home-footer__panel:has(.home-footer__mosaic) h2,
+.home-footer__panel:has(.home-footer__mosaic) .home-footer__lead {
+  text-shadow: 0 2px 24px rgba(6, 8, 13, 0.7);
 }
 
 /*
@@ -3980,9 +4234,15 @@ ol.case-bullet-list li::before {
     padding-top: 40px;
   }
 
-  /* Keeps the cube strip under the pills (see .home-footer__cubes). */
+  /* Air above the heading; under the pills, the strip for the cube tray. */
   .home-footer__panel {
+    padding-top: 40px;
     padding-bottom: calc(20px + 96px);
+  }
+
+  /* The mosaic shows no squares once the panel stacks, so no strip for them. */
+  .home-footer__panel:has(.home-footer__mosaic) {
+    padding-bottom: 32px;
   }
 
   /*
@@ -4036,7 +4296,13 @@ ol.case-bullet-list li::before {
     --hero-pad-bottom: 40px;
 
     width: 100%;
-    min-height: min(78svh, 640px);
+    /*
+     * At least tall enough for the mosaic's staircase (a square is a quarter
+     * of the width): the nav row and the photos take four squares, then the
+     * summary 32px under them (up to four lines), the three-line headline and
+     * its floor.
+     */
+    min-height: max(min(78svh, 640px), calc(133vw + 160px));
     padding-top: 24px;
     padding-bottom: var(--hero-pad-bottom);
     border: 0;
@@ -4044,8 +4310,26 @@ ol.case-bullet-list li::before {
   }
 
   /*
+   * A full row of short squares here: the summary steps down a size to fit,
+   * and starts 32px under the photos above it (29px plus the squares' gap).
+   */
+  .hero-panel__plate {
+    --lead-size: 14px;
+
+    justify-content: flex-start;
+    padding-block: 29px 0;
+  }
+
+  /* The copy runs the full width at the foot here, so the shade rises from the bottom. */
+  .hero-panel::before {
+    background:
+      linear-gradient(0deg, rgba(6, 8, 13, 0.85) 0, rgba(6, 8, 13, 0.5) 48%, transparent 72%),
+      linear-gradient(180deg, rgba(6, 8, 13, 0.8) 0, transparent 110px);
+  }
+
+  /*
    * On a phone the headline leads — the specialism reads first — with the
-   * short experience paragraph above it, under the cubes' rule.
+   * short experience paragraph above it.
    */
   .hero-panel__grid {
     gap: 28px;
@@ -4655,6 +4939,69 @@ ol.case-bullet-list li::before {
   border-bottom: 0;
 }
 
+/*
+ * The AI projects intro on the home hero's mosaic: a black panel, the back
+ * link at its top, the heading and description at its floor on the left, the
+ * squares — and the game — around them. The panel lets clicks through to the
+ * mosaic everywhere but on the copy itself.
+ */
+.concept-hero--mosaic {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: clamp(560px, 78vh, 860px);
+  margin-top: 24px;
+  padding: clamp(28px, 3vw, 48px);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--r-shell);
+  background: #06080d;
+  color: var(--inverse);
+  pointer-events: none;
+}
+
+.concept-hero--mosaic > :not(.hero-mosaic),
+.concept-hero--mosaic .hero-mosaic {
+  pointer-events: auto;
+}
+
+.concept-hero--mosaic > :not(.hero-mosaic) {
+  position: relative;
+  z-index: 1;
+}
+
+.concept-hero--mosaic .concept-hero__back {
+  align-self: flex-start;
+  color: rgba(247, 248, 252, 0.72);
+}
+
+.concept-hero--mosaic .concept-hero__footer a {
+  color: var(--inverse);
+}
+
+.concept-hero--mosaic .concept-hero__copy {
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.concept-hero--mosaic h1 {
+  text-shadow: 0 4px 40px rgba(6, 8, 13, 0.6);
+}
+
+.concept-hero--mosaic .concept-hero__description {
+  color: rgba(247, 248, 252, 0.8);
+  text-shadow: 0 1px 16px rgba(6, 8, 13, 0.85);
+}
+
+@media (max-width: 640px) {
+  .concept-hero--mosaic {
+    min-height: min(86svh, 720px);
+    border-radius: 22px;
+  }
+}
+
 /* Sits where the eyebrow did on the AI projects page, with the same gap below. */
 .concept-hero__back {
   margin-bottom: 16px;
@@ -5099,6 +5446,33 @@ ol.case-bullet-list li::before {
 @media (max-width: 640px) {
   .concept-teaser.concept-teaser--pair {
     --teaser-pad: 20px;
+  }
+}
+
+/*
+ * The concept card with light squares in place of the scattered shots: white,
+ * the copy dark over them, and the shots assembling in mosaics under the copy
+ * on hover (lib/heroMosaic.js, `assemble`). With no shots in the flow to give
+ * it height, it keeps a floor of its own on narrower screens.
+ */
+.concept-teaser--mosaic {
+  background: #ffffff;
+}
+
+.concept-teaser--mosaic .hero-mosaic {
+  cursor: inherit;
+}
+
+/* The practice card's heights, so the squares keep a floor below the copy. */
+@media (max-width: 1240px) {
+  .concept-teaser.concept-teaser--mosaic {
+    min-height: clamp(520px, 92vw, 720px);
+  }
+}
+
+@media (max-width: 640px) {
+  .concept-teaser.concept-teaser--mosaic {
+    min-height: max(520px, 120vw);
   }
 }
 

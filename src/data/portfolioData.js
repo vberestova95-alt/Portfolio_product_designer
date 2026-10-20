@@ -47,7 +47,7 @@ export const profile = {
   title: 'Product Designer',
   summary: [
     // The line break is kept on desktop (two set lines), dropped on smaller screens.
-    'Product Designer with 7 years of experience designing B2C and B2B digital\nproducts across gaming, fintech, proptech, HR Tech, logistics, and SaaS.',
+    "Hi, I'm Vladislava. 7 years of experience in design. Designing B2C and B2B digital products\nacross gaming, fintech, proptech, HR Tech, logistics, and SaaS.",
   ],
   focusAreas: [
     'Design systems',

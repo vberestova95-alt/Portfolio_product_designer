@@ -4,7 +4,12 @@
  * both — so an English link can be sent to someone without them having to find
  * the switch.
  */
-export const LANGUAGES = ['ru', 'en'];
+// The Russian version is hidden until its copy is ready: no switch in the
+// header, and a stored or linked `ru` falls back to English. Flip to true to
+// bring it back.
+const RU_ENABLED = false;
+
+export const LANGUAGES = RU_ENABLED ? ['ru', 'en'] : ['en'];
 export const DEFAULT_LANGUAGE = 'en';
 
 const STORAGE_KEY = 'site-lang';

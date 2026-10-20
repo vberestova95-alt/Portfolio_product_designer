@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SiteFooter } from '../components/SiteFooter.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
 import { useUi } from '../i18n/LanguageContext.jsx';
+import { PLAIN_TONES, attachHeroMosaic } from '../lib/heroMosaic.js';
 
 function Lightbox({ src, alt, onClose }) {
   const text = useUi().case;
@@ -49,6 +50,21 @@ export function DesignConceptsPage({ archive, profile }) {
   const text = useUi().case;
   const [lightbox, setLightbox] = useState(null);
   const { intro, shots } = archive;
+  const mosaicRef = useRef(null);
+  const titleRef = useRef(null);
+  const backRef = useRef(null);
+
+  // The intro on the grey squares, as on the AI projects intro.
+  useEffect(
+    () =>
+      attachHeroMosaic(mosaicRef.current, {
+        maxBoards: 0,
+        tones: PLAIN_TONES,
+        anchor: titleRef.current,
+        header: backRef.current,
+      }),
+    [],
+  );
 
   const handleImageClick = useCallback((event) => {
     if (event.target.tagName === 'IMG') {
@@ -65,13 +81,18 @@ export function DesignConceptsPage({ archive, profile }) {
       <div className="case-page__shell">
         {profile ? <SiteHeader profile={profile} /> : null}
 
-        <section className="concept-hero">
-          <a className="case-back-link concept-hero__back" href="/">
+        <section className="concept-hero concept-hero--mosaic">
+          <canvas className="hero-mosaic" ref={mosaicRef} aria-hidden="true" />
+
+          <a className="case-back-link concept-hero__back" href="/" ref={backRef}>
             <span aria-hidden="true">←</span>
             <span>{text.back}</span>
           </a>
-          <h1>{intro.title}</h1>
-          <p className="concept-hero__description">{intro.description}</p>
+
+          <div className="concept-hero__copy">
+            <h1 ref={titleRef}>{intro.title}</h1>
+            <p className="concept-hero__description">{intro.description}</p>
+          </div>
 
           <div className="concept-hero__footer">
             <a href={intro.href} target="_blank" rel="noopener noreferrer">

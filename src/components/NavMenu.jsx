@@ -2,12 +2,13 @@ import React, { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useLanguage, useUi } from '../i18n/LanguageContext.jsx';
 import { LANGUAGES } from '../i18n/language.js';
+import { track } from '../lib/analytics.js';
 import { ContactLink } from './ContactLink.jsx';
 
 const LANGUAGE_LABELS = { ru: 'Ru', en: 'Eng' };
 
-// The Russian version isn't ready yet: its option stays visible but inert.
-const DISABLED_LANGUAGES = { ru: 'Скоро появится' };
+// Options shown but inert, with a tooltip, e.g. { ru: 'Скоро появится' }.
+const DISABLED_LANGUAGES = {};
 
 /*
  * Two-option switch styled like the section links. It sits at the end of the
@@ -16,6 +17,11 @@ const DISABLED_LANGUAGES = { ru: 'Скоро появится' };
 function LanguageSwitch({ onChange }) {
   const { lang, setLang } = useLanguage();
   const text = useUi().nav;
+
+  // One language left (see i18n/language.js) — nothing to switch between.
+  if (LANGUAGES.length < 2) {
+    return null;
+  }
 
   return (
     <div className="lang-switch" role="group" aria-label={text.language}>
@@ -34,6 +40,10 @@ function LanguageSwitch({ onChange }) {
             onClick={() => {
               if (soon) {
                 return;
+              }
+
+              if (code !== lang) {
+                track('lang_switch', { to: code });
               }
 
               setLang(code);
@@ -62,7 +72,7 @@ function LanguageSwitch({ onChange }) {
 const SHEET_QUERY = '(max-width: 640px)';
 const SHEET_EXIT_MS = 240;
 
-function useMatchMedia(query, enabled) {
+export function useMatchMedia(query, enabled = true) {
   const [matches, setMatches] = useState(
     () => enabled && typeof window !== 'undefined' && window.matchMedia(query).matches,
   );
@@ -83,37 +93,45 @@ function useMatchMedia(query, enabled) {
   return matches;
 }
 
+/*
+ * A bottom sheet's presence: mounted a frame before it is shown, so it slides
+ * in, and kept mounted for the slide-out after closing.
+ */
+function useSheetPresence(isOpen, enabled) {
+  const [isMounted, setIsMounted] = useState(false);
+  const [isShown, setIsShown] = useState(false);
+
+  useEffect(() => {
+    if (!enabled) {
+      setIsMounted(false);
+      setIsShown(false);
+      return undefined;
+    }
+
+    if (isOpen) {
+      setIsMounted(true);
+      let frame = requestAnimationFrame(() => {
+        frame = requestAnimationFrame(() => setIsShown(true));
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+
+    setIsShown(false);
+    const timer = window.setTimeout(() => setIsMounted(false), SHEET_EXIT_MS);
+    return () => window.clearTimeout(timer);
+  }, [enabled, isOpen]);
+
+  return [isMounted, isShown];
+}
+
 export function ContactMenu({ email, linkedin, telegram, onPick, sheet = false }) {
   const [isOpen, setIsOpen] = useState(false);
-  // Mounted a frame before it is shown, so it slides in; kept mounted for the
-  // slide-out after closing.
-  const [isSheetMounted, setIsSheetMounted] = useState(false);
-  const [isSheetShown, setIsSheetShown] = useState(false);
   const rootRef = useRef(null);
   const sheetRef = useRef(null);
   const listId = useId();
   const text = useUi().nav;
   const asSheet = useMatchMedia(SHEET_QUERY, sheet);
-
-  useEffect(() => {
-    if (!asSheet) {
-      setIsSheetMounted(false);
-      setIsSheetShown(false);
-      return undefined;
-    }
-
-    if (isOpen) {
-      setIsSheetMounted(true);
-      let frame = requestAnimationFrame(() => {
-        frame = requestAnimationFrame(() => setIsSheetShown(true));
-      });
-      return () => cancelAnimationFrame(frame);
-    }
-
-    setIsSheetShown(false);
-    const timer = window.setTimeout(() => setIsSheetMounted(false), SHEET_EXIT_MS);
-    return () => window.clearTimeout(timer);
-  }, [asSheet, isOpen]);
+  const [isSheetMounted, isSheetShown] = useSheetPresence(isOpen, asSheet);
 
   useEffect(() => {
     if (!isOpen) {
@@ -162,7 +180,13 @@ export function ContactMenu({ email, linkedin, telegram, onPick, sheet = false }
         className="contact-link contact-link--primary contact-menu__toggle"
         aria-expanded={isOpen}
         aria-controls={listId}
-        onClick={() => setIsOpen((current) => !current)}
+        onClick={() => {
+          if (!isOpen) {
+            track('contact_menu_open');
+          }
+
+          setIsOpen((current) => !current);
+        }}
       >
         {text.contactMe}
       </button>
@@ -254,15 +278,23 @@ function currentPath() {
  * the tablet breakpoint all of it collapses behind a burger, so the row keeps
  * the logo and the toggle on one line.
  *
+ * On a phone the burger opens a bottom sheet instead, like "contact me": the
+ * sections as rows, the language switch, then every way to reach me. It is
+ * rendered into <body>, since the pinned header's blur would trap a fixed
+ * element.
+ *
  * `siteNav={false}` keeps the plain contact row (the standalone pet tracker
  * page lives on its own domain and has no site to navigate).
  */
 export function NavMenu({ contacts, email, telegram, siteNav = true, className = '' }) {
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef(null);
+  const sheetRef = useRef(null);
   const menuId = useId();
   const text = useUi().nav;
   const path = currentPath();
+  const asSheet = useMatchMedia(SHEET_QUERY);
+  const [isSheetMounted, isSheetShown] = useSheetPresence(isOpen, asSheet);
   // With the site nav on, Dribbble is reached through its archive page instead.
   const visibleContacts = siteNav
     ? contacts.filter((contact) => contact.label !== 'Dribbble')
@@ -277,7 +309,10 @@ export function NavMenu({ contacts, email, telegram, siteNav = true, className =
     }
 
     const handlePointerDown = (event) => {
-      if (!rootRef.current?.contains(event.target)) {
+      if (
+        !rootRef.current?.contains(event.target) &&
+        !sheetRef.current?.contains(event.target)
+      ) {
         setIsOpen(false);
       }
     };
@@ -297,12 +332,87 @@ export function NavMenu({ contacts, email, telegram, siteNav = true, className =
     };
   }, [isOpen]);
 
+  const close = () => setIsOpen(false);
+  const linkedin = contacts.find((contact) => contact.label === 'LinkedIn')?.href;
+  // In the sheet every way to reach me is a row of its own: the CV, then the
+  // options "contact me" opens (or, without the site nav, the plain contacts).
+  const sheetContacts = siteNav
+    ? [
+        ...pillContacts.map((contact) => ({ key: contact.label, contact, label: contact.label })),
+        linkedin
+          ? { key: 'linkedin', contact: { label: 'LinkedIn', href: linkedin }, label: text.contactVia.linkedin }
+          : null,
+        email
+          ? { key: 'email', contact: { label: 'Email', href: `mailto:${email}` }, label: text.contactVia.email }
+          : null,
+        telegram
+          ? { key: 'telegram', contact: { label: 'Telegram', href: telegram }, label: text.contactVia.telegram }
+          : null,
+      ].filter(Boolean)
+    : visibleContacts.map((contact) => ({ key: contact.label, contact, label: contact.label }));
+
   return (
     <div
       className={`nav-menu${isOpen ? ' is-open' : ''}${className ? ` ${className}` : ''}`}
       ref={rootRef}
     >
-      <div className="nav-menu__links" id={menuId}>
+      {asSheet && isSheetMounted
+        ? createPortal(
+            <div className={`contact-sheet nav-sheet${isSheetShown ? ' is-open' : ''}`} ref={sheetRef}>
+              <button
+                type="button"
+                className="contact-sheet__backdrop"
+                aria-label={text.closeMenu}
+                tabIndex={-1}
+                onClick={close}
+              />
+              <div
+                className="contact-sheet__panel"
+                id={menuId}
+                role="dialog"
+                aria-modal="true"
+                aria-label={text.siteNav}
+              >
+                <span className="contact-sheet__handle" aria-hidden="true" />
+
+                {siteNav ? (
+                  <nav className="nav-sheet__sections" aria-label={text.siteNav}>
+                    {SITE_LINKS.map((link) => (
+                      <a
+                        key={link.key}
+                        className="nav-sheet__link"
+                        href={link.href}
+                        aria-current={link.href === path ? 'page' : undefined}
+                        onClick={close}
+                      >
+                        {text.links[link.key]}
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    ))}
+                  </nav>
+                ) : null}
+
+                <div className="nav-sheet__language">
+                  <LanguageSwitch onChange={close} />
+                </div>
+
+                <ul className="contact-sheet__list" aria-label={text.contactLinks}>
+                  {sheetContacts.map((item) => (
+                    <li key={item.key}>
+                      <ContactLink contact={item.contact} className="contact-sheet__option" onClick={close}>
+                        {item.label}
+                        <span aria-hidden="true">→</span>
+                      </ContactLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
+
+      <div className="nav-menu__links" id={asSheet ? undefined : menuId} hidden={asSheet || undefined}>
         {siteNav ? (
           <nav className="site-nav" aria-label={text.siteNav}>
             {SITE_LINKS.map((link) => (
