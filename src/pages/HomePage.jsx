@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 /*
  * One object carries the whole site: the hero, the practice card and the
  * footer all render this same knot, at different scales and orientations. The
@@ -538,7 +538,12 @@ export function HomePage({
           <div className="hero-panel__plate" ref={copyRef}>
             {profile.summary.map((paragraph) => (
               <p key={paragraph} className="hero-panel__lead">
-                {paragraph}
+                {paragraph.split('|').map((part, index) => (
+                  <Fragment key={part}>
+                    {index ? <br className="hero-br--mobile" /> : null}
+                    {part}
+                  </Fragment>
+                ))}
               </p>
             ))}
           </div>

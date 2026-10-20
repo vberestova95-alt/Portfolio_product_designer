@@ -4302,8 +4302,9 @@ ol.case-bullet-list li::before {
      * summary 32px under them (up to four lines), the three-line headline and
      * its floor.
      */
-    min-height: max(min(78svh, 640px), calc(133vw + 160px));
-    padding-top: 24px;
+    min-height: max(min(78svh, 640px), calc(133vw + 190px));
+    /* 40px above the nav, as above the tags on the case card below. */
+    padding-top: 40px;
     padding-bottom: var(--hero-pad-bottom);
     border: 0;
     border-radius: 0 0 22px 22px;
@@ -4403,7 +4404,7 @@ ol.case-bullet-list li::before {
   }
 
   .work-card__description {
-    margin-top: 10px;
+    margin-top: 6px;
     font-size: 16px;
     line-height: 1.6;
   }
