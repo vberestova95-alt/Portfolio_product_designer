@@ -1,0 +1,32 @@
+# Portfolio — Product Designer — контекст
+Обновлено: 2026-10-25
+
+## Что это и зачем
+Портфолио продуктового дизайнера Владиславы Берестовой: кейсы, AI-проекты, архив Dribbble-концептов, опыт. Сайт на английском и русском (переключатель в шапке).
+
+## Для кого
+Нанимающие менеджеры и дизайн-лиды, которые смотрят кейсы перед интервью.
+
+## Статус
+В проде на vberestova.com. Визуальный язык всего сайта — сетка скруглённых квадратов («кубики», `src/lib/heroMosaic.js`), которые переворачиваются как кубы.
+
+## Стек и инфраструктура
+- React 18 + Vite 5, без роутера: путь → страница в `src/App.jsx`.
+- Тексты: `src/data/portfolioData.js` (+ `.ru.js`), UI-строки — `src/i18n/ui.js`.
+- Все мозаики — один canvas-модуль `src/lib/heroMosaic.js` с режимами (игра в хиро, `nav`, `peek`, `cycle` и др.).
+- Деплой vberestova.com: `npm run build` → содержимое `dist/` кладётся в `docs/` репозитория Portfolio_product_designer_site → GitHub Pages (ветка main, папка /docs). Коммит деплоя: `deploy: publish <что> <sha исходников>`.
+- Pet Injection Tracker — та же сборка с `VITE_CASE_ONLY=true` на Netlify (`netlify.toml`).
+- Аналитика визитов: `api/` (serverless на Vercel) и дашборд `/stats`.
+
+## Ссылки
+- Исходники: https://github.com/vberestova95-alt/Portfolio_product_designer
+- Сайт (публикация): https://github.com/vberestova95-alt/Portfolio_product_designer_site
+- Прод: https://vberestova.com
+- Dribbble: https://dribbble.com/Meoosh
+
+## Текущий фокус
+Интерактив на кубиках: навигация по кейсам на главной, окна-шоты в Dribbble-блоке и на /design-concepts, игра «собери все картинки» в хиро.
+
+## Открытые вопросы
+- Окно-шот 2×2 не помещается справа от текста в Dribbble-карточке на ширине ~1440 — уменьшать ли квадраты.
+- Нужен ли счётчик/игра на планшете отдельно проверить (проверяли только десктоп 1440–1720).
