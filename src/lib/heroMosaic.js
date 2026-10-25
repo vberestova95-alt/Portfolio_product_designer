@@ -74,6 +74,22 @@ const SOLVED_HOLD_MS = 1700;
 const GLOW_MS = 1500;
 const LIGHT_TURN_MS = 900;
 const LIGHT_HOLD_MS = 2600;
+// Quicker than the ambient turns: it answers the pointer.
+// Unhurried even under the pointer: a cover comes together, it doesn't snap in.
+const NAV_TURN_MS = 1100;
+// The pointer rests this long on a square before it opens a window.
+const PEEK_DELAY_MS = 140;
+// Peek windows open at once; a new one past these closes the oldest.
+const MAX_PEEKS = 3;
+// The reset after the whole set is found: the mosaics turn to grey piece by
+// piece, hold, and are dealt again.
+const RESET_TURN_MS = 600;
+const RESET_PIECE_STEP_MS = 80;
+const RESET_BOARD_STEP_MS = 140;
+const RESET_HOLD_MS = 450;
+// Cycle: how long a cover holds, and the pause after a hover before the round resumes.
+const CYCLE_HOLD_MS = 3200;
+const CYCLE_RESUME_MS = 3000;
 
 // The cube turn is drawn in strips, each set at its own depth.
 const TURN_STRIPS = 28;
@@ -342,6 +358,43 @@ function buildMotionLayer(scene, w, h, dpr) {
  * `count: n` lights only n squares, at random, the rest left empty: never
  * side by side and no more than two to a row, so they scatter rather than line
  * up. Now and then one of them moves to a fresh spot.
+ *
+ * `nav: true` makes the mosaics an index: one per photo, in order, and nothing
+ * else on the block — the squares that would only sit still are left out. The
+ * mosaics take a checkerboard of 2×2 blocks, touching only at the corners so
+ * each reads as a cube of its own (packed side by side on a phone), clear of
+ * the `avoid` elements; the squares shrink until every photo has a block, down
+ * to a floor. A 'mosaic:show' event on the canvas (detail: the photo's index)
+ * assembles that mosaic into its photo, 'mosaic:hide' lets it fall apart
+ * again; where there is no hover, every mosaic stays assembled. `onPlace` gets
+ * each placed mosaic's box on the block, so links can be laid over them.
+ * With `keepGround: true` the grey squares stay all round, as without the index,
+ * and the mosaics are scattered among them rather than set on a checkerboard.
+ *
+ * `peek: true` lets any square open a window: the pointer resting on one rolls
+ * the 2×2 around it into the next photo of the deck, and moving on to a square
+ * outside it opens another — over the earlier ones, where they meet. A few
+ * stay open at once; past that the oldest falls back into grey, and all of
+ * them do once the pointer leaves. The grid stays whole; the windows have no
+ * fixed place, though they keep clear of the lines of text in the `avoid` elements. A click on an open window calls `onPick` with its photo's
+ * index; elsewhere (or with no hover) it opens a window there.
+ *
+ * `cycle: true` (nav) opens the mosaics by itself while nobody is pointing:
+ * one assembles, holds, falls apart, and the next one comes together. A
+ * hover takes over and the round picks up again a while after. `onActive`
+ * hears which mosaic is open (its index, or null), so its name can show.
+ *
+ * `onSolve(index, byVisitor)` is called each time a mosaic is made whole, as
+ * it lights up, with the index of its photo in `photos` and whether the
+ * visitor's own move did it (false when it solved itself). A
+ * 'mosaic:celebrate' event on the canvas turns the game's mosaics to grey and
+ * deals them again from scratch. `badge` (an element) is laid over
+ * one square — on the game's top row, just left of its first mosaic — cut to
+ * it like the summary's plate.
+ *
+ * `square` fixes a square's size in px, so blocks of different widths share
+ * one grid size; the last column is then cut by the right edge, as the last
+ * row is by the floor.
  */
 export function attachHeroMosaic(
   canvas,
@@ -360,6 +413,17 @@ export function attachHeroMosaic(
     assemble = false,
     below = null,
     count = 0,
+    nav = false,
+    avoid = [],
+    onPlace = null,
+    keepGround = false,
+    peek = false,
+    onPick = null,
+    cycle = false,
+    onActive = null,
+    square = 0,
+    onSolve = null,
+    badge = null,
   },
 ) {
   if (!canvas) {
@@ -372,14 +436,26 @@ export function attachHeroMosaic(
   const copyShade = light ? '255,255,255' : '6,8,13';
   // A turning face darkens as it goes edge-on; on white, only a little.
   const turnShade = light ? 0.35 : 1;
-  const pointerTarget = hoverOnly ? canvas.parentElement : canvas;
+  // Hover and peek modes listen on the whole block, so the copy over it doesn't block them.
+  const pointerTarget = hoverOnly || peek ? canvas.parentElement : canvas;
 
   const host = canvas.parentElement;
   const ctx = canvas.getContext('2d');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const noHover = window.matchMedia('(hover: none)').matches;
 
   const loadedScenes = [];
   let deck = [];
+  let navImages = [];
+  let peeks = []; // peek: the open windows, oldest first, each a mosaic of its own
+  let peekTimer = 0;
+  let cycleTimer = 0;
+  let cycleIndex = -1;
+  let hovered = null; // nav: the mosaic under the pointer
+  let lastHover = 0;
+  let celebrating = false;
+  let avoidBoxes = []; // the `avoid` elements' boxes, measured at layout
+  const photoIndex = new Map();
   let sceneIndex = 0;
   let layers = null;
 
@@ -404,8 +480,9 @@ export function attachHeroMosaic(
   let visible = true;
   let destroyed = false;
 
-  // Matches the stylesheet's phone block (max-width: 640px).
-  const compact = () => width <= 640;
+  // Matches the stylesheet's phone block (max-width: 640px) — the screen, so a
+  // narrow card on a desktop keeps the desktop's squares.
+  const compact = () => window.innerWidth <= 640;
   const tileAt = (row, col) => tiles[row * cols + col];
 
   function later(fn, ms) {
@@ -476,7 +553,7 @@ export function attachHeroMosaic(
   function radiiFor(tile) {
     const R = tileRadius(compact());
 
-    if (!tile.board || (assemble && !tile.board.assembled)) {
+    if (!tile.board || ((assemble || nav) && !tile.board.assembled)) {
       return R;
     }
 
@@ -781,8 +858,9 @@ export function attachHeroMosaic(
       paintFace(tile.to, box, box);
     }
 
-    // The copy's shade; the mosaics take only a little of it.
-    const shade = 0.72 * tile.copy * (tile.board ? 0.4 : 1);
+    // The copy's shade; the mosaics take only a little of it — a peek window
+    // most of it, since it opens anywhere, under the copy too.
+    const shade = 0.72 * tile.copy * (tile.board ? (peek ? 0.85 : 0.4) : 1);
 
     if (shade > 0.01) {
       ctx.fillStyle = `rgba(${copyShade},${Math.min(0.88, shade).toFixed(3)})`;
@@ -970,8 +1048,8 @@ export function attachHeroMosaic(
   }
 
   function dealPhoto(board) {
-    board.img = nextPhoto();
-    board.faces = board.img && !assemble ? buildBoardFaces(board.img) : null;
+    board.img = nav ? navImages[board.index] ?? null : nextPhoto();
+    board.faces = board.img && !assemble && !nav ? buildBoardFaces(board.img) : null;
     board.sides = scramble();
     board.glowStart = 0;
   }
@@ -1005,7 +1083,7 @@ export function attachHeroMosaic(
   }
 
   // One move on a mosaic: two pieces roll on to their next face, side by side.
-  function play(board, slot) {
+  function play(board, slot, byVisitor = false) {
     if (board.locked) {
       return;
     }
@@ -1023,9 +1101,16 @@ export function attachHeroMosaic(
       board.glowStart = performance.now() + CLICK_TURN_MS;
       requestRender();
 
+      const index = photoIndex.get(board.img);
+      later(() => onSolve?.(index, byVisitor), CLICK_TURN_MS);
+
       later(() => {
         board.glowStart = 0;
-        flipBoard(board);
+
+        // The reset deals this mosaic again itself.
+        if (!celebrating) {
+          flipBoard(board);
+        }
       }, CLICK_TURN_MS + SOLVED_HOLD_MS);
     }
   }
@@ -1066,9 +1151,64 @@ export function attachHeroMosaic(
     });
   }
 
+  // Nav: one mosaic rolls over into its photo while its link is hovered…
+  function assembleBoard(board, delay = 0) {
+    if (!board || board.assembled || !board.img) {
+      return;
+    }
+
+    board.assembled = true;
+    onActive?.(board.index);
+    board.cells.forEach((tile, slot) => {
+      setFace(tile, { kind: 'piece', board, slot, side: 0, img: board.img }, NAV_TURN_MS, {
+        delay: delay + slot * 130,
+        axis: slot % 2 ? 'x' : 'y',
+      });
+    });
+  }
+
+  // …and falls apart into plain squares when the pointer moves on.
+  function scatterBoard(board) {
+    if (!board?.assembled || noHover) {
+      return;
+    }
+
+    board.assembled = false;
+    if (!boards.some((other) => other.assembled)) {
+      onActive?.(null);
+    }
+    board.cells.forEach((tile, slot) => {
+      setFace(tile, plainFace(), NAV_TURN_MS, {
+        delay: slot * 80,
+        axis: Math.random() < 0.5 ? 'x' : 'y',
+      });
+    });
+  }
+
+  /*
+   * Cycle: the open cover falls apart and, once it has, the next one comes
+   * together — in order round the index. Not while a mosaic is hovered, nor
+   * for a while after.
+   */
+  function cycleStep() {
+    if (!visible || hovered || !boards.length || performance.now() - lastHover < CYCLE_RESUME_MS) {
+      return;
+    }
+
+    const open = boards.find((board) => board.assembled);
+    scatterBoard(open);
+    cycleIndex = (cycleIndex + 1) % boards.length;
+    const next = boards[cycleIndex];
+    later(() => {
+      if (!hovered) {
+        assembleBoard(next);
+      }
+    }, open ? NAV_TURN_MS * 0.6 : 0);
+  }
+
   // Left alone, one mosaic takes its next best move.
   function autoPlay() {
-    if (!visible || performance.now() - lastPlay < IDLE_BEFORE_AUTO_MS) {
+    if (!visible || celebrating || performance.now() - lastPlay < IDLE_BEFORE_AUTO_MS) {
       return;
     }
 
@@ -1114,27 +1254,156 @@ export function attachHeroMosaic(
       }
     }
 
-    return placed.map(({ row, col }) => {
-      const board = {
-        cells: [],
-        sides: [0, 0, 0, 0],
-        img: null,
-        faces: null,
-        locked: false,
-        glowStart: 0,
-        flip: null,
-      };
+    return placed.map(({ row, col }) => makeBoard(row, col));
+  }
 
-      RING.forEach(([dr, dc], slot) => {
-        const tile = tileAt(row + dr, col + dc);
-        tile.held = null;
-        tile.board = board;
-        tile.slot = slot;
-        board.cells.push(tile);
-      });
+  // A mosaic on the four squares from (row, col).
+  function makeBoard(row, col, index = 0) {
+    const board = {
+      index,
+      cells: [],
+      sides: [0, 0, 0, 0],
+      img: null,
+      faces: null,
+      locked: false,
+      glowStart: 0,
+      flip: null,
+    };
 
-      return board;
+    RING.forEach(([dr, dc], slot) => {
+      const tile = tileAt(row + dr, col + dc);
+      tile.held = null;
+      tile.board = board;
+      tile.slot = slot;
+      board.cells.push(tile);
     });
+
+    return board;
+  }
+
+  /*
+   * An element's box on the block, from the layout offsets rather than its
+   * rect: on the case cube the block may be mid-turn.
+   */
+  function boxOnBlock(el) {
+    let x = 0;
+    let y = 0;
+
+    for (let node = el; node && node !== host; node = node.offsetParent) {
+      x += node.offsetLeft;
+      y += node.offsetTop;
+    }
+
+    return { l: x, t: y, r: x + el.offsetWidth, b: y + el.offsetHeight };
+  }
+
+  /*
+   * Peek: the lines of an element's text on the block, each to its own
+   * length — not the element's whole box — so a window may open beside a
+   * short line. Trimmed a little — more top and bottom, where a line box
+   * carries its leading — so a window may graze a line's edge.
+   */
+  function lineBoxes(el, rect) {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+
+    return Array.from(range.getClientRects()).map((line) => ({
+      l: line.left - rect.left + 4,
+      t: line.top - rect.top + 12,
+      r: line.right - rect.left - 4,
+      b: line.bottom - rect.top - 12,
+    }));
+  }
+
+  /*
+   * Nav: the free 2×2 blocks with `c` columns, in reading order — every other
+   * one, as on a checkerboard (whichever colour leaves more), or all of them
+   * on a phone (the screen, not the block: a narrow card on a desktop keeps
+   * the checkerboard). A block must be whole on the block and clear of the copy.
+   */
+  const clearOf = (kept, s) => (row, col) =>
+    kept.every(
+      (box) =>
+        box.r <= col * s || box.l >= (col + 2) * s || box.b <= row * s || box.t >= (row + 2) * s,
+    );
+
+  function navSlots(c, kept) {
+    if (keepGround) {
+      return scatterSlots(c, kept);
+    }
+
+    const s = square || width / c;
+    const blockRows = Math.floor((height + 2) / s / 2);
+    const blockCols = Math.floor(Math.floor((width + 2) / s) / 2);
+    const clear = clearOf(kept, s);
+    let best = [];
+
+    (window.innerWidth <= 640 ? [null] : [0, 1]).forEach((parity) => {
+      const slots = [];
+
+      for (let bi = 0; bi < blockRows; bi += 1) {
+        for (let bj = 0; bj < blockCols; bj += 1) {
+          if ((parity === null || (bi + bj) % 2 === parity) && clear(bi * 2, bj * 2)) {
+            slots.push({ row: bi * 2, col: bj * 2 });
+          }
+        }
+      }
+
+      if (slots.length > best.length) {
+        best = slots;
+      }
+    });
+
+    return best;
+  }
+
+  /*
+   * Nav over the grey squares: the mosaics dropped anywhere on the grid, at
+   * random, never sharing an edge (corners may touch), so each still reads as
+   * a cube of its own among the squares. A few deals are tried and the fullest
+   * kept; the mosaics are then numbered in reading order.
+   */
+  function scatterSlots(c, kept) {
+    const s = square || width / c;
+    const fullRows = Math.floor((height + 2) / s);
+    const fullCols = Math.floor((width + 2) / s);
+    const clear = clearOf(kept, s);
+    const apart = (a, b) => {
+      const dr = Math.abs(a.row - b.row);
+      const dc = Math.abs(a.col - b.col);
+      return dr >= 3 || dc >= 3 || (dr >= 2 && dc >= 2);
+    };
+    const candidates = [];
+
+    for (let row = 0; row + 2 <= fullRows; row += 1) {
+      for (let col = 0; col + 2 <= fullCols; col += 1) {
+        if (clear(row, col)) {
+          candidates.push({ row, col });
+        }
+      }
+    }
+
+    let best = [];
+
+    for (let attempt = 0; attempt < 300 && best.length < photos.length; attempt += 1) {
+      const chosen = [];
+
+      for (const slot of shuffle(candidates)) {
+        if (chosen.length >= photos.length) {
+          break;
+        }
+
+        if (chosen.every((other) => apart(other, slot))) {
+          chosen.push(slot);
+        }
+      }
+
+      if (chosen.length > best.length) {
+        best = chosen;
+      }
+    }
+
+    return best.sort((a, b) => a.row - b.row || a.col - b.col);
   }
 
   /* --------------------------------------------------------------- layout */
@@ -1169,8 +1438,31 @@ export function attachHeroMosaic(
 
     // Medium squares: about 160px on a desktop, 96px on a phone.
     const target = compact() ? 96 : Math.min(180, Math.max(130, width / 10));
-    cols = Math.max(3, Math.round(width / target));
-    size = width / cols;
+    cols = square ? Math.ceil(width / square - 1e-6) : Math.max(3, Math.round(width / target));
+    let navPlaced = [];
+
+    // Nav: smaller squares until every photo has a block, or the floor is
+    // reached — unless the size is fixed.
+    if (nav && square) {
+      navPlaced = navSlots(cols, avoid.filter(Boolean).map(boxOnBlock)).slice(0, photos.length);
+    } else if (nav) {
+      const kept = avoid.filter(Boolean).map(boxOnBlock);
+      const floor = compact() ? 56 : 84;
+      let best = { c: cols, slots: navSlots(cols, kept) };
+
+      for (let c = cols + 1; width / c >= floor && best.slots.length < photos.length; c += 1) {
+        const slots = navSlots(c, kept);
+
+        if (slots.length > best.slots.length) {
+          best = { c, slots };
+        }
+      }
+
+      cols = best.c;
+      navPlaced = best.slots.slice(0, photos.length);
+    }
+
+    size = square || width / cols;
     rows = Math.ceil(height / size);
 
     canvas.width = Math.round(width * dpr);
@@ -1234,13 +1526,15 @@ export function attachHeroMosaic(
     }
     const firstRow = Math.ceil(headerBottom / size - 1e-6);
     const previous = tiles;
+    peeks = [];
+    avoidBoxes = avoid.filter(Boolean).flatMap((el) => lineBoxes(el, rect));
 
     tiles = [];
 
     for (let row = 0; row < rows; row += 1) {
       for (let col = 0; col < cols; col += 1) {
         const tile = { col, row, from: null, to: null, start: 0, duration: TURN_MS, dirty: true };
-        tile.copy = copyWeight(tile);
+        tile.copy = nav && !keepGround ? 0 : copyWeight(tile);
 
         if (row < firstRow) {
           tile.held = 'blank';
@@ -1264,7 +1558,31 @@ export function attachHeroMosaic(
     const belowRow = below
       ? Math.ceil((below.getBoundingClientRect().bottom - rect.top) / size - 1e-6)
       : 0;
-    boards = placeBoards(Math.max(firstRow, belowRow), headlineRow);
+    boards = nav
+      ? navPlaced.map(({ row, col }, index) => makeBoard(row, col, index))
+      : placeBoards(Math.max(firstRow, belowRow), headlineRow);
+
+    // The badge: on the game's top row, just left of its first mosaic.
+    if (badge) {
+      const gameCells = boards.flatMap((board) => board.cells);
+      const col = gameCells.length ? Math.max(0, Math.min(...gameCells.map((t) => t.col)) - 1) : 0;
+      const row = gameCells.length ? Math.min(...gameCells.map((t) => t.row)) : firstRow;
+      const half = tileGap(compact()) / 2;
+      badge.style.left = `${col * size + half}px`;
+      badge.style.top = `${row * size + half}px`;
+      badge.style.width = `${size - half * 2}px`;
+      badge.style.height = `${size - half * 2}px`;
+      badge.style.borderRadius = `${tileRadius(compact())}px`;
+    }
+
+    // Nav: the mosaics are all there is — unless they keep the grey ground.
+    if (nav && !keepGround) {
+      tiles.forEach((tile) => {
+        if (!tile.board) {
+          tile.held = 'void';
+        }
+      });
+    }
 
     // On a phone nothing but the photos sits above the summary — not even
     // over the lower mosaic of the staircase.
@@ -1317,7 +1635,20 @@ export function attachHeroMosaic(
     });
 
     boards.forEach((board, index) => {
-      if (assemble) {
+      if (nav) {
+        dealPhoto(board);
+
+        if (noHover) {
+          assembleBoard(board, previous.length ? 0 : 600 + index * 220);
+        } else {
+          board.cells.forEach((tile) => {
+            setFace(tile, plainFace(), TURN_MS * 1.2, {
+              delay: previous.length ? 0 : Math.random() * 1600,
+              axis: Math.random() < 0.5 ? 'x' : 'y',
+            });
+          });
+        }
+      } else if (assemble) {
         dealPhoto(board);
         board.cells.forEach((tile) => {
           setFace(tile, plainFace(), TURN_MS * 1.2, {
@@ -1329,6 +1660,8 @@ export function attachHeroMosaic(
         dealBoard(board, { delay: previous.length ? 0 : 1200 + index * 500 });
       }
     });
+
+    onPlace?.(boards.map((board) => ({ index: board.index, ...boardBox(board) })));
   }
 
   /*
@@ -1445,7 +1778,29 @@ export function attachHeroMosaic(
   }
 
   function swapOne() {
-    if (!visible || !tiles.length) {
+    if (!visible || celebrating || !tiles.length) {
+      return;
+    }
+
+    // Nav: a resting mosaic now and then rolls one piece to the other grey —
+    // and over the grey ground, one of its squares turns too.
+    if (nav) {
+      const idle = keepGround ? tiles.filter((tile) => !tile.start && !tile.held && !tile.board) : [];
+
+      if (idle.length) {
+        const tile = idle[(Math.random() * idle.length) | 0];
+        setFace(tile, ambientFace(tile), TURN_MS, { axis: Math.random() < 0.5 ? 'x' : 'y' });
+      }
+
+      const resting = boards.filter((board) => !board.assembled && board.cells.every((tile) => !tile.start));
+
+      if (resting.length && Math.random() < 0.6) {
+        const board = resting[(Math.random() * resting.length) | 0];
+        const tile = board.cells[(Math.random() * 4) | 0];
+        setFace(tile, { kind: tile.to?.kind === 'text' ? 'motion' : 'text' }, TURN_MS, {
+          axis: Math.random() < 0.5 ? 'x' : 'y',
+        });
+      }
       return;
     }
 
@@ -1539,8 +1894,132 @@ export function attachHeroMosaic(
     });
   }
 
+  /* ------------------------------------------------------------------ peek */
+
+  // The deck's next photo, never one already open.
+  function peekPhoto() {
+    for (let i = 0; i < deck.length; i += 1) {
+      const img = deck.shift();
+      deck.push(img);
+
+      if (!peeks.some((board) => board.img === img)) {
+        return img;
+      }
+    }
+
+    return null;
+  }
+
+  /*
+   * Where a window round `tile` goes: one of the four 2×2s that hold it, whole
+   * on the block and clear of the held squares — the one that overlaps the
+   * open windows least, so a new spot shows a new photo.
+   */
+  function peekSpot(tile) {
+    const fits = (row, col) =>
+      row >= 0 &&
+      col >= 0 &&
+      // The last column may be cut by the right edge, as the grid is there.
+      (col + 1.5) * size <= width + 2 &&
+      col + 1 < cols &&
+      (row + 2) * size <= height + 2 &&
+      clearOf(avoidBoxes, size)(row, col) &&
+      [0, 1].every((dr) =>
+        [0, 1].every((dc) => {
+          const cell = tileAt(row + dr, col + dc);
+          return cell && !cell.held;
+        }),
+      );
+    const overlap = ({ row, col }) =>
+      peeks.reduce(
+        (sum, board) =>
+          sum +
+          board.cells.filter(
+            (cell) =>
+              cell.board === board &&
+              cell.row >= row &&
+              cell.row < row + 2 &&
+              cell.col >= col &&
+              cell.col < col + 2,
+          ).length,
+        0,
+      );
+    const spots = [];
+
+    [tile.row - 1, tile.row].forEach((row) => {
+      [tile.col - 1, tile.col].forEach((col) => {
+        if (fits(row, col)) {
+          spots.push({ row, col });
+        }
+      });
+    });
+
+    if (!spots.length) {
+      return null;
+    }
+
+    const least = Math.min(...spots.map(overlap));
+    const best = spots.filter((spot) => overlap(spot) === least);
+    return best[(Math.random() * best.length) | 0];
+  }
+
+  // The window's squares not taken over by a newer one fall back into grey.
+  function closePeek(board) {
+    board?.cells.forEach((tile, slot) => {
+      if (tile.board !== board) {
+        return;
+      }
+
+      tile.board = null;
+      setFace(tile, ambientFace(tile), NAV_TURN_MS, {
+        delay: slot * 60,
+        axis: Math.random() < 0.5 ? 'x' : 'y',
+      });
+    });
+  }
+
+  function openPeek(tile) {
+    const spot = tile && peekSpot(tile);
+    const img = spot && peekPhoto();
+
+    if (!img) {
+      return;
+    }
+
+    const board = makeBoard(spot.row, spot.col);
+    board.img = img;
+    board.assembled = true;
+    peeks.push(board);
+
+    board.cells.forEach((cell, slot) => {
+      setFace(cell, { kind: 'piece', board, slot, side: 0, img }, NAV_TURN_MS, {
+        delay: slot * 110,
+        axis: slot % 2 ? 'x' : 'y',
+      });
+    });
+
+    // Windows wholly covered by newer ones are gone; past the limit, so is the oldest.
+    peeks = peeks.filter((open) => open.cells.some((cell) => cell.board === open));
+    while (peeks.length > MAX_PEEKS) {
+      closePeek(peeks.shift());
+    }
+  }
+
+  const isPeeked = (tile) => Boolean(tile && peeks.includes(tile.board));
+
   function handlePointerMove(event) {
-    if (assemble) {
+    if (peek) {
+      const tile = tileFromEvent(event);
+      window.clearTimeout(peekTimer);
+
+      if (tile && !isPeeked(tile)) {
+        peekTimer = window.setTimeout(() => openPeek(tile), PEEK_DELAY_MS);
+      }
+
+      return;
+    }
+
+    if (assemble || nav) {
       return;
     }
 
@@ -1554,21 +2033,113 @@ export function attachHeroMosaic(
   }
 
   function handlePointerLeave() {
+    if (peek) {
+      window.clearTimeout(peekTimer);
+      const open = peeks;
+      peeks = [];
+      open.forEach(closePeek);
+      return;
+    }
+
     setHover(null);
   }
 
   function handleClick(event) {
-    if (assemble) {
+    if (peek) {
+      const tile = tileFromEvent(event);
+
+      if (isPeeked(tile)) {
+        onPick?.(photoIndex.get(tile.board.img));
+      } else {
+        window.clearTimeout(peekTimer);
+        openPeek(tile);
+      }
+
+      return;
+    }
+
+    if (assemble || nav) {
       return;
     }
 
     const tile = tileFromEvent(event);
 
-    if (tile?.board) {
+    if (tile?.board && !celebrating) {
       lastPlay = performance.now();
-      play(tile.board, tile.slot);
+      play(tile.board, tile.slot, true);
     }
   }
+
+  /*
+   * The reset: the game's mosaics — only them, the grey squares hold still —
+   * turn over, piece by piece, to plain grey; hold a moment; and are dealt
+   * again from scratch, fresh photos rolling in as on the first deal. A
+   * mosaic already turning over as a whole lands first, then goes grey.
+   * Clicks and the self-play wait until they are all back.
+   */
+  function celebrate() {
+    if (celebrating || !boards.length) {
+      return;
+    }
+
+    celebrating = true;
+    const now = performance.now();
+    let greyBy = 0;
+
+    boards.forEach((board, index) => {
+      const landing = board.flip ? Math.max(0, board.flip.start + board.flip.duration - now) + 40 : 0;
+      const start = landing + index * RESET_BOARD_STEP_MS;
+      greyBy = Math.max(greyBy, start + 3 * RESET_PIECE_STEP_MS + RESET_TURN_MS);
+
+      later(() => {
+        board.locked = true;
+        board.glowStart = 0;
+        board.cells.forEach((tile, slot) => {
+          setFace(tile, { kind: 'motion' }, RESET_TURN_MS, {
+            delay: slot * RESET_PIECE_STEP_MS,
+            axis: slot % 2 ? 'x' : 'y',
+          });
+        });
+      }, start);
+    });
+
+    const dealAt = greyBy + RESET_HOLD_MS;
+
+    later(() => {
+      boards.forEach((board, index) => {
+        dealBoard(board, { delay: index * RESET_BOARD_STEP_MS * 2 });
+      });
+    }, dealAt);
+
+    later(() => {
+      celebrating = false;
+      lastPlay = performance.now();
+    }, dealAt + boards.length * RESET_BOARD_STEP_MS * 2 + TURN_MS + 3 * 180);
+  }
+
+  const boardFor = (event) => boards.find((board) => board.index === event.detail);
+  const handleShow = (event) => {
+    const board = boardFor(event);
+    hovered = board ?? null;
+    lastHover = performance.now();
+    // The cycle's cover gives way to the one asked for.
+    boards.forEach((other) => {
+      if (other !== board) {
+        scatterBoard(other);
+      }
+    });
+    assembleBoard(board);
+  };
+  const handleHide = (event) => {
+    const board = boardFor(event);
+
+    if (hovered === board) {
+      hovered = null;
+    }
+
+    lastHover = performance.now();
+    scatterBoard(board);
+  };
 
   function start() {
     if (reduceMotion) {
@@ -1582,8 +2153,13 @@ export function attachHeroMosaic(
 
     swapTimer = window.setInterval(swapOne, SWAP_EVERY_MS);
     sceneTimer = window.setInterval(nextScene, SCENE_EVERY_MS);
-    if (!assemble) {
+    if (!assemble && !nav) {
       autoTimer = window.setInterval(autoPlay, AUTO_EVERY_MS);
+    }
+
+    if (nav && cycle && !noHover) {
+      later(cycleStep, 1600);
+      cycleTimer = window.setInterval(cycleStep, CYCLE_HOLD_MS + NAV_TURN_MS);
     }
   }
 
@@ -1645,6 +2221,8 @@ export function attachHeroMosaic(
       }
     });
     deck = shuffle(photoImages.filter(Boolean));
+    navImages = photoImages;
+    photoImages.forEach((img, index) => photoIndex.set(img, index));
 
     if (!loadedScenes.length) {
       loadedScenes.push(plainScene());
@@ -1662,6 +2240,10 @@ export function attachHeroMosaic(
       host.addEventListener('pointerleave', scatterBoards);
     }
 
+    canvas.addEventListener('mosaic:celebrate', celebrate);
+    canvas.addEventListener('mosaic:show', handleShow);
+    canvas.addEventListener('mosaic:hide', handleHide);
+
     resizeObserver.observe(host);
     visibilityObserver.observe(host);
     document.addEventListener('visibilitychange', handleVisibility);
@@ -1674,7 +2256,9 @@ export function attachHeroMosaic(
     window.clearInterval(swapTimer);
     window.clearInterval(sceneTimer);
     window.clearInterval(autoTimer);
+    window.clearInterval(cycleTimer);
     window.clearTimeout(resizeTimer);
+    window.clearTimeout(peekTimer);
     pending.forEach((id) => window.clearTimeout(id));
     resizeObserver.disconnect();
     visibilityObserver.disconnect();
@@ -1684,5 +2268,8 @@ export function attachHeroMosaic(
     pointerTarget.removeEventListener('pointerleave', handlePointerLeave);
     host.removeEventListener('pointerenter', assembleBoards);
     host.removeEventListener('pointerleave', scatterBoards);
+    canvas.removeEventListener('mosaic:celebrate', celebrate);
+    canvas.removeEventListener('mosaic:show', handleShow);
+    canvas.removeEventListener('mosaic:hide', handleHide);
   };
 }

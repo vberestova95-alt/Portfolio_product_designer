@@ -16,6 +16,7 @@ import logoMidjourney from '../assets/ai-logos/midjourney.svg';
 import logoRecraft from '../assets/ai-logos/recraft.svg';
 import { BrandLogo } from '../components/BrandLogo.jsx';
 import { CubePool, ReloadIcon } from '../components/CubePool.jsx';
+import { MosaicLinks } from '../components/MosaicLinks.jsx';
 import { ContactMenu, NavMenu, useMatchMedia } from '../components/NavMenu.jsx';
 import { SiteFooter } from '../components/SiteFooter.jsx';
 import { WorkCard } from '../components/WorkCard.jsx';
@@ -179,23 +180,34 @@ function smoothstepUnit(a, b, x) {
   return t * t * (3 - 2 * t);
 }
 
-function PracticeCard({ contact }) {
+function PracticeCard({ contact, projects }) {
   const text = useUi().home;
   const cardRef = useRef(null);
   const poolRef = useRef(null);
   const mosaicRef = useRef(null);
+  const titleRef = useRef(null);
+  const ctaRef = useRef(null);
   const pressedCubeRef = useRef(false);
   const [isCleared, setIsCleared] = useState(false);
+  const [boxes, setBoxes] = useState([]);
+  const links = projects.map(projectLink);
 
   useEffect(() => (SHOW_LOGO_POOL ? attachLogoPool(poolRef.current) : undefined), []);
+  // The AI projects as an index among the grey squares, each mosaic
+  // assembling into its cover on hover.
   useEffect(
     () =>
       SHOW_LOGO_POOL
         ? undefined
         : attachHeroMosaic(mosaicRef.current, {
             shade: practiceShade,
-            maxBoards: 0,
             tones: PLAIN_TONES,
+            nav: true,
+            keepGround: true,
+            square: CARD_SQUARE,
+            photos: links.map((link) => link.src),
+            avoid: [titleRef.current, ctaRef.current],
+            onPlace: setBoxes,
           }),
     [],
   );
@@ -253,10 +265,19 @@ function PracticeCard({ contact }) {
       </a>
 
       {/* One face throughout — the accent set in the heading's own type. */}
-      <h3 className="editorial-card__title" data-pool-ceiling>
+      <h3 className="editorial-card__title" ref={titleRef} data-pool-ceiling>
         {text.practiceTitle.start} {text.practiceTitle.accent}
         {text.practiceTitle.end}
       </h3>
+
+      {SHOW_LOGO_POOL ? null : (
+        <MosaicLinks
+          items={links}
+          boxes={boxes}
+          canvasRef={mosaicRef}
+          label={text.practiceLink}
+        />
+      )}
 
       {SHOW_LOGO_POOL ? (
         <div className="logo-pool" ref={poolRef} aria-hidden="true">
@@ -294,7 +315,7 @@ function PracticeCard({ contact }) {
 
       {/* Visual only — the whole card is already the link (practice-card__hit). */}
       <div className="practice-card__footer" data-pool-floor aria-hidden="true">
-        <span className="practice-card__cta">
+        <span className="practice-card__cta" ref={ctaRef}>
           {text.practiceLink}
           <span>→</span>
         </span>
@@ -319,6 +340,69 @@ const FILM_PHOTOS_OF_ME = Object.entries(FILM_PHOTO_FILES)
   .filter(([path]) => /\/me-[^/]+$/.test(path))
   .map(([, src]) => src);
 
+/*
+ * The hero game, as a square of its own laid over the square just left of
+ * the game's mosaics (lib/heroMosaic.js, `badge`). It turns up white once a
+ * first mosaic is whole — the visitor's or one that solved itself — offering
+ * a game: find every picture.
+ * Playing, it counts the different pictures solved out of all of them (a
+ * repeat doesn't count, nor a mosaic that solves itself). All found, the
+ * mosaics turn to grey and are dealt again, and the count starts again. The cross
+ * ends the game. Not on a phone (global.css).
+ *
+ * `game` is 'idle' (hidden), 'offer', 'playing' or 'done' (the wave).
+ */
+function HeroGame({ game, found, total, onStart, onClose, badgeRef }) {
+  const text = useUi().home;
+  const shown = game !== 'idle';
+
+  return (
+    <div
+      ref={badgeRef}
+      className={`hero-score hero-score--${game}${shown ? ' is-shown' : ''}`}
+      role="status"
+      aria-hidden={!shown}
+    >
+      <button
+        type="button"
+        className="hero-score__close"
+        aria-label={text.gameClose}
+        title={text.gameClose}
+        onClick={onClose}
+        tabIndex={shown ? undefined : -1}
+      >
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </button>
+
+      {game === 'offer' ? (
+        <button
+          type="button"
+          className="hero-score__start"
+          onClick={onStart}
+          tabIndex={shown ? undefined : -1}
+        >
+          <span className="hero-score__title">{text.gameStart}</span>
+        </button>
+      ) : (
+        <>
+          <span className="hero-score__value">
+            {game === 'done' ? total : found}
+            <span className="hero-score__total">/{total}</span>
+          </span>
+          <span className="hero-score__label">
+            {game === 'done' ? text.gameDone : text.gameLabel}
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
+// How long the reset runs (lib/heroMosaic.js, celebrate) before the count starts again.
+const GAME_DONE_MS = 2600;
+
 function heroCubeSize(width) {
   // Near desktop size on a phone too, with a cube's worth of slack left in the
   // row so all four settle side by side rather than one perched on another.
@@ -331,35 +415,87 @@ function heroCubeSize(width) {
   return Math.min(100, Math.max(72, width * 0.062));
 }
 
-/*
- * The cases as one cube. Its first face is the word, over the grey squares;
- * the rest are the case covers, which roll in one by one as the page
- * scrolls. The section is tall and the cube sticks to the screen while it
- * passes — lib/caseCube.js turns it.
- */
-function CaseCube({ cases }) {
-  const sectionRef = useRef(null);
-  const mosaicRef = useRef(null);
+// A case or project as a link on a mosaic index: its cover is the preview.
+function projectLink(item) {
+  return { id: item.id, title: item.title, href: item.href, src: item.image.src };
+}
 
-  useEffect(() => attachCaseCube(sectionRef.current), []);
-  // The grey squares as on the design concepts intro: the default lean, darker
-  // to the left and along the floor, where the word sits.
+/*
+ * Every case in one index: the client work first, then everything built with
+ * AI (the pet tracker is both — it goes with the AI projects), marked as such.
+ */
+function caseIndexLinks(cases, aiProjects) {
+  const isAi = new Set(aiProjects.map((item) => item.id));
+
+  return [
+    ...cases.filter((item) => !isAi.has(item.id)).map(projectLink),
+    ...aiProjects.map((item) => ({ ...projectLink(item), tag: 'AI' })),
+  ];
+}
+
+/*
+ * The cases block's index: the word over the grey squares, with a mosaic per
+ * case scattered among them, each assembling into its cover while hovered
+ * (lib/heroMosaic.js, `nav` with `ground`). Drawn into its
+ * parent — the cube's first face, or the card that stands in for it.
+ */
+function CaseIndex({ links }) {
+  const mosaicRef = useRef(null);
+  const titleRef = useRef(null);
+  const [boxes, setBoxes] = useState([]);
+  const [active, setActive] = useState(null);
+
   useEffect(
     () =>
       attachHeroMosaic(mosaicRef.current, {
-        maxBoards: 0,
         tones: PLAIN_TONES,
+        nav: true,
+        photos: links.map((link) => link.src),
+        avoid: [titleRef.current],
+        onPlace: setBoxes,
+        // The grey squares as before, the cases scattered among them.
+        keepGround: true,
+        // The covers open one after another by themselves until a hover takes over.
+        cycle: true,
+        onActive: setActive,
       }),
     [],
   );
+
+  return (
+    <>
+      <canvas className="hero-mosaic case-cube__mosaic" ref={mosaicRef} aria-hidden="true" />
+      <h2 className="case-cube__title" ref={titleRef}>
+        Cases
+      </h2>
+      <MosaicLinks
+        items={links}
+        boxes={boxes}
+        canvasRef={mosaicRef}
+        label="Cases"
+        active={active}
+      />
+    </>
+  );
+}
+
+/*
+ * The cases as one cube. Its first face is the index of every case; the rest
+ * are the case covers, which roll in one by one as the page scrolls. The
+ * section is tall and the cube sticks to the screen while it passes —
+ * lib/caseCube.js turns it.
+ */
+function CaseCube({ cases, links }) {
+  const sectionRef = useRef(null);
+
+  useEffect(() => attachCaseCube(sectionRef.current), []);
 
   return (
     <div className="case-cube" ref={sectionRef} style={{ '--cube-faces': cases.length + 1 }}>
       <div className="case-cube__stage">
         <div className="case-cube__body" data-cube-body>
           <div className="case-cube__face case-cube__face--title is-on is-front" data-cube-face>
-            <canvas className="hero-mosaic case-cube__mosaic" ref={mosaicRef} aria-hidden="true" />
-            <h2 className="case-cube__title">Cases</h2>
+            <CaseIndex links={links} />
           </div>
 
           {cases.map((item, index) => (
@@ -372,6 +508,9 @@ function CaseCube({ cases }) {
     </div>
   );
 }
+
+// The square size of the two cards side by side, so their grids match.
+const CARD_SQUARE = 110;
 
 // The scattered Dribbble shots on the concept card. Off while the card carries
 // the squares, where the shots assemble on hover instead; flip back to true to
@@ -386,11 +525,10 @@ const SHOW_CONCEPT_SHOTS = false;
  * white with light squares, as on the page it links to, and under the copy
  * sit mosaics that assemble into the shots while the pointer is over the card.
  */
-function ConceptTeaser({ teaser }) {
+function ConceptTeaser({ teaser, archiveShots }) {
   const trailRef = useRef(null);
   const mosaicRef = useRef(null);
   const copyRef = useRef(null);
-  const footerRef = useRef(null);
 
   useEffect(() => (SHOW_CONCEPT_SHOTS ? attachShotTrail(trailRef.current) : undefined), []);
   useEffect(
@@ -398,14 +536,16 @@ function ConceptTeaser({ teaser }) {
       SHOW_CONCEPT_SHOTS
         ? undefined
         : attachHeroMosaic(mosaicRef.current, {
-            photos: teaser.shots.map((shot) => shot.src),
+            // The whole archive, as on its own cover: any square opens a window on a shot.
+            photos: archiveShots.map((shot) => shot.src),
             shade: practiceShade,
-            maxBoards: 2,
             tones: LIGHT_TONES,
             theme: 'light',
-            assemble: true,
-            below: copyRef.current,
-            anchor: footerRef.current,
+            maxBoards: 0,
+            peek: true,
+            square: CARD_SQUARE,
+            // Never over the copy, so it keeps its contrast.
+            avoid: [copyRef.current],
           }),
     [],
   );
@@ -445,7 +585,7 @@ function ConceptTeaser({ teaser }) {
         <p className="editorial-card__copy">{teaser.description}</p>
       </div>
 
-      <div className="concept-teaser__footer" ref={footerRef}>
+      <div className="concept-teaser__footer">
         <span className="concept-teaser__cta">
           {teaser.linkLabel}
           <span aria-hidden="true">→</span>
@@ -458,8 +598,10 @@ function ConceptTeaser({ teaser }) {
 export function HomePage({
   profile,
   cases,
+  aiProjects,
   clients,
   designConceptTeaser,
+  designConcepts,
   achievements,
   experiences,
 }) {
@@ -477,9 +619,56 @@ export function HomePage({
   const mosaicRef = useRef(null);
   const copyRef = useRef(null);
   const titleRef = useRef(null);
+  const scoreRef = useRef(null);
+  const [game, setGame] = useState('idle');
+  const [found, setFound] = useState(() => new Set());
+  // The mosaic's callback is set once, so it reads the game's state from here.
+  const gameRef = useRef(game);
+  gameRef.current = game;
+  const totalPictures = MOSAIC_PHOTOS.length;
+
+  // Any whole mosaic offers the game, even one that solved itself; only the
+  // visitor's own count towards it.
+  const handleSolve = (index, byVisitor) => {
+    if (gameRef.current === 'idle') {
+      setGame('offer');
+    } else if (gameRef.current === 'playing' && byVisitor) {
+      setFound((prev) => (prev.has(index) ? prev : new Set(prev).add(index)));
+    }
+  };
+  const handleStartGame = () => {
+    setFound(new Set());
+    setGame('playing');
+  };
+  const handleCloseGame = () => {
+    setFound(new Set());
+    setGame('idle');
+  };
+
+  // All found: the wave…
+  useEffect(() => {
+    if (game === 'playing' && found.size >= totalPictures) {
+      setGame('done');
+      mosaicRef.current?.dispatchEvent(new CustomEvent('mosaic:celebrate'));
+    }
+  }, [found, game, totalPictures]);
+
+  // …then the count starts again.
+  useEffect(() => {
+    if (game !== 'done') {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => {
+      setFound(new Set());
+      setGame('playing');
+    }, GAME_DONE_MS);
+    return () => window.clearTimeout(timer);
+  }, [game]);
 
   useEffect(() => attachHeroObject(heroRef.current, objectRef.current), []);
   const showCube = useMatchMedia(CASE_CUBE_QUERY, SHOW_CASE_CUBE);
+  const caseLinks = caseIndexLinks(cases, aiProjects.items);
   useEffect(() => (showCube ? undefined : attachWorkStack(stackRef.current)), [showCube]);
 
   // The hero's top row comes back as a bar on scroll up, as on every page —
@@ -498,6 +687,8 @@ export function HomePage({
         anchor: titleRef.current,
         header: topRef.current,
         emptySquares: EMPTY_SQUARES,
+        onSolve: handleSolve,
+        badge: scoreRef.current,
       }),
     [],
   );
@@ -534,6 +725,15 @@ export function HomePage({
               </div>
             ) : null}
           </div>
+
+          <HeroGame
+            game={game}
+            found={found.size}
+            total={totalPictures}
+            onStart={handleStartGame}
+            onClose={handleCloseGame}
+            badgeRef={scoreRef}
+          />
 
           <div className="hero-panel__plate" ref={copyRef}>
             {profile.summary.map((paragraph) => (
@@ -592,21 +792,28 @@ export function HomePage({
 
       <section className="section home-shell" id="work" data-track-area="work-cards">
         {showCube ? (
-          <CaseCube cases={cases} />
+          <CaseCube cases={cases} links={caseLinks} />
         ) : (
-          <div className="work-stack" ref={stackRef}>
-            {cases.map((item, index) => (
-              <WorkCard key={item.id} item={item} index={index} total={cases.length} />
-            ))}
-          </div>
+          <>
+            {/* Without the cube, the index stands as a card of its own above the stack. */}
+            <div className="case-index">
+              <CaseIndex links={caseLinks} />
+            </div>
+
+            <div className="work-stack" ref={stackRef}>
+              {cases.map((item, index) => (
+                <WorkCard key={item.id} item={item} index={index} total={cases.length} />
+              ))}
+            </div>
+          </>
         )}
       </section>
 
       <section className="section home-shell practice-section" data-track-area="practice">
         <div className="two-column-section">
-          <ConceptTeaser teaser={designConceptTeaser} />
+          <ConceptTeaser teaser={designConceptTeaser} archiveShots={designConcepts.shots} />
 
-          <PracticeCard contact={contact} />
+          <PracticeCard contact={contact} projects={aiProjects.items} />
         </div>
       </section>
 

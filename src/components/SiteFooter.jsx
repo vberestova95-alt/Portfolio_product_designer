@@ -16,6 +16,10 @@ function footerCubeSize(width) {
 // mosaic's plain cubes; flip back to true to bring them back.
 const SHOW_FOOTER_CUBES = false;
 
+// The grey squares behind the panel. Off — the panel is plain; flip back to
+// true to bring them back.
+const SHOW_FOOTER_MOSAIC = false;
+
 const smooth = (a, b, x) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
@@ -46,7 +50,7 @@ export function SiteFooter({ profile }) {
   // copy. None once the panel stacks (footerShade).
   useEffect(
     () =>
-      SHOW_FOOTER_CUBES
+      SHOW_FOOTER_CUBES || !SHOW_FOOTER_MOSAIC
         ? undefined
         : attachHeroMosaic(mosaicRef.current, {
             maxBoards: 0,
@@ -59,7 +63,7 @@ export function SiteFooter({ profile }) {
   return (
     <footer className="home-footer">
       <div className="home-shell home-footer__panel">
-        {SHOW_FOOTER_CUBES ? null : (
+        {SHOW_FOOTER_CUBES || !SHOW_FOOTER_MOSAIC ? null : (
           <canvas className="hero-mosaic home-footer__mosaic" ref={mosaicRef} aria-hidden="true" />
         )}
 

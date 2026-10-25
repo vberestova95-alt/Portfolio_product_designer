@@ -220,7 +220,9 @@ export function App() {
     <HomePage
       profile={profile}
       cases={cases}
+      aiProjects={aiProjects}
       designConceptTeaser={designConceptTeaser}
+      designConcepts={designConcepts}
       achievements={achievements}
       additionalAchievements={additionalAchievements}
       experiences={experiences}

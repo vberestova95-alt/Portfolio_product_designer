@@ -54,7 +54,11 @@ export function DesignConceptsPage({ archive, profile }) {
   const titleRef = useRef(null);
   const backRef = useRef(null);
 
-  // The intro on the grey squares, as on the AI projects intro.
+  /*
+   * The intro on the grey squares, as on the AI projects intro — and every
+   * square a way in: the pointer opens a window of four on the next shot,
+   * and a click on it shows the shot full size.
+   */
   useEffect(
     () =>
       attachHeroMosaic(mosaicRef.current, {
@@ -62,6 +66,9 @@ export function DesignConceptsPage({ archive, profile }) {
         tones: PLAIN_TONES,
         anchor: titleRef.current,
         header: backRef.current,
+        peek: true,
+        photos: shots.map((shot) => shot.src),
+        onPick: (index) => setLightbox({ src: shots[index].src, alt: shots[index].alt }),
       }),
     [],
   );

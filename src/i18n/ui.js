@@ -77,6 +77,10 @@ export const ui = {
       achievementsTitle:
         'Запускаю, масштабирую, проверяю гипотезы и улучшаю то, как команды проектируют',
       clientsLabel: 'Клиенты и продукты',
+      gameStart: 'Начать игру',
+      gameLabel: 'картинок собрано',
+      gameDone: 'Все найдены!',
+      gameClose: 'Закрыть игру',
     },
     case: {
       before: 'До',
@@ -196,6 +200,10 @@ export const ui = {
       achievementsTitle:
         'A track record of shipping, scaling, validating, and improving the way teams design',
       clientsLabel: 'Clients and products',
+      gameStart: 'Start game',
+      gameLabel: 'pictures found',
+      gameDone: 'All found!',
+      gameClose: 'Close the game',
     },
     case: {
       before: 'Before',
