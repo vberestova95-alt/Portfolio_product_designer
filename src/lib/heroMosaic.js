@@ -370,6 +370,9 @@ function buildMotionLayer(scene, w, h, dpr) {
  * each placed mosaic's box on the block, so links can be laid over them.
  * With `keepGround: true` the grey squares stay all round, as without the index,
  * and the mosaics are scattered among them rather than set on a checkerboard.
+ * With `gameSlots: true` they take the game's own places instead — stepped
+ * along the top right, above the headline — one per photo (the home hero's
+ * main cases).
  *
  * `peek: true` lets any square open a window: the pointer resting on one rolls
  * the 2×2 around it into the next photo of the deck, and moving on to a square
@@ -422,6 +425,7 @@ export function attachHeroMosaic(
     cycle = false,
     onActive = null,
     square = 0,
+    gameSlots = false,
     onSolve = null,
     badge = null,
   },
@@ -589,14 +593,15 @@ export function attachHeroMosaic(
         return;
       }
 
-      // The photo face: a quarter of the photo's centred square, in colour.
+      // The photo face: a quarter of the photo's square, in colour — centred
+      // across, but from the top, so a screen's header always reads.
       if (SIDES[face.side] === 'photo') {
         const side = Math.min(img.width, img.height);
         const half = side / 2;
         g.drawImage(
           img,
           (img.width - side) / 2 + pc * half,
-          (img.height - side) / 2 + pr * half,
+          pr * half,
           half,
           half,
           dest.x,
@@ -1039,7 +1044,8 @@ export function attachHeroMosaic(
   // The letter and dot faces of a mosaic's photo, drawn mosaic-sized.
   function buildBoardFaces(img) {
     const side = size * 2;
-    const scene = { img, fx: 0.5, fy: 0.5, tx: 0.5, ty: 0.5 };
+    // Cropped from the top, like the photo face it turns into.
+    const scene = { img, fx: 0.5, fy: 0, tx: 0.5, ty: 0 };
 
     return {
       text: buildTextLayer(scene, side, side, dpr, compact()),
@@ -1226,7 +1232,7 @@ export function attachHeroMosaic(
    * a staircase rather than sit in a bar.
    */
   function placeBoards(firstRow, headlineRow) {
-    const count = Math.min(maxBoards, Math.floor(cols / 2));
+    const count = Math.min(maxBoards, Math.floor(cols / 2), nav ? photos.length : Infinity);
 
     if (count < 1) {
       return [];
@@ -1254,7 +1260,7 @@ export function attachHeroMosaic(
       }
     }
 
-    return placed.map(({ row, col }) => makeBoard(row, col));
+    return placed.map(({ row, col }, index) => makeBoard(row, col, index));
   }
 
   // A mosaic on the four squares from (row, col).
@@ -1443,7 +1449,9 @@ export function attachHeroMosaic(
 
     // Nav: smaller squares until every photo has a block, or the floor is
     // reached — unless the size is fixed.
-    if (nav && square) {
+    if (nav && gameSlots) {
+      // Placed with the game's boards, once the grid is laid out.
+    } else if (nav && square) {
       navPlaced = navSlots(cols, avoid.filter(Boolean).map(boxOnBlock)).slice(0, photos.length);
     } else if (nav) {
       const kept = avoid.filter(Boolean).map(boxOnBlock);
@@ -1558,7 +1566,7 @@ export function attachHeroMosaic(
     const belowRow = below
       ? Math.ceil((below.getBoundingClientRect().bottom - rect.top) / size - 1e-6)
       : 0;
-    boards = nav
+    boards = nav && !gameSlots
       ? navPlaced.map(({ row, col }, index) => makeBoard(row, col, index))
       : placeBoards(Math.max(firstRow, belowRow), headlineRow);
 

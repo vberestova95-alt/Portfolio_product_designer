@@ -18,7 +18,6 @@ import { BrandLogo } from '../components/BrandLogo.jsx';
 import { CubePool, ReloadIcon } from '../components/CubePool.jsx';
 import { MosaicLinks } from '../components/MosaicLinks.jsx';
 import { ContactMenu, NavMenu, useMatchMedia } from '../components/NavMenu.jsx';
-import { SiteFooter } from '../components/SiteFooter.jsx';
 import { WorkCard } from '../components/WorkCard.jsx';
 import { useLanguage, useUi } from '../i18n/LanguageContext.jsx';
 import { MOSAIC_PHOTOS } from '../data/mosaicMedia.js';
@@ -341,10 +340,10 @@ const FILM_PHOTOS_OF_ME = Object.entries(FILM_PHOTO_FILES)
   .map(([, src]) => src);
 
 /*
- * The hero game, as a square of its own laid over the square just left of
- * the game's mosaics (lib/heroMosaic.js, `badge`). It turns up white once a
- * first mosaic is whole — the visitor's or one that solved itself — offering
- * a game: find every picture.
+ * The game, as a square of its own laid over the square just left of
+ * the game's mosaics (lib/heroMosaic.js, `badge`). It sits there white from
+ * the start, offering a game: find every picture. Closed, it turns up again
+ * once a mosaic is whole — the visitor's or one that solved itself.
  * Playing, it counts the different pictures solved out of all of them (a
  * repeat doesn't count, nor a mosaic that solves itself). All found, the
  * mosaics turn to grey and are dealt again, and the count starts again. The cross
@@ -420,86 +419,127 @@ function projectLink(item) {
   return { id: item.id, title: item.title, href: item.href, src: item.image.src };
 }
 
-/*
- * Every case in one index: the client work first, then everything built with
- * AI (the pet tracker is both — it goes with the AI projects), marked as such.
- */
-function caseIndexLinks(cases, aiProjects) {
-  const isAi = new Set(aiProjects.map((item) => item.id));
-
-  return [
-    ...cases.filter((item) => !isAi.has(item.id)).map(projectLink),
-    ...aiProjects.map((item) => ({ ...projectLink(item), tag: 'AI' })),
-  ];
-}
+// How many of the cases open from the hero: the first ones, the main client work.
+const HERO_CASES = 3;
 
 /*
- * The cases block's index: the word over the grey squares, with a mosaic per
- * case scattered among them, each assembling into its cover while hovered
- * (lib/heroMosaic.js, `nav` with `ground`). Drawn into its
- * parent — the cube's first face, or the card that stands in for it.
+ * About me, at the foot of the page: my film photos as the game's mosaics —
+ * click one to turn its pieces, make it whole, and the square beside them
+ * offers to find every picture (HeroGame). The copy sits in the bottom left,
+ * clear of the mosaics along the top right.
  */
-function CaseIndex({ links }) {
+function AboutSection() {
+  const text = useUi().home;
   const mosaicRef = useRef(null);
-  const titleRef = useRef(null);
-  const [boxes, setBoxes] = useState([]);
-  const [active, setActive] = useState(null);
+  const scoreRef = useRef(null);
+  // The offer is there from the start; closed, it comes back with the next whole mosaic.
+  const [game, setGame] = useState('offer');
+  const [found, setFound] = useState(() => new Set());
+  // The mosaic's callback is set once, so it reads the game's state from here.
+  const gameRef = useRef(game);
+  gameRef.current = game;
+  const totalPictures = MOSAIC_PHOTOS.length;
+
+  // Any whole mosaic offers the game, even one that solved itself; only the
+  // visitor's own count towards it.
+  const handleSolve = (index, byVisitor) => {
+    if (gameRef.current === 'idle') {
+      setGame('offer');
+    } else if (gameRef.current === 'playing' && byVisitor) {
+      setFound((prev) => (prev.has(index) ? prev : new Set(prev).add(index)));
+    }
+  };
+  const handleStartGame = () => {
+    setFound(new Set());
+    setGame('playing');
+  };
+  const handleCloseGame = () => {
+    setFound(new Set());
+    setGame('idle');
+  };
+
+  // All found: the wave…
+  useEffect(() => {
+    if (game === 'playing' && found.size >= totalPictures) {
+      setGame('done');
+      mosaicRef.current?.dispatchEvent(new CustomEvent('mosaic:celebrate'));
+    }
+  }, [found, game, totalPictures]);
+
+  // …then the count starts again.
+  useEffect(() => {
+    if (game !== 'done') {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => {
+      setFound(new Set());
+      setGame('playing');
+    }, GAME_DONE_MS);
+    return () => window.clearTimeout(timer);
+  }, [game]);
 
   useEffect(
     () =>
       attachHeroMosaic(mosaicRef.current, {
+        photos: MOSAIC_PHOTOS,
         tones: PLAIN_TONES,
-        nav: true,
-        photos: links.map((link) => link.src),
-        avoid: [titleRef.current],
-        onPlace: setBoxes,
-        // The grey squares as before, the cases scattered among them.
-        keepGround: true,
-        // The covers open one after another by themselves until a hover takes over.
-        cycle: true,
-        onActive: setActive,
+        shade: aboutShade,
+        onSolve: handleSolve,
+        badge: scoreRef.current,
       }),
     [],
   );
 
   return (
-    <>
-      <canvas className="hero-mosaic case-cube__mosaic" ref={mosaicRef} aria-hidden="true" />
-      <h2 className="case-cube__title" ref={titleRef}>
-        Cases
-      </h2>
-      <MosaicLinks
-        items={links}
-        boxes={boxes}
-        canvasRef={mosaicRef}
-        label="Cases"
-        active={active}
+    <div className="about-card" data-reveal>
+      <canvas className="hero-mosaic" ref={mosaicRef} aria-hidden="true" />
+
+      <HeroGame
+        game={game}
+        found={found.size}
+        total={totalPictures}
+        onStart={handleStartGame}
+        onClose={handleCloseGame}
+        badgeRef={scoreRef}
       />
-    </>
+
+      <div className="about-card__copy">
+        <h2 className="about-card__title">{text.aboutTitle}</h2>
+        {text.aboutCopy.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
+      </div>
+    </div>
   );
 }
 
+// The about card's copy sits in the bottom left, so those squares sit darker.
+function aboutShade(xf, yf) {
+  return 0.9 * smoothstepUnit(0.45, 0.75, yf) * (1 - smoothstepUnit(0.45, 0.75, xf));
+}
+
 /*
- * The cases as one cube. Its first face is the index of every case; the rest
- * are the case covers, which roll in one by one as the page scrolls. The
+ * The cases as one cube: the case covers, which roll in one by one as the
+ * page scrolls. The
  * section is tall and the cube sticks to the screen while it passes —
  * lib/caseCube.js turns it.
  */
-function CaseCube({ cases, links }) {
+function CaseCube({ cases }) {
   const sectionRef = useRef(null);
 
   useEffect(() => attachCaseCube(sectionRef.current), []);
 
   return (
-    <div className="case-cube" ref={sectionRef} style={{ '--cube-faces': cases.length + 1 }}>
+    <div className="case-cube" ref={sectionRef} style={{ '--cube-faces': cases.length }}>
       <div className="case-cube__stage">
         <div className="case-cube__body" data-cube-body>
-          <div className="case-cube__face case-cube__face--title is-on is-front" data-cube-face>
-            <CaseIndex links={links} />
-          </div>
-
           {cases.map((item, index) => (
-            <div key={item.id} className="case-cube__face" data-cube-face>
+            <div
+              key={item.id}
+              className={`case-cube__face${index ? '' : ' is-on is-front'}`}
+              data-cube-face
+            >
               <WorkCard item={item} index={index} total={cases.length} />
             </div>
           ))}
@@ -619,56 +659,13 @@ export function HomePage({
   const mosaicRef = useRef(null);
   const copyRef = useRef(null);
   const titleRef = useRef(null);
-  const scoreRef = useRef(null);
-  const [game, setGame] = useState('idle');
-  const [found, setFound] = useState(() => new Set());
-  // The mosaic's callback is set once, so it reads the game's state from here.
-  const gameRef = useRef(game);
-  gameRef.current = game;
-  const totalPictures = MOSAIC_PHOTOS.length;
-
-  // Any whole mosaic offers the game, even one that solved itself; only the
-  // visitor's own count towards it.
-  const handleSolve = (index, byVisitor) => {
-    if (gameRef.current === 'idle') {
-      setGame('offer');
-    } else if (gameRef.current === 'playing' && byVisitor) {
-      setFound((prev) => (prev.has(index) ? prev : new Set(prev).add(index)));
-    }
-  };
-  const handleStartGame = () => {
-    setFound(new Set());
-    setGame('playing');
-  };
-  const handleCloseGame = () => {
-    setFound(new Set());
-    setGame('idle');
-  };
-
-  // All found: the wave…
-  useEffect(() => {
-    if (game === 'playing' && found.size >= totalPictures) {
-      setGame('done');
-      mosaicRef.current?.dispatchEvent(new CustomEvent('mosaic:celebrate'));
-    }
-  }, [found, game, totalPictures]);
-
-  // …then the count starts again.
-  useEffect(() => {
-    if (game !== 'done') {
-      return undefined;
-    }
-
-    const timer = window.setTimeout(() => {
-      setFound(new Set());
-      setGame('playing');
-    }, GAME_DONE_MS);
-    return () => window.clearTimeout(timer);
-  }, [game]);
+  // The main cases open from the hero's mosaics.
+  const heroLinks = cases.slice(0, HERO_CASES).map(projectLink);
+  const [heroBoxes, setHeroBoxes] = useState([]);
+  const [heroActive, setHeroActive] = useState(null);
 
   useEffect(() => attachHeroObject(heroRef.current, objectRef.current), []);
   const showCube = useMatchMedia(CASE_CUBE_QUERY, SHOW_CASE_CUBE);
-  const caseLinks = caseIndexLinks(cases, aiProjects.items);
   useEffect(() => (showCube ? undefined : attachWorkStack(stackRef.current)), [showCube]);
 
   // The hero's top row comes back as a bar on scroll up, as on every page —
@@ -676,19 +673,24 @@ export function HomePage({
   const topRef = useRef(null);
   useEffect(() => attachPinnedHeader(topRef.current, { hideOver: heroRef.current }), []);
 
-  // The mosaic background, with the summary's plate cut to its grid. The
-  // squares round the game are plain grey cubes, as on the AI projects intro.
+  // The mosaic background, with the summary's plate cut to its grid. Where
+  // the game was, the main cases: each mosaic assembles into its cover on
+  // hover, and they open one after another by themselves until then.
   useEffect(
     () =>
       attachHeroMosaic(mosaicRef.current, {
-        photos: MOSAIC_PHOTOS,
+        photos: heroLinks.map((link) => link.src),
         tones: PLAIN_TONES,
         copy: copyRef.current,
         anchor: titleRef.current,
         header: topRef.current,
         emptySquares: EMPTY_SQUARES,
-        onSolve: handleSolve,
-        badge: scoreRef.current,
+        nav: true,
+        keepGround: true,
+        gameSlots: true,
+        cycle: true,
+        onPlace: setHeroBoxes,
+        onActive: setHeroActive,
       }),
     [],
   );
@@ -697,7 +699,7 @@ export function HomePage({
     <div className="home-page">
       <section className="hero-shell" data-track-area="hero">
         <div className="home-shell hero-panel" ref={heroRef}>
-          <canvas className="hero-mosaic" ref={mosaicRef} aria-hidden="true" />
+          <canvas className="hero-mosaic hero-mosaic--index" ref={mosaicRef} aria-hidden="true" />
           <div className="hero-panel__top" ref={topRef} data-pool-ceiling>
             <a className="hero-panel__brand" href="/" onClick={handleBrandClick}>
               <BrandLogo name={profile.name} />
@@ -726,13 +728,12 @@ export function HomePage({
             ) : null}
           </div>
 
-          <HeroGame
-            game={game}
-            found={found.size}
-            total={totalPictures}
-            onStart={handleStartGame}
-            onClose={handleCloseGame}
-            badgeRef={scoreRef}
+          <MosaicLinks
+            items={heroLinks}
+            boxes={heroBoxes}
+            canvasRef={mosaicRef}
+            label={text.heroCasesLabel}
+            active={heroActive}
           />
 
           <div className="hero-panel__plate" ref={copyRef}>
@@ -792,20 +793,13 @@ export function HomePage({
 
       <section className="section home-shell" id="work" data-track-area="work-cards">
         {showCube ? (
-          <CaseCube cases={cases} links={caseLinks} />
+          <CaseCube cases={cases} />
         ) : (
-          <>
-            {/* Without the cube, the index stands as a card of its own above the stack. */}
-            <div className="case-index">
-              <CaseIndex links={caseLinks} />
-            </div>
-
-            <div className="work-stack" ref={stackRef}>
-              {cases.map((item, index) => (
-                <WorkCard key={item.id} item={item} index={index} total={cases.length} />
-              ))}
-            </div>
-          </>
+          <div className="work-stack" ref={stackRef}>
+            {cases.map((item, index) => (
+              <WorkCard key={item.id} item={item} index={index} total={cases.length} />
+            ))}
+          </div>
         )}
       </section>
 
@@ -856,7 +850,10 @@ export function HomePage({
         </div>
       </section>
 
-      <SiteFooter profile={profile} />
+      <section className="section home-shell about-section" data-track-area="about">
+        <AboutSection />
+      </section>
+
     </div>
   );
 }

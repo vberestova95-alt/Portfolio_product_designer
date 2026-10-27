@@ -81,6 +81,12 @@ export const ui = {
       gameLabel: 'картинок собрано',
       gameDone: 'Все найдены!',
       gameClose: 'Закрыть игру',
+      heroCasesLabel: 'Главные кейсы',
+      aboutTitle: 'Обо мне',
+      aboutCopy: [
+        'В свободное время я снимаю на плёнку, хожу в горы, катаюсь на сноуборде и занимаюсь живописью.',
+        'Я люблю игры, особенно головоломки, поэтому придумала для вас игру с моими фотографиями.',
+      ],
     },
     case: {
       before: 'До',
@@ -204,6 +210,12 @@ export const ui = {
       gameLabel: 'pictures found',
       gameDone: 'All found!',
       gameClose: 'Close the game',
+      heroCasesLabel: 'Main cases',
+      aboutTitle: 'About me',
+      aboutCopy: [
+        'In my free time I shoot film, hike in the mountains, snowboard and paint.',
+        'I love games, especially puzzles, so I made one for you with my photos.',
+      ],
     },
     case: {
       before: 'Before',
