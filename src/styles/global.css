@@ -3744,6 +3744,18 @@ ol.case-bullet-list li::before {
   cursor: zoom-in;
 }
 
+/* A band whose image brings its own edges (hairline and shadow round each
+   screen): no plate and no fill behind the transparent picture. */
+.case-image-band--bare {
+  padding: 0;
+  background: none;
+}
+
+.case-image-band--bare img,
+.case-image-band--bare video {
+  background: none;
+}
+
 .case-bento__label {
   display: block;
   margin-bottom: 14px;

@@ -4,6 +4,8 @@
  * one place. Entries are matched by id (or by position where there is none).
  */
 import * as en from './portfolioData.js';
+// The one asset kept here: the Fluffy Chumb preview has Russian screens.
+import fluffyChumbV2CoverRu from '../assets/cases/fluffy-chumb-v2-cover.ru.webp';
 
 function byIndex(list, texts) {
   return list.map((item, index) => ({ ...item, ...texts[index] }));
@@ -76,7 +78,7 @@ export const cases = byId(en.cases, {
     description:
       'От трекера инсулина для одного кота — к приложению, где семья и пет-ситтер настраивают свои трекеры и делят дела на день. Пересобрано после интервью с пользователями MVP.',
     metrics: ['MVP → v2', '12 бета-тестеров'],
-    image: { ...en.cases[3].image, alt: 'Три экрана трекера ухода: семья, дела на сегодня и конструктор трекера' },
+    image: { ...en.cases[3].image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
   },
   iquoto: {
     category: 'Финтех / Регистрация',
@@ -127,7 +129,7 @@ export const aiProjects = {
       description:
         'Свои трекеры ухода и общая рутина дня для семьи и пет-ситтера — вторая версия, пересобранная после интервью с пользователями MVP.',
       metrics: ['MVP → v2', '12 бета-тестеров'],
-      image: { ...en.aiProjects.items[1].image, alt: 'Три экрана трекера ухода: семья, дела на сегодня и конструктор трекера' },
+      image: { ...en.aiProjects.items[1].image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
     },
     {
       title: 'Дизайн-кринжометр',

@@ -2,7 +2,7 @@ import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png
 import betboomFeaturedMobile from '../assets/cases/betboom-featured-mobile.png';
 import iquotoDesktop from '../assets/cases/iquoto-desktop.png';
 import kokocMainDesktop from '../assets/cases/kokoc-main-desktop.png';
-import petTrackerV2Cover from '../assets/cases/pet-tracker-v2-cover.webp';
+import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.webp';
 import dsPluginsCard from '../assets/cases/ds-plugins-card.webp';
 import designCringeCard from '../assets/cases/design-cringe-card.webp';
 import designCringeLandingShot from '../assets/cases/design-cringe-landing.jpg';
@@ -170,8 +170,8 @@ export const cases = [
     metrics: ['MVP → v2', '12 beta testers'],
     surface: 'pet',
     image: {
-      src: petTrackerV2Cover,
-      alt: 'Three Fluffy Chumb screens: family, home with today’s routine and the tracker builder',
+      src: fluffyChumbV2Cover,
+      alt: 'Two Fluffy Chumb screens: home with the pet’s trackers and today’s routine with tasks done, skipped and due now',
     },
     href: '/cat-app',
   },
@@ -256,8 +256,8 @@ export const aiProjects = {
       metrics: ['MVP → v2', '12 beta testers'],
       surface: 'pet',
       image: {
-        src: petTrackerV2Cover,
-        alt: 'Three Fluffy Chumb screens: family, home with today’s routine and the tracker builder',
+        src: fluffyChumbV2Cover,
+        alt: 'Two Fluffy Chumb screens: home with the pet’s trackers and today’s routine with tasks done, skipped and due now',
       },
       href: '/cat-app',
     },

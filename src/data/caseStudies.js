@@ -24,9 +24,9 @@ import iquotoVariants from '../assets/cases/iquoto-variants.png';
 import iquotoResult from '../assets/cases/iquoto-result.png';
 import betboomAbTestVideo from '../assets/betboom-ab-test.mp4';
 import catAppScreens from '../assets/cases/cat-app-screens.svg';
-import petTrackerCoverScreens from '../assets/cases/pet-tracker-cover-screens.png';
-import petTrackerV2Cover from '../assets/cases/pet-tracker-v2-cover.webp';
-import petTrackerV2Screens from '../assets/cases/pet-tracker-v2-screens.webp';
+import petTrackerMvpScreens from '../assets/cases/pet-tracker-mvp-screens.webp';
+import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.webp';
+import fluffyChumbV2Screens from '../assets/cases/fluffy-chumb-v2-screens.webp';
 import kokocCaseHero from '../assets/cases/kokoc-main-desktop.png';
 import kokocAbout from '../assets/cases/kokoc-about.png';
 import kokocPrototype from '../assets/cases/kokoc-prototype.png';
@@ -63,8 +63,8 @@ export const catAppCaseStudy = {
       'I built an insulin tracker for my own cat. Interviews with MVP users showed that care is not one task but a lot of small ones shared by several people. Version two is about flexible trackers and a daily routine the whole household shares.',
     meta: 'Pet care tracker / Side project / MVP → v2',
     image: {
-      src: petTrackerV2Cover,
-      alt: 'Three Fluffy Chumb screens: family, home with today’s routine and the tracker builder',
+      src: fluffyChumbV2Cover,
+      alt: 'Two Fluffy Chumb screens: home with the pet’s trackers and today’s routine with tasks done, skipped and due now',
     },
     stats: [
       { value: '2', label: 'user groups interviewed' },
@@ -89,9 +89,10 @@ export const catAppCaseStudy = {
         {
           type: 'imageBand',
           label: 'MVP',
+          variant: 'bare',
           media: {
             type: 'image',
-            src: petTrackerCoverScreens,
+            src: petTrackerMvpScreens,
             alt: 'MVP screens: pet settings, welcome screen and the injection map on the pet’s photo',
           },
         },
@@ -235,7 +236,7 @@ export const catAppCaseStudy = {
           label: 'Version 2',
           media: {
             type: 'image',
-            src: petTrackerV2Screens,
+            src: fluffyChumbV2Screens,
             alt: 'Fluffy Chumb screens: home, choosing trackers, trackers, the tracker builder, insulin, history and family',
           },
         },

@@ -24,9 +24,9 @@ import iquotoVariants from '../assets/cases/iquoto-variants.png';
 import iquotoResult from '../assets/cases/iquoto-result.png';
 import betboomAbTestVideo from '../assets/betboom-ab-test.mp4';
 import catAppScreens from '../assets/cases/cat-app-screens.svg';
-import petTrackerCoverScreens from '../assets/cases/pet-tracker-cover-screens.png';
-import petTrackerV2Cover from '../assets/cases/pet-tracker-v2-cover.webp';
-import petTrackerV2Screens from '../assets/cases/pet-tracker-v2-screens.webp';
+import petTrackerMvpScreens from '../assets/cases/pet-tracker-mvp-screens.webp';
+import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.ru.webp';
+import fluffyChumbV2Screens from '../assets/cases/fluffy-chumb-v2-screens.ru.webp';
 import kokocCaseHero from '../assets/cases/kokoc-main-desktop.png';
 import kokocAbout from '../assets/cases/kokoc-about.png';
 import kokocPrototype from '../assets/cases/kokoc-prototype.png';
@@ -63,8 +63,8 @@ export const catAppCaseStudy = {
       'Я сделала трекер уколов инсулина для своего кота. Интервью с пользователями MVP показали: уход — это не одна задача, а много мелких дел, которые делят несколько людей. Вторая версия — про гибкие трекеры и общую рутину дня.',
     meta: 'Трекер ухода за питомцем / Сайд-проект / MVP → v2',
     image: {
-      src: petTrackerV2Cover,
-      alt: 'Три экрана Fluffy Chumb: семья, главная с делами на сегодня и конструктор трекера',
+      src: fluffyChumbV2Cover,
+      alt: 'Два экрана Fluffy Chumb: главная с трекерами питомца и дела на сегодня — сделанные, пропущенные и текущие',
     },
     stats: [
       { value: '2', label: 'группы пользователей в интервью' },
@@ -89,9 +89,10 @@ export const catAppCaseStudy = {
         {
           type: 'imageBand',
           label: 'MVP',
+          variant: 'bare',
           media: {
             type: 'image',
-            src: petTrackerCoverScreens,
+            src: petTrackerMvpScreens,
             alt: 'Экраны MVP: настройки питомца, приветствие и карта уколов на фото',
           },
         },
@@ -235,7 +236,7 @@ export const catAppCaseStudy = {
           label: 'Версия 2',
           media: {
             type: 'image',
-            src: petTrackerV2Screens,
+            src: fluffyChumbV2Screens,
             alt: 'Экраны Fluffy Chumb: главная, выбор трекеров, трекеры, конструктор трекера, инсулин, история и семья',
           },
         },
