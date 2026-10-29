@@ -236,7 +236,7 @@ export const catAppCaseStudy = {
           media: {
             type: 'image',
             src: petTrackerV2Screens,
-            alt: 'Fluffy Chumb screens: home with today’s routine, trackers, the tracker builder, insulin, a custom walks tracker and family',
+            alt: 'Fluffy Chumb screens: home, choosing trackers, trackers, the tracker builder, insulin, history and family',
           },
         },
         {
