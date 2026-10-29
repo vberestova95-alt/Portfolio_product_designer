@@ -2,7 +2,7 @@ import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png
 import betboomFeaturedMobile from '../assets/cases/betboom-featured-mobile.png';
 import iquotoDesktop from '../assets/cases/iquoto-desktop.png';
 import kokocMainDesktop from '../assets/cases/kokoc-main-desktop.png';
-import petTrackerCoverScreens from '../assets/cases/pet-tracker-cover-screens.png';
+import petTrackerV2Cover from '../assets/cases/pet-tracker-v2-cover.webp';
 import dsPluginsCard from '../assets/cases/ds-plugins-card.webp';
 import designCringeCard from '../assets/cases/design-cringe-card.webp';
 import designCringeLandingShot from '../assets/cases/design-cringe-landing.jpg';
@@ -162,16 +162,16 @@ export const cases = [
   },
   {
     id: 'cat-app',
-    title: 'Pet Diabetes Tracker',
+    title: 'Pet Care Tracker',
     year: '2025',
     category: 'Pet Health / Side Project',
     description:
-      'A calm injection-tracking app concept for pets with diabetes, designed to make treatment routines easier to follow and less stressful for owners.',
-    metrics: ['Beta concept', 'Care routine UX'],
+      'From an insulin tracker for one cat to an app where a family and a pet sitter set up their own trackers and share the day’s tasks. Rebuilt after interviews with MVP users.',
+    metrics: ['MVP → v2', '12 beta testers'],
     surface: 'pet',
     image: {
-      src: petTrackerCoverScreens,
-      alt: 'Three mobile screens from the Pet Injection Tracker',
+      src: petTrackerV2Cover,
+      alt: 'Three screens of the Pet Care Tracker: family, today’s routine and the tracker builder',
     },
     href: '/cat-app',
   },
@@ -249,15 +249,15 @@ export const aiProjects = {
     },
     {
       id: 'cat-app',
-      title: 'Pet Diabetes Tracker',
+      title: 'Pet Care Tracker',
       category: 'Pet Health / Side Project',
       description:
-        'An injection tracker for a cat with diabetes, built around the pet’s photo so the whole household can use it without explanation.',
-      metrics: ['Beta', 'Care routine UX'],
+        'Custom care trackers and a shared daily routine for the family and the pet sitter — the second version, rebuilt after interviews with MVP users.',
+      metrics: ['MVP → v2', '12 beta testers'],
       surface: 'pet',
       image: {
-        src: petTrackerCoverScreens,
-        alt: 'Three mobile screens from the Pet Injection Tracker',
+        src: petTrackerV2Cover,
+        alt: 'Three screens of the Pet Care Tracker: family, today’s routine and the tracker builder',
       },
       href: '/cat-app',
     },

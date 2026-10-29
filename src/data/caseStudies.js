@@ -24,11 +24,9 @@ import iquotoVariants from '../assets/cases/iquoto-variants.png';
 import iquotoResult from '../assets/cases/iquoto-result.png';
 import betboomAbTestVideo from '../assets/betboom-ab-test.mp4';
 import catAppScreens from '../assets/cases/cat-app-screens.svg';
-import catWeeklyTrackerVideo from '../assets/cases/cat-weekly-tracker.mp4';
-import catTrackerScreen from '../assets/cases/cat-tracker-screen1.png';
-import catSolutionScreens from '../assets/cases/cat-solution-screens.png';
-import catConceptScreens from '../assets/cases/cat-concept-screens.png';
 import petTrackerCoverScreens from '../assets/cases/pet-tracker-cover-screens.png';
+import petTrackerV2Cover from '../assets/cases/pet-tracker-v2-cover.webp';
+import petTrackerV2Screens from '../assets/cases/pet-tracker-v2-screens.webp';
 import kokocCaseHero from '../assets/cases/kokoc-main-desktop.png';
 import kokocAbout from '../assets/cases/kokoc-about.png';
 import kokocPrototype from '../assets/cases/kokoc-prototype.png';
@@ -60,141 +58,238 @@ export const catAppCaseStudy = {
   slug: 'cat-app',
   backHref: '/',
   hero: {
-    title: 'Pet Injection Tracker',
+    title: 'Pet Care Tracker',
     description:
-      'My cat needs insulin twice a day. Missing one matters, and a notes app is a bad place to track that — so I built the thing I wanted to exist.',
-    meta: 'Pet-tech concept / Side project',
+      'I built an insulin tracker for my own cat. Interviews with MVP users showed that care is not one task but a lot of small ones shared by several people. Version two is about flexible trackers and a daily routine the whole household shares.',
+    meta: 'Pet-tech / Side project / MVP → v2',
     image: {
-      src: petTrackerCoverScreens,
-      alt: 'Three mobile screens from the Pet Injection Tracker',
+      src: petTrackerV2Cover,
+      alt: 'Three screens of the second version: family, today’s routine and the tracker builder',
     },
     stats: [
-      { value: '2', label: 'happy users' },
-      { value: '1', label: 'healthy cat' },
-      { value: 'infinite', label: 'reasons to show a cat a phone' },
+      { value: '2', label: 'user groups interviewed' },
+      { value: '12', label: 'beta testers from the landing page' },
+      { value: '1 → any', label: 'trackers, set up by the household' },
     ],
     points: ['Codex', 'Claude Code', 'Figma Make'],
   },
   sections: [
     {
-      id: 'goal',
-      navLabel: 'Goal',
-      title: 'Product Goal',
-      parts: [
-        {
-          type: 'noteCard',
-          title: 'What it has to do',
-          items: [
-            'Log an injection in seconds.',
-            'Keep track of which spot comes next.',
-            'Show the state of the week without asking for it.',
-            'Hold the whole history in one place.',
-            'Ask as little of the owner as possible.',
-          ],
-        },
-      ],
-    },
-    {
-      id: 'solution',
-      navLabel: 'Solution',
-      title: 'Solution',
+      id: 'mvp',
+      navLabel: 'MVP',
+      title: 'Where It Started',
       parts: [
         {
           type: 'richTextLead',
           paragraphs: [
-            'The tracker is built on a photo of the pet. It had to work for several people in a household with no explanation, which rules out anything resembling a form.',
-            'The photo does the navigation. It also changes what the app feels like — a care routine rather than a spreadsheet.',
+            'The MVP solved one problem: never miss an insulin shot and never inject the same spot twice. The home screen was a photo of the pet with a map of injection sites, plus the week.',
+            'We used it ourselves. To find out whether anyone else needed it, I gave the MVP to other owners and talked to them.',
           ],
         },
         {
           type: 'imageBand',
+          label: 'MVP',
           media: {
             type: 'image',
-            src: catSolutionScreens,
-            alt: 'Concept screens for the pet injection tracker',
+            src: petTrackerCoverScreens,
+            alt: 'MVP screens: pet settings, welcome screen and the injection map on the pet’s photo',
           },
         },
       ],
     },
     {
-      id: 'concept',
-      navLabel: 'Concept',
-      title: 'Core Concept',
+      id: 'process',
+      navLabel: 'Process',
+      title: 'How the Work Went',
       parts: [
         {
           type: 'blocks',
           blocks: [
             {
-              type: 'list',
-              heading: 'Three things on the home screen',
+              type: 'ordered-list',
+              heading: 'From MVP to beta in six steps',
               items: [
-                'The pet.',
-                'Injection markers you can tap.',
-                'The week.',
+                'MVP — an injection tracker for my own cat.',
+                'Competitor review.',
+                'Interviews with two groups of MVP users.',
+                'The hypothesis gets refined.',
+                'New positioning and the second version.',
+                'A test build, a landing page and 12 beta testers.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'The turning point',
+              paragraphs: [
+                'The interviews. After them the product stopped being a tracker for one disease and became a tool for everyone who looks after the pet.',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'research',
+      navLabel: 'Research',
+      title: 'Research',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Competitor trackers are sets of preset actions. There is a lot of information, and most of it is irrelevant to a particular pet — people dig for their action among everyone else’s.',
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Hypothesis before the interviews',
+              paragraphs: ['People want to set up their own tracker so they have fewer actions to take.'],
+            },
+            {
+              type: 'text',
+              heading: 'After the interviews',
+              paragraphs: [
+                'A detailed tracker helps in the moment but gets in the way when all you need is one simple action. Setup is not about adding more — it is about keeping only what matters and extending it when treatment changes. And the tracker is used by more than one person.',
               ],
             },
           ],
         },
         {
-          type: 'imageBand',
-          label: 'Key screens',
-          media: {
-            type: 'image',
-            src: catConceptScreens,
-            alt: 'Several screens from the cat app concept',
-          },
+          type: 'collapsible',
+          title: 'Who we talked to',
+          items: [
+            'Group 1 — a family: husband, wife and a child. Their cat has diabetes and a treatment protocol. The parents want to teach the child to look after the cat, so it has to be clear and interesting for a kid.',
+            'Group 2 — a couple with an adult diabetic cat. They inject insulin twice a day, the protocol keeps changing, and a pet sitter helps them.',
+          ],
+        },
+        {
+          type: 'painCards',
+          heading: 'What we learned',
+          items: [
+            'Extra structure pushes people away. One user only needed to measure glucose, not inject. He used the injection map three times and gave up — it boxed him in.',
+            'Care is shared, and not everyone needs the whole protocol. A child needs one clear task, not a treatment plan.',
+            'The protocol changes. Insulin is a big task but not the only one: pills appear, with times and course lengths that change.',
+            'Sensitive topics need their own place. The diabetes tracker had nowhere to put them.',
+            'People outside the family take part. The sitter needs up-to-date instructions; the owners want to see what is done without checking on her.',
+          ],
         },
       ],
     },
     {
-      id: 'tracker',
-      navLabel: 'Tracker',
-      title: 'Visual Weekly Tracker',
+      id: 'decisions',
+      navLabel: 'Decisions',
+      title: 'From Insight to v2',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'The injection map got in the way of someone who only measures glucose',
+              paragraphs: ['Trackers are built around the pet: only the actions you need, the injection map is optional.'],
+            },
+            {
+              type: 'text',
+              heading: 'A child needs one clear task, not the whole protocol',
+              paragraphs: ['Every task has an assignee. People open the app and see what is assigned to them.'],
+            },
+            {
+              type: 'text',
+              heading: 'The protocol changes and new pills appear',
+              paragraphs: ['Anyone in the household can create a new tracker; time and rhythm are configurable.'],
+            },
+            {
+              type: 'text',
+              heading: 'Sensitive topics had no place',
+              paragraphs: ['A separate custom tracker for each topic.'],
+            },
+            {
+              type: 'text',
+              heading: 'The sitter needs current instructions',
+              paragraphs: ['The pet profile can be shared: the sitter sees the tasks and marks them done.'],
+            },
+            {
+              type: 'text',
+              heading: 'Owners don’t want to keep checking on the sitter',
+              paragraphs: ['A daily routine and push notifications: what is done is visible without asking.'],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'v2',
+      navLabel: 'Version 2',
+      title: 'What Went Into Version Two',
       parts: [
         {
           type: 'richTextLead',
           paragraphs: [
-            'One marker, one injection.',
-            'No reports, no second screen — the week is legible from where you already are.',
+            'New positioning: not a diabetes tracker, but an app where care is assembled from your own trackers. Diabetes is now one of them.',
           ],
         },
         {
-          type: 'phonePair',
-          items: [
-            {
-              type: 'video',
-              src: catWeeklyTrackerVideo,
-              alt: 'Video of the visual weekly tracker for pet injections',
-            },
-            {
-              type: 'image',
-              src: catTrackerScreen,
-              alt: 'Weekly injection tracker screen for pets',
-            },
-          ],
+          type: 'imageBand',
+          label: 'Version 2',
+          media: {
+            type: 'image',
+            src: petTrackerV2Screens,
+            alt: 'Second version screens: today’s routine, tracker builder, insulin, a custom walks tracker and family access',
+          },
         },
         {
-          type: 'insightCards',
-          heading: 'Answerable in one look',
-          items: [
-            'What is done.',
-            'What was missed.',
-            'What is next.',
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'Shared care',
+              items: [
+                'Daily routine — everything due today in one list, with done marks.',
+                'Task assignee — everyone keeps focus on their own tasks and doesn’t need to know the whole protocol.',
+                'Shared pet profile — access for family and the pet sitter.',
+                'Push notifications — remind the assignee and tell the owners a task is done.',
+              ],
+            },
+            {
+              type: 'list',
+              heading: 'Flexible trackers',
+              items: [
+                'One person sets up all of the pet’s trackers; others can add a new one when treatment changes.',
+                'A custom tracker for any routine — walks, pills, sensitive topics.',
+                'Insulin, glucose and the injection map stay for those who need them.',
+              ],
+            },
           ],
         },
       ],
     },
     {
-      id: 'result',
-      navLabel: 'Result',
-      title: 'Result',
+      id: 'beta',
+      navLabel: 'Beta',
+      title: 'Beta',
       parts: [
         {
+          type: 'richTextLead',
+          paragraphs: [
+            'I put together a test build and launched a landing page to recruit beta testers. Twelve people signed up and are ready to test the product.',
+          ],
+        },
+        {
           type: 'noteCard',
-          title: 'Where it is now',
+          title: 'What the beta will show',
           items: [
-            'In beta.',
-            'I am looking for people with a similar routine — I want to test the flow against real habits, not just mine.',
+            'Whether people get to their first custom tracker, and how long setup takes.',
+            'How many people in a household actually mark tasks.',
+            'Whether people who need one simple action keep coming back.',
+          ],
+        },
+        {
+          type: 'noteCard',
+          title: 'What I learned',
+          paragraphs: [
+            'A tracker built for myself solved my problem precisely — and got in the way of everyone else’s. The interviews showed that the product is not about a disease but about the people around the pet and who does what.',
           ],
         },
       ],
