@@ -58,13 +58,13 @@ export const catAppCaseStudy = {
   slug: 'cat-app',
   backHref: '/',
   hero: {
-    title: 'Pet Care Tracker',
+    title: 'Fluffy Chumb',
     description:
       'I built an insulin tracker for my own cat. Interviews with MVP users showed that care is not one task but a lot of small ones shared by several people. Version two is about flexible trackers and a daily routine the whole household shares.',
-    meta: 'Pet-tech / Side project / MVP → v2',
+    meta: 'Pet care tracker / Side project / MVP → v2',
     image: {
       src: petTrackerV2Cover,
-      alt: 'Three screens of the second version: family, today’s routine and the tracker builder',
+      alt: 'Three Fluffy Chumb screens: family, home with today’s routine and the tracker builder',
     },
     stats: [
       { value: '2', label: 'user groups interviewed' },
@@ -188,7 +188,7 @@ export const catAppCaseStudy = {
             {
               type: 'text',
               heading: 'The injection map got in the way of someone who only measures glucose',
-              paragraphs: ['Trackers are built around the pet: only the actions you need, the injection map is optional.'],
+              paragraphs: ['Insulin and glucose became separate trackers: someone who only measures glucose never sees the injection map.'],
             },
             {
               type: 'text',
@@ -213,7 +213,7 @@ export const catAppCaseStudy = {
             {
               type: 'text',
               heading: 'Owners don’t want to keep checking on the sitter',
-              paragraphs: ['A daily routine and push notifications: what is done is visible without asking.'],
+              paragraphs: ['Today’s routine shows who did what, and reminders arrive on each phone — no need to ask.'],
             },
           ],
         },
@@ -227,7 +227,7 @@ export const catAppCaseStudy = {
         {
           type: 'richTextLead',
           paragraphs: [
-            'New positioning: not a diabetes tracker, but an app where care is assembled from your own trackers. Diabetes is now one of them.',
+            'New positioning: not a diabetes tracker, but Fluffy Chumb — a care tracker that changes together with your pet. Care is assembled from your own trackers, and diabetes is now one of them.',
           ],
         },
         {
@@ -236,7 +236,7 @@ export const catAppCaseStudy = {
           media: {
             type: 'image',
             src: petTrackerV2Screens,
-            alt: 'Second version screens: today’s routine, tracker builder, insulin, a custom walks tracker and family access',
+            alt: 'Fluffy Chumb screens: home with today’s routine, trackers, the tracker builder, insulin, a custom walks tracker and family',
           },
         },
         {
@@ -246,19 +246,20 @@ export const catAppCaseStudy = {
               type: 'list',
               heading: 'Shared care',
               items: [
-                'Daily routine — everything due today in one list, with done marks.',
-                'Task assignee — everyone keeps focus on their own tasks and doesn’t need to know the whole protocol.',
-                'Shared pet profile — access for family and the pet sitter.',
-                'Push notifications — remind the assignee and tell the owners a task is done.',
+                'Today’s routine — tasks from every tracker’s schedule in one list: mark done, skip with a reason or snooze.',
+                'Each task shows who it is for and who did it, so everyone keeps focus on their own part of the protocol.',
+                'Family — invite people by email, including the pet sitter, as Owner or Can edit.',
+                'Reminders — notifications on each phone, everyone turns on their own. A family-wide push is the next step.',
+                'History and export for the vet — 7 or 30 days, charts and a text summary to share.',
               ],
             },
             {
               type: 'list',
               heading: 'Flexible trackers',
               items: [
-                'One person sets up all of the pet’s trackers; others can add a new one when treatment changes.',
-                'A custom tracker for any routine — walks, pills, sensitive topics.',
-                'Insulin, glucose and the injection map stay for those who need them.',
+                'A tracker builder: name, fields (number, scale, yes / no, note), a tile with its own shape and fur, a rhythm, pin to Home.',
+                'Simple trackers for pills, vitamins, walks and food; Mood is a ready-made preset.',
+                'Diabetes is a ready-made set of Insulin and Glucose, and each works on its own — the injection map only for those who inject.',
               ],
             },
           ],
@@ -275,6 +276,12 @@ export const catAppCaseStudy = {
           paragraphs: [
             'I put together a test build and launched a landing page to recruit beta testers. Twelve people signed up and are ready to test the product.',
           ],
+        },
+        {
+          type: 'siteLink',
+          label: 'Beta landing page -',
+          href: 'https://fluffychumb.com/',
+          text: 'fluffychumb.com',
         },
         {
           type: 'noteCard',

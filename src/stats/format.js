@@ -8,7 +8,7 @@ const PAGE_NAMES = {
   '/betboom-pass': 'BetBoom PASS',
   '/yandex-turkey': 'Yandex News Turkey',
   '/kokoc-group': 'Kokoc Group',
-  '/cat-app': 'Pet Care Tracker',
+  '/cat-app': 'Fluffy Chumb',
   '/iquoto': 'IQuoto',
   '/ds-plugins': 'Design System Plugins',
   '/design-cringe': 'Design Cringe-meter',

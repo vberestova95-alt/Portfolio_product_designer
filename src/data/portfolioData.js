@@ -162,7 +162,7 @@ export const cases = [
   },
   {
     id: 'cat-app',
-    title: 'Pet Care Tracker',
+    title: 'Fluffy Chumb',
     year: '2025',
     category: 'Pet Health / Side Project',
     description:
@@ -171,7 +171,7 @@ export const cases = [
     surface: 'pet',
     image: {
       src: petTrackerV2Cover,
-      alt: 'Three screens of the Pet Care Tracker: family, today’s routine and the tracker builder',
+      alt: 'Three Fluffy Chumb screens: family, home with today’s routine and the tracker builder',
     },
     href: '/cat-app',
   },
@@ -249,7 +249,7 @@ export const aiProjects = {
     },
     {
       id: 'cat-app',
-      title: 'Pet Care Tracker',
+      title: 'Fluffy Chumb',
       category: 'Pet Health / Side Project',
       description:
         'Custom care trackers and a shared daily routine for the family and the pet sitter — the second version, rebuilt after interviews with MVP users.',
@@ -257,7 +257,7 @@ export const aiProjects = {
       surface: 'pet',
       image: {
         src: petTrackerV2Cover,
-        alt: 'Three screens of the Pet Care Tracker: family, today’s routine and the tracker builder',
+        alt: 'Three Fluffy Chumb screens: family, home with today’s routine and the tracker builder',
       },
       href: '/cat-app',
     },
