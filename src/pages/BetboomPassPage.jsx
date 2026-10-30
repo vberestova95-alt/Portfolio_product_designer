@@ -466,10 +466,18 @@ function SectionPart({ part }) {
         className={`case-image-band${part.variant ? ` case-image-band--${part.variant}` : ''}`}
       >
         {part.label ? <span>{part.label}</span> : null}
-        <CaseMedia
-          media={part.media}
-          className={part.media.type === 'video' ? 'case-image-band__video' : ''}
-        />
+        {part.media.mobileSrc ? (
+          // A phone gets its own take on the picture (e.g. screens in a column).
+          <picture>
+            <source media="(max-width: 640px)" srcSet={part.media.mobileSrc} />
+            <CaseMedia media={part.media} />
+          </picture>
+        ) : (
+          <CaseMedia
+            media={part.media}
+            className={part.media.type === 'video' ? 'case-image-band__video' : ''}
+          />
+        )}
       </div>
     );
   }
@@ -650,7 +658,8 @@ export function CaseStudyPage({
       !event.target.closest('.case-next')
     ) {
       setLightbox({
-        src: event.target.src,
+        // currentSrc: the file <picture> actually picked (the phone's take).
+        src: event.target.currentSrc || event.target.src,
         alt: event.target.alt,
       });
     }

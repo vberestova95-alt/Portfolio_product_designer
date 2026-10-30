@@ -3756,6 +3756,12 @@ ol.case-bullet-list li::before {
   background: none;
 }
 
+/* The phone take of a bare band (screens in a column) comes in through
+   <picture>; the wrapper just has to sit as a block like the image did. */
+.case-image-band--bare picture {
+  display: block;
+}
+
 .case-bento__label {
   display: block;
   margin-bottom: 14px;

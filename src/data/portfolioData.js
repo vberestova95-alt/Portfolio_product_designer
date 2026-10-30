@@ -146,21 +146,6 @@ export const cases = [
     href: '/yandex-turkey',
   },
   {
-    id: 'kokoc-group',
-    title: 'Kokoc Group',
-    year: '2024',
-    category: 'Brand Website / Corporate',
-    description:
-      'A corporate website redesign built around anniversary storytelling, stronger brand framing, and a more modern visual rhythm.',
-    metrics: ['Website redesign', 'Brand refresh'],
-    surface: 'mint',
-    image: {
-      src: kokocMainDesktop,
-      alt: 'Kokoc Group desktop homepage concept',
-    },
-    href: '/kokoc-group',
-  },
-  {
     id: 'cat-app',
     title: 'Fluffy Chumb',
     year: '2025',
@@ -174,6 +159,21 @@ export const cases = [
       alt: 'Two Fluffy Chumb screens: home with the pet’s trackers and today’s routine with tasks done, skipped and due now',
     },
     href: '/cat-app',
+  },
+  {
+    id: 'kokoc-group',
+    title: 'Kokoc Group',
+    year: '2024',
+    category: 'Brand Website / Corporate',
+    description:
+      'A corporate website redesign built around anniversary storytelling, stronger brand framing, and a more modern visual rhythm.',
+    metrics: ['Website redesign', 'Brand refresh'],
+    surface: 'mint',
+    image: {
+      src: kokocMainDesktop,
+      alt: 'Kokoc Group desktop homepage concept',
+    },
+    href: '/kokoc-group',
   },
   {
     id: 'iquoto',

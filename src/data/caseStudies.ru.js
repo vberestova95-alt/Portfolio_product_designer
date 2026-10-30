@@ -25,6 +25,7 @@ import iquotoResult from '../assets/cases/iquoto-result.png';
 import betboomAbTestVideo from '../assets/betboom-ab-test.mp4';
 import catAppScreens from '../assets/cases/cat-app-screens.svg';
 import petTrackerMvpScreens from '../assets/cases/pet-tracker-mvp-screens.webp';
+import petTrackerMvpScreensMobile from '../assets/cases/pet-tracker-mvp-screens.mobile.webp';
 import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.ru.webp';
 import fluffyChumbV2Screens from '../assets/cases/fluffy-chumb-v2-screens.ru.webp';
 import kokocCaseHero from '../assets/cases/kokoc-main-desktop.png';
@@ -93,6 +94,7 @@ export const catAppCaseStudy = {
           media: {
             type: 'image',
             src: petTrackerMvpScreens,
+            mobileSrc: petTrackerMvpScreensMobile,
             alt: 'Экраны MVP: настройки питомца, приветствие и карта уколов на фото',
           },
         },

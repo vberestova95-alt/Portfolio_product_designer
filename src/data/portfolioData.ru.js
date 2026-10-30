@@ -15,6 +15,12 @@ function byId(list, texts) {
   return list.map((item) => ({ ...item, ...texts[item.id] }));
 }
 
+// The English entry with this id: images are taken by id, so reordering the
+// English list never hands a Russian entry someone else's picture.
+function entryOf(list, id) {
+  return list.find((item) => item.id === id);
+}
+
 export const profile = {
   ...en.profile,
   name: 'Владислава Берестова',
@@ -54,8 +60,8 @@ export const cases = byId(en.cases, {
     description:
       'Редизайн core-продукта геймификации, который вырос из киберспортивных механик и вышел на широкую спортивную аудиторию.',
     metrics: ['+60% DAU', '+75% retention'],
-    image: { ...en.cases[0].image, alt: 'Интерфейс BetBoom PASS' },
-    mobileImage: { ...en.cases[0].mobileImage, alt: 'Мобильный интерфейс BetBoom PASS' },
+    image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Интерфейс BetBoom PASS' },
+    mobileImage: { ...entryOf(en.cases, 'betboom-pass').mobileImage, alt: 'Мобильный интерфейс BetBoom PASS' },
   },
   'yandex-news': {
     title: 'Яндекс Новости Турция',
@@ -63,14 +69,14 @@ export const cases = byId(en.cases, {
     description:
       'Mobile-first MVP новостного сервиса для Турции — чтобы проверить продуктовую гипотезу и новую контентную модель.',
     metrics: ['Mobile-first', 'Проверка концепта'],
-    image: { ...en.cases[1].image, alt: 'Три мобильных экрана концепта Яндекс Новостей для Турции' },
+    image: { ...entryOf(en.cases, 'yandex-news').image, alt: 'Три мобильных экрана концепта Яндекс Новостей для Турции' },
   },
   'kokoc-group': {
     category: 'Корпоративный сайт / Бренд',
     description:
       'Редизайн корпоративного сайта: юбилейный сторителлинг, более сильная подача бренда и современный визуальный ритм.',
     metrics: ['Редизайн сайта', 'Обновление бренда'],
-    image: { ...en.cases[2].image, alt: 'Концепт главной страницы Kokoc Group' },
+    image: { ...entryOf(en.cases, 'kokoc-group').image, alt: 'Концепт главной страницы Kokoc Group' },
   },
   'cat-app': {
     title: 'Fluffy Chumb',
@@ -78,14 +84,14 @@ export const cases = byId(en.cases, {
     description:
       'От трекера инсулина для одного кота — к приложению, где семья и пет-ситтер настраивают свои трекеры и делят дела на день. Пересобрано после интервью с пользователями MVP.',
     metrics: ['MVP → v2', '12 бета-тестеров'],
-    image: { ...en.cases[3].image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
+    image: { ...entryOf(en.cases, 'cat-app').image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
   },
   iquoto: {
     category: 'Финтех / Регистрация',
     description:
       'Редизайн воронки регистрации онлайн-брокера: много трения и сильный отвал на шаге с персональными данными.',
     metrics: ['5 → 3 шага', 'Меньше трения'],
-    image: { ...en.cases[4].image, alt: 'Экраны редизайна регистрации IQuoto' },
+    image: { ...entryOf(en.cases, 'iquoto').image, alt: 'Экраны редизайна регистрации IQuoto' },
   },
 });
 
@@ -114,32 +120,32 @@ export const aiProjects = {
     description:
       'Сайд-проекты и внутренние инструменты, где я прошла весь путь сама — от проблемы и спецификации до рабочего кода и запуска. Код AI пишет вместе со мной, продуктовые решения остаются за мной.',
   },
-  items: byIndex(en.aiProjects.items, [
-    {
+  items: byId(en.aiProjects.items, {
+    'ds-plugins': {
       title: 'Плагины для дизайн-системы',
       category: 'Плагины Figma / Дизайн-системы',
       description:
         'Три плагина для Figma: отслеживают изменения компонентов, ведут версии и передают токены в разработку — без перепечатывания.',
       metrics: ['3 плагина', '550+ тестов'],
-      image: { ...en.aiProjects.items[0].image, alt: 'Окна трёх плагинов для дизайн-системы в Figma' },
+      image: { ...entryOf(en.aiProjects.items, 'ds-plugins').image, alt: 'Окна трёх плагинов для дизайн-системы в Figma' },
     },
-    {
+    'cat-app': {
       title: 'Fluffy Chumb',
       category: 'Здоровье питомцев / Пет-проект',
       description:
         'Свои трекеры ухода и общая рутина дня для семьи и пет-ситтера — вторая версия, пересобранная после интервью с пользователями MVP.',
       metrics: ['MVP → v2', '12 бета-тестеров'],
-      image: { ...en.aiProjects.items[1].image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
+      image: { ...entryOf(en.aiProjects.items, 'cat-app').image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
     },
-    {
+    'design-cringe': {
       title: 'Дизайн-кринжометр',
       category: 'Веб-инструмент / Дизайн-ревью',
       description:
         'Вставляешь ссылку — получаешь процент кринжа и список того, что именно не так. Измеряется на отрисованной странице по 29 правилам.',
       metrics: ['29 правил', 'Работает'],
-      image: { ...en.aiProjects.items[2].image, alt: 'Результат кринжометра: 73%' },
+      image: { ...entryOf(en.aiProjects.items, 'design-cringe').image, alt: 'Результат кринжометра: 73%' },
     },
-  ]),
+  }),
 };
 
 export const designConcepts = {

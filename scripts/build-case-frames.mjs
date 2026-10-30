@@ -15,7 +15,9 @@
  *     update the node-id here.
  * The MVP band is cut from the existing pet-tracker-cover-screens.png: its three
  * screens are found by their alpha and laid out again whole, with a hairline and
- * a shadow so the light screens do not melt into a light page.
+ * a shadow so the light screens do not melt into a light page. The third screen
+ * is a Safari screenshot: it is cut under the app's tab bar, losing the
+ * browser's own bar, and its bottom corners are rounded again.
  *
  * Output goes next to the old files under new names; RU files get a `.ru` suffix.
  * --draft fills a missing slot with a labelled placeholder (for review only —
@@ -79,6 +81,9 @@ const MVP = {
   padding: 40,
   hairline: { width: 2, opacity: 0.12 },
   shadow: { offsetY: 12, blur: 18, opacity: 0.12 },
+  // Per screen, left to right: `bottom` is the last source row to keep (y in
+  // pet-tracker-cover-screens.png), `radius` the corner it is rounded with.
+  trims: [null, null, { bottom: 1389, radius: 18 }],
 }
 
 function parseArgs(argv) {
@@ -256,19 +261,50 @@ async function cutMvpScreens() {
   )
 }
 
+async function trimMvpScreen(screen, trim) {
+  if (!trim) return screen
+  const height = trim.bottom - screen.region.top + 1
+  const { width } = screen.region
+  const image = await sharp(screen.image)
+    .extract({ left: 0, top: 0, width, height })
+    .composite([{ input: roundedMask(width, height, trim.radius), blend: 'dest-in' }])
+    .png()
+    .toBuffer()
+  return { region: { ...screen.region, height }, image }
+}
+
+/*
+ * Two takes on the same three screens: a row for wide screens, and a column
+ * (`.mobile`) that a phone gets instead, so the screens keep a readable size.
+ */
 async function buildMvp(args) {
-  const screens = await cutMvpScreens()
-  if (screens.length !== 3) throw new Error(`MVP band: expected 3 screens, found ${screens.length}`)
-  const height = Math.max(...screens.map((screen) => screen.region.height))
-  let x = MVP.padding
-  const items = screens.map((screen) => {
-    const item = { image: screen.image, x, y: MVP.padding }
-    x += screen.region.width + MVP.gap
+  const cut = await cutMvpScreens()
+  if (cut.length !== 3) throw new Error(`MVP band: expected 3 screens, found ${cut.length}`)
+  const screens = await Promise.all(cut.map((screen, i) => trimMvpScreen(screen, MVP.trims[i])))
+  const { padding, gap } = MVP
+
+  const rowHeight = Math.max(...screens.map((screen) => screen.region.height))
+  let x = padding
+  const row = screens.map((screen) => {
+    const item = { image: screen.image, x, y: padding }
+    x += screen.region.width + gap
     return item
   })
-  const size = [x - MVP.gap + MVP.padding, height + MVP.padding * 2]
+  await writeMvp(args, MVP.file, [x - gap + padding, rowHeight + padding * 2], row)
+
+  const columnWidth = Math.max(...screens.map((screen) => screen.region.width))
+  let y = padding
+  const column = screens.map((screen) => {
+    const item = { image: screen.image, x: padding + Math.round((columnWidth - screen.region.width) / 2), y }
+    y += screen.region.height + gap
+    return item
+  })
+  await writeMvp(args, `${MVP.file}.mobile`, [columnWidth + padding * 2, y - gap + padding], column)
+}
+
+async function writeMvp(args, file, size, items) {
   const png = await compose(size, items, { shadow: MVP.shadow, hairline: MVP.hairline })
-  const target = path.join(args.out, `${MVP.file}.webp`)
+  const target = path.join(args.out, `${file}.webp`)
   const info = await sharp(png).webp({ quality: 88, alphaQuality: 90, effort: 6 }).toFile(target)
   console.log(`${path.relative(root, target)}  ${info.width}×${info.height}  ${Math.round(info.size / 1024)} KB`)
 }
