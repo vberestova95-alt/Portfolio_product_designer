@@ -24,7 +24,7 @@
 | Проблема | Утром за котом с диабетом смотрят двое. Легко сделать укол дважды или решить, что его сделал другой. | Two people look after a diabetic cat in the morning. It's easy to inject twice, or for each to think the other one did it. |
 | Решение | Доза отмечается на карте уколов и проверяется перед сохранением. В делах на сегодня у задачи появляется подпись «кто и когда» — её видит вся семья. | The dose is marked on the injection map and checked before saving. Today's routine then shows who did it and when, for the whole household. |
 | Клип A | Anna ставит точку на карте, проверяет дозу в «Проверьте дозу» и сохраняет — «Сделано · Anna · 08:00». | Anna marks the spot on the map, checks the dose and saves — “Done by Anna · 08:00”. |
-| Клип B | Max открывает приложение и видит, что доза уже сделана: «Сделано · Anna · 08:00». | Max opens the app and sees the dose is already done: “Done by Anna”. |
+| Клип B | Max открывает приложение и видит, что доза уже сделана: «Сделано · Anna · 08:00». | Max opens the app and sees the dose is already done: “Done by Anna · 08:00”. |
 | Следующий шаг | Предупреждение, если ту же дозу пытаются отметить второй раз. | A warning when someone tries to log the same dose twice. |
 
 ## Сценарий 2 / Flow 2 (сценарий 4 в research)
@@ -45,4 +45,3 @@
 - **Имена кота разные.** В сценарии 2 кот зовётся Meow, а в остальном кейсе и в моке сценария 1 — Lutik. Подписи повторяют то, что в видео; уточнить у пользователя, не смущает ли разница.
 - **Роли.** На сайте в блоке Version 2 сейчас «invite … as Owner or Can edit». Это расходится с текстом выше («роль не выбирается»). Вопрос открыт в документе проекта; при переносе блока стоит поправить и ту строку, но только по задаче.
 - **RU-подписи** сверены с RU-скриншотами `fluffy-chumb-app/e2e/out/portfolio/sc*-ru-*.png`: «Проверьте дозу», «Сделано · Anna · 08:00», «Ваши питомцы», «Доступ от другого владельца», «Доступ можно убрать в любой момент». RU-клипы: `sc1-A-ru`, `sc1-B-ru`, `sc4-A-ru`, `sc4-B-ru` (.mp4 / .webm).
-- **В RU-клипе B сценария 1** у Max та же строка, что у Anna: «Сделано · Anna · 08:00» (с временем), поэтому RU-подпись B с временем, а EN — как в EN-видео: «Done by Anna».

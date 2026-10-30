@@ -304,7 +304,7 @@ export const catAppCaseStudy = {
                   webm: flowSc1BWebm,
                   poster: flowSc1BPoster,
                   label: 'Clip B',
-                  caption: 'Max opens the app and sees the dose is already done: “Done by Anna”.',
+                  caption: 'Max opens the app and sees the dose is already done: “Done by Anna · 08:00”.',
                   alt: 'Screen recording: Max opens the app on his phone and scrolls today’s routine to the insulin task, already marked “Done by Anna · 08:00”',
                 },
               ],

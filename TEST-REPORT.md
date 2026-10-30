@@ -1,5 +1,37 @@
 # Отчёт тестировщика
 
+## 2026-10-31 — короткий прогон: новые EN-ролики сценария 1
+
+**Итог: можно деплоить, блокеров нет.** Баг из п. 14в («Скока паспал» в EN-роликах) исправлен.
+
+Счёт проверок:
+- `predeploy.spec.mjs` — 212 из 212;
+- `ru-images.check.mjs` — 12 из 12;
+- `ru-media.check.mjs` — 14 из 14, на временной сборке с RU в scratchpad, порт 4174.
+
+Сборка свежая (`npm run build`, preview на порту 4173), Chromium headless.
+
+### Новые `sc1-a` и `sc1-b` (EN): что смотрел глазами
+
+Смотрел кадры mp4 и webm, а также постеры:
+- `sc1-a` (13.6 с) — по кадру в секунду;
+- `sc1-b` (6 с) — по кадру в секунду и нижнюю часть экрана с частотой 10 кадров в секунду;
+- сам блок на странице на 1440 и 390.
+
+Что увидел:
+- **Русских строк нет.** Задача «Скока паспал» убрана.
+- **Блока статей с «Dr. Petrova» нет** ни в одном кадре.
+- **Подпись клипа B на странице** теперь «Done by Anna · 08:00».
+
+Мелочь, не баг: в `sc1-b` около 1.7 с, пока экран прокручивается, на 1–2 кадра под таб-баром мелькает заголовок «Articles · All articles».
+На странице на 1440 этот кадр тоже попал в скриншот. Названий статей и «Dr. Petrova» в нём нет.
+Кроме того, в обоих роликах под таб-баром видны верхние края цветных карточек.
+Скриншоты: `/private/tmp/claude-501/-Users-vladislavaberestova-Desktop-Projects-VS-Portfolio-product-designer/3536cdd8-ad6a-44db-86cd-e329225af352/scratchpad/tester/sc1new/cat-app-1440-flows.png`, `/private/tmp/claude-501/-Users-vladislavaberestova-Desktop-Projects-VS-Portfolio-product-designer/3536cdd8-ad6a-44db-86cd-e329225af352/scratchpad/tester/sc1new/sc1-b-articles3.png`.
+
+Кадры, скриншоты и логи: `/private/tmp/claude-501/-Users-vladislavaberestova-Desktop-Projects-VS-Portfolio-product-designer/3536cdd8-ad6a-44db-86cd-e329225af352/scratchpad/tester/sc1new/`.
+
+**Не проверено:** Safari и реальный iPhone; RU-ролики глазами (не менялись).
+
 ## 2026-10-31 — п. 14в, проверка перед деплоем (Key flows, лента MVP EN/RU)
 
 **Итог: можно деплоить, блокеров нет.** Счёт проверок:
