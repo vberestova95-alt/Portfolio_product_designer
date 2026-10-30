@@ -688,8 +688,8 @@ function SectionPart({ part }) {
 
 /*
  * Closing block of every case: the rest of the work, so the case is a loop
- * rather than a dead end. Cards reuse the home covers and surfaces, keyed by
- * case id for the per-project image fitting.
+ * rather than a dead end. Compact tiles without covers — each project is told
+ * apart by a dot in its home-card surface colour (keyed by `surface`).
  */
 function NextProjects({ items }) {
   const text = useUi().case;
@@ -713,14 +713,12 @@ function NextProjects({ items }) {
             data-case={item.id}
             href={item.href}
           >
-            <span className="case-next__media">
-              <img src={item.image.src} alt="" loading="lazy" />
-            </span>
-            <span className="case-next__meta">
-              <span className="case-next__title">{item.title}</span>
-              <span className="case-next__cta">
-                {text.openCase}
-                <span aria-hidden="true"> →</span>
+            <span className="case-next__dot" aria-hidden="true" />
+            <span className="case-next__title">{item.title}</span>
+            <span className="case-next__cta">
+              {text.openCase}
+              <span className="case-next__arrow" aria-hidden="true">
+                →
               </span>
             </span>
           </a>

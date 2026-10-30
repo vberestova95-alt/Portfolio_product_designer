@@ -1328,27 +1328,24 @@ html[lang='ru'] .error-page__visual > span {
 }
 
 /*
- * Surfaces are shared with the "other projects" thumbnails at the foot of each
- * case, so a project keeps the same colour wherever its cover appears.
+ * Card surfaces. The "other projects" tiles at the foot of each case carry the
+ * same colour as a dot (`.case-next__card--*`), so keep the two in step.
  */
 /* Pure black, so the BetBoom interface's own #121212 ground reads as a lift. */
-.work-card--ink,
-.case-next__card--ink .case-next__media {
+.work-card--ink {
   background: #000;
   color: var(--inverse);
   border-color: rgba(247, 248, 252, 0.12);
 }
 
-.work-card--paper,
-.case-next__card--paper .case-next__media {
+.work-card--paper {
   background:
     radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.58), transparent 30%),
     linear-gradient(135deg, #faf9f2 0%, #f5f1df 52%, #eee6c8 100%);
   border-color: transparent;
 }
 
-.work-card--blue,
-.case-next__card--blue .case-next__media {
+.work-card--blue {
   background: linear-gradient(135deg, #1630bf 0%, #2550ff 44%, #1226a3 100%);
   color: var(--inverse);
   border-color: rgba(247, 248, 252, 0.14);
@@ -1359,8 +1356,7 @@ html[lang='ru'] .error-page__visual > span {
  * this one in the stack, and the old near-white corner (a #f4faf4 start under a
  * 0.74 white highlight) ran straight into it with no edge.
  */
-.work-card--mint,
-.case-next__card--mint .case-next__media {
+.work-card--mint {
   background:
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.34), transparent 24%),
     radial-gradient(circle at 82% 16%, rgba(220, 255, 239, 0.46), transparent 30%),
@@ -1378,8 +1374,7 @@ html[lang='ru'] .error-page__visual > span {
  * Lavender, for the cringe-meter: a light surface its dark navy panel stands
  * out against, in the violet of the tool's own button.
  */
-.work-card--lavender,
-.case-next__card--lavender .case-next__media {
+.work-card--lavender {
   background:
     radial-gradient(circle at 15% 16%, rgba(255, 255, 255, 0.5), transparent 28%),
     radial-gradient(circle at 84% 14%, rgba(245, 242, 255, 0.4), transparent 32%),
@@ -1388,8 +1383,7 @@ html[lang='ru'] .error-page__visual > span {
   border-color: transparent;
 }
 
-.work-card--pet,
-.case-next__card--pet .case-next__media {
+.work-card--pet {
   background:
     radial-gradient(circle at 15% 16%, rgba(255, 255, 255, 0.42), transparent 26%),
     radial-gradient(circle at 82% 14%, rgba(237, 240, 243, 0.34), transparent 32%),
@@ -1398,8 +1392,7 @@ html[lang='ru'] .error-page__visual > span {
   border-color: transparent;
 }
 
-.work-card--graphite,
-.case-next__card--graphite .case-next__media {
+.work-card--graphite {
   background: #121720;
   color: var(--inverse);
   border-color: rgba(247, 248, 252, 0.12);
@@ -4941,122 +4934,166 @@ ol.case-bullet-list li::before {
 /* ----------------------------------------------------------- other projects */
 
 .case-next {
+  display: grid;
+  grid-template-columns: 345px minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 73px);
+  align-items: start;
   margin-top: clamp(48px, 6vw, 96px);
   padding-top: var(--gap-section);
 }
 
 .case-next__header {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
-  gap: 24px;
-  align-items: start;
-  padding-bottom: clamp(26px, 2.8vw, 44px);
+  gap: 18px;
 }
 
+/* Same size as the chapter titles of the case. */
 .case-next__header h2 {
   margin: 0;
-  font-size: clamp(34px, 4vw, 60px);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
+  font-size: clamp(28px, 2.9vw, 44px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
 }
 
 .case-next__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(16px, 1.6vw, 26px);
+  gap: 16px;
 }
 
+/* The whole tile is the link: a dot in the project's surface colour, the
+   title, and the "open case" row with a round arrow button. */
 .case-next__card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  color: inherit;
-}
-
-.case-next__media {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
+  --dot: var(--ink);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 19px;
+  min-height: 148px;
+  padding: 22px 22px 20px;
   border-radius: var(--r-card);
   background: var(--paper);
+  color: inherit;
+  transition:
+    transform 340ms cubic-bezier(0.22, 0.8, 0.24, 1),
+    box-shadow 340ms ease;
 }
 
-.case-next__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  transition: transform 700ms cubic-bezier(0.22, 0.8, 0.24, 1);
+.case-next__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(13, 17, 23, 0.07);
 }
 
-.case-next__card:hover .case-next__media img {
-  transform: scale(1.03);
+.case-next__card:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
 
-/* Covers that are cut-out screens rather than full-bleed interfaces: they sit
-   on the surface instead of filling it, matching the home cards. */
-.case-next__card[data-case='yandex-news'] .case-next__media img,
-.case-next__card[data-case='cat-app'] .case-next__media img {
-  object-fit: contain;
-  object-position: center bottom;
-}
+.case-next__card--ink { --dot: #000; }
+.case-next__card--paper { --dot: #f5f1df; }
+.case-next__card--mint { --dot: #cbe9d8; }
+.case-next__card--graphite { --dot: #121720; }
+.case-next__card--pet { --dot: #c8d4e2; }
+.case-next__card--blue { --dot: #2550ff; }
+.case-next__card--lavender { --dot: #dad1f6; }
 
-/* The plugin windows whole on the blue surface, standing on its floor with
-   some air above, as on the /ai-projects card. */
-.case-next__card[data-case='ds-plugins'] .case-next__media img {
-  padding: 10% 6% 0;
-  object-fit: contain;
-  object-position: center bottom;
-}
-
-/* Whole composition on the graphite surface — cropping it only cuts the
-   desktop card in half at thumbnail size. */
-.case-next__card[data-case='iquoto'] .case-next__media img {
-  object-fit: contain;
-  object-position: center center;
-}
-
-.case-next__meta {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+/* Light surfaces would vanish on the white tile without the hairline. */
+.case-next__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: inset 0 0 0 1px var(--line);
 }
 
 .case-next__title {
+  align-self: center;
   font-size: 20px;
   line-height: 1.25;
   letter-spacing: -0.02em;
 }
 
 .case-next__cta {
-  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   font-size: 13px;
   line-height: 1.4;
   color: var(--ink-faint);
   transition: color 200ms ease;
 }
 
-.case-next__card:hover .case-next__cta {
+.case-next__arrow {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--ink);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.case-next__card:hover .case-next__cta,
+.case-next__card:focus-visible .case-next__cta {
   color: var(--ink);
 }
 
+.case-next__card:hover .case-next__arrow,
+.case-next__card:focus-visible .case-next__arrow {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--inverse);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-next__card,
+  .case-next__card:hover {
+    transform: none;
+  }
+}
+
 @media (max-width: 1240px) {
+  .case-next {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .case-next__header {
+    gap: 12px;
+  }
+
   .case-next__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
+/* Phone: tiles stay 2×2; a long title takes a second line and the tile keeps
+   its height, the title centred between the dot and the "open case" row. */
 @media (max-width: 760px) {
-  .case-next__header {
-    grid-template-columns: 1fr;
+  .case-next__grid {
     gap: 12px;
   }
-}
 
-@media (max-width: 520px) {
-  .case-next__grid {
-    grid-template-columns: 1fr;
+  .case-next__card {
+    gap: 6px;
+    min-height: 124px;
+    padding: 16px;
+  }
+
+  .case-next__title {
+    font-size: 17px;
+  }
+
+  .case-next__arrow {
+    width: 28px;
+    height: 28px;
   }
 }
 
