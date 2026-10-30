@@ -17,7 +17,9 @@
  * screens are found by their alpha and laid out again whole, with a hairline and
  * a shadow so the light screens do not melt into a light page. The third screen
  * is a Safari screenshot: it is cut under the app's tab bar, losing the
- * browser's own bar, and its bottom corners are rounded again.
+ * browser's own bar, and its bottom corners are rounded again. That screen is
+ * in Russian, so EN swaps it for fluffy-chumb/en/mvp-tracker.png (MVP.replacements)
+ * and RU keeps it, writing the `.ru` band.
  *
  * Output goes next to the old files under new names; RU files get a `.ru` suffix.
  * --draft fills a missing slot with a labelled placeholder (for review only —
@@ -84,6 +86,14 @@ const MVP = {
   // Per screen, left to right: `bottom` is the last source row to keep (y in
   // pet-tracker-cover-screens.png), `radius` the corner it is rounded with.
   trims: [null, null, { bottom: 1389, radius: 18 }],
+  // Per language, screens that replace the cut ones (null keeps the cut). The
+  // cut tracker shows the Russian «Лютик's Tracker · Винсувет», which stays on
+  // the RU page; EN gets the same screen in English (a ×2 web screenshot,
+  // square and opaque), fitted to the cut screen's width and rounded the same.
+  replacements: {
+    en: [null, null, { file: 'mvp-tracker.png', radius: 18 }],
+    ru: [null, null, null],
+  },
 }
 
 function parseArgs(argv) {
@@ -273,6 +283,17 @@ async function trimMvpScreen(screen, trim) {
   return { region: { ...screen.region, height }, image }
 }
 
+async function replaceMvpScreen(screen, { file, radius }, lang) {
+  const { width } = screen.region
+  const resized = await sharp(path.join(sourceDir, lang, file)).resize({ width }).png().toBuffer()
+  const { height } = await sharp(resized).metadata()
+  const image = await sharp(resized)
+    .composite([{ input: roundedMask(width, height, radius), blend: 'dest-in' }])
+    .png()
+    .toBuffer()
+  return { region: { ...screen.region, height }, image }
+}
+
 /*
  * Two takes on the same three screens: a row for wide screens, and a column
  * (`.mobile`) that a phone gets instead, so the screens keep a readable size.
@@ -280,8 +301,14 @@ async function trimMvpScreen(screen, trim) {
 async function buildMvp(args) {
   const cut = await cutMvpScreens()
   if (cut.length !== 3) throw new Error(`MVP band: expected 3 screens, found ${cut.length}`)
-  const screens = await Promise.all(cut.map((screen, i) => trimMvpScreen(screen, MVP.trims[i])))
+  const screens = await Promise.all(
+    cut.map((screen, i) => {
+      const replacement = MVP.replacements[args.lang][i]
+      return replacement ? replaceMvpScreen(screen, replacement, args.lang) : trimMvpScreen(screen, MVP.trims[i])
+    }),
+  )
   const { padding, gap } = MVP
+  const suffix = args.lang === 'ru' ? '.ru' : ''
 
   const rowHeight = Math.max(...screens.map((screen) => screen.region.height))
   let x = padding
@@ -290,7 +317,7 @@ async function buildMvp(args) {
     x += screen.region.width + gap
     return item
   })
-  await writeMvp(args, MVP.file, [x - gap + padding, rowHeight + padding * 2], row)
+  await writeMvp(args, `${MVP.file}${suffix}`, [x - gap + padding, rowHeight + padding * 2], row)
 
   const columnWidth = Math.max(...screens.map((screen) => screen.region.width))
   let y = padding
@@ -299,7 +326,7 @@ async function buildMvp(args) {
     y += screen.region.height + gap
     return item
   })
-  await writeMvp(args, `${MVP.file}.mobile`, [columnWidth + padding * 2, y - gap + padding], column)
+  await writeMvp(args, `${MVP.file}.mobile${suffix}`, [columnWidth + padding * 2, y - gap + padding], column)
 }
 
 async function writeMvp(args, file, size, items) {

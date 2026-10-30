@@ -24,8 +24,8 @@ import iquotoVariants from '../assets/cases/iquoto-variants.png';
 import iquotoResult from '../assets/cases/iquoto-result.png';
 import betboomAbTestVideo from '../assets/betboom-ab-test.mp4';
 import catAppScreens from '../assets/cases/cat-app-screens.svg';
-import petTrackerMvpScreens from '../assets/cases/pet-tracker-mvp-screens.webp';
-import petTrackerMvpScreensMobile from '../assets/cases/pet-tracker-mvp-screens.mobile.webp';
+import petTrackerMvpScreens from '../assets/cases/pet-tracker-mvp-screens.ru.webp';
+import petTrackerMvpScreensMobile from '../assets/cases/pet-tracker-mvp-screens.mobile.ru.webp';
 import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.ru.webp';
 import fluffyChumbV2Screens from '../assets/cases/fluffy-chumb-v2-screens.ru.webp';
 import kokocCaseHero from '../assets/cases/kokoc-main-desktop.png';
@@ -50,6 +50,18 @@ import yandexMvpScreens from '../assets/cases/yandex-mvp-screens.png';
 import yandexCoverScreens from '../assets/cases/yandex-cover-screens.png';
 import yandexProcessCards from '../assets/cases/yandex-process-cards.png';
 import yandexStoryFocus from '../assets/cases/yandex-story-focus.png';
+import flowSc1ARu from '../assets/cases/fluffy-chumb/flows/sc1-a.ru.mp4';
+import flowSc1ARuWebm from '../assets/cases/fluffy-chumb/flows/sc1-a.ru.webm';
+import flowSc1ARuPoster from '../assets/cases/fluffy-chumb/flows/sc1-a.ru.poster.webp';
+import flowSc1BRu from '../assets/cases/fluffy-chumb/flows/sc1-b.ru.mp4';
+import flowSc1BRuWebm from '../assets/cases/fluffy-chumb/flows/sc1-b.ru.webm';
+import flowSc1BRuPoster from '../assets/cases/fluffy-chumb/flows/sc1-b.ru.poster.webp';
+import flowSc4ARu from '../assets/cases/fluffy-chumb/flows/sc4-a.ru.mp4';
+import flowSc4ARuWebm from '../assets/cases/fluffy-chumb/flows/sc4-a.ru.webm';
+import flowSc4ARuPoster from '../assets/cases/fluffy-chumb/flows/sc4-a.ru.poster.webp';
+import flowSc4BRu from '../assets/cases/fluffy-chumb/flows/sc4-b.ru.mp4';
+import flowSc4BRuWebm from '../assets/cases/fluffy-chumb/flows/sc4-b.ru.webm';
+import flowSc4BRuPoster from '../assets/cases/fluffy-chumb/flows/sc4-b.ru.poster.webp';
 
 const heroImage = betboomCoverImage;
 const sportsTasksImage = betboomHypothesis;
@@ -251,7 +263,7 @@ export const catAppCaseStudy = {
               items: [
                 'Дела на сегодня — задачи из расписаний всех трекеров в одном списке: отметить, пропустить с причиной или отложить.',
                 'У задачи видно, для кого она и кто её сделал, — каждый держит фокус на своей части протокола.',
-                'Семья — приглашение по email, в том числе пет-ситтера, с ролью Owner или Can edit.',
+                'Семья — приглашение по email, в том числе пет-ситтера: приглашённый может вносить изменения, а доступ можно убрать в любой момент.',
                 'Напоминания — уведомления на телефоне, каждый включает у себя. Пуш всей семье — следующий шаг.',
                 'История и экспорт врачу — 7 или 30 дней, графики и текстовая сводка, которой можно поделиться.',
               ],
@@ -264,6 +276,65 @@ export const catAppCaseStudy = {
                 'Простые трекеры для таблеток, витаминов, прогулок и еды; Mood — готовый пресет.',
                 'Диабет — готовый набор из Insulin и Glucose, и каждый работает отдельно: карта уколов — только для тех, кто колет.',
               ],
+            },
+          ],
+        },
+        {
+          type: 'flowVideos',
+          label: 'Ключевые сценарии',
+          intro: 'Два сценария из MVP, по два коротких клипа на каждый. Интервью подтвердили только часть про диабет; семья и приглашение — гипотезы. Что после MVP, помечено «следующий шаг».',
+          flows: [
+            {
+              title: 'Утренняя доза: кто уже сделал укол',
+              brief: [
+                { heading: 'Проблема', text: 'Утром за котом с диабетом смотрят двое. Легко сделать укол дважды или решить, что его сделал другой.' },
+                { heading: 'Решение', text: 'Доза отмечается на карте уколов и проверяется перед сохранением. В делах на сегодня у задачи появляется подпись «кто и когда» — её видит вся семья.' },
+              ],
+              clips: [
+                {
+                  src: flowSc1ARu,
+                  webm: flowSc1ARuWebm,
+                  poster: flowSc1ARuPoster,
+                  label: 'Клип A',
+                  caption: 'Anna ставит точку на карте, проверяет дозу в «Проверьте дозу» и сохраняет — «Сделано · Anna · 08:00».',
+                  alt: 'Запись экрана: Anna открывает дозу инсулина из дел на сегодня, отмечает место укола на карте кота, проверяет дозу и сохраняет — у задачи появляется отметка, кто и когда её сделал',
+                },
+                {
+                  src: flowSc1BRu,
+                  webm: flowSc1BRuWebm,
+                  poster: flowSc1BRuPoster,
+                  label: 'Клип B',
+                  caption: 'Max открывает приложение и видит, что доза уже сделана: «Сделано · Anna · 08:00».',
+                  alt: 'Запись экрана: Max открывает приложение на своём телефоне и листает дела на сегодня до инсулина — доза уже отмечена: «Сделано · Anna · 08:00»',
+                },
+              ],
+              next: { heading: 'Следующий шаг', text: 'Предупреждение, если ту же дозу пытаются отметить второй раз.' },
+            },
+            {
+              title: 'Приглашение в семью',
+              brief: [
+                { heading: 'Проблема', text: 'Инструкции по уходу разбросаны по чатам и запискам. У второго человека нет доступа к данным питомца.' },
+                { heading: 'Решение', text: 'Владелец приглашает человека по email; тот принимает приглашение после входа и видит ту же рутину и историю. Роль не выбирается: приглашённый может вносить изменения, а доступ можно убрать в любой момент.' },
+              ],
+              clips: [
+                {
+                  src: flowSc4ARu,
+                  webm: flowSc4ARuWebm,
+                  poster: flowSc4ARuPoster,
+                  label: 'Клип A',
+                  caption: 'Anna приглашает max@example.com заботиться о Meow.',
+                  alt: 'Запись экрана: на экране семьи Anna открывает приглашение, вводит max@example.com и отправляет — Max появляется в списке со статусом отправленного приглашения',
+                },
+                {
+                  src: flowSc4BRu,
+                  webm: flowSc4BRuWebm,
+                  poster: flowSc4BRuPoster,
+                  label: 'Клип B',
+                  caption: 'Max принимает приглашение — Meow появляется в списке «Ваши питомцы» с пометкой «Доступ от другого владельца».',
+                  alt: 'Запись экрана: Max принимает на экране семьи приглашение от Anna и открывает «Ваши питомцы» — общий питомец отмечен «Доступ от другого владельца»',
+                },
+              ],
+              next: { heading: 'Следующий шаг', text: 'Временный доступ для пет-ситтера на даты поездки.' },
             },
           ],
         },

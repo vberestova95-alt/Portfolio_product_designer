@@ -3844,6 +3844,136 @@ ol.case-bullet-list li::before {
   background: #f6f8fb;
 }
 
+/*
+ * Key flows (flowVideos): one paper card per flow — problem and answer side
+ * by side, then two screen recordings in phone frames with their captions.
+ */
+.case-flows {
+  display: grid;
+  gap: 20px;
+}
+
+.case-flows__label,
+.case-flow__brief h4,
+.case-flow__clip figcaption span,
+.case-flow__next span {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--ink-faint);
+}
+
+.case-flows__label {
+  margin-bottom: 0;
+}
+
+.case-flows__intro {
+  margin: 0;
+  max-width: 74ch;
+  color: var(--ink-soft);
+}
+
+.case-flow {
+  display: grid;
+  gap: 24px;
+  padding: clamp(24px, 2.2vw, 36px);
+  border-radius: var(--r-card);
+  background: var(--paper);
+}
+
+.case-flow h3 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.case-flow__brief {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.case-flow__brief p,
+.case-flow__next {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.case-flow__clips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 300px));
+  justify-content: center;
+  gap: clamp(16px, 3vw, 56px);
+}
+
+.case-flow__clip {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  margin: 0;
+}
+
+/* The recording is the whole 390×844 screen; the frame is a thin dark bezel
+   with the same rounding as the screens in the case frames. */
+.case-flow__phone {
+  padding: 6px;
+  border-radius: 50px;
+  background: var(--ink);
+  box-shadow: 0 18px 40px rgba(13, 17, 23, 0.14);
+}
+
+.case-flow__phone video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 390 / 844;
+  border-radius: 44px;
+  background: #edf1f7;
+  object-fit: cover;
+}
+
+.case-flow__clip figcaption {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.case-flow__clip figcaption span {
+  margin-bottom: 4px;
+}
+
+.case-flow__next {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 900px) {
+  .case-flow {
+    border-radius: 22px;
+  }
+
+  .case-flow__brief {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .case-flow__phone {
+    padding: 4px;
+    border-radius: 28px;
+  }
+
+  .case-flow__phone video {
+    border-radius: 24px;
+  }
+
+  .case-flow__clip figcaption {
+    font-size: 14px;
+  }
+}
+
 .case-collapsible__trigger {
   width: 100%;
   display: flex;

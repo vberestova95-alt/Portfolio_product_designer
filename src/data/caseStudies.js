@@ -50,6 +50,18 @@ import yandexMvpScreens from '../assets/cases/yandex-mvp-screens.png';
 import yandexCoverScreens from '../assets/cases/yandex-cover-screens.png';
 import yandexProcessCards from '../assets/cases/yandex-process-cards.png';
 import yandexStoryFocus from '../assets/cases/yandex-story-focus.png';
+import flowSc1A from '../assets/cases/fluffy-chumb/flows/sc1-a.mp4';
+import flowSc1AWebm from '../assets/cases/fluffy-chumb/flows/sc1-a.webm';
+import flowSc1APoster from '../assets/cases/fluffy-chumb/flows/sc1-a.poster.webp';
+import flowSc1B from '../assets/cases/fluffy-chumb/flows/sc1-b.mp4';
+import flowSc1BWebm from '../assets/cases/fluffy-chumb/flows/sc1-b.webm';
+import flowSc1BPoster from '../assets/cases/fluffy-chumb/flows/sc1-b.poster.webp';
+import flowSc4A from '../assets/cases/fluffy-chumb/flows/sc4-a.mp4';
+import flowSc4AWebm from '../assets/cases/fluffy-chumb/flows/sc4-a.webm';
+import flowSc4APoster from '../assets/cases/fluffy-chumb/flows/sc4-a.poster.webp';
+import flowSc4B from '../assets/cases/fluffy-chumb/flows/sc4-b.mp4';
+import flowSc4BWebm from '../assets/cases/fluffy-chumb/flows/sc4-b.webm';
+import flowSc4BPoster from '../assets/cases/fluffy-chumb/flows/sc4-b.poster.webp';
 
 const heroImage = betboomCoverImage;
 const sportsTasksImage = betboomHypothesis;
@@ -251,7 +263,7 @@ export const catAppCaseStudy = {
               items: [
                 'Today’s routine — tasks from every tracker’s schedule in one list: mark done, skip with a reason or snooze.',
                 'Each task shows who it is for and who did it, so everyone keeps focus on their own part of the protocol.',
-                'Family — invite people by email, including the pet sitter, as Owner or Can edit.',
+                'Family — invite people by email, including the pet sitter: they can edit, and you can remove access any time.',
                 'Reminders — notifications on each phone, everyone turns on their own. A family-wide push is the next step.',
                 'History and export for the vet — 7 or 30 days, charts and a text summary to share.',
               ],
@@ -264,6 +276,65 @@ export const catAppCaseStudy = {
                 'Simple trackers for pills, vitamins, walks and food; Mood is a ready-made preset.',
                 'Diabetes is a ready-made set of Insulin and Glucose, and each works on its own — the injection map only for those who inject.',
               ],
+            },
+          ],
+        },
+        {
+          type: 'flowVideos',
+          label: 'Key flows',
+          intro: 'Two flows from the MVP, two short clips each. Interviews confirmed only the diabetes part; the household and invitation flows are hypotheses. Anything after the MVP is marked “next step”.',
+          flows: [
+            {
+              title: 'Morning dose: who already gave the shot',
+              brief: [
+                { heading: 'Problem', text: 'Two people look after a diabetic cat in the morning. It\'s easy to inject twice, or for each to think the other one did it.' },
+                { heading: 'Solution', text: 'The dose is marked on the injection map and checked before saving. Today\'s routine then shows who did it and when, for the whole household.' },
+              ],
+              clips: [
+                {
+                  src: flowSc1A,
+                  webm: flowSc1AWebm,
+                  poster: flowSc1APoster,
+                  label: 'Clip A',
+                  caption: 'Anna marks the spot on the map, checks the dose and saves — “Done by Anna · 08:00”.',
+                  alt: 'Screen recording: Anna opens the insulin dose from today’s routine, marks the injection site on the cat map, checks the dose and saves; the task shows “Done by Anna · 08:00”',
+                },
+                {
+                  src: flowSc1B,
+                  webm: flowSc1BWebm,
+                  poster: flowSc1BPoster,
+                  label: 'Clip B',
+                  caption: 'Max opens the app and sees the dose is already done: “Done by Anna”.',
+                  alt: 'Screen recording: Max opens the app on his phone and scrolls today’s routine to the insulin task, already marked “Done by Anna · 08:00”',
+                },
+              ],
+              next: { heading: 'Next step', text: 'A warning when someone tries to log the same dose twice.' },
+            },
+            {
+              title: 'Inviting someone into the household',
+              brief: [
+                { heading: 'Problem', text: 'Care instructions are scattered across chats and notes. The second person has no access to the pet\'s data.' },
+                { heading: 'Solution', text: 'The owner invites someone by email; they accept after signing in and see the same routine and history. There is no role to pick: the invitee gets Can edit, and access can be removed at any time.' },
+              ],
+              clips: [
+                {
+                  src: flowSc4A,
+                  webm: flowSc4AWebm,
+                  poster: flowSc4APoster,
+                  label: 'Clip A',
+                  caption: 'Anna invites max@example.com to care for Meow.',
+                  alt: 'Screen recording: on the Family screen Anna taps “Invite someone”, types max@example.com and sends; Max appears with “Invite sent”',
+                },
+                {
+                  src: flowSc4B,
+                  webm: flowSc4BWebm,
+                  poster: flowSc4BPoster,
+                  label: 'Clip B',
+                  caption: 'Max accepts — Meow appears in “Your pets”, marked “Shared with you”.',
+                  alt: 'Screen recording: Max accepts Anna’s invitation on the Family screen and opens “Your pets”, where the shared pet is marked “Shared with you”',
+                },
+              ],
+              next: { heading: 'Next step', text: 'Temporary access for a pet sitter, limited to the trip dates.' },
             },
           ],
         },

@@ -72,6 +72,137 @@ function LazyVideo({ src, alt, className = '', playbackRate = 1 }) {
   );
 }
 
+/*
+ * A screen recording in a phone frame. Nothing is fetched up front
+ * (preload="none", poster only); the clip plays while it is on screen and
+ * pauses when it leaves, so a page of eight clips never streams them all at
+ * once. With reduced motion it stays on the poster and offers controls.
+ */
+function FlowVideo({ clip }) {
+  const videoRef = useRef(null);
+  const [reduceMotion, setReduceMotion] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  );
+
+  useEffect(() => {
+    const query = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+
+    if (!query) {
+      return undefined;
+    }
+
+    const update = () => setReduceMotion(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    const node = videoRef.current;
+
+    if (!node) {
+      return undefined;
+    }
+
+    node.muted = true;
+    node.defaultMuted = true;
+
+    if (reduceMotion) {
+      node.pause();
+      return undefined;
+    }
+
+    const play = () => {
+      const attempt = node.play();
+
+      if (attempt && typeof attempt.catch === 'function') {
+        attempt.catch(() => {});
+      }
+    };
+
+    if (typeof IntersectionObserver === 'undefined') {
+      play();
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          play();
+        } else {
+          node.pause();
+        }
+      },
+      { threshold: 0.35 },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [reduceMotion]);
+
+  return (
+    <figure className="case-flow__clip">
+      <div className="case-flow__phone">
+        <video
+          ref={videoRef}
+          poster={clip.poster}
+          aria-label={clip.alt}
+          muted
+          loop
+          playsInline
+          preload="none"
+          controls={reduceMotion}
+        >
+          <source src={clip.src} type="video/mp4" />
+          {clip.webm ? <source src={clip.webm} type="video/webm" /> : null}
+        </video>
+      </div>
+      <figcaption>
+        {clip.label ? <span>{clip.label}</span> : null}
+        {clip.caption}
+      </figcaption>
+    </figure>
+  );
+}
+
+/*
+ * Key flows: per flow a title, the problem and the answer, two clips with
+ * captions and what comes after the release.
+ */
+function FlowVideos({ part }) {
+  return (
+    <section className="case-flows">
+      {part.label ? <span className="case-flows__label">{part.label}</span> : null}
+      {part.intro ? <p className="case-flows__intro">{part.intro}</p> : null}
+      {part.flows.map((flow) => (
+        <article key={flow.title} className="case-flow">
+          <h3>{flow.title}</h3>
+          <div className="case-flow__brief">
+            {flow.brief.map((item) => (
+              <div key={item.heading}>
+                <h4>{item.heading}</h4>
+                <p>{item.text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="case-flow__clips">
+            {flow.clips.map((clip) => (
+              <FlowVideo key={clip.src} clip={clip} />
+            ))}
+          </div>
+          {flow.next ? (
+            <p className="case-flow__next">
+              <span>{flow.next.heading}</span>
+              {flow.next.text}
+            </p>
+          ) : null}
+        </article>
+      ))}
+    </section>
+  );
+}
+
 function BeforeAfterSlider({ before, after }) {
   const text = useUi().case;
   const [position, setPosition] = useState(50);
@@ -531,6 +662,10 @@ function SectionPart({ part }) {
         </div>
       </div>
     );
+  }
+
+  if (part.type === 'flowVideos') {
+    return <FlowVideos part={part} />;
   }
 
   if (part.type === 'beforeAfterSlider') {
