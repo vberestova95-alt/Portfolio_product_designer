@@ -54,8 +54,8 @@
 | Роль | Сессия | С какого времени | Сейчас делает |
 |---|---|---|---|
 | orchestrator | portfolio-product-designer-d7 | 2026-10-30 | ведёт бэклог (пауза снята 2026-10-30) |
-| editor | субагент оркестратора d7 | 2026-10-30 | свободен; черновик п. 13 сделан |
-| developer | субагент оркестратора d7 | 2026-10-30 | п. 19б — лента MVP столбиком на телефоне (`build-case-frames.mjs`, `BetboomPassPage.jsx` imageBand, `global.css` `--bare`, `caseStudies*.js`) |
+| editor | субагент оркестратора d7 | 2026-10-30 | п. 14в — текст «Ключевые сценарии» (документ, `docs/drafts/`) |
+| developer | субагент оркестратора d7 | 2026-10-30 | п. 14в — блок видео сценариев (`src/assets/cases/fluffy-chumb/flows/`, `BetboomPassPage.jsx`, `global.css`, `caseStudies*.js`) |
 | designer | субагент оркестратора d7 | 2026-10-30 | свободен; Figma портфолио `9ga2w6jOKhMAWknjd54O5U` |
 | docs-keeper | субагент оркестратора d7 | 2026-10-30 | свободен; п. 11 сделан |
 | researcher | субагент оркестратора d7 | 2026-10-30 | свободен; пп. 13 (факты), 14а сделаны |

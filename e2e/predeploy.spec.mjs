@@ -255,6 +255,9 @@ async function checkCatApp(browser) {
     await page.waitForTimeout(800);
     const heroSrc = await page.locator('.case-hero__media img').first().getAttribute('src');
     check(`${tag}: hero is the new preview`, /fluffy-chumb-v2-cover-[^.]+\.webp/.test(heroSrc ?? ''), heroSrc ?? 'no hero img');
+    const bodyText = await page.locator('main, body').first().innerText();
+    check(`${tag}: invite line has no "Owner or Can edit"`, !/Owner or Can edit/i.test(bodyText), '');
+    check(`${tag}: no RU text in MVP / flows (EN page)`, !/Лютик|Инсувет|Винсувет/.test(bodyText), '');
     await page.locator('.case-hero').first().screenshot({ path: path.join(SHOTS, `cat-app-${viewport.width}-hero.png`) });
 
     await scrollThrough(page);
@@ -301,11 +304,11 @@ async function checkCatApp(browser) {
     const pageOverflow = await horizontalOverflow(page);
     if (viewport.width > 640) {
       // Desktop: the horizontal strip, three screens whole.
-      check(`${tag}: MVP strip is the horizontal picture`, !!mvp && !/\.mobile/.test(mvp.currentSrc ?? ''), mvp?.currentSrc ?? 'missing');
+      check(`${tag}: MVP strip is the EN horizontal picture`, !!mvp && /pet-tracker-mvp-screens-[^./]+\.webp/.test(mvp.currentSrc ?? ''), mvp?.currentSrc ?? 'missing');
       check(`${tag}: MVP strip shown whole (not cropped)`, ratioOk && mvp.inside && mvp.inViewportWidth, `${ratioDetail}, inside ${mvp?.inside}`);
     } else {
       // Phone (≤640): <picture> swaps in a vertical .mobile image that fits the width.
-      check(`${tag}: MVP strip uses the .mobile picture`, !!mvp && /pet-tracker-mvp-screens\.mobile/.test(mvp.currentSrc ?? ''), mvp?.currentSrc ?? 'missing');
+      check(`${tag}: MVP strip uses the EN .mobile picture`, !!mvp && /pet-tracker-mvp-screens\.mobile-[^./]+\.webp/.test(mvp.currentSrc ?? ''), mvp?.currentSrc ?? 'missing');
       check(`${tag}: MVP strip keeps proportions and fits the width`, ratioOk && mvp.inside && mvp.inViewportWidth, `${ratioDetail}, inside ${mvp?.inside}`);
       check(
         `${tag}: MVP strip has no sideways scroll`,
@@ -325,8 +328,8 @@ async function checkCatApp(browser) {
       const boxSrc = opened ? await box.getAttribute('src') : null;
       const loaded = opened ? await box.evaluate((el) => el.complete && el.naturalWidth > 0) : false;
       const wantMobile = viewport.width <= 640;
-      const okSrc = !!boxSrc && (wantMobile ? /pet-tracker-mvp-screens\.mobile/.test(boxSrc) : /pet-tracker-mvp-screens-[^.]+\.webp/.test(boxSrc) && !/\.mobile/.test(boxSrc));
-      check(`${tag}: MVP lightbox opens the ${wantMobile ? '.mobile' : 'horizontal'} picture`, opened && okSrc && loaded, boxSrc ?? 'lightbox did not open');
+      const okSrc = !!boxSrc && (wantMobile ? /pet-tracker-mvp-screens\.mobile-[^./]+\.webp/.test(boxSrc) : /pet-tracker-mvp-screens-[^./]+\.webp/.test(boxSrc));
+      check(`${tag}: MVP lightbox opens the EN ${wantMobile ? '.mobile' : 'horizontal'} picture`, opened && okSrc && loaded, boxSrc ?? 'lightbox did not open');
       if (opened) {
         await page.screenshot({ path: path.join(SHOTS, `cat-app-${viewport.width}-mvp-lightbox.png`) });
         await page.locator('.case-lightbox__close').click();
@@ -343,6 +346,148 @@ async function checkCatApp(browser) {
     await page.screenshot({ path: path.join(SHOTS, `cat-app-${viewport.width}-full.png`), fullPage: true }).catch(() => {});
     check(`${tag}: console/network clean`, problems.length === 0, problems.join(' | '));
     await context.close();
+  }
+}
+
+// Key flows on /cat-app: 2 flows × 2 clips, preload none, play on screen.
+const FLOW_MEDIA = /\/sc[14]-[ab](\.ru)?-[^/]+\.(mp4|webm)$/;
+const FLOW_POSTER = /\/sc[14]-[ab](\.ru)?\.poster-[^/]+\.webp$/;
+
+async function videoStates(page) {
+  return page.evaluate(() =>
+    [...document.querySelectorAll('.case-flow')].map((flow) =>
+      [...flow.querySelectorAll('video')].map((v) => {
+        const r = v.getBoundingClientRect();
+        return {
+          paused: v.paused,
+          time: v.currentTime,
+          muted: v.muted,
+          loop: v.loop,
+          playsInline: v.playsInline,
+          preload: v.getAttribute('preload'),
+          controls: v.controls,
+          poster: v.getAttribute('poster'),
+          currentSrc: v.currentSrc,
+          sources: [...v.querySelectorAll('source')].map((x) => x.getAttribute('src')),
+          networkState: v.networkState,
+          error: v.error ? v.error.code : null,
+          onScreen: r.bottom > 0 && r.top < window.innerHeight,
+        };
+      }),
+    ),
+  );
+}
+
+async function checkFlowVideos(browser) {
+  for (const viewport of [VIEWPORTS.desktop, VIEWPORTS.phone]) {
+    for (const reduced of [false, true]) {
+      const tag = `/cat-app ${viewport.width} key flows${reduced ? ' (reduced motion)' : ''}`;
+      const context = await browser.newContext({ viewport, deviceScaleFactor: 1, reducedMotion: reduced ? 'reduce' : 'no-preference' });
+      const page = await context.newPage();
+      const mediaHits = [];
+      const posterHits = [];
+      const problems = [];
+      page.on('request', (req) => {
+        const url = req.url();
+        if (FLOW_MEDIA.test(url)) mediaHits.push(url);
+        if (FLOW_POSTER.test(url)) posterHits.push(url);
+      });
+      page.on('response', (res) => {
+        if (res.status() >= 400 && /\/assets\//.test(res.url())) problems.push(`http ${res.status()}: ${res.url()}`);
+      });
+      page.on('pageerror', (err) => problems.push(`pageerror: ${err.message}`));
+      await page.goto(`${BASE}/cat-app`, { waitUntil: 'load' });
+      await page.waitForTimeout(1500);
+
+      const initial = await videoStates(page);
+      check(`${tag}: 2 flows × 2 clips`, initial.length === 2 && initial.every((f) => f.length === 2), JSON.stringify(initial.map((f) => f.length)));
+      const flat = initial.flat();
+      check(
+        `${tag}: clips are muted, loop, playsInline, preload=none, have a poster`,
+        flat.length === 4 && flat.every((v) => v.muted && v.loop && v.playsInline && v.preload === 'none' && v.poster),
+        flat.map((v) => `${v.muted}/${v.loop}/${v.playsInline}/${v.preload}/${!!v.poster}`).join(' '),
+      );
+      check(`${tag}: EN clips (no .ru sources)`, flat.every((v) => v.sources.every((src) => !/\.ru[-.]/.test(src))), flat.flatMap((v) => v.sources).join(', '));
+      check(`${tag}: no clip downloaded before scrolling`, mediaHits.length === 0, mediaHits.join(', '));
+      check(`${tag}: controls ${reduced ? 'shown' : 'hidden'}`, flat.every((v) => v.controls === reduced), flat.map((v) => v.controls).join(','));
+
+      // Bring flow 1 clips on screen one by one.
+      const flow1 = page.locator('.case-flow').nth(0).locator('video');
+      const flow2 = page.locator('.case-flow').nth(1).locator('video');
+      const flow1Played = [];
+      for (let i = 0; i < 2; i += 1) {
+        await flow1.nth(i).evaluate((el) => el.scrollIntoView({ block: 'center' }));
+        await page.waitForTimeout(2500);
+        const st = (await videoStates(page))[0][i];
+        flow1Played.push(st);
+        if (i === 0) {
+          await page.screenshot({ path: path.join(SHOTS, `cat-app-${viewport.width}-flows${reduced ? '-reduced' : ''}.png`) });
+        }
+      }
+      const atFlow1 = await videoStates(page);
+      if (!reduced) {
+        check(
+          `${tag}: flow 1 clips play when on screen`,
+          flow1Played.every((v) => !v.paused && v.time > 0 && v.error === null),
+          flow1Played.map((v) => `paused ${v.paused}, t ${v.time.toFixed(2)}, src ${v.currentSrc.split('/').pop()}, err ${v.error}`).join(' | '),
+        );
+        const offscreen2 = atFlow1[1].filter((v) => !v.onScreen);
+        check(
+          `${tag}: flow 2 clips off screen are paused`,
+          offscreen2.length > 0 && offscreen2.every((v) => v.paused),
+          atFlow1[1].map((v) => `onScreen ${v.onScreen}, paused ${v.paused}`).join(' | '),
+        );
+        // Scroll flow 1 away: it pauses.
+        await flow2.nth(1).evaluate((el) => el.scrollIntoView({ block: 'center' }));
+        await page.waitForTimeout(2000);
+        const after = await videoStates(page);
+        const away = after[0].filter((v) => !v.onScreen);
+        check(
+          `${tag}: flow 1 pauses after scrolling away`,
+          away.length > 0 && away.every((v) => v.paused),
+          after[0].map((v) => `onScreen ${v.onScreen}, paused ${v.paused}`).join(' | '),
+        );
+        check(`${tag}: flow 2 plays when on screen`, after[1].some((v) => v.onScreen && !v.paused && v.time > 0), after[1].map((v) => `onScreen ${v.onScreen}, paused ${v.paused}, t ${v.time.toFixed(2)}`).join(' | '));
+      } else {
+        await flow2.nth(1).evaluate((el) => el.scrollIntoView({ block: 'center' }));
+        await page.waitForTimeout(1500);
+        const after = (await videoStates(page)).flat();
+        check(`${tag}: all clips stay paused at 0`, after.every((v) => v.paused && v.time === 0), after.map((v) => `paused ${v.paused}, t ${v.time}`).join(' | '));
+        check(`${tag}: no clip downloaded`, mediaHits.length === 0, mediaHits.join(', '));
+      }
+
+      // Posters: every poster requested and decodable.
+      const posters = await page.evaluate(async () =>
+        Promise.all(
+          [...document.querySelectorAll('.case-flow video')].map(
+            (v) =>
+              new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve({ src: v.getAttribute('poster'), ok: img.naturalWidth > 0 });
+                img.onerror = () => resolve({ src: v.getAttribute('poster'), ok: false });
+                img.src = v.getAttribute('poster');
+              }),
+          ),
+        ),
+      );
+      check(`${tag}: posters load`, posters.length === 4 && posters.every((p) => p.ok), posters.map((p) => `${p.src.split('/').pop()} ${p.ok}`).join(', '));
+      check(`${tag}: EN posters`, posters.every((p) => !/\.ru\./.test(p.src)), '');
+
+      // Every source URL responds 200 (no broken src).
+      const srcs = [...new Set(flat.flatMap((v) => v.sources))];
+      const statuses = [];
+      for (const src of srcs) {
+        const res = await page.request.head(new URL(src, BASE).toString());
+        statuses.push({ src, status: res.status(), type: res.headers()['content-type'] });
+      }
+      check(
+        `${tag}: all clip sources respond 200 with video type`,
+        statuses.length === 8 && statuses.every((x) => x.status === 200 && /^video\//.test(x.type ?? '')),
+        statuses.filter((x) => x.status !== 200 || !/^video\//.test(x.type ?? '')).map((x) => `${x.src} ${x.status} ${x.type}`).join(', ') || `${statuses.length} sources`,
+      );
+      check(`${tag}: no asset errors`, problems.length === 0, problems.join(' | '));
+      await context.close();
+    }
   }
 }
 
@@ -366,6 +511,7 @@ try {
   await checkHome(browser);
   await checkRoutes(browser);
   await checkCatApp(browser);
+  await checkFlowVideos(browser);
   await checkLangRu(browser);
 } finally {
   await browser.close();

@@ -8,6 +8,7 @@ npm run build
 npx vite preview --port 4173 --strictPort        # порт сначала занять в TEAM.md → «Общие ресурсы»
 node e2e/predeploy.spec.mjs                      # BASE=http://localhost:4173, SHOTS=<папка для скриншотов>
 node e2e/ru-images.check.mjs                     # RU-данные карточек через vite ssrLoadModule, сервер не нужен
+BASE=http://localhost:4174 node e2e/ru-media.check.mjs   # RU-ролики и лента; нужна временная сборка с RU_ENABLED=true (рецепт в шапке файла)
 ```
 
 Код выхода 1 — что-то упало; в конце печатается список FAIL.
