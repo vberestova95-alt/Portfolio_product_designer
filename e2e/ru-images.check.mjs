@@ -19,7 +19,7 @@ try {
   for (const c of ru.cases) {
     const src = c.image?.src ?? '';
     if (c.id === 'cat-app') {
-      check('RU cat-app cover is .ru.webp', /fluffy-chumb-v2-cover\.ru\.webp/.test(src), src);
+      check('RU cat-app cover is .ru.webp', /fluffy-chumb-(v2|home)-cover\.ru\.webp/.test(src), src);
     } else {
       check(`RU ${c.id} cover same as EN`, src === enById[c.id].image.src, src);
     }
