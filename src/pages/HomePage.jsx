@@ -15,6 +15,7 @@ import logoLuma from '../assets/ai-logos/luma.svg';
 import logoMidjourney from '../assets/ai-logos/midjourney.svg';
 import logoRecraft from '../assets/ai-logos/recraft.svg';
 import { BrandLogo } from '../components/BrandLogo.jsx';
+import { PrivacyLinks } from '../components/ConsentBanner.jsx';
 import { CubePool, ReloadIcon } from '../components/CubePool.jsx';
 import { MosaicLinks } from '../components/MosaicLinks.jsx';
 import { ContactMenu, NavMenu, useMatchMedia } from '../components/NavMenu.jsx';
@@ -852,6 +853,7 @@ export function HomePage({
 
       <section className="section home-shell about-section" data-track-area="about">
         <AboutSection />
+        <PrivacyLinks />
       </section>
 
     </div>

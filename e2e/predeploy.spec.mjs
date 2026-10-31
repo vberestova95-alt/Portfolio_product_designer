@@ -51,6 +51,7 @@ const ROUTES = [
   'experience',
   'iquoto',
   'kokoc-group',
+  'privacy',
   'yandex-turkey',
 ];
 const CASE_ROUTES = ['betboom-pass', 'cat-app', 'iquoto', 'kokoc-group', 'yandex-turkey'];
@@ -70,6 +71,10 @@ function check(name, ok, detail = '') {
 
 async function openPage(browser, viewport, url) {
   const context = await browser.newContext({ viewport, deviceScaleFactor: 1 });
+  // The banner would sit over the fixed-position checks; checkConsent covers it.
+  await context.addInitScript(() => {
+    localStorage.setItem('vb_consent', JSON.stringify({ choice: 'denied', until: Date.now() + 864e5 }));
+  });
   const page = await context.newPage();
   const problems = [];
   // Yandex Metrika beacons (mc.yandex.ru, *.yandex.net) are third-party; in a
@@ -506,8 +511,40 @@ async function checkLangRu(browser) {
   }
 }
 
+async function checkConsent(browser) {
+  const context = await browser.newContext({ viewport: VIEWPORTS.phone });
+  const page = await context.newPage();
+  const tracking = [];
+  await page.route(/mc\.yandex\.ru|\/api\/collect/, (route) => {
+    tracking.push(route.request().url());
+    return route.abort();
+  });
+  const banner = page.locator('.consent-banner');
+
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 60000 });
+  check('consent: banner shows on a first visit', await banner.isVisible());
+  check('consent: nothing tracked before an answer', tracking.length === 0, tracking.join(', '));
+  await page.screenshot({ path: path.join(SHOTS, 'consent-390.png') });
+
+  await banner.getByRole('button', { name: 'Decline' }).click();
+  await page.reload({ waitUntil: 'networkidle' });
+  check('consent: decline is remembered', (await banner.count()) === 0);
+  check('consent: nothing tracked after decline', tracking.length === 0, tracking.join(', '));
+
+  await page.goto(`${BASE}/404.html`, { waitUntil: 'load' });
+  check('consent: static error page stays silent after decline', tracking.length === 0, tracking.join(', '));
+
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 60000 });
+  await page.locator('.privacy-links button').click();
+  await banner.getByRole('button', { name: 'Accept' }).click();
+  await page.waitForTimeout(500);
+  check('consent: accept starts Metrika', tracking.some((url) => url.includes('mc.yandex.ru')), `${tracking.length} requests`);
+  await context.close();
+}
+
 const browser = await chromium.launch();
 try {
+  await checkConsent(browser);
   await checkHome(browser);
   await checkRoutes(browser);
   await checkCatApp(browser);

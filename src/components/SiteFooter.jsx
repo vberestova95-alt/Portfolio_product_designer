@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import editorialObject from '../assets/editorial-object.webp';
 import { PLAIN_TONES, attachHeroMosaic } from '../lib/heroMosaic.js';
 import { SHOW_OBJECT_GRAPHICS } from '../lib/siteGraphics.js';
+import { PrivacyLinks } from './ConsentBanner.jsx';
 import { ContactLink } from './ContactLink.jsx';
 import { CubePool } from './CubePool.jsx';
 
@@ -85,6 +86,7 @@ export function SiteFooter({ profile }) {
               {paragraph}
             </p>
           ))}
+          <PrivacyLinks />
         </div>
 
         <div className="home-footer__links">

@@ -43,7 +43,7 @@ const SCROLL_DEPTHS = new Set([25, 50, 75, 100]);
 const CLICK_KINDS = new Set(['project', 'contact', 'social', 'download', 'nav', 'outbound']);
 const CONVERSION_KINDS = new Set(['contact', 'download']);
 // Pages that are not a case: views of anything else count toward "viewed a case".
-const NON_CASE_PATHS = new Set(['/', '/experience', '/ai-projects', '/design-concepts']);
+const NON_CASE_PATHS = new Set(['/', '/experience', '/ai-projects', '/design-concepts', '/privacy']);
 
 function text(value, max = 120) {
   return typeof value === 'string' ? value.slice(0, max) : '';

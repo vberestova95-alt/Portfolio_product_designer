@@ -6,6 +6,7 @@ import { attachReturnNavigation } from './lib/returnNavigation.js';
 import { AiProjectsPage } from './pages/AiProjectsPage.jsx';
 import { ExperiencePage } from './pages/ExperiencePage.jsx';
 import { HomePage } from './pages/HomePage.jsx';
+import { PrivacyPage } from './pages/PrivacyPage.jsx';
 import { CaseStudyPage } from './pages/BetboomPassPage.jsx';
 import { DesignConceptsPage } from './pages/DesignConceptsPage.jsx';
 import { NotFoundPage } from './pages/ErrorPage.jsx';
@@ -31,12 +32,14 @@ const AI_CASE_PATHS = new Set(['/ds-plugins', '/design-cringe']);
 const AI_PROJECTS_PATH = '/ai-projects';
 const LISTING_PATHS = new Set([AI_PROJECTS_PATH]);
 const EXPERIENCE_PATH = '/experience';
+const PRIVACY_PATH = '/privacy';
 
 const DETAIL_PATHS = new Set([
   ...Object.keys(CASE_STUDY_KEYS_BY_PATH),
   '/design-concepts',
   AI_PROJECTS_PATH,
   EXPERIENCE_PATH,
+  PRIVACY_PATH,
 ]);
 const PET_INJECTION_TRACKER_PATH = '/pet-injection-tracker';
 
@@ -73,6 +76,13 @@ function getPageMetadata(pathname, currentCaseStudy, petCaseStudy, meta) {
     return {
       title: meta.experienceTitle,
       description: meta.experienceDescription,
+    };
+  }
+
+  if (pathname === PRIVACY_PATH) {
+    return {
+      title: meta.privacyTitle,
+      description: meta.privacyDescription,
     };
   }
 
@@ -190,6 +200,10 @@ export function App() {
 
   if (pathname === EXPERIENCE_PATH) {
     return <ExperiencePage experiences={experiences} profile={profile} />;
+  }
+
+  if (pathname === PRIVACY_PATH) {
+    return <PrivacyPage profile={profile} />;
   }
 
   if (pathname === AI_PROJECTS_PATH) {

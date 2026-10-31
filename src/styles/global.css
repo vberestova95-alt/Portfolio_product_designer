@@ -5889,3 +5889,124 @@ ol.case-bullet-list li::before {
 .experience-contacts__link:hover {
   text-decoration-color: currentColor;
 }
+
+/* Sits over the page without blocking it; only the contact sheet goes above. */
+.consent-banner {
+  position: fixed;
+  right: var(--gutter);
+  bottom: var(--gutter);
+  z-index: 90;
+  display: grid;
+  gap: 16px;
+  width: min(440px, calc(100vw - 2 * var(--gutter)));
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  padding: 20px;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 16px 48px rgba(13, 17, 23, 0.16);
+}
+
+.consent-banner__text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.consent-banner__link,
+.privacy-links a,
+.privacy-links button {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-underline-offset: 3px;
+}
+
+.consent-banner__link {
+  color: var(--ink);
+}
+
+.consent-banner__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.consent-banner__button {
+  border: 1px solid var(--ink);
+  border-radius: var(--r-chip);
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.consent-banner__button:hover,
+.consent-banner__button--accept {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.consent-banner__button--accept:hover {
+  background: var(--ink-soft);
+}
+
+.consent-banner__button:focus-visible,
+.consent-banner__link:focus-visible,
+.privacy-links a:focus-visible,
+.privacy-links button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .consent-banner {
+    right: 16px;
+    bottom: 16px;
+    width: calc(100vw - 32px);
+    padding: 16px;
+  }
+}
+
+/* Takes its colour from what it sits on: the light page or the dark footer. */
+.privacy-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 20px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.68;
+}
+
+.privacy-links a,
+.privacy-links button {
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+}
+
+.privacy-page .experience-row__body p {
+  margin: 0 0 12px;
+}
+
+.privacy-page__list {
+  margin: 0 0 12px;
+  padding-left: 20px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.privacy-page__updated {
+  margin: 24px 0 0;
+  font-size: 14px;
+  color: var(--ink-faint);
+}

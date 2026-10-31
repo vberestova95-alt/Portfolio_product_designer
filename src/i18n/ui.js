@@ -18,6 +18,8 @@ export const ui = {
       aiProjectsTitle: 'AI-проекты — Владислава Берестова',
       aiProjectsDescription:
         'Продукты, которые я спроектировала и собрала сама вместе с AI: плагины для дизайн-системы, анализатор дизайна и трекер для питомца.',
+      privacyTitle: 'Политика конфиденциальности — Владислава Берестова',
+      privacyDescription: 'Какие данные собирает сайт, зачем и как отказаться.',
       nameSuffix: 'Владислава Берестова',
     },
     nav: {
@@ -38,6 +40,69 @@ export const ui = {
       closeMenu: 'Закрыть меню',
       language: 'Язык сайта',
       switchTo: 'Switch to English',
+    },
+    consent: {
+      label: 'Согласие на статистику',
+      message:
+        'Мне интересно узнать, какие проекты привлекают внимание посетителей и как они взаимодействуют с ними. С вашего согласия сайт использует cookie для сбора аналитики.',
+      policy: 'Политика конфиденциальности',
+      settings: 'Настройки cookie',
+      accept: 'Принять',
+      decline: 'Отказаться',
+    },
+    privacyPage: {
+      title: 'Политика конфиденциальности',
+      description:
+        'Это личное портфолио: здесь нет аккаунтов и форм. Статистика включается, только если вы согласились.',
+      updated: 'Обновлено 31 октября 2026',
+      sections: [
+        {
+          title: 'Кто отвечает за данные',
+          paragraphs: ['Владислава Берестова, автор сайта. По любым вопросам о данных пишите на почту:'],
+          showEmail: true,
+        },
+        {
+          title: 'Что работает всегда',
+          paragraphs: ['Без этого сайт не работает как задумано, поэтому согласие здесь не запрашивается:'],
+          items: [
+            'В браузере хранятся выбранный язык и ваш ответ на вопрос о статистике. Ответ хранится 12 месяцев.',
+            'Шрифты загружаются из Google Fonts, поэтому Google получает ваш IP-адрес.',
+            'Хостинг (GitHub Pages, для кейса Pet Injection Tracker — Netlify) может записывать технические данные запросов.',
+          ],
+        },
+        {
+          title: 'Что включается с согласия',
+          paragraphs: ['Яндекс Метрика: cookie, IP-адрес, данные об устройстве и браузере, просмотренные страницы, клики, прокрутка и запись действий на странице (Вебвизор).', 'Собственная статистика:'],
+          items: [
+            'случайные идентификаторы посетителя и визита в браузере;',
+            'просмотренные страницы, клики по ссылкам, глубина прокрутки, время на странице;',
+            'откуда вы пришли, метки ссылки, язык, часовой пояс, размер экрана;',
+            'тип устройства, система и браузер;',
+            'страна и город, определённые по IP-адресу. Сам IP-адрес в статистике не сохраняется.',
+          ],
+        },
+        {
+          title: 'Зачем это нужно',
+          paragraphs: [
+            'Чтобы понимать, какие работы смотрят, откуда приходят посетители и что на сайте стоит улучшить. Данные не используются для рекламы и не продаются.',
+          ],
+        },
+        {
+          title: 'Кто получает данные и сколько их хранят',
+          paragraphs: [
+            'Данные Метрики обрабатывает Яндекс по своим условиям. Собственная статистика работает на Vercel и Upstash. Эти сервисы могут хранить данные за пределами вашей страны.',
+            'В собственной статистике данные визита хранятся до суток, дневные итоги — 400 дней. Лента последних 300 событий хранится с сокращённым идентификатором посетителя.',
+          ],
+          link: { href: 'https://yandex.ru/legal/metrica_termsofuse/ru/', label: 'Условия Яндекс Метрики' },
+        },
+        {
+          title: 'Ваш выбор',
+          paragraphs: [
+            'Вы можете отказаться или передумать в любой момент: ссылка «Настройки cookie» есть внизу страниц. После отказа статистика выключается, а её cookie и идентификаторы удаляются из этого браузера.',
+            'Чтобы узнать, какие данные о вас есть, исправить или удалить их, напишите на почту из первого раздела.',
+          ],
+        },
+      ],
     },
     experiencePage: {
       title: 'Опыт и контакты',
@@ -148,6 +213,8 @@ export const ui = {
       aiProjectsTitle: 'AI Projects - Vladislava Berestova',
       aiProjectsDescription:
         'Products I designed and built myself with AI: design system plugins for Figma, a design analyzer, and a pet care tracker.',
+      privacyTitle: 'Privacy policy - Vladislava Berestova',
+      privacyDescription: 'What data this site collects, why, and how to opt out.',
       nameSuffix: 'Vladislava Berestova',
     },
     nav: {
@@ -168,6 +235,69 @@ export const ui = {
       closeMenu: 'Close menu',
       language: 'Site language',
       switchTo: 'Переключить на русский',
+    },
+    consent: {
+      label: 'Consent to statistics',
+      message:
+        'I’m curious to see which projects catch your eye and how you explore them. With your consent, this site uses cookies to collect analytics.',
+      policy: 'Privacy policy',
+      settings: 'Cookie settings',
+      accept: 'Accept',
+      decline: 'Decline',
+    },
+    privacyPage: {
+      title: 'Privacy policy',
+      description:
+        'This is a personal portfolio with no accounts or forms. Statistics only run if you agree to them.',
+      updated: 'Updated 31 October 2026',
+      sections: [
+        {
+          title: 'Who is responsible',
+          paragraphs: ['Vladislava Berestova, the author of this site. For any question about your data, write to:'],
+          showEmail: true,
+        },
+        {
+          title: 'What always runs',
+          paragraphs: ['The site needs these to work as intended, so they do not ask for consent:'],
+          items: [
+            'Your browser stores your language and your answer about statistics. The answer is kept for 12 months.',
+            'Fonts load from Google Fonts, so Google receives your IP address.',
+            'Hosting (GitHub Pages, and Netlify for the Pet Injection Tracker case) may log technical request data.',
+          ],
+        },
+        {
+          title: 'What runs with your consent',
+          paragraphs: ['Yandex Metrica: cookies, IP address, device and browser data, pages viewed, clicks, scrolling and recordings of on-page actions (Webvisor).', 'The site\'s own statistics:'],
+          items: [
+            'random visitor and visit IDs stored in your browser;',
+            'pages viewed, link clicks, scroll depth and time on page;',
+            'where you came from, link tags, language, time zone and screen size;',
+            'device type, operating system and browser;',
+            'country and city worked out from your IP address. The IP address itself is not kept in the statistics.',
+          ],
+        },
+        {
+          title: 'Why',
+          paragraphs: [
+            'To understand which work people look at, where they come from and what to improve. The data is not used for advertising and is not sold.',
+          ],
+        },
+        {
+          title: 'Who receives data and for how long',
+          paragraphs: [
+            'Yandex processes Metrica data under its own terms. The site\'s own statistics run on Vercel and Upstash. These services may store data outside your country.',
+            'In the site\'s own statistics, visit data is kept for up to a day and daily totals for 400 days. A feed of the latest 300 events keeps a shortened visitor ID.',
+          ],
+          link: { href: 'https://yandex.com/legal/metrica_termsofuse/', label: 'Yandex Metrica terms' },
+        },
+        {
+          title: 'Your choice',
+          paragraphs: [
+            'You can decline or change your mind at any time with the “Cookie settings” link at the bottom of the pages. Declining turns statistics off and removes their cookies and IDs from this browser.',
+            'To find out what data exists about you, or to correct or delete it, write to the email in the first section.',
+          ],
+        },
+      ],
     },
     experiencePage: {
       title: 'Experience and contacts',

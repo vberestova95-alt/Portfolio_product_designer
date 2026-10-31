@@ -34,6 +34,7 @@ const portfolio = {
     'experience',
     'iquoto',
     'kokoc-group',
+    'privacy',
     'yandex-turkey',
   ],
   // Nothing to patch — see the note above.

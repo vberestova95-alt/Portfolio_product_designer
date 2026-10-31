@@ -1,7 +1,8 @@
 /*
  * First-party analytics: a tiny client that records what happens on the site
  * and ships it to our own endpoint (api/collect), which feeds the /stats
- * dashboard. Yandex.Metrika keeps running alongside for the webvisor.
+ * dashboard. Yandex.Metrika runs alongside for the webvisor. Both start only
+ * after the visitor agrees — see consent.js.
  *
  * Nothing here identifies a person. A visitor is a random id in localStorage
  * (that is what tells new visitors from returning ones), a session is a random
