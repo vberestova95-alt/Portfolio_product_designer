@@ -3663,24 +3663,27 @@ ol.case-bullet-list li::before {
 }
 
 /*
- * Spotless: the frames are cut free of their backdrop, so they show whole at
- * their own ratio at every width — no slot to crop them into, no plate or fill
- * behind them, only the 16px media corners.
+ * Spotless and the genetics audit: the frames are cut free of their backdrop,
+ * so they show whole at their own ratio at every width — no slot to crop them
+ * into, no plate or fill behind them, only the 16px media corners.
  */
-.case-page--spotless .case-hero__media {
+.case-page--spotless .case-hero__media,
+.case-page--genetics-audit .case-hero__media {
   height: auto;
   border: 0;
   background: none;
 }
 
-.case-page--spotless .case-hero__media img {
+.case-page--spotless .case-hero__media img,
+.case-page--genetics-audit .case-hero__media img {
   display: block;
   height: auto;
   object-fit: contain;
 }
 
 .case-page--spotless .case-image-band img,
-.case-page--spotless .case-feature-media img {
+.case-page--spotless .case-feature-media img,
+.case-page--genetics-audit .case-feature-media img {
   border-radius: var(--r-media);
   background: none;
 }
