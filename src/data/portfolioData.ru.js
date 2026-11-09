@@ -62,6 +62,12 @@ export const cases = byId(en.cases, {
       'Редизайн core-продукта геймификации, который вырос из киберспортивных механик и вышел на широкую спортивную аудиторию.',
     metrics: ['+60% DAU', '+75% retention'],
     image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Интерфейс BetBoom PASS' },
+    frames: [
+      {
+        ...entryOf(en.cases, 'betboom-pass').frames[0],
+        alt: 'Три мобильных экрана BetBoom PASS: задания, главная PASS с сезоном MSI 2025 и смена задания',
+      },
+    ],
   },
   'yandex-news': {
     title: 'Яндекс Новости Турция',
