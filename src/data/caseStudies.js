@@ -122,13 +122,13 @@ export const catAppCaseStudy = {
         },
         {
           type: 'imageBand',
-          label: 'Web MVP · May 2026',
+          label: 'Web MVP, May 2026 → version two',
           variant: 'bare',
           media: {
             type: 'image',
             src: fluffyChumbStoryWebMvp,
             mobileSrc: fluffyChumbStoryWebMvpMobile,
-            alt: 'Web MVP screens: a week of injections on the cat’s photo with numbered marks, the evening injection form with dose, glucose, condition tags and a note, and a new mark added to the week',
+            alt: 'Before and after, three pairs: the web MVP tracker with a week of numbered marks on the cat’s photo next to the v2 Insulin tracker; the web MVP injection pop-up next to the v2 insulin log with the injection map; the web MVP week with a new mark next to the v2 History with glucose and insulin charts',
           },
         },
       ],
