@@ -62,7 +62,6 @@ export const cases = byId(en.cases, {
       'Редизайн core-продукта геймификации, который вырос из киберспортивных механик и вышел на широкую спортивную аудиторию.',
     metrics: ['+60% DAU', '+75% retention'],
     image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Интерфейс BetBoom PASS' },
-    mobileImage: { ...entryOf(en.cases, 'betboom-pass').mobileImage, alt: 'Мобильный интерфейс BetBoom PASS' },
   },
   'yandex-news': {
     title: 'Яндекс Новости Турция',
@@ -93,6 +92,15 @@ export const cases = byId(en.cases, {
       'Редизайн воронки регистрации онлайн-брокера: много трения и сильный отвал на шаге с персональными данными.',
     metrics: ['5 → 3 шага', 'Меньше трения'],
     image: { ...entryOf(en.cases, 'iquoto').image, alt: 'Экраны редизайна регистрации IQuoto' },
+  },
+  // TODO(p32b): RU copy from the editor; RU case page shows the EN text for now.
+  'betboom-gamification-hub': {
+    title: 'BetBoom — Gamification hub',
+    category: 'Геймификация / Приложение BetBoom',
+    description:
+      'Новый раздел приложения BetBoom, который собирает сезоны, задания и магазин. В брифе была страница сезонов — я предложила хаб.',
+    metrics: ['Приложение и веб', '4 крайних случая'],
+    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: задания, топ заданий и виджет сезона в профиле' },
   },
 });
 

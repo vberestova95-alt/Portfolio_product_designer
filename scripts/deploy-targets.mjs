@@ -26,6 +26,7 @@ const portfolio = {
    */
   routes: [
     'ai-projects',
+    'betboom-gamification-hub',
     'betboom-pass',
     'cat-app',
     'design-concepts',

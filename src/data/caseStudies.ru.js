@@ -1845,3 +1845,6 @@ export const dsPluginsCaseStudy = {
     },
   ],
 };
+
+// TODO(p32b): RU version of the case; until then the RU page shows the EN one.
+export { betboomGamificationHubCaseStudy } from './caseStudies.js';

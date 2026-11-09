@@ -3192,7 +3192,8 @@ ol.case-bullet-list li::before {
   object-position: center top;
 }
 
-.case-page--betboom-pass .case-hero {
+.case-page--betboom-pass .case-hero,
+.case-page--betboom-gamification-hub .case-hero {
   background: #000;
   /* Black ground: a tenth of white would read as grey, not as a lift. */
   --case-stat-plate: rgba(255, 255, 255, 0.06);
@@ -4059,6 +4060,656 @@ ol.case-bullet-list li::before {
   transform: rotate(180deg);
 }
 
+.case-collapsible__subtitle {
+  display: block;
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* A folded mini case: whole parts inside, so no height cap once open, and
+   anchored a little below the top edge when scrolled to. */
+.case-collapsible--rich {
+  scroll-margin-top: 24px;
+}
+
+.case-collapsible--rich.is-open .case-collapsible__body {
+  max-height: none;
+  gap: 20px;
+  padding-top: 24px;
+}
+
+/* Inside the white plate the nested plates go flat: no second card. */
+.case-collapsible--rich .case-content-block,
+.case-collapsible--rich .case-phone-row {
+  padding: 0;
+}
+
+.case-collapsible--rich .case-study-stack {
+  padding: 0;
+}
+
+.case-collapsible--rich .case-study-stack .case-content-block {
+  padding: 14px 0;
+}
+
+.case-collapsible--rich .case-study-stack .case-content-block + .case-content-block {
+  padding-top: 14px;
+}
+
+/*
+ * Caption under a picture: one line on what changed and why; a credit for
+ * someone else's work in the frame goes on its own line below.
+ */
+.case-media-caption {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.case-feature-media .case-media-caption {
+  padding: 0 4px;
+}
+
+.case-image-band .case-media-caption__credit,
+.case-media-caption__credit {
+  display: block;
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+/* Two options compared row by row; the last column (mine) carries the accent. */
+.case-compare {
+  display: grid;
+  gap: 16px;
+  padding: clamp(24px, 2.2vw, 36px);
+  border-radius: var(--r-card);
+  background: var(--paper);
+}
+
+.case-compare h3 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.case-compare__intro,
+.case-compare__note {
+  margin: 0;
+  max-width: 74ch;
+  color: var(--ink-soft);
+}
+
+.case-compare__scroll {
+  overflow-x: auto;
+}
+
+.case-compare table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.case-compare th,
+.case-compare td {
+  padding: 14px 16px 14px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.case-compare thead th {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-faint);
+}
+
+.case-compare tbody th {
+  width: 22%;
+  font-weight: 600;
+}
+
+.case-compare tbody td {
+  color: var(--ink-soft);
+}
+
+.case-compare tbody td:last-child {
+  color: var(--ink);
+}
+
+.case-compare thead th:last-child {
+  color: var(--blue);
+}
+
+/* Phone: each row becomes a small stack — label, then both options, each
+   named by its column, so neither is pushed off screen. */
+@media (max-width: 640px) {
+  .case-compare table,
+  .case-compare tbody,
+  .case-compare tr,
+  .case-compare th,
+  .case-compare td {
+    display: block;
+    width: auto;
+    min-width: 0;
+  }
+
+  .case-compare thead {
+    display: none;
+  }
+
+  .case-compare tr {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .case-compare tbody th,
+  .case-compare tbody td {
+    padding: 0;
+    border: 0;
+  }
+
+  .case-compare tbody th {
+    width: auto;
+    margin-bottom: 8px;
+  }
+
+  .case-compare tbody td + td {
+    margin-top: 8px;
+  }
+
+  .case-compare tbody td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .case-compare tbody td:last-child::before {
+    color: var(--blue);
+  }
+}
+
+/* A card leading on to a related case: copy on the left, a screen on the right. */
+.case-teaser {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 220px);
+  align-items: center;
+  gap: clamp(20px, 3vw, 48px);
+  padding: clamp(24px, 2.2vw, 36px);
+  border-radius: var(--r-card);
+  background: #000;
+  color: var(--inverse);
+  transition: transform 200ms ease;
+}
+
+.case-teaser:hover {
+  transform: translateY(-2px);
+}
+
+.case-teaser:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.case-teaser__copy {
+  display: grid;
+  gap: 12px;
+}
+
+.case-teaser__label {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--inverse-soft);
+}
+
+.case-teaser__title {
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.case-teaser__text {
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--inverse-soft);
+}
+
+.case-teaser__cta {
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+.case-teaser__media img {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 640px) {
+  .case-teaser {
+    grid-template-columns: minmax(0, 1fr) 110px;
+  }
+}
+
+/* Two clips or pictures side by side; stacked on a phone. */
+.case-media-pair__items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+}
+
+.case-media-pair__item {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .case-media-pair__items {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Whole phone screens in a row (a flow or a set of states). */
+.case-phone-row {
+  margin: 0;
+  padding: clamp(24px, 2.2vw, 36px);
+  border-radius: var(--r-card);
+  background: var(--paper);
+}
+
+.case-feature-media__label,
+.case-phone-row__label {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-faint);
+}
+
+.case-phone-row__items {
+  display: grid;
+  grid-template-columns: repeat(var(--phone-cols, 4), minmax(0, 220px));
+  justify-content: center;
+  gap: clamp(14px, 2vw, 28px);
+}
+
+.case-phone-row--1 { --phone-cols: 1; }
+.case-phone-row--2 { --phone-cols: 2; }
+.case-phone-row--3 { --phone-cols: 3; }
+
+.case-phone-row__item {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.case-phone-row__item img {
+  width: 100%;
+  height: auto;
+  cursor: zoom-in;
+  filter: drop-shadow(0 12px 24px rgba(13, 17, 23, 0.14));
+}
+
+.case-phone-row__item span {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+/* A hero animation or picture shown whole, on no plate of its own. */
+.case-hero__media--contain,
+.case-page--betboom-pass .case-hero__media--contain {
+  background: none;
+}
+
+/* The PASS cover is 1352×1220: the slot takes its proportions, so contain
+   leaves no empty bands above and below the screens. */
+.case-page--betboom-pass .case-hero__media--contain {
+  height: auto;
+  aspect-ratio: 1352 / 1220;
+}
+
+.case-hero__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.case-hero__media--contain img,
+.case-hero__media--contain video,
+.case-page--betboom-pass .case-hero__media--contain img {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* A clip in a phone row keeps the screen's own 44 px corner. */
+.case-phone-row__item video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 390 / 844;
+  object-fit: cover;
+  border-radius: calc(44 / 390 * 100%) / calc(44 / 844 * 100%);
+}
+
+/* A bento tile that shows its whole frame instead of a zoomed crop. Doubled
+   class: it has to win over the phone-width aspect ratios further down. */
+.bento-tile.bento-tile--whole .bento-tile__media {
+  aspect-ratio: auto;
+  background: none;
+}
+
+.case-page--betboom-pass .bento-tile--whole .bento-tile__media {
+  background: none;
+}
+
+.bento-tile--whole .bento-tile__media img,
+.bento-tile--whole .bento-tile__media video {
+  position: static;
+  width: 100%;
+  transform: none;
+}
+
+/*
+ * Showcase under the hero: the product as it is now. A phone on the left plays
+ * the clips; on the right, the steps with a bar that fills while each clip
+ * plays. Same black ground as the BetBoom hero.
+ */
+.case-showcase {
+  display: grid;
+  grid-template-columns: 45% minmax(0, 520px);
+  justify-content: center;
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+  margin-top: var(--gap-block);
+  padding: 40px clamp(24px, 4vw, 64px);
+  border-radius: var(--r-shell);
+  background: #000;
+  color: var(--inverse);
+}
+
+/*
+ * The clips are 1080×1440 with the phone in the middle on a transparent
+ * ground. The stage keeps only the phone (x 220–860, y 80–1366 of the clip)
+ * and the clip is placed so that box fills it: the empty margins never take
+ * room, and the phone is as tall as the stage.
+ */
+.case-showcase__stage {
+  position: relative;
+  justify-self: center;
+  height: min(760px, calc(100vh - 140px));
+  aspect-ratio: 640 / 1286;
+  overflow: hidden;
+}
+
+.case-showcase__frame {
+  position: absolute;
+  top: calc(-80 / 1286 * 100%);
+  left: calc(-220 / 640 * 100%);
+  width: calc(1080 / 640 * 100%);
+  max-width: none;
+  height: calc(1440 / 1286 * 100%);
+  object-fit: contain;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+}
+
+.case-showcase__frame.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.case-showcase__copy {
+  display: grid;
+  gap: 18px;
+}
+
+.case-showcase .section-label {
+  color: var(--inverse-soft);
+}
+
+.case-showcase h2 {
+  margin: 0;
+  font-size: clamp(28px, 2.9vw, 44px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.case-showcase__steps {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-showcase__steps button {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 0 16px;
+  border: 0;
+  border-bottom: 1px solid var(--inverse-line);
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.case-showcase__step-label {
+  font-size: 18px;
+  line-height: 1.2;
+  opacity: 0.56;
+  transition: opacity 160ms ease;
+}
+
+.case-showcase__step-caption {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--inverse-soft);
+  opacity: 0.56;
+}
+
+.case-showcase__steps .is-active .case-showcase__step-label,
+.case-showcase__steps .is-active .case-showcase__step-caption {
+  opacity: 1;
+}
+
+.case-showcase__progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 0;
+  height: 1px;
+  background: var(--inverse);
+}
+
+.case-showcase__steps .is-active .case-showcase__progress {
+  animation: case-showcase-progress var(--showcase-duration, 3.2s) linear forwards;
+}
+
+.case-showcase[data-paused] .case-showcase__steps .is-active .case-showcase__progress {
+  width: 100%;
+  animation: none;
+}
+
+@keyframes case-showcase-progress {
+  to {
+    width: 100%;
+  }
+}
+
+.case-showcase__steps button:focus-visible,
+.case-showcase__teaser:focus-visible {
+  outline: 2px solid var(--inverse);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.case-showcase__credit {
+  /* Two lines held for every frame, so a credit does not move the block. */
+  min-height: 3em;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--inverse-soft);
+}
+
+.case-showcase__teaser {
+  justify-self: start;
+  display: inline-flex;
+  gap: 10px;
+  padding: 12px 18px;
+  border: 1px solid var(--inverse-line);
+  border-radius: var(--r-chip);
+  font-size: 15px;
+  line-height: 1.3;
+  transition: background 160ms ease;
+}
+
+.case-showcase__teaser:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* On a phone the dots stand in for the list of steps. */
+.case-showcase__dots {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .case-showcase {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    border-radius: var(--r-card);
+  }
+
+  .case-showcase__stage {
+    height: min(600px, 62vh);
+  }
+
+  .case-phone-row__items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-phone-row--1 .case-phone-row__items {
+    grid-template-columns: minmax(0, 240px);
+  }
+}
+
+/* On a phone the steps stay short: only the active one shows its caption. */
+@media (max-width: 640px) {
+  .case-showcase {
+    padding: 28px 20px;
+  }
+
+  .case-showcase__steps button {
+    padding: 10px 0 12px;
+  }
+
+  .case-showcase__step-label {
+    font-size: 16px;
+  }
+
+  .case-showcase__steps li:not(.is-active) .case-showcase__step-caption {
+    display: none;
+  }
+
+  /* The one caption shown holds two lines, so the block keeps its height. */
+  .case-showcase__steps .is-active .case-showcase__step-caption {
+    min-height: calc(2 * 1.45em);
+  }
+
+  /*
+   * The whole block fits one phone screen: a big phone, then only the active
+   * step with its caption. The dots switch steps and name them for screen
+   * readers, so the hidden steps stay reachable.
+   */
+  .case-showcase {
+    gap: 16px;
+    padding: 20px 20px 24px;
+  }
+
+  .case-showcase__stage {
+    height: min(440px, 52vh);
+  }
+
+  .case-showcase__copy {
+    gap: 12px;
+  }
+
+  .case-showcase .section-label {
+    display: none;
+  }
+
+  .case-showcase h2 {
+    font-size: 26px;
+  }
+
+  .case-showcase__steps {
+    margin: 0;
+  }
+
+  .case-showcase__steps li:not(.is-active) {
+    display: none;
+  }
+
+  .case-showcase__steps button {
+    padding-top: 0;
+  }
+
+  .case-showcase__dots {
+    display: flex;
+    gap: 4px;
+    margin: -4px 0 0 -10px;
+  }
+
+  .case-showcase__dots button {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .case-showcase__dots button::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--inverse);
+    opacity: 0.32;
+    transition: opacity 160ms ease;
+  }
+
+  .case-showcase__dots button[aria-current='true']::before {
+    opacity: 1;
+  }
+
+  .case-showcase__dots button:focus-visible {
+    outline: 2px solid var(--inverse);
+    outline-offset: -2px;
+    border-radius: 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-showcase__frame {
+    transition: none;
+  }
+}
+
 .case-note-card--compact .case-bullet-list,
 .case-note-card--compact .case-rich-text {
   margin-top: 14px;
@@ -4415,6 +5066,11 @@ ol.case-bullet-list li::before {
   .bento-tile--third .bento-tile__media,
   .bento-tile--full .bento-tile__media {
     aspect-ratio: 16 / 10;
+  }
+
+  /* Whole phone frames go two to a row rather than one screen-tall each. */
+  .bento-tile--whole.bento-tile--third {
+    grid-column: span 3;
   }
 
   .hero-panel h1,
@@ -5010,9 +5666,11 @@ ol.case-bullet-list li::before {
   letter-spacing: -0.035em;
 }
 
+/* One row however many projects there are (five since the hub case). */
 .case-next__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   gap: 16px;
 }
 
@@ -5125,6 +5783,7 @@ ol.case-bullet-list li::before {
   }
 
   .case-next__grid {
+    grid-auto-flow: row;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
