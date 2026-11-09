@@ -63,7 +63,6 @@ const IMAGES = {
   'entry-web': { file: '27-entry-web-sidebar.png', radius: 24 },
   'desktop-before': { file: '28-desktop-before-slider-v3.png', width: 1920 },
   'desktop-after': { file: '29-desktop-after-slider-v3b.png', width: 1920 },
-  'task-detail': { file: '30-task-detail-v3.png', phone: true },
   'detail-reward-deadline': { file: '31-detail-reward-deadline-v3.png', width: 1800 },
   'detail-category-filters': { file: '32-category-filters-screen-v3.png', phone: true },
   'desktop-after-anim-poster': { file: '29-desktop-after-anim-v3-poster.png', width: 1600 },

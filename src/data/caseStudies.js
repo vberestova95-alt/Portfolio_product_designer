@@ -42,7 +42,6 @@ import betboomEntryMaxLevel from '../assets/cases/betboom/entry-max-level.webp';
 import betboomEntryWeb from '../assets/cases/betboom/entry-web.webp';
 import betboomDesktopBefore from '../assets/cases/betboom/desktop-before.webp';
 import betboomDesktopAfter from '../assets/cases/betboom/desktop-after.webp';
-import betboomTaskDetail from '../assets/cases/betboom/task-detail.webp';
 import betboomDetailRewardDeadline from '../assets/cases/betboom/detail-reward-deadline.webp';
 import betboomDetailCategoryFilters from '../assets/cases/betboom/detail-category-filters.webp';
 import betboomDetailSportEsports from '../assets/cases/betboom/detail-sport-esports.webp';
@@ -791,11 +790,6 @@ export const betboomPassCaseStudy = {
               alt: 'Category bar with Table tennis selected',
               caption: 'Pick a category',
             },
-            {
-              src: betboomTaskDetail,
-              alt: 'Task detail: hockey bets from 500 to 100 000 ₽, stake tiers 500, 1 200, 2 000 and 3 000 ₽ with token and XP rewards',
-              caption: 'Task detail: stake tiers and rewards',
-            },
           ],
           caption: betboomWidgetCredit,
         },
@@ -920,13 +914,6 @@ export const betboomPassCaseStudy = {
               variant: 'whole',
               caption: 'Filters moved to category, because that is how people actually searched.',
               credit: 'Category bar UI: a second designer.',
-            },
-            {
-              src: betboomTaskDetail,
-              alt: 'Task detail: hockey bets from 500 to 100 000 ₽, stake tiers 500, 1 200, 2 000 and 3 000 ₽ with token and XP rewards',
-              span: 'third',
-              variant: 'whole',
-              caption: 'Task detail: stake tiers and rewards.',
             },
             {
               src: betboomDetailPromoTask,

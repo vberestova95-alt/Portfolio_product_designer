@@ -4357,6 +4357,14 @@ ol.case-bullet-list li::before {
   background: none;
 }
 
+/* Two whole phone frames open the PASS card anatomy: centred as a pair, so
+   the row has no empty third. Below 900px they go two to a row anyway. */
+@media (min-width: 901px) {
+  .case-page--betboom-pass .bento-tile--whole.bento-tile--third:first-child {
+    grid-column: 2 / span 2;
+  }
+}
+
 .bento-tile--whole .bento-tile__media img,
 .bento-tile--whole .bento-tile__media video {
   position: static;
