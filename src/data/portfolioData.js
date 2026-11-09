@@ -5,12 +5,13 @@ import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png
 import iquotoDesktop from '../assets/cases/iquoto-desktop.png';
 import kokocMainDesktop from '../assets/cases/kokoc-main-desktop.png';
 import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.webp';
+import fluffyChumbHomeCover from '../assets/cases/fluffy-chumb-home-cover.webp';
 import dsPluginsCard from '../assets/cases/ds-plugins-card.webp';
 import designCringeCard from '../assets/cases/design-cringe-card.webp';
 import designCringeLandingShot from '../assets/cases/design-cringe-landing.jpg';
 import designCringeMobileShot from '../assets/cases/design-cringe-mobile-clean.jpg';
 import designCringeScoreShot from '../assets/cases/design-cringe-score.jpg';
-import yandexCoverScreens from '../assets/cases/yandex-cover-screens.png';
+import yandexCoverR16 from '../assets/cases/yandex-cover-r16.webp';
 import conceptBeauty from '../assets/concepts/beauty-commerce.png';
 import conceptEdtechTutorMarketplace from '../assets/concepts/edtech-tutor-marketplace.png';
 import conceptEyewearAr from '../assets/concepts/eyewear-ar.png';
@@ -112,7 +113,7 @@ export const cases = [
     metrics: ['Mobile-first', 'Concept validation'],
     surface: 'paper',
     image: {
-      src: yandexCoverScreens,
+      src: yandexCoverR16,
       alt: 'Three mobile screens from the Yandex News Turkey concept',
     },
     href: '/yandex-turkey',
@@ -127,8 +128,8 @@ export const cases = [
     metrics: ['MVP → v2', '12 beta testers'],
     surface: 'pet',
     image: {
-      src: fluffyChumbV2Cover,
-      alt: 'Two Fluffy Chumb screens: home with the pet’s trackers and today’s routine with tasks done, skipped and due now',
+      src: fluffyChumbHomeCover,
+      alt: 'Three Fluffy Chumb screens: all trackers, home with the pet’s trackers, and insulin with the week’s doses',
     },
     href: '/cat-app',
   },

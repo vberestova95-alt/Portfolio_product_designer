@@ -90,6 +90,13 @@ const RESET_HOLD_MS = 450;
 // Cycle: how long a cover holds, and the pause after a hover before the round resumes.
 const CYCLE_HOLD_MS = 3200;
 const CYCLE_RESUME_MS = 3000;
+// Pairs: from one turn to the next, and how the pieces follow one another in it.
+const PAIR_HOLD_MS = 7000;
+const PAIR_PIECE_STEP_MS = 130;
+const PAIR_BOARD_STEP_MS = 240;
+// A press held longer or carried further than this is not a tap.
+const PAIR_TAP_MS = 500;
+const PAIR_TAP_REACH = 10;
 
 // The cube turn is drawn in strips, each set at its own depth.
 const TURN_STRIPS = 28;
@@ -395,6 +402,17 @@ function buildMotionLayer(scene, w, h, dpr) {
  * one square — on the game's top row, just left of its first mosaic — cut to
  * it like the summary's plate.
  *
+ * `pairs` (nav; lists of indexes into `photos`, the home hero) takes turns on a
+ * phone: the mosaics show the first pair, and every so often, or on a 'mosaic:pair'
+ * event, or on a tap on the block's empty space, the pieces roll over into the
+ * next one. A mosaic's index is always the photo it shows, so the links laid
+ * over it (`onPlace` is called again) lead to the new case from the turn's first
+ * moment. `onPair(pair, byVisitor)` hears each turn; `pairBlock` is a selector
+ * for whatever, while on the page, keeps a tap from counting (an open menu). The
+ * count stands while the block is off screen, the tab is hidden, a finger is down
+ * or the keyboard is on the block; with reduced motion there is no count at all,
+ * and a turn lands at once. Past a phone `photos` work as usual.
+ *
  * `square` fixes a square's size in px, so blocks of different widths share
  * one grid size; the last column is then cut by the right edge, as the last
  * row is by the floor.
@@ -428,6 +446,9 @@ export function attachHeroMosaic(
     gameSlots = false,
     onSolve = null,
     badge = null,
+    pairs = null,
+    onPair = null,
+    pairBlock = '',
   },
 ) {
   if (!canvas) {
@@ -457,6 +478,14 @@ export function attachHeroMosaic(
   let cycleIndex = -1;
   let hovered = null; // nav: the mosaic under the pointer
   let lastHover = 0;
+  let pairIndex = 0; // pairs: the pair on the mosaics
+  let pairTimer = 0;
+  let pairLeft = PAIR_HOLD_MS; // what is left of the count while it stands
+  let pairCountFrom = 0;
+  let pairBusyUntil = 0;
+  let pressed = false;
+  let press = null; // where and how the last press began, until its click
+  let onScreen = true;
   let celebrating = false;
   let avoidBoxes = []; // the `avoid` elements' boxes, measured at layout
   const photoIndex = new Map();
@@ -487,7 +516,8 @@ export function attachHeroMosaic(
   // Matches the stylesheet's phone block (max-width: 640px) — the screen, so a
   // narrow card on a desktop keeps the desktop's squares.
   const compact = () => window.innerWidth <= 640;
-  const tileAt = (row, col) => tiles[row * cols + col];
+  const pairsHere = () => Boolean(pairs) && compact();
+  const tileAt =(row, col) => tiles[row * cols + col];
 
   function later(fn, ms) {
     const id = window.setTimeout(() => {
@@ -1212,6 +1242,131 @@ export function attachHeroMosaic(
     }, open ? NAV_TURN_MS * 0.6 : 0);
   }
 
+  /*
+   * Pairs: the mosaics move on to the next pair, piece by piece, mosaic after
+   * mosaic, and their links with them, at once. While the pieces are rolling a
+   * further turn waits, so a mosaic is never asked to change its mind mid-roll.
+   */
+  function turnPair(byVisitor = false) {
+    const next = pairs && (pairIndex + 1) % pairs.length;
+
+    if (
+      pairsHere() &&
+      boards.length &&
+      performance.now() >= pairBusyUntil &&
+      pairs[next].every((index) => navImages[index])
+    ) {
+      pairIndex = next;
+
+      boards.forEach((board, place) => {
+        board.index = pairs[pairIndex][place];
+        board.img = navImages[board.index];
+
+        if (board.assembled) {
+          board.cells.forEach((tile, slot) => {
+            setFace(tile, { kind: 'piece', board, slot, side: 0, img: board.img }, NAV_TURN_MS, {
+              delay: place * PAIR_BOARD_STEP_MS + slot * PAIR_PIECE_STEP_MS,
+              axis: slot % 2 ? 'x' : 'y',
+            });
+          });
+        }
+      });
+
+      if (!reduceMotion) {
+        pairBusyUntil =
+          performance.now() +
+          (boards.length - 1) * PAIR_BOARD_STEP_MS +
+          3 * PAIR_PIECE_STEP_MS +
+          NAV_TURN_MS;
+      }
+
+      placeLinks();
+      // The name that shows is the last mosaic's open one, as after assembling.
+      onActive?.(boards.filter((board) => board.assembled).pop()?.index ?? null);
+      onPair?.(pairIndex, byVisitor);
+    }
+
+    restartPairCount();
+  }
+
+  // Runs the count down to the next pair, or holds it where it is.
+  function countPair() {
+    const running =
+      pairsHere() &&
+      !reduceMotion &&
+      onScreen &&
+      !document.hidden &&
+      !pressed &&
+      !host.querySelector(':focus-visible');
+
+    if (running && !pairTimer) {
+      pairCountFrom = performance.now();
+      pairTimer = window.setTimeout(() => {
+        pairTimer = 0;
+        turnPair();
+      }, pairLeft);
+    } else if (!running && pairTimer) {
+      window.clearTimeout(pairTimer);
+      pairTimer = 0;
+      pairLeft = Math.max(0, pairLeft - (performance.now() - pairCountFrom));
+    }
+  }
+
+  function restartPairCount() {
+    window.clearTimeout(pairTimer);
+    pairTimer = 0;
+    pairLeft = PAIR_HOLD_MS;
+    countPair();
+  }
+
+  const hasSelection = () => {
+    const selection = window.getSelection();
+    return Boolean(selection) && !selection.isCollapsed;
+  };
+
+  // Taken as the finger lands: by the click, a menu may have closed, or the
+  // selection collapsed, because of this very tap.
+  function handlePairPress(event) {
+    pressed = true;
+    press = {
+      x: event.clientX,
+      y: event.clientY,
+      at: performance.now(),
+      blocked: hasSelection() || Boolean(pairBlock && document.querySelector(pairBlock)),
+    };
+    countPair();
+  }
+
+  function handlePairRelease() {
+    pressed = false;
+    countPair();
+  }
+
+  // A tap on the block's empty space: not a link, a button or the top row, and
+  // not the end of a drag or a long press. A swipe never gets here, as the
+  // browser sends no click after a scroll.
+  function handlePairClick(event) {
+    const from = press;
+    press = null;
+
+    if (
+      !from ||
+      from.blocked ||
+      hasSelection() ||
+      !pairsHere() ||
+      event.target.closest('a, button') ||
+      header?.contains(event.target) ||
+      performance.now() - from.at > PAIR_TAP_MS ||
+      Math.hypot(event.clientX - from.x, event.clientY - from.y) > PAIR_TAP_REACH
+    ) {
+      return;
+    }
+
+    turnPair(true);
+  }
+
+  const handlePairEvent = () => turnPair(true);
+
   // Left alone, one mosaic takes its next best move.
   function autoPlay() {
     if (!visible || celebrating || performance.now() - lastPlay < IDLE_BEFORE_AUTO_MS) {
@@ -1232,7 +1387,12 @@ export function attachHeroMosaic(
    * a staircase rather than sit in a bar.
    */
   function placeBoards(firstRow, headlineRow) {
-    const count = Math.min(maxBoards, Math.floor(cols / 2), nav ? photos.length : Infinity);
+    const shown = pairsHere() ? pairs[pairIndex] : null;
+    const count = Math.min(
+      shown ? shown.length : maxBoards,
+      Math.floor(cols / 2),
+      nav ? photos.length : Infinity,
+    );
 
     if (count < 1) {
       return [];
@@ -1260,7 +1420,7 @@ export function attachHeroMosaic(
       }
     }
 
-    return placed.map(({ row, col }, index) => makeBoard(row, col, index));
+    return placed.map(({ row, col }, index) => makeBoard(row, col, shown ? shown[index] : index));
   }
 
   // A mosaic on the four squares from (row, col).
@@ -1669,8 +1829,13 @@ export function attachHeroMosaic(
       }
     });
 
-    onPlace?.(boards.map((board) => ({ index: board.index, ...boardBox(board) })));
+    placeLinks();
+    countPair();
   }
+
+  const placeLinks = () => {
+    onPlace?.(boards.map((board) => ({ index: board.index, ...boardBox(board) })));
+  };
 
   /*
    * The summary's plate: the row of squares just above the one the headline
@@ -2184,11 +2349,14 @@ export function attachHeroMosaic(
 
   // Off screen, nothing swaps; a hidden tab stops the timers' work too.
   const visibilityObserver = new IntersectionObserver(([entry]) => {
+    onScreen = entry.isIntersecting;
     visible = entry.isIntersecting && !document.hidden;
+    countPair();
   });
 
   const handleVisibility = () => {
     visible = !document.hidden;
+    countPair();
   };
 
   // The letters are drawn once into a layer, so Manrope has to be in first.
@@ -2252,6 +2420,16 @@ export function attachHeroMosaic(
     canvas.addEventListener('mosaic:show', handleShow);
     canvas.addEventListener('mosaic:hide', handleHide);
 
+    if (pairs) {
+      canvas.addEventListener('mosaic:pair', handlePairEvent);
+      host.addEventListener('pointerdown', handlePairPress);
+      host.addEventListener('click', handlePairClick);
+      host.addEventListener('focusin', countPair);
+      host.addEventListener('focusout', countPair);
+      window.addEventListener('pointerup', handlePairRelease);
+      window.addEventListener('pointercancel', handlePairRelease);
+    }
+
     resizeObserver.observe(host);
     visibilityObserver.observe(host);
     document.addEventListener('visibilitychange', handleVisibility);
@@ -2265,6 +2443,7 @@ export function attachHeroMosaic(
     window.clearInterval(sceneTimer);
     window.clearInterval(autoTimer);
     window.clearInterval(cycleTimer);
+    window.clearTimeout(pairTimer);
     window.clearTimeout(resizeTimer);
     window.clearTimeout(peekTimer);
     pending.forEach((id) => window.clearTimeout(id));
@@ -2279,5 +2458,12 @@ export function attachHeroMosaic(
     canvas.removeEventListener('mosaic:celebrate', celebrate);
     canvas.removeEventListener('mosaic:show', handleShow);
     canvas.removeEventListener('mosaic:hide', handleHide);
+    canvas.removeEventListener('mosaic:pair', handlePairEvent);
+    host.removeEventListener('pointerdown', handlePairPress);
+    host.removeEventListener('click', handlePairClick);
+    host.removeEventListener('focusin', countPair);
+    host.removeEventListener('focusout', countPair);
+    window.removeEventListener('pointerup', handlePairRelease);
+    window.removeEventListener('pointercancel', handlePairRelease);
   };
 }

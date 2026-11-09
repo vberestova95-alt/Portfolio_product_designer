@@ -422,6 +422,15 @@ function projectLink(item) {
 
 // How many of the cases open from the hero: the first ones, the main client work.
 const HERO_CASES = 3;
+// The phone has room for two of them at a time, so its hero takes these pairs in
+// turn (lib/heroMosaic.js, `pairs`).
+const HERO_PAIRS = [
+  ['betboom-pass', 'yandex-news'],
+  ['cat-app', 'kokoc-group'],
+];
+const HERO_PAIRS_QUERY = '(max-width: 640px)';
+// What keeps a tap on the hero from turning the pair: a menu open over the page.
+const HERO_PAIR_BLOCK = '.contact-sheet, .nav-menu.is-open, .contact-menu.is-open';
 
 /*
  * About me, at the foot of the page: my film photos as the game's mosaics —
@@ -661,9 +670,22 @@ export function HomePage({
   const copyRef = useRef(null);
   const titleRef = useRef(null);
   // The main cases open from the hero's mosaics.
-  const heroLinks = cases.slice(0, HERO_CASES).map(projectLink);
+  // On a phone a case from outside them may join in, for the pairs; past a phone
+  // the mosaics stop at HERO_CASES.
+  const heroLinks = [
+    ...cases.slice(0, HERO_CASES),
+    ...cases.slice(HERO_CASES).filter((item) => HERO_PAIRS.flat().includes(item.id)),
+  ].map(projectLink);
+  const heroPairs = HERO_PAIRS.map((pair) =>
+    pair.map((id) => heroLinks.findIndex((link) => link.id === id)),
+  ).filter((pair) => pair.every((index) => index >= 0));
   const [heroBoxes, setHeroBoxes] = useState([]);
   const [heroActive, setHeroActive] = useState(null);
+  // The pair on the mosaics, and who turned it: nobody yet, the visitor or the count.
+  const [heroTurn, setHeroTurn] = useState({ pair: 0, by: null });
+  const heroPairsHere = useMatchMedia(HERO_PAIRS_QUERY) && heroPairs.length > 1 && heroBoxes.length > 0;
+  const heroTitles = (indexes) => indexes.map((index) => heroLinks[index].title).join(', ');
+  const nextPair = heroPairs[(heroTurn.pair + 1) % heroPairs.length] ?? [];
 
   useEffect(() => attachHeroObject(heroRef.current, objectRef.current), []);
   const showCube = useMatchMedia(CASE_CUBE_QUERY, SHOW_CASE_CUBE);
@@ -686,12 +708,16 @@ export function HomePage({
         anchor: titleRef.current,
         header: topRef.current,
         emptySquares: EMPTY_SQUARES,
+        maxBoards: HERO_CASES,
         nav: true,
         keepGround: true,
         gameSlots: true,
         cycle: true,
         onPlace: setHeroBoxes,
         onActive: setHeroActive,
+        pairs: heroPairs.length > 1 ? heroPairs : null,
+        onPair: (pair, byVisitor) => setHeroTurn({ pair, by: byVisitor ? 'visitor' : 'count' }),
+        pairBlock: HERO_PAIR_BLOCK,
       }),
     [],
   );
@@ -735,7 +761,35 @@ export function HomePage({
             canvasRef={mosaicRef}
             label={text.heroCasesLabel}
             active={heroActive}
+            turned={heroTurn.by !== null}
           />
+
+          {/*
+            * The pairs for a keyboard or a screen reader: out of sight until
+            * focused, then under the first mosaic. A pair the visitor asked for is
+            * read out; the count's own turns are not, every few seconds.
+            */}
+          {heroPairsHere ? (
+            <>
+              <button
+                className="hero-panel__next"
+                type="button"
+                style={{ left: heroBoxes[0].x + 8, top: heroBoxes[0].y + heroBoxes[0].h + 8 }}
+                onClick={() => mosaicRef.current?.dispatchEvent(new CustomEvent('mosaic:pair'))}
+              >
+                {text.heroPairNext}
+                <span className="visually-hidden">
+                  : {heroTitles(nextPair.slice(0, heroBoxes.length))}
+                </span>
+              </button>
+              <p className="visually-hidden" aria-live={heroTurn.by === 'count' ? 'off' : 'polite'}>
+                {text.heroPairShown.replace(
+                  '{titles}',
+                  heroTitles(heroBoxes.map((box) => box.index)),
+                )}
+              </p>
+            </>
+          ) : null}
 
           <div className="hero-panel__plate" ref={copyRef}>
             {profile.summary.map((paragraph) => (

@@ -6,6 +6,7 @@
 import * as en from './portfolioData.js';
 // The one asset kept here: the Fluffy Chumb preview has Russian screens.
 import fluffyChumbV2CoverRu from '../assets/cases/fluffy-chumb-v2-cover.ru.webp';
+import fluffyChumbHomeCoverRu from '../assets/cases/fluffy-chumb-home-cover.ru.webp';
 
 function byIndex(list, texts) {
   return list.map((item, index) => ({ ...item, ...texts[index] }));
@@ -83,7 +84,7 @@ export const cases = byId(en.cases, {
     description:
       'От трекера инсулина для одного кота — к приложению, где семья и пет-ситтер настраивают свои трекеры и делят дела на день. Пересобрано после интервью с пользователями MVP.',
     metrics: ['MVP → v2', '12 бета-тестеров'],
-    image: { ...entryOf(en.cases, 'cat-app').image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
+    image: { ...entryOf(en.cases, 'cat-app').image, src: fluffyChumbHomeCoverRu, alt: 'Три экрана Fluffy Chumb: все трекеры, главная с трекерами питомца и инсулин с дозами за неделю' },
   },
   iquoto: {
     category: 'Финтех / Регистрация',

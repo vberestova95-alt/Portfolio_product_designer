@@ -437,6 +437,42 @@ html[lang='ru'] .error-page__visual > span {
 }
 
 /*
+ * The next pair of cases, for a keyboard or a screen reader (HomePage.jsx): a
+ * chip like the mosaics' own while focused, out of sight otherwise.
+ */
+.hero-panel__next {
+  position: absolute;
+  z-index: 6;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--inverse-line);
+  border-radius: 12px;
+  background: rgba(6, 8, 13, 0.82);
+  color: var(--inverse);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.hero-panel__next:focus-visible {
+  outline: 2px solid var(--inverse);
+  outline-offset: 2px;
+}
+
+.hero-panel__next:not(:focus-visible) {
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip-path: inset(50%);
+}
+
+/*
  * About me, at the foot of the page: a black card like the hero, the game's
  * mosaics along its top right and the copy in its bottom left.
  */
@@ -2033,6 +2069,23 @@ html[lang='ru'] .error-page__visual > span {
   .mosaic-link__label {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* After a turn to another case the new name comes in as the pieces land. */
+.mosaic-links--turned .mosaic-link__label {
+  animation: mosaic-link-name 320ms ease 700ms backwards;
+}
+
+@keyframes mosaic-link-name {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mosaic-links--turned .mosaic-link__label {
+    animation: none;
   }
 }
 
@@ -5317,6 +5370,8 @@ ol.case-bullet-list li::before {
     padding-bottom: var(--hero-pad-bottom);
     border: 0;
     border-radius: 0 0 22px 22px;
+    /* A tap on the panel turns the mosaics (HomePage.jsx): no grey flash over it. */
+    -webkit-tap-highlight-color: transparent;
   }
 
   /*

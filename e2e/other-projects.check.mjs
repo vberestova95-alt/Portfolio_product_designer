@@ -10,6 +10,7 @@
  *                                    (recipe in e2e/ru-media.check.mjs); RU runs only if set
  *   BASELINE=http://localhost:4175   optional: a build of the previous commit; the home
  *                                    page card styles are compared against it
+ *   BASELINE_SKIP=cat-app,yandex-news  cards left out of that comparison (covers changed on purpose)
  *   SHOTS=<dir>                      screenshots (default e2e/.shots)
  */
 import { chromium } from 'playwright';
@@ -21,6 +22,8 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const BASE = process.env.BASE ?? 'http://localhost:4173';
 const RU_BASE = process.env.RU_BASE;
 const BASELINE = process.env.BASELINE;
+// Cards whose cover changed on purpose since the baseline, e.g. BASELINE_SKIP=cat-app,yandex-news
+const BASELINE_SKIP = (process.env.BASELINE_SKIP ?? '').split(',').filter(Boolean);
 const SHOTS = process.env.SHOTS ?? path.join(here, '.shots');
 mkdirSync(SHOTS, { recursive: true });
 
@@ -187,16 +190,17 @@ async function homeCardStyles(browser, base, viewport) {
   const page = await context.newPage();
   await page.goto(base + '/', { waitUntil: 'load' });
   await page.waitForTimeout(1500);
-  const dump = await page.evaluate((props) => {
+  const dump = await page.evaluate(([props, skip]) => {
     const out = [];
     document.querySelectorAll('.work-card').forEach((card, i) => {
+      if (skip.some((id) => card.classList.contains(`work-card--${id}`))) return;
       [card, ...card.querySelectorAll('*')].forEach((el, j) => {
         const cs = getComputedStyle(el);
         out.push(`${i}.${j} ${el.tagName}.${[...el.classList].join('.')} ` + props.map((p) => `${p}=${cs.getPropertyValue(p)}`).join(';'));
       });
     });
     return out;
-  }, CARD_PROPS);
+  }, [CARD_PROPS, BASELINE_SKIP]);
   const stack = page.locator('.case-cube, .work-stack').first();
   await stack.scrollIntoViewIfNeeded();
   await page.waitForTimeout(500);
