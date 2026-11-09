@@ -4317,6 +4317,13 @@ ol.case-bullet-list li::before {
   background: none;
 }
 
+/* The PASS cover is 1352×1220: the slot takes its proportions, so contain
+   leaves no empty bands above and below the screens. */
+.case-page--betboom-pass .case-hero__media--contain {
+  height: auto;
+  aspect-ratio: 1352 / 1220;
+}
+
 .case-hero__media video {
   width: 100%;
   height: 100%;

@@ -27,9 +27,9 @@ const PHONE = { width: 390, radius: 44 }
 
 // slot → source file and how to treat it. Prefer -v2 where the designer made one.
 const IMAGES = {
-  cover: { file: '06-cover-v3.png', width: 2704 },
+  cover: { file: '06-cover-v4.png' },
   // Poster of the cover animation: its first frame, transparent around the screens.
-  'cover-anim-poster': { file: '06-cover-anim-v3-poster.png' },
+  'cover-anim-poster': { file: '06-cover-anim-v4-poster.png' },
   // The season widget frame; the showcase itself is animated now, it stays
   // as the picture of the next case teaser.
   'showcase-entry-point': { file: '05-showcase-entry-point.png', phone: true },
@@ -101,8 +101,8 @@ const CLIPS = {
  * (Safari) — and re-encoding with ffmpeg here would drop it.
  */
 const COPIES = {
-  'cover-anim.webm': '06-cover-anim-v3.webm',
-  'cover-anim.mov': '06-cover-anim-v3.mov',
+  'cover-anim.webm': '06-cover-anim-v4.webm',
+  'cover-anim.mov': '06-cover-anim-v4.mov',
   'showcase-tasks.webm': 'showcase-tasks-anim-v3.webm',
   'showcase-tasks.mov': 'showcase-tasks-anim-v3.mov',
   'showcase-widget.webm': 'showcase-widget-anim-v3.webm',
