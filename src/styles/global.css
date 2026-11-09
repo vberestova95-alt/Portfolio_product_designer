@@ -3537,6 +3537,16 @@ ol.case-bullet-list li::before {
 }
 
 /*
+ * Stacked, the intro does not travel with the chapter, so the link stood
+ * between every title and its text. Once, in the first chapter, is enough.
+ */
+@media (max-width: 768px) {
+  .case-study-section:not(:first-child) .case-section-back {
+    display: none;
+  }
+}
+
+/*
  * The whole intro travels, not just the link. Sticking the link on its own made
  * it slide up over the chapter title on every scroll.
  */
