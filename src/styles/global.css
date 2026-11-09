@@ -5396,9 +5396,11 @@ ol.case-bullet-list li::before {
   letter-spacing: -0.035em;
 }
 
+/* One row however many projects there are (five since the hub case). */
 .case-next__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   gap: 16px;
 }
 
@@ -5511,6 +5513,7 @@ ol.case-bullet-list li::before {
   }
 
   .case-next__grid {
+    grid-auto-flow: row;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
