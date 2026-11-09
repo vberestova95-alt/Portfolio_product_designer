@@ -2,9 +2,9 @@
  * Builds the Fluffy Chumb (cat app) case images from screen exports.
  *
  *   node scripts/build-case-frames.mjs --lang en|ru
- *        [--only v2-screens,v2-cover,mvp,features,story,home-cover] [--draft] [--out <dir>] [--scale 1]
+ *        [--only v2-screens,v2-cover,features,story,home-cover] [--draft] [--out <dir>] [--scale 1]
  *
- * With no --only it builds v2-screens, v2-cover, mvp and the feature frames;
+ * With no --only it builds v2-screens, v2-cover and the feature frames;
  * home-cover (the case card on the home page) and the story bands are built
  * only when asked for.
  *
@@ -15,13 +15,6 @@
  *     The node behind each slot is listed in SCREENS below; to swap a screen,
  *     export its node with download_assets (png, scale 2) into <slot>.png and
  *     update the node-id here.
- * The MVP band is cut from the existing pet-tracker-cover-screens.png: its three
- * screens are found by their alpha and laid out again whole, with a hairline and
- * a shadow so the light screens do not melt into a light page. The third screen
- * is a Safari screenshot: it is cut under the app's tab bar, losing the
- * browser's own bar, and its bottom corners are rounded again. That screen is
- * in Russian, so EN swaps it for fluffy-chumb/en/mvp-tracker.png (MVP.replacements)
- * and RU keeps it, writing the `.ru` band.
  *
  * Output goes next to the old files under new names (feature frames into
  * fluffy-chumb/features/); RU files get a `.ru` suffix.
@@ -232,26 +225,6 @@ STORY['story-web-mvp-after'] = beforeAfter('fluffy-chumb/story/web-mvp-after', [
 ])
 Object.assign(LAYOUTS, STORY)
 
-const MVP = {
-  source: path.join(casesDir, 'pet-tracker-cover-screens.png'),
-  file: 'pet-tracker-mvp-screens',
-  gap: 48,
-  padding: 40,
-  hairline: { width: 2, opacity: 0.12 },
-  shadow: { offsetY: 12, blur: 18, opacity: 0.12 },
-  // Per screen, left to right: `bottom` is the last source row to keep (y in
-  // pet-tracker-cover-screens.png), `radius` the corner it is rounded with.
-  trims: [null, null, { bottom: 1389, radius: 18 }],
-  // Per language, screens that replace the cut ones (null keeps the cut). The
-  // cut tracker shows the Russian «Лютик's Tracker · Винсувет», which stays on
-  // the RU page; EN gets the same screen in English (a ×2 web screenshot,
-  // square and opaque), fitted to the cut screen's width and rounded the same.
-  replacements: {
-    en: [null, null, { file: 'mvp-tracker.png', radius: 18 }],
-    ru: [null, null, null],
-  },
-}
-
 function parseArgs(argv) {
   const args = { lang: 'en', only: null, draft: false, out: casesDir, scale: 1 }
   for (let i = 0; i < argv.length; i += 1) {
@@ -400,114 +373,11 @@ async function buildLayout(name, args) {
   console.log(`${path.relative(root, target)}  ${info.width}×${info.height}  ${Math.round(info.size / 1024)} KB`)
 }
 
-// Finds the screens in the old MVP band by their opaque columns.
-async function cutMvpScreens() {
-  const { data, info } = await sharp(MVP.source).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
-  const alpha = (x, y) => data[(y * info.width + x) * 4 + 3]
-  const opaqueColumn = (x) => {
-    for (let y = 0; y < info.height; y += 4) if (alpha(x, y) > 128) return true
-    return false
-  }
-  const spans = []
-  let start = -1
-  for (let x = 0; x <= info.width; x += 1) {
-    const opaque = x < info.width && opaqueColumn(x)
-    if (opaque && start < 0) start = x
-    if (!opaque && start >= 0) {
-      spans.push([start, x - 1])
-      start = -1
-    }
-  }
-  return Promise.all(
-    spans.map(async ([left, right]) => {
-      let top = info.height
-      let bottom = 0
-      for (let y = 0; y < info.height; y += 1) {
-        for (let x = left; x <= right; x += 2) {
-          if (alpha(x, y) > 0) {
-            top = Math.min(top, y)
-            bottom = Math.max(bottom, y)
-            break
-          }
-        }
-      }
-      const region = { left, top, width: right - left + 1, height: bottom - top + 1 }
-      return { region, image: await sharp(MVP.source).extract(region).png().toBuffer() }
-    }),
-  )
-}
-
-async function trimMvpScreen(screen, trim) {
-  if (!trim) return screen
-  const height = trim.bottom - screen.region.top + 1
-  const { width } = screen.region
-  const image = await sharp(screen.image)
-    .extract({ left: 0, top: 0, width, height })
-    .composite([{ input: roundedMask(width, height, trim.radius), blend: 'dest-in' }])
-    .png()
-    .toBuffer()
-  return { region: { ...screen.region, height }, image }
-}
-
-async function replaceMvpScreen(screen, { file, radius }, lang) {
-  const { width } = screen.region
-  const resized = await sharp(path.join(sourceDir, lang, file)).resize({ width }).png().toBuffer()
-  const { height } = await sharp(resized).metadata()
-  const image = await sharp(resized)
-    .composite([{ input: roundedMask(width, height, radius), blend: 'dest-in' }])
-    .png()
-    .toBuffer()
-  return { region: { ...screen.region, height }, image }
-}
-
-/*
- * Two takes on the same three screens: a row for wide screens, and a column
- * (`.mobile`) that a phone gets instead, so the screens keep a readable size.
- */
-async function buildMvp(args) {
-  const cut = await cutMvpScreens()
-  if (cut.length !== 3) throw new Error(`MVP band: expected 3 screens, found ${cut.length}`)
-  const screens = await Promise.all(
-    cut.map((screen, i) => {
-      const replacement = MVP.replacements[args.lang][i]
-      return replacement ? replaceMvpScreen(screen, replacement, args.lang) : trimMvpScreen(screen, MVP.trims[i])
-    }),
-  )
-  const { padding, gap } = MVP
-  const suffix = args.lang === 'ru' ? '.ru' : ''
-
-  const rowHeight = Math.max(...screens.map((screen) => screen.region.height))
-  let x = padding
-  const row = screens.map((screen) => {
-    const item = { image: screen.image, x, y: padding }
-    x += screen.region.width + gap
-    return item
-  })
-  await writeMvp(args, `${MVP.file}${suffix}`, [x - gap + padding, rowHeight + padding * 2], row)
-
-  const columnWidth = Math.max(...screens.map((screen) => screen.region.width))
-  let y = padding
-  const column = screens.map((screen) => {
-    const item = { image: screen.image, x: padding + Math.round((columnWidth - screen.region.width) / 2), y }
-    y += screen.region.height + gap
-    return item
-  })
-  await writeMvp(args, `${MVP.file}.mobile${suffix}`, [columnWidth + padding * 2, y - gap + padding], column)
-}
-
-async function writeMvp(args, file, size, items) {
-  const png = await compose(size, items, { shadow: MVP.shadow, hairline: MVP.hairline })
-  const target = path.join(args.out, `${file}.webp`)
-  const info = await sharp(png).webp({ quality: 88, alphaQuality: 90, effort: 6 }).toFile(target)
-  console.log(`${path.relative(root, target)}  ${info.width}×${info.height}  ${Math.round(info.size / 1024)} KB`)
-}
-
 const args = parseArgs(process.argv.slice(2))
 await mkdir(args.out, { recursive: true })
-const targets = args.only ?? ['v2-screens', 'v2-cover', 'mvp', 'features']
+const targets = args.only ?? ['v2-screens', 'v2-cover', 'features']
 for (const name of targets) {
-  if (name === 'mvp') await buildMvp(args)
-  else if (name === 'features') for (const feature of Object.keys(FEATURES)) await buildLayout(feature, args)
+  if (name === 'features') for (const feature of Object.keys(FEATURES)) await buildLayout(feature, args)
   else if (name === 'story') for (const band of Object.keys(STORY)) await buildLayout(band, args)
   else if (LAYOUTS[name]) await buildLayout(name, args)
   else throw new Error(`Unknown target: ${name}`)
