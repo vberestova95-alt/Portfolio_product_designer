@@ -68,9 +68,14 @@ const SCREENS = {
   // fully open over the map, status bar as recorded. Once Fluffy Chumb fixes
   // Final, export 387:9931 / 387:27190 into check-dose.png instead.
   'check-dose': {},
-  // Not now: Final is being fixed, not exported yet.
-  // 'not-now': { en: '374:16898', ru: '374:18735' },
-  // 'not-now-skip': { en: '374:16970', ru: '374:18807' },
+  // Step 5 band: stills from the app recording by Fluffy Chumb (R2·193,
+  // docs/review/cat-app-2026-11/v2-band-stills), 9:41 status bar: the Not now
+  // sheet, the same sheet with a skip reason picked, and today's routine with
+  // no «Done by» marks. Final 374:16898 / 374:16970 (RU 374:18735 / 374:18807)
+  // can replace the sheets once it is fixed.
+  'not-now': {},
+  'not-now-skip': {},
+  'routine-recorded': {},
 }
 
 // Slots read from en/ for both languages (the web MVP is English only).
@@ -193,9 +198,8 @@ const storyMobile = (file, slots) => {
 const STORY_BANDS = {
   // Step 3: shared care, shown with v2 frames.
   'story-shared': ['family-invite', 'family', 'history'],
-  // Step 5: version two. Routine, Not now, skip and the dose check wait for
-  // Fluffy Chumb to fix Final: build with --draft for a preview only.
-  'story-v2': ['glucose', 'routine', 'not-now', 'not-now-skip', 'map-site-marked', 'map-adding-site', 'check-dose'],
+  // Step 5: version two.
+  'story-v2': ['glucose', 'routine-recorded', 'not-now', 'not-now-skip', 'map-site-marked', 'map-adding-site', 'check-dose'],
 }
 const STORY = {}
 for (const [name, slots] of Object.entries(STORY_BANDS)) {
