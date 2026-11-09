@@ -1097,8 +1097,7 @@ export const betboomPassCaseStudy = {
                 {
                   type: 'text',
                   heading: 'Who did what',
-                  // TODO(p32): the second designer's name (with consent) and my part of the entry point are open.
-                  paragraphs: ['The season widget UI is by a second designer.'],
+                  paragraphs: ['I designed the entry point on my own: research, flows and the widget.'],
                 },
                 {
                   type: 'text',
@@ -1141,7 +1140,7 @@ export const betboomPassCaseStudy = {
                   caption: 'Max level',
                 },
               ],
-              caption: 'Season states in the BetBoom app profile, dark theme. Season widget UI by a second designer.',
+              caption: 'Season states in the BetBoom app profile, dark theme.',
             },
             {
               type: 'featureMedia',
