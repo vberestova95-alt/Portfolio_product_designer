@@ -116,20 +116,6 @@
   letter-spacing: -0.04em;
 }
 
-.ai-numbers__group {
-  display: grid;
-  gap: 14px;
-}
-
-.ai-numbers__label {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.4;
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--inverse-soft);
-}
-
 /* The hero grid sits on the panel's floor in a case; here it is just a row. */
 .ai-numbers .case-stat-grid--hero {
   margin-top: 0;
@@ -139,15 +125,46 @@
   color: var(--inverse);
 }
 
-/* Six plates across only where they have the room; three per row below that. */
-@media (min-width: 901px) and (max-width: 1279px) {
+/*
+ * Five plates: one row where they have the room. Below that, three and two on
+ * a six-column grid — the two left over take half the row each, so both rows
+ * run edge to edge and none of the plates hangs on its own. A phone keeps the
+ * case hero's own two-by-two with the fifth across the row.
+ */
+@media (min-width: 641px) and (max-width: 1279px) {
   .ai-numbers .case-stat-grid--hero {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-auto-flow: row;
+  }
+
+  .ai-numbers .case-stat-grid--hero .case-stat-card {
+    grid-column: span 2;
+  }
+
+  .ai-numbers .case-stat-grid--hero .case-stat-card:nth-child(3n + 1):nth-last-child(2),
+  .ai-numbers .case-stat-grid--hero .case-stat-card:nth-child(3n + 2):last-child {
+    grid-column: span 3;
+  }
+
+  .ai-numbers .case-stat-grid--hero .case-stat-card:nth-child(3n + 1):last-child {
+    grid-column: 1 / -1;
   }
 }
 
 /* ---------- Work ---------- */
+
+/*
+ * The work is the end of the page. The stack's run-out (16vh, 10vh on a phone)
+ * and the section's bottom gap stood as an empty strip over the footer, which
+ * brings its own top gap — that one is left, the same as between the blocks.
+ */
+.ai-work.section {
+  padding-bottom: 0;
+}
+
+.ai-work .work-stack {
+  padding-bottom: 0;
+}
 
 .ai-work__group + .ai-work__group {
   margin-top: var(--gap-section);

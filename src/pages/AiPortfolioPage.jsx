@@ -118,20 +118,15 @@ export function AiPortfolioPage({ page, aiWork, profile, standalone = false }) {
             {numbers.title}
           </h2>
 
-          {numbers.groups.map((group) => (
-            <div key={group.label} className="ai-numbers__group">
-              <p className="ai-numbers__label">{group.label}</p>
-              {/* The case hero's metric plates; `source` is a note for us, not shown. */}
-              <div className="case-stat-grid case-stat-grid--hero ai-numbers__grid">
-                {group.items.map((item) => (
-                  <div key={`${item.value}-${item.label}`} className="case-stat-card">
-                    <strong>{item.value}</strong>
-                    <span>{item.label}</span>
-                  </div>
-                ))}
+          {/* The case hero's metric plates; `source` is a note for us, not shown. */}
+          <div className="case-stat-grid case-stat-grid--hero ai-numbers__grid">
+            {numbers.items.map((item) => (
+              <div key={`${item.value}-${item.label}`} className="case-stat-card">
+                <strong>{item.value}</strong>
+                <span>{item.label}</span>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
 
         <section className="section ai-work" aria-label={cases.title}>

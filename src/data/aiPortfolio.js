@@ -47,45 +47,35 @@ export const aiPortfolio = {
 
   numbers: {
     title: 'In numbers',
-    groups: [
+    items: [
       {
-        label: 'AI practice',
-        items: [
-          {
-            value: '6',
-            label: 'products built with AI, 3 of them live',
-            source:
-              'Report «Мой опыт с AI-инструментами» (22.10.2026), «Коротко» and «Продукты, собранные с AI». Fluffy Chumb (7th) not counted — see open questions.',
-          },
-          {
-            value: '5',
-            label: 'agents working in parallel at peak',
-            source:
-              'Report 22.10.2026, «Сколько агентов работает одновременно»: max 5 (1 main session + 4 subagents), 13.10.2026; usually 1–2.',
-          },
-          {
-            value: '~24 h',
-            label: 'from first commit to a live site',
-            source:
-              'Report 22.10.2026, «Время до первого деплоя»: vberestova.com 01.08 01:00 → 02.08 00:48; median of 3 projects — 24 h.',
-          },
-          {
-            value: '~4 days',
-            label: 'to ship a product with a backend',
-            source:
-              'Report 22.10.2026, «Время до первого деплоя»: Cringe-meter 16.07 15:37 (plan) → 20.07 23:55 (AWS Lambda), ~4.3 days.',
-          },
-          {
-            value: '550+',
-            label: 'automated tests across 3 Figma plugins',
-            source: 'portfolioData.js aiProjects ds-plugins metrics; caseStudies.js DS Plugins stats and «Tests as a safety net».',
-          },
-          {
-            value: '12',
-            label: 'beta testers signed up for Fluffy Chumb',
-            source: 'portfolioData.js aiProjects cat-app metrics; caseStudies.js Cat App stats «12 beta testers from the landing page».',
-          },
-        ],
+        value: '6',
+        label: 'products built with AI, 3 of them live',
+        source:
+          'Report «Мой опыт с AI-инструментами» (22.10.2026), «Коротко» and «Продукты, собранные с AI». Fluffy Chumb (7th) not counted — see open questions.',
+      },
+      {
+        value: '5',
+        label: 'agents working in parallel at peak',
+        source:
+          'Report 22.10.2026, «Сколько агентов работает одновременно»: max 5 (1 main session + 4 subagents), 13.10.2026; usually 1–2.',
+      },
+      {
+        value: '~24 h',
+        label: 'from first commit to a live site',
+        source:
+          'Report 22.10.2026, «Время до первого деплоя»: vberestova.com 01.08 01:00 → 02.08 00:48; median of 3 projects — 24 h.',
+      },
+      {
+        value: '~4 days',
+        label: 'to ship a product with a backend',
+        source:
+          'Report 22.10.2026, «Время до первого деплоя»: Cringe-meter 16.07 15:37 (plan) → 20.07 23:55 (AWS Lambda), ~4.3 days.',
+      },
+      {
+        value: '550+',
+        label: 'automated tests across 3 Figma plugins',
+        source: 'portfolioData.js aiProjects ds-plugins metrics; caseStudies.js DS Plugins stats and «Tests as a safety net».',
       },
     ],
   },
