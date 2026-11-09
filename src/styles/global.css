@@ -4243,7 +4243,7 @@ ol.case-bullet-list li::before {
   animation: case-showcase-progress 3200ms linear forwards;
 }
 
-.case-showcase.is-paused .case-showcase__steps .is-active .case-showcase__progress {
+.case-showcase[data-paused] .case-showcase__steps .is-active .case-showcase__progress {
   width: 100%;
   animation: none;
 }

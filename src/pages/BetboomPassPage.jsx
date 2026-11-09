@@ -527,8 +527,14 @@ function CaseShowcase({ showcase }) {
   const frame = showcase.frames[active];
 
   return (
+    /*
+     * The class list stays fixed: reveal.js adds `is-revealed` to it straight
+     * in the DOM, and a className React recomputes on pause would drop it and
+     * hide the whole block again. Pause lives in a data attribute instead.
+     */
     <section
-      className={`case-showcase${paused || reduceMotion ? ' is-paused' : ''}`}
+      className="case-showcase"
+      data-paused={paused || reduceMotion ? '' : undefined}
       data-reveal
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
