@@ -1,36 +1,33 @@
 /**
- * Genetic testing lab website: audit and redesign — AI-project case, shown only on the /ai-portfolio landing.
+ * Genetic testing lab website audit — AI-project case, shown only on the /ai-portfolio landing.
  * Same object shape as spotlessCase.js; sections follow the case frame from the case guide, without
- * Key flows (the concepts are one short block in Decisions).
+ * Key flows. Audit and recommendations only: the concepts and the redesign are left out on purpose.
  * Under NDA: the client is never named. Frames are Figma exports with the name, logo, phones,
  * address, city, licence number, prices, people's photos and publications masked on the raster.
  * Copy: docs/review/genetics-case/copy.md. `caption` on featureMedia is stored for the frame
  * captions that are still in development; the page does not render it yet.
  */
-import geneticsAfter from '../assets/cases/genetics/genetics-after.webp';
 import geneticsBacklog from '../assets/cases/genetics/genetics-audit-backlog.webp';
 import geneticsContrast from '../assets/cases/genetics/genetics-audit-contrast.webp';
 import geneticsMeasurements from '../assets/cases/genetics/genetics-audit-measurements.webp';
 import geneticsRedundant from '../assets/cases/genetics/genetics-audit-redundant.webp';
 import geneticsUsability from '../assets/cases/genetics/genetics-audit-usability.webp';
 import geneticsVerdict from '../assets/cases/genetics/genetics-audit-verdict.webp';
-import geneticsBefore from '../assets/cases/genetics/genetics-before.webp';
 import geneticsBrandbook from '../assets/cases/genetics/genetics-brandbook-laws.webp';
 import geneticsCardImage from '../assets/cases/genetics/genetics-card.webp';
 import geneticsHero from '../assets/cases/genetics/genetics-hero.webp';
-import geneticsUikit from '../assets/cases/genetics/genetics-uikit.webp';
 
 export const geneticsCaseStudy = {
   slug: 'genetics-audit',
   backHref: '/ai-portfolio',
   hero: {
-    title: 'Genetic Testing Lab Website',
+    title: 'Genetic Testing Lab Website Audit',
     description:
-      'A genetic testing laboratory had a strong concept for its new website and a draft that did not hold together. I audited the draft with an AI agent, measured where the design system broke, and turned the findings into a brand book, a UI kit and a 24-task backlog.',
-    meta: 'Client project under NDA / Design audit and redesign',
+      'A genetic testing laboratory had a strong concept for its new website and a draft that did not hold together. I audited the draft with an AI agent, measured where the design system broke, and turned the findings into rules and a 24-task backlog.',
+    meta: 'Client project under NDA / Design audit',
     image: {
       src: geneticsHero,
-      alt: 'Redesigned home page of a genetic testing lab website: an offer above search, frequent queries and a trust strip',
+      alt: 'Audit verdict: scores by area, from 9/10 for the concept to 3/10 for typography',
     },
     stats: [
       { value: '5', label: 'key screens measured by script' },
@@ -72,7 +69,7 @@ export const geneticsCaseStudy = {
           type: 'noteCard',
           title: 'Role, team, timeline',
           items: [
-            'Role: audit and redesign, together with an AI agent',
+            'Role: design audit, together with an AI agent',
             'Team: solo with an AI agent',
             'Timeline: about 4 weeks, July–August 2026',
           ],
@@ -102,10 +99,9 @@ export const geneticsCaseStudy = {
               type: 'list',
               heading: 'What I did',
               items: [
-                'Audited the draft: system, usability heuristics and accessibility.',
-                'Wrote a brand book and rebuilt the UI kit on its rules.',
-                'Rebuilt the key screens by the new rules and sketched a new home page and search.',
-                'Worked with an AI agent: it ran the measurements and drafted variants, I set the method and made the calls.',
+                'Audited the draft in three layers: the design system, usability heuristics and accessibility.',
+                'Ranked the problems and turned them into a backlog and a set of rules.',
+                'Worked with an AI agent: it ran the measurements across screens, I set the method and made the calls.',
               ],
             },
             {
@@ -121,7 +117,7 @@ export const geneticsCaseStudy = {
       ],
     },
     {
-      id: 'research',
+      id: 'audit',
       navLabel: 'Audit',
       title: 'The Audit',
       parts: [
@@ -190,7 +186,6 @@ export const geneticsCaseStudy = {
               paragraphs: [
                 'I checked 17 key text and background pairs against WCAG 2.1 AA. 7 failed.',
                 'The worst one was the most used: the main button, at 3.76:1.',
-                'The palette already held the fix: Violet 700 reaches 5.77:1.',
               ],
             },
           ],
@@ -244,16 +239,44 @@ export const geneticsCaseStudy = {
             'I3. Too many versions of the same thing. 13 button sets and 5 service card variants did one job.',
           ],
         },
+      ],
+    },
+    {
+      id: 'recommendations',
+      navLabel: 'Recommendations',
+      title: 'What to Fix, and in What Order',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'The audit showed the problem was missing rules, not a weak idea. So the recommendations keep the concept and fix how it is applied.',
+          ],
+        },
         {
           type: 'blocks',
           blocks: [
             {
               type: 'text',
-              heading: 'From findings to a plan',
+              heading: 'A backlog of 24 tasks in 3 waves',
+              paragraphs: ['So the team knows what to fix first.', 'From insights I1–I3 · Recommendation'],
+            },
+            {
+              type: 'text',
+              heading: 'Cut what repeats',
+              paragraphs: ['13 button sets down to 3, 5 service cards down to 1.', 'From insight I3 · Recommendation'],
+            },
+            {
+              type: 'text',
+              heading: 'Violet 700 for actions',
               paragraphs: [
-                'The audit ended in a backlog of 24 tasks in 3 waves.',
-                'A separate list named what to remove: 13 button sets down to 3, 5 service cards down to 1.',
+                'It is already in the palette and reaches 5.77:1 on white, against 3.76:1 for the current main button.',
+                'From insight I2 · Recommendation',
               ],
+            },
+            {
+              type: 'text',
+              heading: 'Five laws that turn the concept into checkable rules',
+              paragraphs: ['A screen that breaks a law does not pass.', 'From insight I1 · Recommendation'],
             },
           ],
         },
@@ -273,54 +296,18 @@ export const geneticsCaseStudy = {
           },
           caption: 'Less to maintain: 13 button sets down to 3, 5 service cards down to 1.',
         },
-      ],
-    },
-    {
-      id: 'decisions',
-      navLabel: 'Decisions',
-      title: 'Rules Before Screens',
-      parts: [
-        {
-          type: 'richTextLead',
-          paragraphs: [
-            'The audit showed the problem was missing rules, not a weak idea. So I wrote the rules first, then rebuilt the kit and the screens on them.',
-          ],
-        },
         {
           type: 'blocks',
           blocks: [
             {
-              type: 'text',
-              heading: 'A brand book that turns the idea into repeatable rules',
-              paragraphs: [
-                'Five laws, for example: glass, blur and gradient never stand between a person and information.',
-                'From insight I1 · Hypothesis',
-              ],
-            },
-            {
-              type: 'text',
-              heading: '9 type levels instead of 16 sizes, 6 radius tokens instead of 14 radii',
-              paragraphs: ['Each level has a role.', 'From insight I1 · Hypothesis'],
-            },
-            {
-              type: 'text',
-              heading: 'Violet is an event, not a fill',
-              paragraphs: ['Violet 700 marks actions and reaches 5.77:1.', 'From insight I2 · Hypothesis'],
-            },
-            {
-              type: 'text',
-              heading: 'One service card that answers four questions',
-              paragraphs: [
-                'What it is, how much, how fast, what to press.',
-                'From insight I3 · Hypothesis',
-              ],
-            },
-            {
-              type: 'text',
-              heading: '4 screen states and a 12-question acceptance checklist',
-              paragraphs: [
-                'So a new screen can be checked before handoff.',
-                'From insight I1 · Hypothesis',
+              type: 'list',
+              heading: 'The five laws',
+              items: [
+                'I. Clarity over effect. Glass, blur and gradient never stand between a person and information.',
+                'II. One accent per screen. Violet is an event, not a fill.',
+                'III. Data is strict, care is soft. Soft shapes where a person is worried, a strict grid and numbers where they study.',
+                'IV. Every card answers four questions: what it is, how much, how fast, what to press.',
+                'V. Science comes before payment. Proof such as the licence, the volume of work and years in practice appears along the way, not in a separate section.',
               ],
             },
           ],
@@ -329,61 +316,9 @@ export const geneticsCaseStudy = {
           type: 'featureMedia',
           media: {
             src: geneticsBrandbook,
-            alt: "Five brand book laws, each with do and don't examples",
+            alt: "Five laws for the website design, each with do and don't examples",
           },
           caption: 'Five laws that turn the concept into rules a screen can pass or fail.',
-        },
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'text',
-              heading: 'UI Kit v2',
-              paragraphs: [
-                'The kit was rebuilt on the brand book: Button, Chip, Status Badge, Field, Fact Tile and Service Card v2.',
-                'Semantic tokens: 30 semantic tokens on top of 12 new primitives.',
-              ],
-            },
-          ],
-        },
-        {
-          type: 'featureMedia',
-          media: {
-            src: geneticsUikit,
-            alt: 'UI Kit v2: buttons, chips, status badges, form fields, fact tiles and service cards',
-          },
-          caption: 'UI Kit v2, rebuilt on the brand book and 30 semantic tokens.',
-        },
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'text',
-              heading: 'The concepts, in short',
-              paragraphs: [
-                'With the agent, I went through four concept rounds. The first three tried cleaner navigation and a service page, two visual takes, and the screens in the existing style.',
-                'The fourth round rebuilt the same 4 screens by the brand book. The idea and all nine of its techniques stayed; the execution changed.',
-                "After feedback from the client's team, I sketched a new home page: who the lab is, right in the first screen, and entry by life situation instead of a catalogue. Search got two entry points and 11 states on desktop, 3 on mobile.",
-              ],
-            },
-          ],
-        },
-        {
-          type: 'featureMedia',
-          media: {
-            src: geneticsBefore,
-            alt: 'The original four screens of the website draft: home, catalogue, test page and the science service page',
-          },
-          caption: 'Before: the draft I was given, in its original style.',
-        },
-        {
-          type: 'featureMedia',
-          media: {
-            src: geneticsAfter,
-            alt: 'Four redesigned screens of a genetic testing lab website: home, catalogue, test page and the dark science service page',
-          },
-          caption:
-            'The same four screens, rebuilt by the brand book: the idea stayed, the execution changed.',
         },
       ],
     },
@@ -394,24 +329,10 @@ export const geneticsCaseStudy = {
       parts: [
         {
           type: 'noteCard',
-          title: 'Not measured yet',
+          title: 'Handed over, not measured yet',
           items: [
-            'This is a concept. The site has not launched, so there are no product numbers yet.',
-            'The handoff was the audit, the brand book, UI Kit v2 and a 24-task backlog in 3 waves.',
-          ],
-        },
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'list',
-              heading: 'What we planned to measure',
-              items: [
-                'Share of searches with no results.',
-                'Exits from an empty results page.',
-                'Moves from a search suggestion to a consultation.',
-              ],
-            },
+            'The audit, the rules and a 24-task backlog in 3 waves were handed over.',
+            'The site has not launched, so there are no product numbers yet.',
           ],
         },
       ],
@@ -424,8 +345,8 @@ export const geneticsCaseStudy = {
         {
           type: 'noteCard',
           items: [
-            'An agent makes an audit faster: it counts sizes, radii and contrast across screens.',
-            'But it mixes up facts. Figures about the company differed between versions, and the agent itself flagged numbers to check. Every fact goes back to the client before it ships.',
+            'An agent makes an audit faster: it counts sizes, radii and contrast across every key screen, so I start from numbers.',
+            'But it mixes up facts. Figures about the company differed between versions of the draft. Every fact goes back to the client before it ships.',
           ],
         },
       ],
@@ -436,15 +357,15 @@ export const geneticsCaseStudy = {
 /** Card for the AI-projects group on /ai-portfolio — same shape as an aiProjects.items entry. */
 export const geneticsCard = {
   id: 'genetics-audit',
-  title: 'Genetic Testing Lab Website',
+  title: 'Genetic Testing Lab Website Audit',
   category: 'Web / Design Audit',
   description:
-    "An audit of a genetic testing laboratory's website draft, then a brand book, a UI kit and a backlog built on its findings.",
-  metrics: ['Audit + redesign', 'Under NDA', 'Not launched'],
+    "An audit of a genetic testing laboratory's website draft: measured system issues, WCAG contrast, usability, and a 24-task plan to fix them.",
+  metrics: ['Design audit', 'Under NDA', 'Not launched'],
   surface: 'lavender',
   image: {
     src: geneticsCardImage,
-    alt: 'Redesigned first screen of a genetic testing lab website with an offer and a search field',
+    alt: 'Audit verdict for a genetic testing lab website: scores by area, from 9/10 for the concept to 3/10 for typography',
   },
   href: '/genetics-audit',
 };
