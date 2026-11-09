@@ -90,7 +90,7 @@ export const catAppCaseStudy = {
     stats: [
       { value: '2', label: 'interviews with an owner of a diabetic cat' },
       { value: '12', label: 'beta sign-ups from the landing page' },
-      { value: '1 → any', label: 'trackers, set up by the household' },
+      { value: '∞', label: 'happy pets' },
     ],
     points: ['Codex', 'Claude Code', 'Figma Make'],
   },
@@ -126,11 +126,11 @@ export const catAppCaseStudy = {
           type: 'beforeAfterSlider',
           before: {
             src: fluffyChumbStoryWebMvpAfter,
-            alt: 'Version two, the same pages: the Insulin tracker, the insulin log with the injection map, and History with glucose and insulin charts',
+            alt: 'Version two, the same steps: the injection map on the whole screen while a new site is placed, a stand-in for the dose check sheet, and History with glucose and insulin charts',
           },
           after: {
             src: fluffyChumbStoryWebMvpBefore,
-            alt: 'Web MVP, May 2026: the tracker with a week of numbered marks on the cat’s photo, the evening injection pop-up, and the week with a new mark added',
+            alt: 'Web MVP, May 2026: the tracker with a week of numbered marks on the cat’s photo, the evening injection pop-up, and Injection History with 14 records',
           },
         },
       ],
@@ -170,7 +170,7 @@ export const catAppCaseStudy = {
               type: 'text',
               heading: '4. First users',
               paragraphs: [
-                'We used the MVP ourselves, with Lutik. We held 2 interviews with an owner of a cat with diabetes and showed demos to several people — the diabetes features were not relevant to them.',
+                'We used the MVP ourselves, with Lutik. I held 2 interviews with an owner of a cat with diabetes and showed demos to several people — the diabetes features were not relevant to them.',
                 'In October the MVP changed. Glucose got its own entry, separate from shots, and all records moved to one History page with a date filter and CSV export. The morning / evening slot gave way to exact time: not every pet is on a twice-a-day schedule.',
               ],
             },
@@ -178,7 +178,7 @@ export const catAppCaseStudy = {
               type: 'text',
               heading: '5. Deciding on version two · 22–26 October',
               paragraphs: [
-                'In late October we moved the web MVP into Figma as it was — 24 screens, 8 flows — and audited it. Then we reviewed 14 care and health apps. Family apps reduce care to a tick with no data; disease trackers leave the family out.',
+                'In late October we moved the web MVP into Figma as it was — 24 screens, 8 flows — and audited it. Then I reviewed 14 care and health apps. Family apps reduce care to a tick with no data; disease trackers leave the family out.',
                 'A protocol for a pet with kidney disease — drips twice a day plus pills — did not fit a tracker built for one disease. On 26 October we chose a new model: trackers are a set of tools, and their schedules feed one daily list for the household. Version two became a mobile app for iOS and Android on that model.',
               ],
             },
@@ -200,7 +200,7 @@ export const catAppCaseStudy = {
           blocks: [
             {
               type: 'list',
-              heading: '6. What we learned',
+              heading: '6. What I found',
               items: [
                 'Site rotation is the core of insulin care. None of the 14 apps marks the site on a photo of the pet, so the map moved into v2 as part of the Insulin tracker.',
                 'Routines differ: glucose is measured without a shot too, and shots are not always twice a day. In v2 Insulin and Glucose are separate trackers, with rhythm and time set per pet.',
@@ -220,7 +220,7 @@ export const catAppCaseStudy = {
         {
           type: 'richTextLead',
           paragraphs: [
-            'We reviewed 14 care and health apps. Family apps reduce care to a tick with no data; disease trackers leave the family out. None of them marks the injection site on a photo of the pet.',
+            'I reviewed 14 care and health apps. Family apps reduce care to a tick with no data; disease trackers leave the family out. None of them marks the injection site on a photo of the pet.',
           ],
         },
         {
@@ -237,7 +237,7 @@ export const catAppCaseStudy = {
         },
         {
           type: 'collapsible',
-          title: 'Who we talked to',
+          title: 'Who I talked to',
           items: [
             'Ourselves and Lutik, the cat it all started with: we used the web MVP.',
             'An owner of a cat with diabetes: 2 interviews.',
@@ -246,7 +246,7 @@ export const catAppCaseStudy = {
         },
         {
           type: 'painCards',
-          heading: 'What we learned',
+          heading: 'What I learned',
           items: [
             'Extra structure pushes people away. One user only needed to measure glucose, not inject. He used the injection map three times and gave up — it boxed him in.',
             'Care is shared, and not everyone needs the whole protocol. A child needs one clear task, not a treatment plan.',
@@ -403,7 +403,6 @@ export const catAppCaseStudy = {
                   src: flowSc1A,
                   webm: flowSc1AWebm,
                   poster: flowSc1APoster,
-                  label: 'Clip A',
                   caption: 'Anna marks the spot on the map, checks the dose and saves — “Done by Anna · 08:00”.',
                   alt: 'Screen recording: Anna opens the insulin dose from today’s routine, marks the injection site on the cat map, checks the dose and saves; the task shows “Done by Anna · 08:00”',
                 },
@@ -411,7 +410,6 @@ export const catAppCaseStudy = {
                   src: flowSc1B,
                   webm: flowSc1BWebm,
                   poster: flowSc1BPoster,
-                  label: 'Clip B',
                   caption: 'Max opens the app and sees the dose is already done: “Done by Anna · 08:00”.',
                   alt: 'Screen recording: Max opens the app on his phone and scrolls today’s routine to the insulin task, already marked “Done by Anna · 08:00”',
                 },
@@ -429,7 +427,6 @@ export const catAppCaseStudy = {
                   src: flowSc4A,
                   webm: flowSc4AWebm,
                   poster: flowSc4APoster,
-                  label: 'Clip A',
                   caption: 'Anna invites max@example.com to care for Meow.',
                   alt: 'Screen recording: on the Family screen Anna taps “Invite someone”, types max@example.com and sends; Max appears with “Invite sent”',
                 },
@@ -437,7 +434,6 @@ export const catAppCaseStudy = {
                   src: flowSc4B,
                   webm: flowSc4BWebm,
                   poster: flowSc4BPoster,
-                  label: 'Clip B',
                   caption: 'Max accepts — Meow appears in “Your pets”, marked “Shared with you”.',
                   alt: 'Screen recording: Max accepts Anna’s invitation on the Family screen and opens “Your pets”, where the shared pet is marked “Shared with you”',
                 },
