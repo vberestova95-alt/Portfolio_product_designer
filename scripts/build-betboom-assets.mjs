@@ -13,7 +13,7 @@
  * squeezed under the case budget (300 KB): quality first, then size.
  * Clips are re-encoded to H.264 without sound, under 2 MB.
  */
-import { mkdir, stat } from 'node:fs/promises'
+import { copyFile, mkdir, stat, writeFile } from 'node:fs/promises'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -27,7 +27,9 @@ const PHONE = { width: 390, radius: 44 }
 
 // slot → source file and how to treat it. Prefer -v2 where the designer made one.
 const IMAGES = {
-  cover: { file: '06-cover-v2.png', width: 2704 },
+  cover: { file: '06-cover-v3.png', width: 2704 },
+  // Poster of the cover animation: its first frame, transparent around the screens.
+  'cover-anim-poster': { file: '06-cover-anim-v3-poster.png' },
   'showcase-tasks': { file: '01-showcase-tasks-v2.png', phone: true },
   'showcase-onboarding': { file: '02-showcase-onboarding.png', phone: true },
   'showcase-top': { file: '03-showcase-top-v2.png', phone: true },
@@ -72,6 +74,16 @@ const CLIPS = {
   // The original A/B clip, in Russian, shown next to the EN re-shoot. It lives
   // in the repo already (4.5 MB, 60 fps), so it is read from there, not --src.
   'ab-test-ru': { repoFile: 'src/assets/betboom-ab-test.mp4', width: 1600, fps: 30 },
+}
+
+/*
+ * Files that go in as the designer exported them. The cover animation keeps its
+ * alpha only in these two encodings — WebM VP9 (Chrome, Firefox) and HEVC .mov
+ * (Safari) — and re-encoding with ffmpeg here would drop it.
+ */
+const COPIES = {
+  'cover-anim.webm': '06-cover-anim-v3.webm',
+  'cover-anim.mov': '06-cover-anim-v3.mov',
 }
 
 function parseArgs(argv) {
@@ -123,7 +135,7 @@ async function buildImage(slot, spec, src) {
   const prepared = await prepare(path.join(src, spec.file), spec)
   const { webp, quality, size } = await encode(prepared)
   const target = path.join(outDir, `${slot}.webp`)
-  await sharp(webp).toFile(target)
+  await writeFile(target, webp)
   console.log(`${slot}.webp  ${size}px  q${quality}  ${Math.round(webp.length / 1024)} KB`)
 }
 
@@ -152,4 +164,10 @@ for (const [slot, spec] of Object.entries(IMAGES)) {
 }
 for (const [slot, spec] of Object.entries(CLIPS)) {
   if (wanted(slot)) await buildClip(slot, spec, args.src)
+}
+for (const [target, file] of Object.entries(COPIES)) {
+  if (!wanted(target)) continue
+  await copyFile(path.join(args.src, file), path.join(outDir, target))
+  const { size } = await stat(path.join(outDir, target))
+  console.log(`${target}  copied  ${Math.round(size / 1024)} KB`)
 }

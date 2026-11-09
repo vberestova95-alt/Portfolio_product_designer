@@ -9,7 +9,6 @@ import designCringeCategories from '../assets/cases/design-cringe-categories.jpg
 import designCringeIssues from '../assets/cases/design-cringe-issues.jpg';
 import designCringeMobileBad from '../assets/cases/design-cringe-mobile-bad.jpg';
 import designCringeMobileClean from '../assets/cases/design-cringe-mobile-clean.jpg';
-import betboomCover from '../assets/cases/betboom/cover.webp';
 import betboomShowcaseTasks from '../assets/cases/betboom/showcase-tasks.webp';
 import betboomShowcaseOnboarding from '../assets/cases/betboom/showcase-onboarding.webp';
 import betboomShowcaseTop from '../assets/cases/betboom/showcase-top.webp';
@@ -43,6 +42,9 @@ import betboomSchemeConflictRule from '../assets/cases/betboom/scheme-conflict-r
 import betboomSchemeSwitching from '../assets/cases/betboom/scheme-switching.webp';
 import betboomSchemeOnboarding from '../assets/cases/betboom/scheme-onboarding.webp';
 import betboomSchemeEntryPoints from '../assets/cases/betboom/scheme-entry-points.webp';
+import betboomCoverAnimPoster from '../assets/cases/betboom/cover-anim-poster.webp';
+import betboomCoverAnimWebm from '../assets/cases/betboom/cover-anim.webm';
+import betboomCoverAnimMov from '../assets/cases/betboom/cover-anim.mov';
 import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
 import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
 import betboomAbTestRuVideo from '../assets/cases/betboom/ab-test-ru.mp4';
@@ -417,12 +419,19 @@ export const betboomPassCaseStudy = {
     description:
       'A bonus programme where users complete tasks and earn free bets, skins and prizes. It started as an esports marketing tool. Over a year I turned it into a product section that carries classic sports too, without losing the esports audience.',
     meta: 'Product Designer / 2025-2026',
-    // TODO(p32): the cover becomes an animation from the designer — add
-    // `video: { sources: [{ src, type }] }` (WebM VP9 alpha + HEVC alpha .mov
-    // for a transparent ground) and `fit: 'contain'`; `src` stays the poster.
+    // The cover animation on a transparent ground: HEVC with alpha for Safari
+    // first (other browsers skip the type), WebM VP9 with alpha for the rest.
+    // Without either, the poster stays.
     image: {
-      src: betboomCover,
-      alt: 'Three BetBoom PASS screens: the task page on mobile web, top tasks with a mixed feed, and the season widget in the BetBoom app profile',
+      src: betboomCoverAnimPoster,
+      alt: 'Three BetBoom PASS screens: the task page in the app, a task with stake tiers, and the season widget in the BetBoom app profile',
+      fit: 'contain',
+      video: {
+        sources: [
+          { src: betboomCoverAnimMov, type: 'video/quicktime; codecs="hvc1"' },
+          { src: betboomCoverAnimWebm, type: 'video/webm; codecs="vp9"' },
+        ],
+      },
     },
     stats: [
       { value: '+75%', label: 'Retention, over the testing period' },
