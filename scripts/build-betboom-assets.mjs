@@ -35,12 +35,13 @@ const IMAGES = {
   'showcase-top': { file: '03-showcase-top-v2.png', phone: true },
   'showcase-category-bar': { file: '04-showcase-rubricator-v2.png', phone: true },
   'showcase-entry-point': { file: '05-showcase-entry-point.png', phone: true },
-  'swap-conflict': { file: '10-switch-conflict-modal.png', phone: true },
+  // Posters of the v3 clips: the first frame of each, so the swap is seamless.
+  'swap-conflict': { file: '10-switch-flow-anim-v3-poster.png', phone: true },
   'swap-return': { file: '11-switch-return-task.png', phone: true },
   'swap-switched': { file: '12-switch-task-switched.png', phone: true },
   'swap-cancel-limit': { file: '13-switch-cancel-limit-12h.png', phone: true },
   'tasks-before': { file: '14-tasks-before-asis.png', phone: true },
-  'tasks-after': { file: '15-tasks-after-v2.png', phone: true },
+  'tasks-after': { file: '15-tasks-after-anim-v3-poster.png', phone: true },
   'top-carousel': { file: '16-top-carousel-v2.png', phone: true },
   'category-bar-1': { file: '17-rubricator-step1-v2.png', phone: true },
   'category-bar-2': { file: '18-rubricator-step2-v2.png', phone: true },
@@ -69,7 +70,9 @@ const IMAGES = {
 }
 
 const CLIPS = {
-  'redesign-cards': { file: '60-anim-redesign-cards-v2.mp4', width: 1800 },
+  'redesign-cards': { file: '60-anim-redesign-cards-v3.mp4', width: 1800 },
+  'switch-flow': { file: '10-switch-flow-anim-v3.mp4', width: 750 },
+  'tasks-after': { file: '15-tasks-after-anim-v3.mp4', width: 750 },
   'ab-test': { file: '61-anim-ab-test.mp4', width: 1600 },
   // The original A/B clip, in Russian, shown next to the EN re-shoot. It lives
   // in the repo already (4.5 MB, 60 fps), so it is read from there, not --src.

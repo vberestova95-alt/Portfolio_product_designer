@@ -45,6 +45,8 @@ import betboomSchemeEntryPoints from '../assets/cases/betboom/scheme-entry-point
 import betboomCoverAnimPoster from '../assets/cases/betboom/cover-anim-poster.webp';
 import betboomCoverAnimWebm from '../assets/cases/betboom/cover-anim.webm';
 import betboomCoverAnimMov from '../assets/cases/betboom/cover-anim.mov';
+import betboomTasksAfterVideo from '../assets/cases/betboom/tasks-after.mp4';
+import betboomSwitchFlowVideo from '../assets/cases/betboom/switch-flow.mp4';
 import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
 import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
 import betboomAbTestRuVideo from '../assets/cases/betboom/ab-test-ru.mp4';
@@ -727,9 +729,9 @@ export const betboomPassCaseStudy = {
           label: 'Take a task, bet, get the reward',
           items: [
             {
-              // TODO(p32): v3 clip — add `video: <mp4>`, this frame stays the poster.
               src: betboomTasksAfter,
-              alt: 'Task page in the app: balance, top tasks carousel, category bar and task cards',
+              video: betboomTasksAfterVideo,
+              alt: 'Task page in the app: balance, top tasks carousel, category bar and task cards; the “Your tasks” widget opens with active tasks and progress',
               caption: 'The task page',
             },
             {
@@ -766,9 +768,9 @@ export const betboomPassCaseStudy = {
           label: 'Swap a task, with 10 seconds to undo',
           items: [
             {
-              // TODO(p32): v3 clip — add `video: <mp4>`, this frame stays the poster.
               src: betboomSwapConflict,
-              alt: 'Popup “These tasks conflict” naming the active hockey task, with Cancel and Switch',
+              video: betboomSwitchFlowVideo,
+              alt: 'Popup “These tasks conflict” naming the active hockey task; after Switch, a “Task switched” toast and the list of tasks to switch to',
               caption: 'The popup names the active task',
             },
             {
