@@ -61,11 +61,11 @@ export const cases = byId(en.cases, {
     description:
       'Редизайн core-продукта геймификации, который вырос из киберспортивных механик и вышел на широкую спортивную аудиторию.',
     metrics: ['+60% DAU', '+75% retention'],
-    image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Интерфейс BetBoom PASS' },
+    image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Страница задания BetBoom PASS на десктопе, живой интерфейс на русском' },
     frames: [
       {
         ...entryOf(en.cases, 'betboom-pass').frames[0],
-        alt: 'Три мобильных экрана BetBoom PASS: задания, главная PASS с сезоном MSI 2025 и смена задания',
+        alt: 'Три мобильных экрана BetBoom PASS: задания, главная PASS с сезоном MSI 2025 и предупреждение «These tasks conflict»',
       },
     ],
   },
@@ -89,7 +89,7 @@ export const cases = byId(en.cases, {
     category: 'Здоровье питомцев / Пет-проект',
     description:
       'От трекера инсулина для одного кота — к приложению, где семья и пет-ситтер настраивают свои трекеры и делят дела на день. Пересобрано после интервью с пользователями MVP.',
-    metrics: ['MVP → v2', '12 бета-тестеров'],
+    metrics: ['MVP → v2', '12 заявок на бету'],
     image: { ...entryOf(en.cases, 'cat-app').image, src: fluffyChumbHomeCoverRu, alt: 'Три экрана Fluffy Chumb: все трекеры, главная с трекерами питомца и инсулин с дозами за неделю' },
   },
   iquoto: {
@@ -155,7 +155,7 @@ export const aiProjects = {
       category: 'Здоровье питомцев / Пет-проект',
       description:
         'Свои трекеры ухода и общая рутина дня для семьи и пет-ситтера — вторая версия, пересобранная после интервью с пользователями MVP.',
-      metrics: ['MVP → v2', '12 бета-тестеров'],
+      metrics: ['MVP → v2', '12 заявок на бету'],
       image: { ...entryOf(en.aiProjects.items, 'cat-app').image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
     },
     'design-cringe': {
