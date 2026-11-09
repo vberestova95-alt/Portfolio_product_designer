@@ -529,7 +529,7 @@ export const betboomPassCaseStudy = {
         alt: 'Starting a second hockey task opens “These tasks conflict”: the active task, its reward and a warning that progress resets, with Cancel and Switch',
       },
       {
-        label: 'Category bar',
+        label: 'Category bar · mobile web',
         caption: 'Pick a sport, and the feed narrows to its tasks.',
         credit: 'Category bar concept and logic: me; UI: a second designer.',
         src: betboomShowcaseCategoryBarPoster,
