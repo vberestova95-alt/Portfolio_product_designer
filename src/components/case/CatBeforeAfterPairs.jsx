@@ -93,13 +93,17 @@ export function CatBeforeAfterPairs({ part }) {
 
   const activeTab = position >= 55 ? 'before' : position <= 45 ? 'after' : null;
   const transition = animated ? '460ms cubic-bezier(0.2, 0.8, 0.2, 1)' : null;
+  // The tabs move the clip to the very edge, so no strip of the other layer
+  // shows there; the handle stops short of the edge to stay in reach.
+  const handleLeft = Math.min(96, Math.max(4, position));
   const handleStyle = transition
-    ? { left: `${position}%`, transition: `left ${transition}` }
-    : { left: `${position}%` };
-  const afterStyle = {
-    clipPath: `inset(0 0 0 ${position}%)`,
-    ...(transition ? { transition: `clip-path ${transition}` } : {}),
-  };
+    ? { left: `${handleLeft}%`, transition: `left ${transition}` }
+    : { left: `${handleLeft}%` };
+  // Each layer is cut at the handle: the pictures are transparent between the
+  // screens, so the old one must not show through the new one.
+  const clipTransition = transition ? { transition: `clip-path ${transition}` } : {};
+  const beforeStyle = { clipPath: `inset(0 ${100 - position}% 0 0)`, ...clipTransition };
+  const afterStyle = { clipPath: `inset(0 0 0 ${position}%)`, ...clipTransition };
 
   // The window into the row: the whole row on a desktop, one pair on a phone.
   const windowStart = isPhone ? crop.start + pair * crop.window : 0;
@@ -118,13 +122,13 @@ export function CatBeforeAfterPairs({ part }) {
       <div className="cat-ba-tabs">
         <button
           className={`cat-ba-tab${activeTab === 'before' ? ' is-active' : ''}`}
-          onClick={() => moveTo(96)}
+          onClick={() => moveTo(100)}
         >
           {text.before}
         </button>
         <button
           className={`cat-ba-tab${activeTab === 'after' ? ' is-active' : ''}`}
-          onClick={() => moveTo(4)}
+          onClick={() => moveTo(0)}
         >
           {text.after}
         </button>
@@ -139,7 +143,7 @@ export function CatBeforeAfterPairs({ part }) {
         onTouchMove={handleTouchMove}
         onTouchEnd={() => setIsDragging(false)}
       >
-        <div className="cat-ba-slider__layer">
+        <div className="cat-ba-slider__layer" style={beforeStyle}>
           <img
             className="cat-ba-slider__img"
             src={before.src}
@@ -170,7 +174,8 @@ export function CatBeforeAfterPairs({ part }) {
             setIsDragging(true);
           }}
         >
-          <div className="cat-ba-slider__line" />
+          {/* At an edge there is nothing to divide: the line would read as a strip. */}
+          <div className={`cat-ba-slider__line${position <= 0 || position >= 100 ? ' is-hidden' : ''}`} />
           <div className="cat-ba-slider__grip" aria-label={text.dragToCompare}>
             <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path
