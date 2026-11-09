@@ -420,6 +420,9 @@ export const betboomPassCaseStudy = {
     description:
       'A bonus programme where users complete tasks and earn free bets, skins and prizes. It started as an esports marketing tool. Over a year I turned it into a product section that carries classic sports too, without losing the esports audience.',
     meta: 'Product Designer / 2025-2026',
+    // TODO(p32): the cover becomes an animation from the designer — add
+    // `video: { sources: [{ src, type }] }` (WebM VP9 alpha + HEVC alpha .mov
+    // for a transparent ground) and `fit: 'contain'`; `src` stays the poster.
     image: {
       src: betboomCover,
       alt: 'Three BetBoom PASS screens: the task page on mobile web, top tasks with a mixed feed, and the season widget in the BetBoom app profile',
@@ -717,6 +720,7 @@ export const betboomPassCaseStudy = {
           label: 'Take a task, bet, get the reward',
           items: [
             {
+              // TODO(p32): v3 clip — add `video: <mp4>`, this frame stays the poster.
               src: betboomTasksAfter,
               alt: 'Task page in the app: balance, top tasks carousel, category bar and task cards',
               caption: 'The task page',
@@ -755,6 +759,7 @@ export const betboomPassCaseStudy = {
           label: 'Swap a task, with 10 seconds to undo',
           items: [
             {
+              // TODO(p32): v3 clip — add `video: <mp4>`, this frame stays the poster.
               src: betboomSwapConflict,
               alt: 'Popup “These tasks conflict” naming the active hockey task, with Cancel and Switch',
               caption: 'The popup names the active task',
@@ -876,6 +881,7 @@ export const betboomPassCaseStudy = {
               caption: 'Reward and deadline are readable without opening the card.',
             },
             {
+              // TODO(p32): v3 clip of the category bar — add `video: <mp4>`, this frame stays the poster.
               src: betboomDetailSportEsports,
               alt: 'Detail on desktop: one category bar with esports titles and classic sports',
               span: 'full',
@@ -1024,6 +1030,7 @@ export const betboomPassCaseStudy = {
             alt: 'Desktop task page before the redesign: cards led by sport conditions and illustrations',
           },
           after: {
+            // TODO(p32): v3 clip of the new page — add `video: <mp4>`, this frame stays the poster.
             src: betboomDesktopAfter,
             alt: 'Desktop task page after the redesign: hero carousel, one category bar for sports and esports, sort chips and three columns of cards',
           },

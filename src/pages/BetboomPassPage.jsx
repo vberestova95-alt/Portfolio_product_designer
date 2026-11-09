@@ -3,7 +3,7 @@ import { SiteFooter } from '../components/SiteFooter.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
 import { useUi } from '../i18n/LanguageContext.jsx';
 
-function LazyVideo({ src, alt, className = '', playbackRate = 1 }) {
+function LazyVideo({ src, alt, className = '', playbackRate = 1, poster }) {
   const videoRef = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
 
@@ -62,6 +62,7 @@ function LazyVideo({ src, alt, className = '', playbackRate = 1 }) {
       ref={videoRef}
       className={className}
       src={shouldLoad ? src : undefined}
+      poster={poster}
       aria-label={alt}
       autoPlay
       muted
@@ -297,7 +298,13 @@ function BeforeAfterSlider({ before, after, caption }) {
         onTouchMove={handleTouchMove}
         onTouchEnd={() => setIsDragging(false)}
       >
-        <img className="case-ba-slider__img" src={after.src} alt={after.alt} draggable={false} />
+        {after.video ? (
+          // The after side may play (a scroll through the new page) under the
+          // still "before"; the poster holds the frame until it loads.
+          <LazyVideo className="case-ba-slider__img" src={after.video} poster={after.src} alt={after.alt} />
+        ) : (
+          <img className="case-ba-slider__img" src={after.src} alt={after.alt} draggable={false} />
+        )}
         <img
           className="case-ba-slider__before"
           src={before.src}
@@ -353,6 +360,36 @@ function StatGrid({ items, className = '' }) {
           <span>{item.label}</span>
         </div>
       ))}
+    </div>
+  );
+}
+
+/*
+ * Hero picture, or an animation over its poster. `video.sources` lists the
+ * files in the order the browser should try them — a transparent cover needs
+ * WebM (VP9 with alpha) for Chrome and Firefox and HEVC with alpha (.mov) for
+ * Safari; H.264 MP4 has no alpha. With reduced motion only the poster shows.
+ * `fit: 'contain'` keeps the whole frame instead of cropping it to the slot.
+ */
+function HeroMedia({ image }) {
+  const [reduceMotion] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  );
+  const className = `case-hero__media${image.fit ? ` case-hero__media--${image.fit}` : ''}`;
+
+  return (
+    <div className={className}>
+      {image.video && !reduceMotion ? (
+        <video poster={image.src} aria-label={image.alt} autoPlay muted loop playsInline>
+          {image.video.sources.map((source) => (
+            <source key={source.src} src={source.src} type={source.type} />
+          ))}
+        </video>
+      ) : (
+        <img src={image.src} alt={image.alt} />
+      )}
     </div>
   );
 }
@@ -418,8 +455,8 @@ function BentoTile({ tile }) {
       }`}
     >
       <div className="bento-tile__media" style={style}>
-        {tile.type === 'video' ? (
-          <LazyVideo src={tile.src} alt={tile.alt} />
+        {tile.type === 'video' || tile.video ? (
+          <LazyVideo src={tile.video || tile.src} poster={tile.video ? tile.src : undefined} alt={tile.alt} />
         ) : (
           <img src={tile.src} alt={tile.alt} />
         )}
@@ -470,7 +507,11 @@ function PhoneRow({ part }) {
       <div className="case-phone-row__items">
         {part.items.map((item) => (
           <div key={item.src} className="case-phone-row__item">
-            <img src={item.src} alt={item.alt} loading="lazy" />
+            {item.video ? (
+              <LazyVideo src={item.video} poster={item.src} alt={item.alt} />
+            ) : (
+              <img src={item.src} alt={item.alt} loading="lazy" />
+            )}
             {item.caption ? <span>{item.caption}</span> : null}
           </div>
         ))}
@@ -1051,9 +1092,7 @@ export function CaseStudyPage({
             <HeroMeta text={caseStudy.hero.meta} items={caseStudy.hero.points} />
           </div>
 
-          <div className="case-hero__media">
-            <img src={caseStudy.hero.image.src} alt={caseStudy.hero.image.alt} />
-          </div>
+          <HeroMedia image={caseStudy.hero.image} />
         </section>
 
         {caseStudy.showcase ? <CaseShowcase showcase={caseStudy.showcase} /> : null}

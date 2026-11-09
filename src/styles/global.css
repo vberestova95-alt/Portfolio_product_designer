@@ -4130,6 +4130,34 @@ ol.case-bullet-list li::before {
   color: var(--ink-soft);
 }
 
+/* A hero animation or picture shown whole, on no plate of its own. */
+.case-hero__media--contain,
+.case-page--betboom-pass .case-hero__media--contain {
+  background: none;
+}
+
+.case-hero__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.case-hero__media--contain img,
+.case-hero__media--contain video,
+.case-page--betboom-pass .case-hero__media--contain img {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* A clip in a phone row keeps the screen's own 44 px corner. */
+.case-phone-row__item video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 390 / 844;
+  object-fit: cover;
+  border-radius: calc(44 / 390 * 100%) / calc(44 / 844 * 100%);
+}
+
 /* A bento tile that shows its whole frame instead of a zoomed crop. Doubled
    class: it has to win over the phone-width aspect ratios further down. */
 .bento-tile.bento-tile--whole .bento-tile__media {
@@ -4141,7 +4169,8 @@ ol.case-bullet-list li::before {
   background: none;
 }
 
-.bento-tile--whole .bento-tile__media img {
+.bento-tile--whole .bento-tile__media img,
+.bento-tile--whole .bento-tile__media video {
   position: static;
   width: 100%;
   transform: none;
