@@ -158,7 +158,7 @@ export const cases = [
     category: 'Pet Health / Side Project',
     description:
       'From an insulin tracker for one cat to an app where a family and a pet sitter set up their own trackers and share the day’s tasks. Rebuilt after interviews with MVP users.',
-    metrics: ['MVP → v2', '12 beta testers'],
+    metrics: ['MVP → v2', '12 beta sign-ups'],
     surface: 'pet',
     image: {
       src: fluffyChumbHomeCover,
@@ -282,7 +282,7 @@ export const aiProjects = {
       category: 'Pet Health / Side Project',
       description:
         'Custom care trackers and a shared daily routine for the family and the pet sitter — the second version, rebuilt after interviews with MVP users.',
-      metrics: ['MVP → v2', '12 beta testers'],
+      metrics: ['MVP → v2', '12 beta sign-ups'],
       surface: 'pet',
       image: {
         src: fluffyChumbV2Cover,

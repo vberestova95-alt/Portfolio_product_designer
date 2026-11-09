@@ -89,7 +89,7 @@ export const cases = byId(en.cases, {
     category: 'Здоровье питомцев / Пет-проект',
     description:
       'От трекера инсулина для одного кота — к приложению, где семья и пет-ситтер настраивают свои трекеры и делят дела на день. Пересобрано после интервью с пользователями MVP.',
-    metrics: ['MVP → v2', '12 бета-тестеров'],
+    metrics: ['MVP → v2', '12 заявок на бету'],
     image: { ...entryOf(en.cases, 'cat-app').image, src: fluffyChumbHomeCoverRu, alt: 'Три экрана Fluffy Chumb: все трекеры, главная с трекерами питомца и инсулин с дозами за неделю' },
   },
   iquoto: {
@@ -155,7 +155,7 @@ export const aiProjects = {
       category: 'Здоровье питомцев / Пет-проект',
       description:
         'Свои трекеры ухода и общая рутина дня для семьи и пет-ситтера — вторая версия, пересобранная после интервью с пользователями MVP.',
-      metrics: ['MVP → v2', '12 бета-тестеров'],
+      metrics: ['MVP → v2', '12 заявок на бету'],
       image: { ...entryOf(en.aiProjects.items, 'cat-app').image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
     },
     'design-cringe': {
