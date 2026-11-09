@@ -174,7 +174,46 @@
   color: var(--ink-soft);
 }
 
+/*
+ * Spotless and the genetics audit: covers cut free of their backdrop, shown
+ * whole at their own ratio — no plate behind them and nothing cropped, on a
+ * phone too (they do not run out through the card's floor like the others).
+ */
+.work-card--spotless .work-card__visual,
+.work-card--genetics-audit .work-card__visual {
+  align-self: center;
+  min-height: 0;
+  border: 0;
+  background: none;
+}
+
+.work-card--spotless .work-card__visual > img,
+.work-card--genetics-audit .work-card__visual > img {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: none;
+  border-radius: var(--r-media);
+}
+
 /* ---------- Tablet and phone ---------- */
+
+/* Stacked, the other covers run out through the card's floor; these two keep
+   the whole frame and the card keeps its bottom padding, like IQuoto. */
+@media (max-width: 1240px) {
+  .work-card.work-card--spotless,
+  .work-card.work-card--genetics-audit {
+    padding-bottom: clamp(24px, 2.4vw, 40px);
+  }
+
+  .work-card.work-card--spotless .work-card__visual,
+  .work-card.work-card--genetics-audit .work-card__visual {
+    height: auto;
+    margin-bottom: 0;
+    border-radius: var(--r-media);
+  }
+}
 
 @media (max-width: 1279px) {
   .ai-pipeline__steps {
