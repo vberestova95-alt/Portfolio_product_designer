@@ -106,7 +106,13 @@ export const cases = byId(en.cases, {
     description:
       'Новый раздел приложения BetBoom, который собирает сезоны, задания и магазин. В брифе была страница сезонов — я предложила хаб.',
     metrics: ['Приложение и веб', '4 крайних случая'],
-    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: задания, топ заданий и виджет сезона в профиле' },
+    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: сезоны, профиль с виджетом зимнего сезона и хаб в светлой теме' },
+    frames: [
+      {
+        ...entryOf(en.cases, 'betboom-gamification-hub').frames[0],
+        alt: 'Экраны BetBoom: сезоны, хаб геймификации с заданиями, магазином и сезонами и хаб в светлой теме',
+      },
+    ],
   },
 });
 

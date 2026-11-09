@@ -1,5 +1,6 @@
 import betboomPassHomeMobile from '../assets/cases/betboom-pass-home-mobile.webp';
-import betboomEntryPointCover from '../assets/cases/betboom/cover.webp';
+import betboomHubHomeProfile from '../assets/cases/betboom-hub-home-profile.webp';
+import betboomHubHomeHub from '../assets/cases/betboom-hub-home-hub.webp';
 import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png';
 import iquotoDesktop from '../assets/cases/iquoto-desktop.png';
 import kokocMainDesktop from '../assets/cases/kokoc-main-desktop.png';
@@ -205,10 +206,17 @@ export const cases = [
       'A new section of the BetBoom app that brings seasons, tasks and the shop together. The brief asked for a seasons page; I proposed a hub.',
     metrics: ['App and web', '4 edge cases'],
     surface: 'ink',
+    // The way in: the season widget in the profile, then the hub it opens.
     image: {
-      src: betboomEntryPointCover,
-      alt: 'BetBoom screens: the task page, top tasks and the season widget in the app profile',
+      src: betboomHubHomeProfile,
+      alt: 'BetBoom screens: seasons, the app profile with the Winter season widget, and the hub in the light theme',
     },
+    frames: [
+      {
+        src: betboomHubHomeHub,
+        alt: 'BetBoom screens: seasons, the gamification hub with tasks, shop and seasons, and the hub in the light theme',
+      },
+    ],
     href: '/betboom-gamification-hub',
   },
 ];
