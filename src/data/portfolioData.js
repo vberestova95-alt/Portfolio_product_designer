@@ -1,6 +1,6 @@
-// TODO(p32b): placeholder — the BetBoom PASS EN cover until the designer's own one arrives.
-import betboomEntryPointCover from '../assets/cases/betboom/cover.webp';
-import betboomPassCover from '../assets/cases/betboom/pass-cover.webp';
+import betboomPassHomeMobile from '../assets/cases/betboom-pass-home-mobile.webp';
+import betboomHubHomeProfile from '../assets/cases/betboom-hub-home-profile.webp';
+import betboomHubHomeHub from '../assets/cases/betboom-hub-home-hub.webp';
 import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png';
 import iquotoDesktop from '../assets/cases/iquoto-desktop.png';
 import kokocMainDesktop from '../assets/cases/kokoc-main-desktop.png';
@@ -34,6 +34,9 @@ import conceptTravelBooking from '../assets/concepts/travel-booking.png';
 import conceptTravelLanding from '../assets/concepts/travel-landing.png';
 import conceptTravelPlaces from '../assets/concepts/travel-places.png';
 import conceptStayBookingLivingRoof from '../assets/concepts/stay-booking-living-roof.png';
+import betboomBannerOverlay from '../assets/betboom-banner-overlay.png';
+import betboomBannerVideo from '../assets/betboom-banner.webm';
+import betboomCoverImage from '../assets/betboom-cover.png';
 import profilePhoto from '../assets/profile-photo.jpg';
 import avitoLogo from '../assets/logos/avito.svg';
 import betboomLogo from '../assets/logos/betboom.svg';
@@ -89,7 +92,30 @@ export const profile = {
 export const cases = [
   {
     id: 'betboom-pass',
-    // The v4 cover: three PASS screens on a transparent ground, in English.
+    /*
+     * Composite cover: a still export of the interface with the banner clip
+     * played back on top. Figma's video export cannot composite video fills,
+     * so the two layers are reassembled here instead.
+     * Geometry is taken from the Figma frame (1058x967): the banner sits at
+     * x -35 / y 46 and is 1113 wide, clipped to 325 tall.
+     */
+    stage: { width: 1058, height: 967 },
+    motion: {
+      src: betboomBannerVideo,
+      left: '-3.308%',
+      top: '4.757%',
+      width: '105.198%',
+      height: '33.609%',
+      /*
+       * The banner's Fade rectangle darkens the clip so the headline stays
+       * readable. Figma exports it baked into the still, so it is rebuilt here
+       * from the original gradient stops (#121212 at 10% -> 100% alpha).
+       */
+      fade:
+        'linear-gradient(to bottom, rgba(18,18,18,0.1) 0%, rgba(18,18,18,0.1) 19.6%, rgba(18,18,18,0.413) 61.4%, rgba(18,18,18,0.696) 73%, rgba(18,18,18,0.862) 81.5%, rgba(18,18,18,1) 91.7%, rgba(18,18,18,1) 100%)',
+      // Headline, timer and reward card — sits above the fade, as in the file.
+      overlay: betboomBannerOverlay,
+    },
     title: 'BetBoom PASS',
     year: '2025–2026',
     category: 'Gamification / Core Product',
@@ -98,9 +124,16 @@ export const cases = [
     metrics: ['+60% DAU', '+75% retention'],
     surface: 'ink',
     image: {
-      src: betboomPassCover,
+      src: betboomCoverImage,
       alt: 'BetBoom PASS interface preview',
     },
+    // Then the mobile app, in English: flat screens, as on the other covers.
+    frames: [
+      {
+        src: betboomPassHomeMobile,
+        alt: 'Three BetBoom PASS mobile screens: tasks, the PASS home with the MSI 2025 season, and a switched task',
+      },
+    ],
     href: '/betboom-pass',
   },
   {
@@ -173,10 +206,17 @@ export const cases = [
       'A new section of the BetBoom app that brings seasons, tasks and the shop together. The brief asked for a seasons page; I proposed a hub.',
     metrics: ['App and web', '4 edge cases'],
     surface: 'ink',
+    // The way in: the season widget in the profile, then the hub it opens.
     image: {
-      src: betboomEntryPointCover,
-      alt: 'BetBoom screens: the task page, top tasks and the season widget in the app profile',
+      src: betboomHubHomeProfile,
+      alt: 'BetBoom screens: seasons, the app profile with the Winter season widget, and the hub in the light theme',
     },
+    frames: [
+      {
+        src: betboomHubHomeHub,
+        alt: 'BetBoom screens: seasons, the gamification hub with tasks, shop and seasons, and the hub in the light theme',
+      },
+    ],
     href: '/betboom-gamification-hub',
   },
 ];

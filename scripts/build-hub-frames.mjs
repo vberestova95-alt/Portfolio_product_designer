@@ -95,9 +95,11 @@ const TARGETS = {
   'k4-web-desktop': { kind: 'desktop', slot: 'k4-web-desktop' },
   'd1-widget-v1-v2-dark': { kind: 'wide', slot: 'd1-widget-v1-v2-dark' },
   'd1-widget-v1-v2-light': { kind: 'wide', slot: 'd1-widget-v1-v2-light' },
-  'scheme-r-user-path': { kind: 'wide', slot: 'scheme-r-user-path' },
-  'scheme-s1-business-vs-hub': { kind: 'wide', slot: 'scheme-s1-business-vs-hub' },
-  'scheme-s2-hub-ia': { kind: 'wide', slot: 'scheme-s2-hub-ia' },
+  // v2: the designer's schemes with neater arrows (2026-11-10). Their corners
+  // come transparent (r 40); `flatten` fills them with the scheme's ground.
+  'scheme-r-user-path': { kind: 'wide', slot: 'scheme-r-user-path-v2', flatten: true },
+  'scheme-s1-business-vs-hub': { kind: 'wide', slot: 'scheme-s1-business-vs-hub-v2', flatten: true },
+  'scheme-s2-hub-ia': { kind: 'wide', slot: 'scheme-s2-hub-ia-v2', flatten: true },
 }
 
 function parseArgs(argv) {
@@ -249,7 +251,18 @@ async function buildDesktop(spec, source) {
   return withInnerHairline(rounded, { radius, width: hairline, opacity: hairlineOpacity })
 }
 
-const buildWide = (spec, source) => sharp(source(spec.slot)).resize({ width: WIDE.width }).png().toBuffer()
+async function buildWide(spec, source) {
+  const image = sharp(source(spec.slot)).resize({ width: WIDE.width })
+  if (!spec.flatten) return image.png().toBuffer()
+  // The ground colour, from the middle of the top edge.
+  const { width } = await sharp(source(spec.slot)).metadata()
+  const data = await sharp(source(spec.slot))
+    .extract({ left: Math.round(width / 2), top: 4, width: 1, height: 1 })
+    .removeAlpha()
+    .raw()
+    .toBuffer()
+  return image.flatten({ background: { r: data[0], g: data[1], b: data[2] } }).png().toBuffer()
+}
 
 const BUILDERS = { phone: buildPhone, band: buildBand, desktop: buildDesktop, wide: buildWide }
 

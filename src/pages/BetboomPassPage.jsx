@@ -3,7 +3,12 @@ import { SiteFooter } from '../components/SiteFooter.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
 import { useUi } from '../i18n/LanguageContext.jsx';
 
-function LazyVideo({ src, alt, className = '', playbackRate = 1, poster }) {
+/*
+ * `ratio` (e.g. '1600 / 900') reserves the clip's box before anything loads,
+ * so the page does not grow under the reader as clips arrive — that shift is
+ * what threw Back to the wrong place on this long page.
+ */
+function LazyVideo({ src, alt, className = '', playbackRate = 1, poster, ratio }) {
   const videoRef = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
 
@@ -63,6 +68,7 @@ function LazyVideo({ src, alt, className = '', playbackRate = 1, poster }) {
       className={className}
       src={shouldLoad ? src : undefined}
       poster={poster}
+      style={ratio ? { aspectRatio: ratio } : undefined}
       aria-label={alt}
       autoPlay
       muted
@@ -370,6 +376,11 @@ function StatGrid({ items, className = '' }) {
  * WebM (VP9 with alpha) for Chrome and Firefox and HEVC with alpha (.mov) for
  * Safari; H.264 MP4 has no alpha. With reduced motion only the poster shows.
  * `fit: 'contain'` keeps the whole frame instead of cropping it to the slot.
+ *
+ * `phones` instead lays out a row of phones on one line, each in the same
+ * 1080×1440 showcase frame, cropped to the phone (no baked shadow), so all of
+ * them share one frame, one scale and one CSS shadow. A phone with `video`
+ * plays it over its still.
  */
 function HeroMedia({ image }) {
   const [reduceMotion] = useState(
@@ -378,6 +389,28 @@ function HeroMedia({ image }) {
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
   );
   const className = `case-hero__media${image.fit ? ` case-hero__media--${image.fit}` : ''}`;
+
+  if (image.phones) {
+    return (
+      <div className="case-hero__media case-hero__media--phones" role="img" aria-label={image.alt}>
+        {image.phones.map((phone) => (
+          <div key={phone.src} className="case-hero__phone">
+            <div className="case-hero__phone-frame">
+              {phone.video && !reduceMotion ? (
+                <video poster={phone.src} aria-hidden="true" autoPlay muted loop playsInline>
+                  {phone.video.sources.map((source) => (
+                    <source key={source.src} src={source.src} type={source.type} />
+                  ))}
+                </video>
+              ) : (
+                <img src={phone.src} alt="" />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className={className}>
@@ -739,6 +772,7 @@ function CaseMedia({ media, className = '' }) {
         src={media.src}
         poster={media.poster}
         alt={media.alt}
+        ratio={media.ratio}
       />
     );
   }

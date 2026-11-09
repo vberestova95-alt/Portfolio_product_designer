@@ -42,7 +42,6 @@ import betboomEntryMaxLevel from '../assets/cases/betboom/entry-max-level.webp';
 import betboomEntryWeb from '../assets/cases/betboom/entry-web.webp';
 import betboomDesktopBefore from '../assets/cases/betboom/desktop-before.webp';
 import betboomDesktopAfter from '../assets/cases/betboom/desktop-after.webp';
-import betboomTaskDetail from '../assets/cases/betboom/task-detail.webp';
 import betboomDetailRewardDeadline from '../assets/cases/betboom/detail-reward-deadline.webp';
 import betboomDetailCategoryFilters from '../assets/cases/betboom/detail-category-filters.webp';
 import betboomDetailSportEsports from '../assets/cases/betboom/detail-sport-esports.webp';
@@ -53,9 +52,9 @@ import betboomSchemeConflictRule from '../assets/cases/betboom/scheme-conflict-r
 import betboomSchemeSwitching from '../assets/cases/betboom/scheme-switching.webp';
 import betboomSchemeOnboarding from '../assets/cases/betboom/scheme-onboarding.webp';
 import betboomSchemeEntryPoints from '../assets/cases/betboom/scheme-entry-points.webp';
-import betboomCoverAnimPoster from '../assets/cases/betboom/cover-anim-poster.webp';
-import betboomCoverAnimWebm from '../assets/cases/betboom/cover-anim.webm';
-import betboomCoverAnimMov from '../assets/cases/betboom/cover-anim.mov';
+import betboomHeroPhoneProfile from '../assets/cases/betboom/hero-phone-profile.webp';
+import betboomHeroPhoneSwitching from '../assets/cases/betboom/hero-phone-switching.webp';
+import betboomHubHeroPhone from '../assets/cases/betboom/hub-hero-phone.webp';
 import betboomTasksAfterVideo from '../assets/cases/betboom/tasks-after.mp4';
 import betboomSwitchFlowVideo from '../assets/cases/betboom/switch-flow.mp4';
 import betboomCategoryBarVideo from '../assets/cases/betboom/category-bar.mp4';
@@ -605,19 +604,19 @@ export const betboomPassCaseStudy = {
     description:
       'A bonus programme where users complete tasks and earn free bets, skins and prizes. It started as an esports marketing tool. Over a year I turned it into a product section that carries classic sports too, without losing the esports audience.',
     meta: 'Product Designer / 2025-2026',
-    // The cover animation on a transparent ground: HEVC with alpha for Safari
-    // first (other browsers skip the type), WebM VP9 with alpha for the rest.
-    // Without either, the poster stays.
+    // Three phones in a row, as in the Fluffy Chumb LinkedIn clip: the same
+    // phone frames as the showcase below, on a light ground. The middle one
+    // plays the task detail clip (its loop is seamless).
     image: {
-      src: betboomCoverAnimPoster,
-      alt: 'Three BetBoom PASS screens: the task page in the app, a task with stake tiers, and the season widget in the BetBoom app profile',
-      fit: 'contain',
-      video: {
-        sources: [
-          { src: betboomCoverAnimMov, type: 'video/quicktime; codecs="hvc1"' },
-          { src: betboomCoverAnimWebm, type: 'video/webm; codecs="vp9"' },
-        ],
-      },
+      alt: 'Three BetBoom PASS screens: the season widget in the BetBoom app profile, a hockey task with stake tiers opening from the task page, and the “These tasks conflict” popup that offers to switch tasks',
+      phones: [
+        { src: betboomHeroPhoneProfile },
+        {
+          src: betboomShowcaseTaskDetailPoster,
+          video: betboomShowcaseClip(betboomShowcaseTaskDetailMov, betboomShowcaseTaskDetailWebm),
+        },
+        { src: betboomHeroPhoneSwitching },
+      ],
     },
     stats: [
       { value: '+75%', label: 'Retention, over the testing period' },
@@ -816,6 +815,7 @@ export const betboomPassCaseStudy = {
               media: {
                 type: 'video',
                 src: betboomAbTestRuVideo,
+                ratio: '1600 / 924',
                 alt: 'The original A/B test recording, in Russian: classic sports task cards in the existing esports catalog',
               },
               caption: 'Original, in Russian.',
@@ -824,6 +824,7 @@ export const betboomPassCaseStudy = {
               media: {
                 type: 'video',
                 src: betboomAbTestVideo,
+                ratio: '1600 / 900',
                 alt: 'EN version: the top carousel slides to the next esports tournament, the page loads and a task opens in a popup',
               },
             },
@@ -927,11 +928,6 @@ export const betboomPassCaseStudy = {
               src: betboomCategoryBar2,
               alt: 'Category bar with Table tennis selected',
               caption: 'Pick a category',
-            },
-            {
-              src: betboomTaskDetail,
-              alt: 'Task detail: hockey bets from 500 to 100 000 ₽, stake tiers 500, 1 200, 2 000 and 3 000 ₽ with token and XP rewards',
-              caption: 'Task detail: stake tiers and rewards',
             },
           ],
           caption: betboomWidgetCredit,
@@ -1042,6 +1038,7 @@ export const betboomPassCaseStudy = {
           media: {
             type: 'video',
             src: betboomRedesignVideo,
+            ratio: '1800 / 614',
             alt: 'Task card before and after: the old card with a large illustration, then a scrolling column of the new cards',
           },
           caption: 'Before: the illustration led. After: the condition, reward and deadline lead.',
@@ -1057,13 +1054,6 @@ export const betboomPassCaseStudy = {
               variant: 'whole',
               caption: 'Filters moved to category, because that is how people actually searched.',
               credit: 'Category bar UI: a second designer.',
-            },
-            {
-              src: betboomTaskDetail,
-              alt: 'Task detail: hockey bets from 500 to 100 000 ₽, stake tiers 500, 1 200, 2 000 and 3 000 ₽ with token and XP rewards',
-              span: 'third',
-              variant: 'whole',
-              caption: 'Task detail: stake tiers and rewards.',
             },
             {
               src: betboomDetailPromoTask,
@@ -1240,6 +1230,7 @@ export const betboomPassCaseStudy = {
           media: {
             type: 'video',
             src: betboomCategoryBarVideo,
+            ratio: '1800 / 248',
             poster: betboomCategoryBarPoster,
             alt: 'The category bar on desktop: esports and sports icons with sort chips below; Valorant, then Hockey, then All are picked in turn',
           },
@@ -1262,7 +1253,7 @@ export const betboomPassCaseStudy = {
           type: 'beforeAfterSlider',
           before: {
             src: betboomDesktopBefore,
-            alt: 'Desktop task page before the redesign: cards led by sport conditions and illustrations',
+            alt: 'Desktop task page before the redesign: the BetBoom site header, the MSI 2025 promo banner, category icons and cards led by sport conditions',
           },
           after: {
             src: betboomDesktopAfter,
@@ -1277,6 +1268,7 @@ export const betboomPassCaseStudy = {
           media: {
             type: 'video',
             src: betboomDesktopAfterVideo,
+            ratio: '1600 / 900',
             poster: betboomDesktopAfterPoster,
             alt: 'Desktop task page after the redesign: the MSI 2025 hero, a scroll down to the category bar and the task grid, and hovers over categories',
           },
@@ -1364,11 +1356,12 @@ export const betboomGamificationHubCaseStudy = {
     description:
       'A new section of the BetBoom app that brings seasons, tasks and the shop together. The brief asked for a seasons page. I proposed a hub instead and designed its architecture.',
     meta: 'Product Designer / 2026',
+    // The profile with season progress in the same phone as the PASS hero, on
+    // the same light ground.
     image: {
       // TODO(p32b): cover from the designer — the hub with an active season, the profile widget and the web season list.
-      src: betboomEntryProgress,
       alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
-      fit: 'contain',
+      phones: [{ src: betboomHubHeroPhone }],
     },
     // No metrics yet: facts from the layouts, as the editor proposed.
     stats: [

@@ -14,7 +14,7 @@
  * Clips are re-encoded to H.264 without sound, under 2 MB.
  */
 import { copyFile, mkdir, stat, writeFile } from 'node:fs/promises'
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import sharp from 'sharp'
@@ -30,18 +30,19 @@ const IMAGES = {
   // The static PASS cover, for its card on the home page. Not `cover`: that
   // file is the Gamification hub card's picture.
   'pass-cover': { file: '06-cover-v4.png' },
-  // Poster of the cover animation: its first frame, transparent around the screens.
-  'cover-anim-poster': { file: '06-cover-anim-v4-poster.png' },
   // The season widget frame; the showcase itself is animated now, it stays
   // as the picture of the next case teaser.
   'showcase-entry-point': { file: '05-showcase-entry-point.png', phone: true },
   // Showcase posters: the first frame of each WebM, with its alpha, so nothing
   // shows behind the phone before the clip starts.
-  'showcase-tasks-poster': { webm: 'showcase-tasks-anim-v3.webm' },
-  'showcase-widget-poster': { webm: 'showcase-widget-anim-v3.webm' },
-  'showcase-task-detail-poster': { webm: 'showcase-task-detail-anim-v3.webm' },
-  'showcase-switching-poster': { webm: 'showcase-switching-anim-v3.webm' },
+  'showcase-tasks-poster': { webm: 'showcase-tasks-anim-v3.webm', repaired: 'showcase-tasks' },
+  'showcase-widget-poster': { webm: 'showcase-widget-anim-v3.webm', repaired: 'showcase-widget' },
+  'showcase-task-detail-poster': { webm: 'showcase-task-detail-anim-v3.webm', repaired: 'showcase-task-detail' },
+  'showcase-switching-poster': { webm: 'showcase-switching-anim-v3.webm', repaired: 'showcase-switching' },
   'showcase-category-bar-poster': { webm: 'showcase-category-bar-anim-v3.webm' },
+  // Hero row, right phone: the “These tasks conflict” popup, from the switching
+  // clip. Not the open “Your tasks” widget: that UI is a second designer's.
+  'hero-phone-switching': { webm: 'showcase-switching-anim-v3.webm', repaired: 'showcase-switching', at: 3 },
   // Posters of the v3 clips: the first frame of each, so the swap is seamless.
   'swap-conflict': { file: '10-switch-flow-anim-v3-poster.png', phone: true },
   'swap-return': { file: '11-switch-return-task.png', phone: true },
@@ -57,13 +58,16 @@ const IMAGES = {
   'onboarding-difficulty': { file: '21-onboarding-difficulty-v3.png', phone: true },
   'onboarding-tooltip': { file: '22-onboarding-balance-tooltip.png', phone: true },
   'entry-no-level': { file: '23-entry-profile-no-level.png', phone: true },
-  'entry-progress': { file: '24-entry-profile-progress.png', phone: true },
+  // v2: the designer's take with a thin light edge (22 %), so the dark screen
+  // does not merge with a dark ground.
+  'entry-progress': { file: '24-entry-profile-progress-v2.png', phone: true },
   'entry-season-timer': { file: '25-entry-profile-season-timer.png', phone: true },
   'entry-max-level': { file: '26-entry-profile-max-level.png', phone: true },
   'entry-web': { file: '27-entry-web-sidebar.png', radius: 24 },
-  'desktop-before': { file: '28-desktop-before-slider-v3.png', width: 1920 },
+  // The user's pick: the very first "before" (Figma 14-2), not the v3 frame,
+  // which already showed the new category bar.
+  'desktop-before': { file: '28-desktop-before-slider.png', width: 1920 },
   'desktop-after': { file: '29-desktop-after-slider-v3b.png', width: 1920 },
-  'task-detail': { file: '30-task-detail-v3.png', phone: true },
   'detail-reward-deadline': { file: '31-detail-reward-deadline-v3.png', width: 1800 },
   'detail-category-filters': { file: '32-category-filters-screen-v3.png', phone: true },
   'desktop-after-anim-poster': { file: '29-desktop-after-anim-v3-poster.png', width: 1600 },
@@ -82,7 +86,9 @@ const IMAGES = {
   'scheme-conflict-rule': { file: '42-scheme-conflict-rule.png', width: 1800 },
   'scheme-switching': { file: '43-scheme-switching-asis-tobe.png', width: 1800 },
   'scheme-onboarding': { file: '44-scheme-onboarding-contexts.png', width: 1800 },
-  'scheme-entry-points': { file: '45-scheme-entry-points.png', width: 1800 },
+  // v2: neater arrows. Its corners come transparent (r 40): `flatten` fills
+  // them with the scheme's own ground, like the other schemes.
+  'scheme-entry-points': { file: '45-scheme-entry-points-v2.png', width: 1800, flatten: true },
 }
 
 const CLIPS = {
@@ -98,24 +104,47 @@ const CLIPS = {
 }
 
 /*
- * Files that go in as the designer exported them. The cover animation keeps its
- * alpha only in these two encodings — WebM VP9 (Chrome, Firefox) and HEVC .mov
+ * Files that go in as the designer exported them. A clip keeps its alpha only
+ * in these two encodings — WebM VP9 (Chrome, Firefox) and HEVC .mov
  * (Safari) — and re-encoding with ffmpeg here would drop it.
  */
 const COPIES = {
-  'cover-anim.webm': '06-cover-anim-v4.webm',
-  'cover-anim.mov': '06-cover-anim-v4.mov',
-  'showcase-tasks.webm': 'showcase-tasks-anim-v3.webm',
-  'showcase-tasks.mov': 'showcase-tasks-anim-v3.mov',
-  'showcase-widget.webm': 'showcase-widget-anim-v3.webm',
-  'showcase-widget.mov': 'showcase-widget-anim-v3.mov',
-  'showcase-task-detail.webm': 'showcase-task-detail-anim-v3.webm',
-  'showcase-task-detail.mov': 'showcase-task-detail-anim-v3.mov',
-  'showcase-switching.webm': 'showcase-switching-anim-v3.webm',
-  'showcase-switching.mov': 'showcase-switching-anim-v3.mov',
   'showcase-category-bar.webm': 'showcase-category-bar-anim-v3.webm',
   'showcase-category-bar.mov': 'showcase-category-bar-anim-v3.mov',
 }
+
+/*
+ * Showcase clips that open on the task page. In the export the game badge on
+ * the top task card is clipped by the card: its right side is cut flat (the
+ * user: "the icon on the top tasks is cut off"). Each frame is repaired by
+ * mirroring the badge's left half over the cut, then the clip is encoded again
+ * in both alpha formats. The posters come from the repaired WebM.
+ */
+const BADGE_REPAIRS = {
+  'showcase-tasks': 'showcase-tasks-anim-v3.webm',
+  'showcase-widget': 'showcase-widget-anim-v3.webm',
+  'showcase-task-detail': 'showcase-task-detail-anim-v3.webm',
+  'showcase-switching': 'showcase-switching-anim-v3.webm',
+}
+// Where the top card's badge sits in the 1080×1440 v3 frame: its rows, its
+// middle and its half height and half width. The phone's own edge is at x 841.
+const BADGE = { top: 349, bottom: 389, middle: 369, halfHeight: 18.5, radius: 21, maxCut: 835 }
+
+/*
+ * Hero row, left phone: the profile with the season widget (the PASS entry
+ * point) in the same phone as the showcase clips, so the three hero phones
+ * share one frame, one scale and one crop. The flat screen goes into the
+ * screen of a showcase frame, and the Dynamic Island is laid back on top.
+ */
+const HERO_PHONES = {
+  'hero-phone-profile': { frame: 'showcase-widget-anim-v3-poster.png', screen: '05-showcase-entry-point.png' },
+  // The Gamification hub hero: the profile with season progress, in the same
+  // phone (the screen without the v2 edge — the phone gives it one).
+  'hub-hero-phone': { frame: 'showcase-widget-anim-v3-poster.png', screen: '24-entry-profile-progress.png' },
+}
+// The screen and the island in the 1080×1440 v3 frame.
+const V3_SCREEN = { left: 258, top: 110, width: 563, height: 1218, radius: 69 }
+const V3_ISLAND = { left: 450, top: 127, width: 184, height: 56 }
 
 function parseArgs(argv) {
   const args = { src: null, only: null }
@@ -141,6 +170,12 @@ async function prepare(file, spec) {
   const height = Math.round((meta.height * width) / meta.width)
   const radius = spec.phone ? Math.round((PHONE.radius * width) / PHONE.width) : spec.radius ?? 0
   let image = sharp(file).resize(width, height)
+  if (spec.flatten) {
+    // The ground colour, from the middle of the top edge.
+    const data = await sharp(file).extract({ left: Math.round(meta.width / 2), top: 4, width: 1, height: 1 })
+      .removeAlpha().raw().toBuffer()
+    image = image.flatten({ background: { r: data[0], g: data[1], b: data[2] } })
+  }
   if (radius) {
     image = sharp(await image.png().toBuffer()).composite([
       { input: roundedMask(width, height, radius), blend: 'dest-in' },
@@ -163,15 +198,137 @@ async function encode({ buffer, width }) {
 }
 
 // The first frame of a VP9 WebM with its alpha: ffmpeg needs libvpx to decode it.
-function firstFrame(webm) {
+function firstFrame(webm, at = 0) {
   return execFileSync('ffmpeg', [
-    '-loglevel', 'error', '-c:v', 'libvpx-vp9', '-i', webm,
+    '-loglevel', 'error', '-c:v', 'libvpx-vp9', '-ss', String(at), '-i', webm,
     '-frames:v', '1', '-f', 'image2pipe', '-vcodec', 'png', '-',
   ])
 }
 
+const luma = (frame, i) => frame[i] + frame[i + 1] + frame[i + 2]
+
+// Finds the flat cuts (a column of badge pixels with background right after)
+// and paints the missing right side as a mirror of the left one. The centre
+// comes from the badge's own left edge: while the carousel slides, the card
+// moves under the badge and the cut wanders.
+function repairBadge(frame, width) {
+  const solid = (x, y) => luma(frame, (y * width + x) * 4) > 140
+  for (let x = 300; x < BADGE.maxCut; x += 1) {
+    let lit = 0
+    let after = 0
+    for (let y = BADGE.top + 2; y < BADGE.bottom - 3; y += 1) {
+      const v = luma(frame, (y * width + x) * 4)
+      const next = luma(frame, (y * width + x + 1) * 4)
+      if (v > 140 && v < 330) lit += 1
+      if (next > 140) after += 1
+    }
+    if (lit < 20 || after >= 4) continue
+    // The badge's left edge in each row: the start of the solid run that
+    // reaches the cut.
+    const lefts = new Map()
+    for (let y = BADGE.top; y <= BADGE.bottom; y += 1) {
+      if (!solid(x, y)) continue
+      let left = x
+      while (left > x - 2 * BADGE.radius && solid(left - 1, y)) left -= 1
+      lefts.set(y, left)
+    }
+    if (lefts.size < 20) continue
+    // The third smallest edge: a row or two run on along the card's top border.
+    const centre = [...lefts.values()].sort((a, b) => a - b)[2] + BADGE.radius
+    if (centre > x) continue
+    // The badge's own fill, from just inside the cut (the logo is brighter).
+    const fill = [0, 0, 0]
+    let samples = 0
+    for (let y = BADGE.top + 10; y <= BADGE.bottom - 10; y += 1) {
+      const at = (y * width + x - 1) * 4
+      const v = luma(frame, at)
+      if (v <= 140 || v >= 330) continue
+      for (let c = 0; c < 3; c += 1) fill[c] += frame[at + c]
+      samples += 1
+    }
+    if (!samples) continue
+    for (let c = 0; c < 3; c += 1) fill[c] /= samples
+    // The missing right side is drawn as the badge's shape (an oval a little
+    // wider than tall), anti-aliased, in the badge's fill.
+    for (let y = BADGE.top; y <= BADGE.bottom; y += 1) {
+      const dy = (y + 0.5 - BADGE.middle) / BADGE.halfHeight
+      if (Math.abs(dy) >= 1) continue
+      const right = centre + 0.5 + BADGE.radius * Math.sqrt(1 - dy * dy)
+      for (let rx = x + 1; rx < right + 1; rx += 1) {
+        const cover = Math.min(1, Math.max(0, right - rx))
+        const to = (y * width + rx) * 4
+        for (let c = 0; c < 3; c += 1) frame[to + c] = Math.round(frame[to + c] * (1 - cover) + fill[c] * cover)
+      }
+    }
+    x += 2 * BADGE.radius
+  }
+}
+
+async function repairClip(slot, file, src) {
+  const width = 1080
+  const height = 1440
+  const size = width * height * 4
+  const raw = ['-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', `${width}x${height}`, '-r', '30', '-i', '-']
+  const encoders = [
+    spawn('ffmpeg', ['-y', '-loglevel', 'error', ...raw, '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p',
+      '-b:v', '0', '-crf', '30', '-row-mt', '1', '-auto-alt-ref', '0', path.join(outDir, `${slot}.webm`)]),
+    spawn('ffmpeg', ['-y', '-loglevel', 'error', ...raw, '-c:v', 'hevc_videotoolbox', '-alpha_quality', '0.75',
+      '-b:v', '650k', '-tag:v', 'hvc1', '-movflags', '+faststart', path.join(outDir, `${slot}.mov`)]),
+  ]
+  const done = encoders.map((encoder) => new Promise((resolve, reject) => {
+    encoder.on('close', (code) => (code ? reject(new Error(`${slot}: ffmpeg exited ${code}`)) : resolve()))
+  }))
+  const decoder = spawn('ffmpeg', ['-loglevel', 'error', '-c:v', 'libvpx-vp9', '-i', path.join(src, file),
+    '-f', 'rawvideo', '-pix_fmt', 'rgba', '-'])
+  let pending = Buffer.alloc(0)
+  let frames = 0
+  for await (const chunk of decoder.stdout) {
+    pending = Buffer.concat([pending, chunk])
+    while (pending.length >= size) {
+      const frame = Buffer.from(pending.subarray(0, size))
+      pending = pending.subarray(size)
+      repairBadge(frame, width)
+      frames += 1
+      await Promise.all(encoders.map((encoder) =>
+        encoder.stdin.write(frame) ? null : new Promise((resolve) => encoder.stdin.once('drain', resolve))))
+    }
+  }
+  encoders.forEach((encoder) => encoder.stdin.end())
+  await Promise.all(done)
+  for (const ext of ['webm', 'mov']) {
+    const { size: bytes } = await stat(path.join(outDir, `${slot}.${ext}`))
+    console.log(`${slot}.${ext}  ${frames} frames, badge repaired  ${Math.round(bytes / 1024)} KB`)
+  }
+}
+
+async function buildHeroPhone(slot, spec, src) {
+  const frame = path.join(src, spec.frame)
+  const { left, top, width, height, radius } = V3_SCREEN
+  const screen = await sharp(path.join(src, spec.screen))
+    .resize(width, height)
+    .composite([{ input: roundedMask(width, height, radius), blend: 'dest-in' }])
+    .png()
+    .toBuffer()
+  const island = await sharp(frame)
+    .extract(V3_ISLAND)
+    .composite([{ input: roundedMask(V3_ISLAND.width, V3_ISLAND.height, V3_ISLAND.height / 2), blend: 'dest-in' }])
+    .png()
+    .toBuffer()
+  const buffer = await sharp(frame)
+    .composite([
+      { input: screen, left, top },
+      { input: island, left: V3_ISLAND.left, top: V3_ISLAND.top },
+    ])
+    .png()
+    .toBuffer()
+  const { webp, quality, size } = await encode({ buffer, width: 1080 })
+  await writeFile(path.join(outDir, `${slot}.webp`), webp)
+  console.log(`${slot}.webp  ${size}px  q${quality}  ${Math.round(webp.length / 1024)} KB`)
+}
+
 async function buildImage(slot, spec, src) {
-  const input = spec.webm ? firstFrame(path.join(src, spec.webm)) : path.join(src, spec.file)
+  const clip = spec.repaired ? path.join(outDir, `${spec.repaired}.webm`) : path.join(src, spec.webm ?? '')
+  const input = spec.webm ? firstFrame(clip, spec.at) : path.join(src, spec.file)
   const prepared = await prepare(input, spec)
   const { webp, quality, size } = await encode(prepared)
   const target = path.join(outDir, `${slot}.webp`)
@@ -199,8 +356,15 @@ const args = parseArgs(process.argv.slice(2))
 await mkdir(outDir, { recursive: true })
 const wanted = (slot) => !args.only || args.only.includes(slot)
 
+// Before the images: the showcase posters are cut from the repaired clips.
+for (const [slot, file] of Object.entries(BADGE_REPAIRS)) {
+  if (wanted(slot)) await repairClip(slot, file, args.src)
+}
 for (const [slot, spec] of Object.entries(IMAGES)) {
   if (wanted(slot)) await buildImage(slot, spec, args.src)
+}
+for (const [slot, spec] of Object.entries(HERO_PHONES)) {
+  if (wanted(slot)) await buildHeroPhone(slot, spec, args.src)
 }
 for (const [slot, spec] of Object.entries(CLIPS)) {
   if (wanted(slot)) await buildClip(slot, spec, args.src)

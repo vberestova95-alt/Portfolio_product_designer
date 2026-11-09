@@ -62,6 +62,12 @@ export const cases = byId(en.cases, {
       'Редизайн core-продукта геймификации, который вырос из киберспортивных механик и вышел на широкую спортивную аудиторию.',
     metrics: ['+60% DAU', '+75% retention'],
     image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Интерфейс BetBoom PASS' },
+    frames: [
+      {
+        ...entryOf(en.cases, 'betboom-pass').frames[0],
+        alt: 'Три мобильных экрана BetBoom PASS: задания, главная PASS с сезоном MSI 2025 и смена задания',
+      },
+    ],
   },
   'yandex-news': {
     title: 'Яндекс Новости Турция',
@@ -100,7 +106,13 @@ export const cases = byId(en.cases, {
     description:
       'Новый раздел приложения BetBoom, который собирает сезоны, задания и магазин. В брифе была страница сезонов — я предложила хаб.',
     metrics: ['Приложение и веб', '4 крайних случая'],
-    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: задания, топ заданий и виджет сезона в профиле' },
+    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: сезоны, профиль с виджетом зимнего сезона и хаб в светлой теме' },
+    frames: [
+      {
+        ...entryOf(en.cases, 'betboom-gamification-hub').frames[0],
+        alt: 'Экраны BetBoom: сезоны, хаб геймификации с заданиями, магазином и сезонами и хаб в светлой теме',
+      },
+    ],
   },
 });
 
