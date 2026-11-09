@@ -151,7 +151,7 @@ export const cases = [
     year: '2025',
     category: 'Pet Health / Side Project',
     description:
-      'From an insulin tracker for one cat to an app where a family and a pet sitter share the day’s care tasks. Rebuilt after interviews and demos.',
+      'From an insulin tracker for one cat to an app where a family and a pet sitter set up their own trackers and share the day’s tasks. Rebuilt after interviews with MVP users.',
     metrics: ['MVP → v2', '12 beta testers'],
     surface: 'pet',
     image: {
@@ -252,7 +252,7 @@ export const aiProjects = {
       title: 'Fluffy Chumb',
       category: 'Pet Health / Side Project',
       description:
-        'A shared daily care routine for the family and the pet sitter — the second version, rebuilt after interviews and demos.',
+        'Custom care trackers and a shared daily routine for the family and the pet sitter — the second version, rebuilt after interviews with MVP users.',
       metrics: ['MVP → v2', '12 beta testers'],
       surface: 'pet',
       image: {

@@ -36,9 +36,11 @@ import fluffyChumbBrandFirstGuide from '../assets/cases/fluffy-chumb/brand/03-fi
 import fluffyChumbBrandLogoTakes from '../assets/cases/fluffy-chumb/brand/04-logo-takes.webp';
 import fluffyChumbBrandBook from '../assets/cases/fluffy-chumb/brand/05-brand-book.webp';
 import fluffyChumbBrandPalette from '../assets/cases/fluffy-chumb/brand/06-palette.webp';
+import fluffyChumbBrandToolTiles from '../assets/cases/fluffy-chumb/brand/07-tool-tiles.webp';
 import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.webp';
 import fluffyChumbV2Screens from '../assets/cases/fluffy-chumb-v2-screens.webp';
 import fluffyChumbFeatureInjectionMap from '../assets/cases/fluffy-chumb/features/injection-map.webp';
+import fluffyChumbFeatureBuilder from '../assets/cases/fluffy-chumb/features/builder.webp';
 import fluffyChumbFeatureHistory from '../assets/cases/fluffy-chumb/features/history.webp';
 import fluffyChumbFeatureFamily from '../assets/cases/fluffy-chumb/features/family.webp';
 import kokocCaseHero from '../assets/cases/kokoc-main-desktop.png';
@@ -86,7 +88,7 @@ export const catAppCaseStudy = {
   hero: {
     title: 'Fluffy Chumb',
     description:
-      'We built an insulin tracker for our own cat. Interviews with an owner of a diabetic cat and demos showed that care is not one task but many small ones shared by several people. Version two is a mobile app for the daily routine the whole household shares; diabetes is one of the scenarios.',
+      'We built an insulin tracker for our own cat. Interviews with an owner of a diabetic cat and demos showed that care is not one task but many small ones shared by several people. Version two is about flexible trackers and a daily routine the whole household shares.',
     meta: 'Pet care tracker / Side project / MVP → v2',
     image: {
       src: fluffyChumbV2Cover,
@@ -187,7 +189,7 @@ export const catAppCaseStudy = {
               heading: '5. Deciding on version two · 22–26 October',
               paragraphs: [
                 'In late October I moved the web MVP into Figma as it was — 24 screens, 8 flows — and audited it. Then I reviewed 14 care and health apps. Family apps reduce care to a tick with no data; disease trackers leave the family out.',
-                'A protocol for a pet with kidney disease — drips twice a day plus pills — did not fit a tracker built for one disease. On 26 October we chose a new model: one daily list of care tasks for the whole household, with diabetes as one of the scenarios. Version two became a mobile app for iOS and Android on that model.',
+                'A protocol for a pet with kidney disease — drips twice a day plus pills — did not fit a tracker built for one disease. On 26 October we chose a new model: trackers are a set of tools, and their schedules feed one daily list for the household. Version two became a mobile app for iOS and Android on that model.',
               ],
             },
           ],
@@ -273,8 +275,8 @@ export const catAppCaseStudy = {
               type: 'text',
               heading: 'Diabetes features are niche',
               paragraphs: [
-                'Diabetes became one of the scenarios: insulin and glucose sit in the same daily routine, next to other care tasks.',
-                'Confirmed in my demos.',
+                'Diabetes became a ready-made set of two trackers. At onboarding each household picks its trackers, and anyone can build their own.',
+                'Confirmed in my demos. Whether people get to their first custom tracker, the beta will show.',
               ],
             },
           ],
@@ -289,7 +291,7 @@ export const catAppCaseStudy = {
         {
           type: 'richTextLead',
           paragraphs: [
-            'New positioning: not a diabetes tracker, but Fluffy Chumb — a care app for a pet and everyone who looks after it. Diabetes is now one of the scenarios.',
+            'New positioning: not a diabetes tracker, but Fluffy Chumb — a care tracker that changes together with your pet. Care is assembled from your own trackers, and diabetes is now one of them.',
           ],
         },
         {
@@ -298,7 +300,7 @@ export const catAppCaseStudy = {
           media: {
             type: 'image',
             src: fluffyChumbV2Screens,
-            alt: 'Fluffy Chumb screens: home, insulin, history and family',
+            alt: 'Fluffy Chumb screens: home, choosing trackers, trackers, the tracker builder, insulin, history and family',
           },
         },
         {
@@ -306,9 +308,9 @@ export const catAppCaseStudy = {
           title: 'How the brand took shape',
           items: [
             '25–26 Oct: 14 logo takes, starting with a “smart health tracker” — a paw with a pulse line. Along the way came style concepts and a first brand guide — a cloud-and-paw logo on a Navy palette. On it: the “Daily routine” home screen, MVP v1 (12 screens) and UI Kit v1.',
-            '25–26 Oct: Flows v1, 53 screens.',
-            '27 Oct: the brand was rebuilt for version two: a brand book, the final design file (~90 screens) and the beta landing page. Navy left the palette, and the logo became “Fluffy Chumb” in capitals. The final palette is Graphite #232121 and Cream #F2F2F2.',
-            'Each tracker has its own tile tint, shape and fur. In our layouts the fur contrasts with its tile.',
+            '25–26 Oct: Flows v1, 53 screens. On 26 Oct came the product formula: a tracker is a set of tools, and their schedules feed one daily list.',
+            '27 Oct: the brand was rebuilt around that formula — “a set of tools”: a brand book, the final design file (~90 screens) and the beta landing page. Navy left the palette, and the logo became “Fluffy Chumb” in capitals. The final palette is Graphite #232121 and Cream #F2F2F2.',
+            'Built-in trackers have a fixed tile tint, shape and fur; a custom tracker is built from the same parts. In our layouts the fur contrasts with its tile. In the tracker builder people pick any combination — no limits and no hints.',
           ],
           tiles: [
             {
@@ -341,6 +343,12 @@ export const catAppCaseStudy = {
               caption: 'Graphite #232121 · Cream #F2F2F2',
               alt: 'The final palette: Graphite #232121 and Cream #F2F2F2',
             },
+            {
+              src: fluffyChumbBrandToolTiles,
+              date: '27 Oct',
+              caption: 'A set of tools: tile tint, shape and fur',
+              alt: 'A set of tools: the Diabetes, Glucose, Mood and Custom tracker tiles, each with its own tint, shape and fur',
+            },
           ],
           wide: {
             src: fluffyChumbBrandLogoTakes,
@@ -365,8 +373,12 @@ export const catAppCaseStudy = {
             },
             {
               type: 'list',
-              heading: 'Diabetes',
-              items: ['Insulin and Glucose work separately — the injection map is only for those who inject.'],
+              heading: 'Flexible trackers',
+              items: [
+                'A tracker builder: name, fields (number, scale, yes / no, note), a tile with its own shape and fur, a rhythm, pin to Home.',
+                'Simple trackers for pills, vitamins, walks and food; Mood is a ready-made preset.',
+                'Diabetes is a ready-made set of Insulin and Glucose, and each works on its own — the injection map only for those who inject.',
+              ],
             },
           ],
         },
@@ -385,6 +397,13 @@ export const catAppCaseStudy = {
             // Final (374:16898, 374:16970). Once they are exported, add the tile
             // here and make the injection map a half next to it. Caption:
             // 'Tick a task in one tap, or tap Not now to be reminded later or skip with a reason the family sees; a done task shows who marked it.'
+            {
+              src: fluffyChumbFeatureBuilder,
+              alt: 'Tracker builder in four steps: name and kind of care, the fields each log asks for, tile, shape and fur, rhythm and reminders',
+              span: 'full',
+              variant: 'phones-wide',
+              caption: 'Make a tracker for anything: name it, pick the fields, choose a tile, shape and fur, and set the rhythm with reminders on this phone.',
+            },
             {
               src: fluffyChumbFeatureHistory,
               alt: 'History for 7 days with glucose and insulin charts, and the export sheet with a text summary or a CSV file',
@@ -479,7 +498,7 @@ export const catAppCaseStudy = {
           type: 'noteCard',
           title: 'What the beta will show',
           items: [
-            'How long setup takes.',
+            'Whether people get to their first custom tracker, and how long setup takes.',
             'How many people in a household actually mark tasks.',
             'Whether people who need one simple action keep coming back.',
           ],

@@ -95,13 +95,12 @@ const SHADOW = { offsetY: 8, blur: 12, opacity: 0.1 }
 const HAIRLINE = { width: 1, opacity: 0.06 }
 
 const LAYOUTS = {
-  // Flexible trackers stay hidden until the store release (п. 34): no choosing
-  // trackers, tracker list or builder in the band. Home is still the old export
-  // until Fluffy Chumb fixes it in Final.
   'v2-screens': {
     file: 'fluffy-chumb-v2-screens',
-    size: [1730, 940],
-    slots: ['home', 'insulin', 'history', 'family'].map((slot, index) => ({ slot, x: 30 + index * 425, y: 40 })),
+    size: [3005, 940],
+    slots: ['home', 'choose-trackers', 'trackers', 'build-the-look', 'insulin', 'history', 'family'].map(
+      (slot, index) => ({ slot, x: 30 + index * 425, y: 40 }),
+    ),
   },
   // The preview: Home with its trackers and the start of the routine, whole
   // frame; the routine tasks lower and to the right, cut under the last task.
@@ -145,6 +144,12 @@ const FEATURES = {
     quality: 80,
   }),
   // 'feature-not-now': featureLayout('fluffy-chumb/features/not-now', ['not-now', 'not-now-skip']),
+  'feature-builder': featureLayout('fluffy-chumb/features/builder', [
+    'builder-name',
+    'builder-fields',
+    'build-the-look',
+    'builder-rhythm',
+  ]),
   'feature-history': featureLayout('fluffy-chumb/features/history', ['history', 'history-export']),
   'feature-family': featureLayout('fluffy-chumb/features/family', ['family', 'family-invite']),
 }
