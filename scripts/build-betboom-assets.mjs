@@ -138,6 +138,9 @@ const BADGE = { top: 349, bottom: 389, middle: 369, halfHeight: 18.5, radius: 21
  */
 const HERO_PHONES = {
   'hero-phone-profile': { frame: 'showcase-widget-anim-v3-poster.png', screen: '05-showcase-entry-point.png' },
+  // The Gamification hub hero: the profile with season progress, in the same
+  // phone (the screen without the v2 edge — the phone gives it one).
+  'hub-hero-phone': { frame: 'showcase-widget-anim-v3-poster.png', screen: '24-entry-profile-progress.png' },
 }
 // The screen and the island in the 1080×1440 v3 frame.
 const V3_SCREEN = { left: 258, top: 110, width: 563, height: 1218, radius: 69 }

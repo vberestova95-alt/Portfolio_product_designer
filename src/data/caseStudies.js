@@ -54,6 +54,7 @@ import betboomSchemeOnboarding from '../assets/cases/betboom/scheme-onboarding.w
 import betboomSchemeEntryPoints from '../assets/cases/betboom/scheme-entry-points.webp';
 import betboomHeroPhoneProfile from '../assets/cases/betboom/hero-phone-profile.webp';
 import betboomHeroPhoneSwitching from '../assets/cases/betboom/hero-phone-switching.webp';
+import betboomHubHeroPhone from '../assets/cases/betboom/hub-hero-phone.webp';
 import betboomTasksAfterVideo from '../assets/cases/betboom/tasks-after.mp4';
 import betboomSwitchFlowVideo from '../assets/cases/betboom/switch-flow.mp4';
 import betboomCategoryBarVideo from '../assets/cases/betboom/category-bar.mp4';
@@ -1218,11 +1219,12 @@ export const betboomGamificationHubCaseStudy = {
     description:
       'A new section of the BetBoom app that brings seasons, tasks and the shop together. The brief asked for a seasons page. I proposed a hub instead and designed its architecture.',
     meta: 'Product Designer / 2026',
+    // The profile with season progress in the same phone as the PASS hero, on
+    // the same light ground.
     image: {
       // TODO(p32b): cover from the designer — the hub with an active season, the profile widget and the web season list.
-      src: betboomEntryProgress,
       alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
-      fit: 'contain',
+      phones: [{ src: betboomHubHeroPhone }],
     },
     // No metrics yet: facts from the layouts, as the editor proposed.
     stats: [
