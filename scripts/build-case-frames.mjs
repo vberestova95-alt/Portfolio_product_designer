@@ -2,10 +2,11 @@
  * Builds the Fluffy Chumb (cat app) case images from screen exports.
  *
  *   node scripts/build-case-frames.mjs --lang en|ru
- *        [--only v2-screens,v2-cover,mvp,features,home-cover] [--draft] [--out <dir>] [--scale 1]
+ *        [--only v2-screens,v2-cover,mvp,features,story,home-cover] [--draft] [--out <dir>] [--scale 1]
  *
  * With no --only it builds v2-screens, v2-cover, mvp and the feature frames;
- * home-cover (the case card on the home page) is built only when asked for.
+ * home-cover (the case card on the home page) and the story bands are built
+ * only when asked for.
  *
  * Sources live in src/assets/cases/src/ and are never imported by the app, so
  * Vite does not bundle them:
@@ -60,10 +61,31 @@ const SCREENS = {
   'builder-rhythm': { en: '387:9530', ru: '387:26789' },
   'history-export': { en: '387:10212', ru: '387:27471' },
   'family-invite': { en: '387:10347', ru: '387:27606' },
+  glucose: { en: '387:9996', ru: '387:27255' },
+  // Web MVP (May 2026): screens recorded by Fluffy Chumb on a mock, not Figma
+  // (docs/review/cat-app-2026-11/30-web-mvp-*-v2@2x.png). The web app is in
+  // English only, so RU uses the same files (SHARED_SLOTS).
+  'web-mvp-week-map': {},
+  'web-mvp-injection-form': {},
+  'web-mvp-new-marker': {},
   // Not now and the dose check sheet: Final is being fixed, not exported yet.
   // 'not-now': { en: '374:16898', ru: '374:18735' },
   // 'not-now-skip': { en: '374:16970', ru: '374:18807' },
   // 'check-dose': { en: '387:9931', ru: '387:27190' },
+}
+
+// Slots read from en/ for both languages.
+const SHARED_SLOTS = new Set(['web-mvp-week-map', 'web-mvp-injection-form', 'web-mvp-new-marker'])
+
+// --draft: a phone-shaped stand-in for a frame that is not exported yet.
+const PLACEHOLDER = {
+  note: { en: 'To be replaced', ru: 'Будет заменено' },
+  titles: {
+    routine: { en: 'Today’s routine', ru: 'Дела на сегодня' },
+    'not-now': { en: 'Not now', ru: 'Не сейчас' },
+    'not-now-skip': { en: 'Skip with a reason', ru: 'Пропуск с причиной' },
+    'check-dose': { en: 'Check the dose', ru: 'Сверка дозы' },
+  },
 }
 
 // Geometry in 1x px, measured from the current pet-tracker-v2-*.webp. A slot
@@ -134,6 +156,58 @@ const FEATURES = {
 }
 Object.assign(LAYOUTS, FEATURES)
 
+// Story bands for the «from diagnosis to v2» steps (mvp and process sections),
+// shown as `imageBand` with `variant: 'bare'`. Three whole screens make the
+// 1778×1238 band; seven make the 3005×940 one, like v2-screens. Each band has a
+// `.mobile` take for phones: a column of three, or two columns of seven.
+// Scales are fixed so each file stays under 300 KB and sharp on its screen:
+// rows at 1x (already 2–3× their width on the page), the narrow column at 2x.
+const STORY_ZOOM = 1.385
+const storyRow = (file, slots) =>
+  slots.length === 3
+    ? {
+        file,
+        scale: 1,
+        size: [1778, 1238],
+        slots: slots.map((slot, index) => ({ slot, x: 33 + index * 586, y: 30, zoom: STORY_ZOOM })),
+      }
+    : {
+        file,
+        scale: 1,
+        size: [30 + (slots.length - 1) * 425 + SCREEN.width + 35, 940],
+        slots: slots.map((slot, index) => ({ slot, x: 30 + index * 425, y: 40 })),
+      }
+const storyMobile = (file, slots) => {
+  const columns = slots.length > 3 ? 2 : 1
+  const rows = Math.ceil(slots.length / columns)
+  return {
+    file: `${file}.mobile`,
+    scale: columns > 1 ? 1 : 2,
+    size: [40 * 2 + columns * SCREEN.width + (columns - 1) * 30, 40 * 2 + rows * SCREEN.height + (rows - 1) * 40],
+    slots: slots.map((slot, index) => ({
+      slot,
+      x: 40 + (index % columns) * (SCREEN.width + 30),
+      y: 40 + Math.floor(index / columns) * (SCREEN.height + 40),
+    })),
+  }
+}
+const STORY_BANDS = {
+  // Step 2: the web MVP, May 2026.
+  'story-web-mvp': ['web-mvp-week-map', 'web-mvp-injection-form', 'web-mvp-new-marker'],
+  // Step 3: shared care, shown with v2 frames.
+  'story-shared': ['family-invite', 'family', 'history'],
+  // Step 5: version two. Routine, Not now, skip and the dose check wait for
+  // Fluffy Chumb to fix Final: build with --draft for a preview only.
+  'story-v2': ['glucose', 'routine', 'not-now', 'not-now-skip', 'map-site-marked', 'map-adding-site', 'check-dose'],
+}
+const STORY = {}
+for (const [name, slots] of Object.entries(STORY_BANDS)) {
+  const file = `fluffy-chumb/story/${name.replace('story-', '')}`
+  STORY[name] = storyRow(file, slots)
+  STORY[`${name}-mobile`] = storyMobile(file, slots)
+}
+Object.assign(LAYOUTS, STORY)
+
 const MVP = {
   source: path.join(casesDir, 'pet-tracker-cover-screens.png'),
   file: 'pet-tracker-mvp-screens',
@@ -195,15 +269,21 @@ async function loadScreen(file, scale, { zoom = 1, crop = SCREEN.height } = {}) 
     .toBuffer()
 }
 
-function placeholder(label, scale, { zoom = 1, crop = SCREEN.height } = {}) {
+function placeholder(label, scale, { zoom = 1, crop = SCREEN.height } = {}, note = '') {
   const width = Math.round(SCREEN.width * zoom * scale)
   const height = Math.round(crop * zoom * scale)
+  const size = 22 * zoom * scale
   return sharp(
     Buffer.from(
       `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
-        `<rect width="${width}" height="${height}" rx="${SCREEN.radius * scale}" fill="#f1f1f1"/>` +
+        `<rect width="${width}" height="${height}" rx="${SCREEN.radius * zoom * scale}" fill="#f1f1f1"/>` +
         `<text x="50%" y="50%" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" ` +
-        `font-size="${22 * scale}" fill="#9a9a9a">${label}</text></svg>`,
+        `font-size="${size}" fill="#6f6f6f">${label}</text>` +
+        (note
+          ? `<text x="50%" y="${height / 2 + size * 1.6}" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" ` +
+            `font-size="${size * 0.8}" fill="#9a9a9a">${note}</text>`
+          : '') +
+        `</svg>`,
     ),
   )
     .png()
@@ -266,15 +346,18 @@ async function compose([canvasWidth, canvasHeight], items, { shadow, hairline, s
 
 async function buildLayout(name, args) {
   const layout = LAYOUTS[name]
-  const { scale } = args
+  // A layout may fix its own scale: wide bands are already large at 1x.
+  const scale = layout.scale ?? args.scale
   const missing = []
   const items = []
   for (const { slot, x, y, ...frame } of layout.slots) {
-    const file = path.join(sourceDir, args.lang, `${slot}.png`)
+    const file = path.join(sourceDir, SHARED_SLOTS.has(slot) ? 'en' : args.lang, `${slot}.png`)
     let image
     if (await exists(file)) image = await loadScreen(file, scale, frame)
-    else if (args.draft) image = await placeholder(`${slot} — waiting for frame`, scale, frame)
-    else {
+    else if (args.draft) {
+      const title = PLACEHOLDER.titles[slot]?.[args.lang] ?? slot
+      image = await placeholder(title, scale, frame, PLACEHOLDER.note[args.lang])
+    } else {
       missing.push(`${slot} (${SCREENS[slot]?.[args.lang] ?? 'no node-id yet'})`)
       continue
     }
@@ -401,6 +484,7 @@ const targets = args.only ?? ['v2-screens', 'v2-cover', 'mvp', 'features']
 for (const name of targets) {
   if (name === 'mvp') await buildMvp(args)
   else if (name === 'features') for (const feature of Object.keys(FEATURES)) await buildLayout(feature, args)
+  else if (name === 'story') for (const band of Object.keys(STORY)) await buildLayout(band, args)
   else if (LAYOUTS[name]) await buildLayout(name, args)
   else throw new Error(`Unknown target: ${name}`)
 }
