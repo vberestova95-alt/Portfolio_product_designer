@@ -232,6 +232,89 @@
   }
 }
 
+/*
+ * Stacked, the screen-led covers (Fluffy Chumb, the plugins, Cringe-meter)
+ * would run out through the card's floor and past its sides, as on the home
+ * page. In this list they sit next to Spotless and the audit, so they show the
+ * same way: the whole composition inside the card, its padding round it.
+ */
+@media (max-width: 1240px) {
+  .ai-work .work-card.work-card--cat-app,
+  .ai-work .work-card.work-card--ds-plugins,
+  .ai-work .work-card.work-card--design-cringe {
+    padding-bottom: clamp(24px, 2.4vw, 40px);
+  }
+
+  .ai-work .work-card.work-card--cat-app .work-card__visual,
+  .ai-work .work-card.work-card--ds-plugins .work-card__visual,
+  .ai-work .work-card.work-card--design-cringe .work-card__visual {
+    align-self: center;
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+    border: 0;
+    border-radius: var(--r-media);
+    background: none;
+  }
+
+  /* The plugin windows: the artwork whole, at its own ratio. */
+  .ai-work .work-card.work-card--ds-plugins .work-card__visual {
+    height: auto;
+    aspect-ratio: auto;
+  }
+
+  .ai-work .work-card.work-card--ds-plugins .work-card__visual > img {
+    position: static;
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    transform: none;
+  }
+
+  /* Fluffy Chumb: the frame is trimmed to the two phones (885x1029 of the
+     1352x1220 cover, its transparent band left out), so they read large and
+     both show whole. Capped on a tablet so they do not outgrow the card. */
+  .ai-work .work-card.work-card--cat-app .work-card__visual {
+    width: min(100%, 520px);
+    height: auto;
+    aspect-ratio: 885 / 1029;
+    margin: 0 auto;
+    border-radius: 0;
+  }
+
+  .ai-work .work-card.work-card--cat-app .work-card__visual > img {
+    position: absolute;
+    top: calc(-100% * 130 / 1029);
+    left: calc(-100% * 233 / 885);
+    width: calc(100% * 1352 / 885);
+    max-width: none;
+    height: auto;
+    object-fit: initial;
+    transform: none;
+  }
+
+  /* Cringe-meter: the fan in a frame of its own, nothing sunk below the floor. */
+  .ai-work .work-card.work-card--design-cringe .work-card__visual--shots {
+    --plate: 1;
+
+    height: auto;
+    aspect-ratio: 4 / 3;
+    overflow: visible;
+  }
+}
+
+/* On a phone the pair (the score and the phone result) stays inside the frame. */
+@media (max-width: 640px) {
+  .ai-work .work-card.work-card--design-cringe .work-shot:nth-child(2) {
+    --x: 43%; --y: 50%; --w: 76cqw; --h: 80cqh; --r: -4deg;
+  }
+
+  .ai-work .work-card.work-card--design-cringe .work-shot:nth-child(3) {
+    --x: 81%; --y: 52%; --w: 26cqw; --h: 88cqh; --r: 5deg;
+  }
+}
+
 @media (max-width: 1279px) {
   .ai-pipeline__steps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
