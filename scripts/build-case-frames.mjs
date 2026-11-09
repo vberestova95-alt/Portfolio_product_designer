@@ -69,6 +69,7 @@ const SCREENS = {
   'web-mvp-week-map': {},
   'web-mvp-injection-form': {},
   'web-mvp-new-marker': {},
+  'web-mvp-history': {},
   // Not now and the dose check sheet: Final is being fixed, not exported yet.
   // 'not-now': { en: '374:16898', ru: '374:18735' },
   // 'not-now-skip': { en: '374:16970', ru: '374:18807' },
@@ -76,7 +77,7 @@ const SCREENS = {
 }
 
 // Slots read from en/ for both languages (the web MVP is English only).
-const SHARED_SLOTS = new Set(['web-mvp-week-map', 'web-mvp-injection-form', 'web-mvp-new-marker'])
+const SHARED_SLOTS = new Set(['web-mvp-week-map', 'web-mvp-injection-form', 'web-mvp-new-marker', 'web-mvp-history'])
 
 // --draft: a phone-shaped stand-in for a frame that is not exported yet.
 const PLACEHOLDER = {
@@ -206,9 +207,9 @@ for (const [name, slots] of Object.entries(STORY_BANDS)) {
   STORY[`${name}-mobile`] = storyMobile(file, slots)
 }
 
-// Step 2: the web MVP and version two, the same three pages in the same order
-// (tracker, injection pop-up, history), for the case's before / after slider.
-// Both pictures share one geometry, so the screens stay put when it moves.
+// Step 2: the web MVP and version two, the same three steps in the same order
+// (the injection map, the dose pop-up, history), for the case's before / after
+// slider. Both pictures share one geometry, so the screens stay put when it moves.
 // No text inside: the slider's tabs say Before and After.
 const beforeAfter = (file, slots) => ({
   file,
@@ -220,9 +221,15 @@ const beforeAfter = (file, slots) => ({
 STORY['story-web-mvp-before'] = beforeAfter('fluffy-chumb/story/web-mvp-before', [
   'web-mvp-week-map',
   'web-mvp-injection-form',
-  'web-mvp-new-marker',
+  'web-mvp-history',
 ])
-STORY['story-web-mvp-after'] = beforeAfter('fluffy-chumb/story/web-mvp-after', ['insulin', 'log-insulin', 'history'])
+// The map on the whole screen, the sheet once a site is placed, History.
+// The dose check sheet is not exported yet: build with --draft until it is.
+STORY['story-web-mvp-after'] = beforeAfter('fluffy-chumb/story/web-mvp-after', [
+  'map-adding-site',
+  'check-dose',
+  'history',
+])
 Object.assign(LAYOUTS, STORY)
 
 const MVP = {
