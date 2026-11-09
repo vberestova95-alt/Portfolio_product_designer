@@ -29,6 +29,7 @@ const CASE_ORDER = [
   { id: 'cat-app', href: '/cat-app', title: 'Fluffy Chumb' },
   { id: 'kokoc-group', href: '/kokoc-group', title: 'Kokoc Group' },
   { id: 'iquoto', href: '/iquoto', title: 'IQuoto' },
+  { id: 'betboom-gamification-hub', href: '/betboom-gamification-hub', title: 'BetBoom — Gamification hub' },
 ];
 const HERO_LINKS = CASE_ORDER.slice(0, 3).map((c) => c.href);
 const HERO_PAIR = CASE_ORDER.slice(0, 2).map((c) => c.href);
@@ -39,23 +40,28 @@ const CASE_COVERS = {
   // kokoc-main-desktop.png and kokoc-about.png are byte-identical; Vite emits one file.
   'kokoc-group': /kokoc-(main-desktop|about)/,
   iquoto: /iquoto-desktop/,
+  'betboom-gamification-hub': /betboom-hub-home-profile/,
 };
 
 // scripts/deploy-targets.mjs → portfolio.routes
 const ROUTES = [
+  'ai-portfolio',
   'ai-projects',
+  'betboom-gamification-hub',
   'betboom-pass',
   'cat-app',
   'design-concepts',
   'design-cringe',
   'ds-plugins',
   'experience',
+  'genetics-audit',
   'iquoto',
   'kokoc-group',
   'privacy',
+  'spotless',
   'yandex-turkey',
 ];
-const CASE_ROUTES = ['betboom-pass', 'cat-app', 'iquoto', 'kokoc-group', 'yandex-turkey'];
+const CASE_ROUTES = ['betboom-gamification-hub', 'betboom-pass', 'cat-app', 'iquoto', 'kokoc-group', 'yandex-turkey'];
 
 const VIEWPORTS = {
   desktop: { width: 1440, height: 900 },
@@ -203,7 +209,7 @@ async function checkHome(browser) {
       })),
     );
     check(
-      `${tag}: card stack has 5 cases in new order`,
+      `${tag}: card stack has 6 cases in new order`,
       JSON.stringify(cards.map((c) => c.id)) === JSON.stringify(CASE_ORDER.map((c) => c.id)) &&
         JSON.stringify(cards.map((c) => c.href)) === JSON.stringify(CASE_ORDER.map((c) => c.href)),
       cards.map((c) => `${c.id}→${c.href}`).join(', '),
@@ -242,7 +248,8 @@ async function checkRoutes(browser) {
       const { context, page, problems, status } = await openPage(browser, viewport, `/${route}`);
       check(`${tag}: status 200`, status === 200, `got ${status}`);
       const title = await page.title();
-      const errorPage = await page.locator('text=/page not found|something went wrong/i').count();
+      const errorPage = await page.locator(':is(h1, h2, p):text-matches("^\\s*(page not found|something went wrong)\\s*$", "i")').count();
+      // Exact-match only: the hub case quotes the app's "Something went wrong" state in its copy.
       check(`${tag}: renders (no error page)`, errorPage === 0, `title "${title}"`);
       await scrollThrough(page);
       const broken = await brokenImages(page);

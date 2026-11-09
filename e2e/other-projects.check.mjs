@@ -1,5 +1,5 @@
 /*
- * "Other projects" block at the end of each case (п. 21): 4 tiles with a dot,
+ * "Other projects" block at the end of each case (п. 21): 5 tiles (every other case, hub included) with a dot,
  * a title, "Open case" and a round arrow button.
  *
  *   node e2e/other-projects.check.mjs
@@ -27,7 +27,7 @@ const BASELINE_SKIP = (process.env.BASELINE_SKIP ?? '').split(',').filter(Boolea
 const SHOTS = process.env.SHOTS ?? path.join(here, '.shots');
 mkdirSync(SHOTS, { recursive: true });
 
-const ORDER = ['/betboom-pass', '/yandex-turkey', '/cat-app', '/kokoc-group', '/iquoto'];
+const ORDER = ['/betboom-pass', '/yandex-turkey', '/cat-app', '/kokoc-group', '/iquoto', '/betboom-gamification-hub'];
 const VIEWPORTS = [
   { width: 1440, height: 900 },
   { width: 1024, height: 768 },
@@ -108,13 +108,17 @@ async function checkCase(browser, base, lang, viewport, route) {
     return;
   }
   const expected = ORDER.filter((h) => h !== route);
-  check(`${tag}: 4 tiles in case order`, JSON.stringify(st.tiles.map((t) => t.href)) === JSON.stringify(expected), st.tiles.map((t) => t.href).join(', '));
+  check(`${tag}: ${expected.length} tiles in case order`, JSON.stringify(st.tiles.map((t) => t.href)) === JSON.stringify(expected), st.tiles.map((t) => t.href).join(', '));
   check(`${tag}: no preview images left in the block`, st.imgs === 0, `${st.imgs} img/video/media`);
   const partsOk = st.tiles.every((t) => t.dot && t.title && t.cta && t.arrow && t.dot.w > 0 && t.title.text && t.cta.text && t.arrow.w > 0);
   check(`${tag}: every tile has dot, title, CTA, arrow`, partsOk, st.tiles.map((t) => `${t.title?.text}|${t.cta?.text}`).join(', '));
+  // The dot is the project's home-card surface colour (case-next__card--<surface>), so two
+  // projects with the same surface (PASS and Gamification hub are both `ink`) share a colour
+  // on purpose: BACKLOG п. 21, "точки цвета - пользователь оставила как есть".
   const dotsColoured = st.tiles.every((t) => t.dot && t.dot.bg !== 'rgba(0, 0, 0, 0)');
-  const dotColours = new Set(st.tiles.map((t) => t.dot?.bg));
-  check(`${tag}: dots are coloured, one colour per project`, dotsColoured && dotColours.size === st.tiles.length, [...dotColours].join(' / '));
+  const wantDot = { '/betboom-pass': 'rgb(0, 0, 0)', '/betboom-gamification-hub': 'rgb(0, 0, 0)', '/yandex-turkey': 'rgb(245, 241, 223)', '/cat-app': 'rgb(200, 212, 226)', '/kokoc-group': 'rgb(203, 233, 216)', '/iquoto': 'rgb(18, 23, 32)' };
+  const dotsRight = st.tiles.every((t) => t.dot?.bg === wantDot[t.href]);
+  check(`${tag}: dots are coloured, each in its home-card surface colour`, dotsColoured && dotsRight, st.tiles.map((t) => `${t.href}=${t.dot?.bg}`).join(' / '));
   const ctaWord = lang === 'ru' ? /[А-Яа-яЁё]/ : /^Open case/;
   check(`${tag}: CTA text is ${lang.toUpperCase()}`, st.tiles.every((t) => ctaWord.test(t.cta?.text ?? '')), st.tiles[0]?.cta?.text);
   if (lang === 'ru') {
@@ -127,7 +131,11 @@ async function checkCase(browser, base, lang, viewport, route) {
   check(`${tag}: tiles equal size`, st.tiles.every((t) => close(t.w, w0) && close(t.h, h0)), st.tiles.map((t) => `${t.w.toFixed(0)}×${t.h.toFixed(0)}`).join(', '));
   const rows = [...new Set(st.tiles.map((t) => Math.round(t.y)))];
   const cols = [...new Set(st.tiles.map((t) => Math.round(t.x)))];
-  check(`${tag}: grid ${cols.length}×${rows.length}, aligned`, rows.length * cols.length === st.tiles.length, `cols ${cols.join('/')}, rows ${rows.join('/')}`);
+  // 1440: one row of 5. 1024 and 390: two columns, so 2+2+1 (the last tile sits in the first column).
+  const wantCols = viewport.width > 1240 ? st.tiles.length : 2;
+  const wantRows = Math.ceil(st.tiles.length / wantCols);
+  const lastX = st.tiles[st.tiles.length - 1].x;
+  check(`${tag}: grid ${wantCols}×${wantRows}, aligned`, cols.length === wantCols && rows.length === wantRows && close(lastX, Math.min(...st.tiles.map((t) => t.x))) === (wantCols === 2 && st.tiles.length % 2 === 1), `cols ${cols.join('/')}, rows ${rows.join('/')}`);
   check(
     `${tag}: parts inside tiles, no clipped titles`,
     st.tiles.every((t) => ['dot', 'title', 'cta', 'arrow'].every((k) => t[k].inside) && !t.title.clipped),
