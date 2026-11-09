@@ -134,7 +134,7 @@ export const catAppCaseStudy = {
           },
           after: {
             src: fluffyChumbStoryWebMvpAfter,
-            alt: 'Version two, the same steps: the injection map on the whole screen while a new site is placed, a stand-in for the dose check sheet, and History with glucose and insulin charts',
+            alt: 'Version two, the same steps: the injection map on the whole screen while a new site is placed, the Check the dose sheet over the map, and History with glucose and insulin charts',
           },
           // The pictures in 1x px (scripts/build-case-frames.mjs): three 390 px
           // screens 40 px apart; a phone shows a 430 px window round each.

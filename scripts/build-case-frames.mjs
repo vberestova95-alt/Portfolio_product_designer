@@ -63,10 +63,14 @@ const SCREENS = {
   'web-mvp-injection-form': {},
   'web-mvp-new-marker': {},
   'web-mvp-history': {},
-  // Not now and the dose check sheet: Final is being fixed, not exported yet.
+  // The dose check sheet is a still from the app recording, not Figma:
+  // flows/sc1-a.mp4 at 6.8 s (EN) and sc1-a.ru.mp4 at 6.2 s (RU), the sheet
+  // fully open over the map, status bar as recorded. Once Fluffy Chumb fixes
+  // Final, export 387:9931 / 387:27190 into check-dose.png instead.
+  'check-dose': {},
+  // Not now: Final is being fixed, not exported yet.
   // 'not-now': { en: '374:16898', ru: '374:18735' },
   // 'not-now-skip': { en: '374:16970', ru: '374:18807' },
-  // 'check-dose': { en: '387:9931', ru: '387:27190' },
 }
 
 // Slots read from en/ for both languages (the web MVP is English only).
@@ -212,7 +216,6 @@ STORY['story-web-mvp-before'] = beforeAfter('fluffy-chumb/story/web-mvp-before',
   'web-mvp-history',
 ])
 // The map on the whole screen, the sheet once a site is placed, History.
-// The dose check sheet is not exported yet: build with --draft until it is.
 STORY['story-web-mvp-after'] = beforeAfter('fluffy-chumb/story/web-mvp-after', [
   'map-adding-site',
   'check-dose',
