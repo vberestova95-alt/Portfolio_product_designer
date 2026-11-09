@@ -259,6 +259,28 @@ const roundedMask = (width, height, radius) =>
       `<rect width="${width}" height="${height}" rx="${radius}" ry="${radius}" fill="#000"/></svg>`,
   )
 
+// Touch-ups on recorded stills, in source px. A fill repaints a box with one
+// clean column of it stretched sideways (the cards' own colour and gradient).
+const PATCHES = {
+  // RU routine: the cut-off article titles under the tab bar («шага», «скачет
+  // глюкоза»); EN shows bare cards there.
+  'routine-recorded': {
+    ru: [
+      { top: 1662, bottom: 1688, left: 33, right: 376, ref: 40 },
+      { top: 1662, bottom: 1688, left: 403, right: 746, ref: 410 },
+    ],
+  },
+}
+
+async function patchScreen(file, fills) {
+  const layers = []
+  for (const { top, bottom, left, right, ref } of fills) {
+    const column = await sharp(file).extract({ left: ref, top, width: 1, height: bottom - top }).toBuffer()
+    layers.push({ input: await sharp(column).resize(right - left, bottom - top, { fit: 'fill', kernel: 'nearest' }).png().toBuffer(), left, top })
+  }
+  return sharp(file).composite(layers).png().toBuffer()
+}
+
 // A Figma export cropped to the phone viewport and rounded.
 async function loadScreen(file, scale, { zoom = 1, crop = SCREEN.height } = {}) {
   const width = Math.round(SCREEN.width * zoom * scale)
@@ -357,7 +379,8 @@ async function buildLayout(name, args) {
   for (const { slot, x, y, ...frame } of layout.slots) {
     const file = path.join(sourceDir, SHARED_SLOTS.has(slot) ? 'en' : args.lang, `${slot}.png`)
     let image
-    if (await exists(file)) image = await loadScreen(file, scale, frame)
+    const patch = PATCHES[slot]?.[args.lang]
+    if (await exists(file)) image = await loadScreen(patch ? await patchScreen(file, patch) : file, scale, frame)
     else if (args.draft) {
       const title = PLACEHOLDER.titles[slot]?.[args.lang] ?? slot
       image = await placeholder(title, scale, frame, PLACEHOLDER.note[args.lang])
