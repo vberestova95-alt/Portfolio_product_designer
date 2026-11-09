@@ -60,6 +60,22 @@ import betboomDraftD3CancelTask from '../assets/cases/betboom/draft-d3-cancel-ta
 import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
 import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
 import betboomAbTestRuVideo from '../assets/cases/betboom/ab-test-ru.mp4';
+import hubSchemeUserPath from '../assets/cases/betboom-hub/scheme-r-user-path.webp';
+import hubSchemeBusinessVsHub from '../assets/cases/betboom-hub/scheme-s1-business-vs-hub.webp';
+import hubSchemeArchitecture from '../assets/cases/betboom-hub/scheme-s2-hub-ia.webp';
+import hubWidgetV1V2Dark from '../assets/cases/betboom-hub/d1-widget-v1-v2-dark.webp';
+import hubCardLarge from '../assets/cases/betboom-hub/d2-card-large.webp';
+import hubCardSmall from '../assets/cases/betboom-hub/d2-card-small.webp';
+import hubHeaderId from '../assets/cases/betboom-hub/d3-header-id.webp';
+import hubHeaderName from '../assets/cases/betboom-hub/d3-header-name.webp';
+import hubHeaderNickname from '../assets/cases/betboom-hub/d3-header-nickname.webp';
+import hubScreen from '../assets/cases/betboom-hub/k1-hub.webp';
+import hubSeasonLifecycle from '../assets/cases/betboom-hub/k2-season-lifecycle.webp';
+import hubEdgeCases from '../assets/cases/betboom-hub/k3-edge-cases.webp';
+import hubWebDesktop from '../assets/cases/betboom-hub/k4-web-desktop.webp';
+import hubWebMobile from '../assets/cases/betboom-hub/k4-web-mobile.webp';
+import hubDark from '../assets/cases/betboom-hub/s3-hub-dark.webp';
+import hubLight from '../assets/cases/betboom-hub/s3-hub-light.webp';
 import iquotoCaseHero from '../assets/cases/iquoto-desktop.png';
 import iquotoAsIsVideo from '../assets/cases/iquoto-as-is.webm';
 import iquotoFunnel from '../assets/cases/iquoto-funnel.svg';
@@ -1171,16 +1187,8 @@ export const betboomPassCaseStudy = {
  * The Gamification hub in the main BetBoom app, split out of the BetBoom PASS
  * case at the user's request (p. 32b). Text — the editor's draft, doc tab
  * «Gamification hub case EN». Its sections follow that draft (no Context or
- * What I learned there).
- * TODO(p32b): frames come from the designer (docs/review/betboom-pass/entry-point/);
- * until then the parts marked “Visual coming” hold their place.
+ * What I learned there). Frames — scripts/build-hub-frames.mjs.
  */
-const hubVisualComing = (what) => ({
-  type: 'noteCard',
-  compact: true,
-  title: 'Visual coming',
-  paragraphs: [what],
-});
 
 export const betboomGamificationHubCaseStudy = {
   slug: 'betboom-gamification-hub',
@@ -1190,8 +1198,7 @@ export const betboomGamificationHubCaseStudy = {
     title: 'BetBoom — Gamification hub',
     description:
       'A new section of the BetBoom app that brings seasons, tasks and the shop together. The brief asked for a seasons page. I proposed a hub instead and designed its architecture.',
-    // TODO(p32b): years of the hub work are open.
-    meta: 'Product Designer / BetBoom app',
+    meta: 'Product Designer / 2026',
     image: {
       // TODO(p32b): cover from the designer — the hub with an active season, the profile widget and the web season list.
       src: betboomEntryProgress,
@@ -1304,7 +1311,6 @@ export const betboomGamificationHubCaseStudy = {
           note: 'The avatar stands for the user’s profile. Gamification is a separate thing, so it got its own entry next to the avatar.',
         },
         {
-          // TODO(p32b): designer's EN map (MAP 1:101596) replaces this scheme.
           type: 'featureMedia',
           media: {
             src: betboomSchemeEntryPoints,
@@ -1312,8 +1318,14 @@ export const betboomGamificationHubCaseStudy = {
           },
           caption: 'Profile, menu, stories, promo banner: four ways into one hub.',
         },
-        hubVisualComing('Flow of transitions: signed in, signed out, with or without the app — every path ends in the hub.'),
-        hubVisualComing('User journey: from the hub to a bet and back, with tokens and experience on the way.'),
+        {
+          type: 'featureMedia',
+          media: {
+            src: hubSchemeUserPath,
+            alt: 'User path into the gamification hub: the app profile widget, menu, stories, promo banner and web account menu lead through sign-in to the hub, then to a task, a bet and a token reward',
+          },
+          caption: 'Every way in leads to the same hub; a task ends with a bet and a reward.',
+        },
       ],
     },
     {
@@ -1354,9 +1366,49 @@ export const betboomGamificationHubCaseStudy = {
             },
           ],
         },
-        hubVisualComing('Widget V.1 and V.2 side by side, dark and light: V.1 squeezed the season into one row, V.2 gives the name and progress room.'),
-        hubVisualComing('Season card drafts: large cards for the current season, small ones for the archive.'),
-        hubVisualComing('Profile header with three data cases: name, nickname or just an ID.'),
+        {
+          type: 'featureMedia',
+          media: {
+            src: hubWidgetV1V2Dark,
+            alt: 'Two profile screens, dark theme: widget V.1 as a 72 px season row, and V.2 as a 102 px card with the season name and progress',
+          },
+          caption: 'Widget V.1 and V.2: V.1 squeezed the season into one row, V.2 gives the name and progress room.',
+        },
+        {
+          type: 'phoneRow',
+          items: [
+            {
+              src: hubCardLarge,
+              alt: 'Hub draft with a large card for the upcoming season above the archive',
+            },
+            {
+              src: hubCardSmall,
+              alt: 'Hub draft with the current season card and two small archive cards side by side',
+            },
+          ],
+          caption: 'Season card drafts: large cards for the current season, small ones for the archive.',
+        },
+        {
+          type: 'phoneRow',
+          items: [
+            {
+              src: hubHeaderId,
+              alt: 'Hub header with only the user ID and the token balance',
+              caption: 'ID only',
+            },
+            {
+              src: hubHeaderName,
+              alt: 'Hub header with the user’s name, ID and token balance',
+              caption: 'Name + ID',
+            },
+            {
+              src: hubHeaderNickname,
+              alt: 'Hub header with the user’s nickname, ID and token balance',
+              caption: 'Nickname + ID',
+            },
+          ],
+          caption: 'Profile header with three data cases: name, nickname or just an ID.',
+        },
       ],
     },
     {
@@ -1379,7 +1431,22 @@ export const betboomGamificationHubCaseStudy = {
             },
           ],
         },
-        hubVisualComing('From the profile to the hub in one tap.'),
+        {
+          type: 'phoneRow',
+          items: [
+            {
+              src: betboomEntryProgress,
+              alt: 'BetBoom app profile with the season widget: level 99 and progress to level 100',
+              caption: 'Profile',
+            },
+            {
+              src: hubScreen,
+              alt: 'Gamification hub: name, ID and token balance, Tasks and Shop tiles, the active season card and the archive',
+              caption: 'Hub',
+            },
+          ],
+          caption: 'From the profile to the hub in one tap.',
+        },
         {
           type: 'blocks',
           blocks: [
@@ -1404,7 +1471,15 @@ export const betboomGamificationHubCaseStudy = {
             },
           ],
         },
-        hubVisualComing('Planned, active, ending, finished: one card, every stage.'),
+        {
+          type: 'imageBand',
+          media: {
+            type: 'image',
+            src: hubSeasonLifecycle,
+            alt: 'Seven hub screens of a season’s life cycle: planned, active without progress, active with progress, under 24 hours left, no gift, ended and joined, ended and not joined',
+          },
+          caption: 'Planned, active, ending, finished: one card, every stage.',
+        },
         {
           type: 'blocks',
           blocks: [
@@ -1421,7 +1496,15 @@ export const betboomGamificationHubCaseStudy = {
             },
           ],
         },
-        hubVisualComing('Signed out, no seasons, error, outdated app.'),
+        {
+          type: 'imageBand',
+          media: {
+            type: 'image',
+            src: hubEdgeCases,
+            alt: 'Four hub edge cases: signed out, “Seasons coming soon”, “Something went wrong” with a refresh button, and “Time to update!”',
+          },
+          caption: 'Signed out, no seasons, error, outdated app.',
+        },
         {
           type: 'blocks',
           blocks: [
@@ -1434,7 +1517,23 @@ export const betboomGamificationHubCaseStudy = {
             },
           ],
         },
-        hubVisualComing('The season list on web, desktop and mobile.'),
+        {
+          type: 'featureMedia',
+          media: {
+            src: hubWebDesktop,
+            alt: 'BetBoom website, desktop, dark theme: the Seasons page with active and planned seasons and the archive',
+          },
+          caption: 'The season list on web, desktop and mobile. In progress.',
+        },
+        {
+          type: 'phoneRow',
+          items: [
+            {
+              src: hubWebMobile,
+              alt: 'BetBoom mobile website, dark theme: the Seasons page with two seasons and the archive',
+            },
+          ],
+        },
       ],
     },
     {
@@ -1484,9 +1583,38 @@ export const betboomGamificationHubCaseStudy = {
             },
           ],
         },
-        hubVisualComing('Business option vs. hub: profile → straight to seasons, and the entry point vanishes without a season; profile → hub → seasons / tasks / shop. The plan sent users straight to seasons. The hub works even when there are none.'),
-        hubVisualComing('Hub architecture: header → Tasks / Shop → Seasons → season page / archive.'),
-        hubVisualComing('The hub with an active season, in dark and light themes.'),
+        {
+          type: 'featureMedia',
+          media: {
+            src: hubSchemeBusinessVsHub,
+            alt: 'Scheme comparing the business option, profile straight to the seasons page, with the proposal, profile to the hub and on to seasons, tasks and shop',
+          },
+          caption: 'The plan sent users straight to seasons. The hub works even when there are none.',
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: hubSchemeArchitecture,
+            alt: 'Hub architecture scheme: header, Tasks and Shop tiles, Seasons with the current season card and archive cards, each leading to its own section',
+          },
+          caption: 'Hub architecture: header → Tasks / Shop → Seasons → season page / archive.',
+        },
+        {
+          type: 'phoneRow',
+          items: [
+            {
+              src: hubDark,
+              alt: 'Gamification hub with an active season, dark theme',
+              caption: 'Dark',
+            },
+            {
+              src: hubLight,
+              alt: 'Gamification hub with an active season, light theme',
+              caption: 'Light',
+            },
+          ],
+          caption: 'The hub with an active season, in dark and light themes.',
+        },
         {
           // TODO(p32b): the designer may replace these with the widget in the profile carousel.
           type: 'phoneRow',
@@ -1536,7 +1664,7 @@ export const betboomGamificationHubCaseStudy = {
           paragraphs: ['Gamification now has a home in the main app, not only inside PASS.'],
         },
         {
-          // TODO(p32b): is the web version in production? Metrics, if any appear.
+          // Metrics, if any appear.
           type: 'blocks',
           blocks: [
             {
@@ -1545,7 +1673,7 @@ export const betboomGamificationHubCaseStudy = {
               items: [
                 'The hub is in production.',
                 'The profile entry point V.2 is in production.',
-                'The web version: designed.',
+                'The web version: in progress.',
                 'No metrics yet.',
               ],
             },
