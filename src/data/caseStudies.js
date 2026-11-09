@@ -462,7 +462,7 @@ export const betboomPassCaseStudy = {
         // TODO(p32): “Category bar” is our working name for the rubricator; confirm with the user.
         label: 'Category bar',
         caption: 'Categories collapse in three steps as you scroll.',
-        credit: betboomWidgetCredit,
+        credit: `Category bar concept and logic: me; UI: a second designer. ${betboomWidgetCredit}`,
         src: betboomShowcaseCategoryBar,
         alt: 'Category bar with Table tennis selected and its task cards below',
       },
@@ -492,9 +492,10 @@ export const betboomPassCaseStudy = {
         {
           type: 'painCards',
           items: [
-            'Two audiences, one screen. Football, basketball, hockey, tennis and table tennis fans next to Dota and CS players. Losing the esports core was the main risk.',
-            'A card that decorates. The illustration took all the attention. The title did not explain the rules. The card led with task type, while people searched by category.',
-            'A wall instead of a rule. Only one task per category can be active. A returning user saw a disabled button: “You’re already doing this task.” No way forward, no explanation.',
+            'Not ready to scale. The plan meant many new tasks for users. The previous version could not carry that many.',
+            'An unknown audience. We did not know how classic sports fans would react to the changes.',
+            'Tasks that conflict. So many new tasks brought limits. Some tasks conflict: one cannot be done while another is active.',
+            'Cards without the facts. The picture and the title took most of the card. It needed more of the information people use to choose a task.',
           ],
         },
         {
@@ -537,7 +538,7 @@ export const betboomPassCaseStudy = {
               type: 'text',
               heading: 'Role · team · timeline',
               paragraphs: [
-                'Product Designer, 2025-2026. Research, mechanics and user flows — me. UI — a second designer I brought in, working from my drafts and flows.',
+                'Product Designer, 2025-2026. Research, mechanics, user flows, concepts and UI — me. I brought in a second designer for the UI of the “Your tasks” widget and the category bar, built on my concepts.',
               ],
             },
             {
@@ -548,7 +549,7 @@ export const betboomPassCaseStudy = {
                 'Research, mechanics and user flows',
                 'Prototypes and the visual concept',
                 'Stakeholder presentations',
-                'Brought in a second designer for UI and handed over my drafts and flows',
+                'Brought in a second designer. “Your tasks” widget: concept by me, UI by a second designer. Category bar: concept and logic by me; UI, components and specs by a second designer.',
               ],
             },
             {
@@ -888,6 +889,13 @@ export const betboomPassCaseStudy = {
           ],
         },
         {
+          // TODO(p32): 1–2 “problem → solution” pairs from the card drafts; the designer picks candidates, the user chooses.
+          type: 'noteCard',
+          compact: true,
+          title: 'Visual coming',
+          paragraphs: ['Problem → solution: variants from the card drafts.'],
+        },
+        {
           type: 'blocks',
           blocks: [
             {
@@ -944,6 +952,13 @@ export const betboomPassCaseStudy = {
           caption: 'A conflict is checked by sport, then tournament, then match.',
         },
         {
+          // TODO(p32): 1–2 “problem → solution” pairs from the conflict and swap drafts; the designer picks candidates.
+          type: 'noteCard',
+          compact: true,
+          title: 'Visual coming',
+          paragraphs: ['Problem → solution: variants from the conflict and swap drafts.'],
+        },
+        {
           type: 'blocks',
           blocks: [
             {
@@ -970,19 +985,15 @@ export const betboomPassCaseStudy = {
           blocks: [
             {
               type: 'text',
-              // TODO(p32): “top tasks” / “category bar” are working names; the 14 s rotation (2 × 7 s?) is unconfirmed, so no number.
               heading: 'D5. Top tasks and the category bar',
-              paragraphs: [
-                'From I2, I3 · hypothesis.',
-                'Top tasks rotate on a timer and pin to the header on scroll. Signed-out users see only game tasks.',
-                'The category bar collapses in three steps on scroll, with 4 sort options and a colour per category.',
-              ],
+              paragraphs: ['From I2, I3 · problem → solution from the drafts.'],
             },
           ],
         },
         {
-          // TODO(p32): the user replaces this row with “problem → solution” pairs
-          // from the drafts; frames come after she picks them.
+          // TODO(p32): the decision is built on 1–2 “problem → solution” pairs
+          // from the top and category bar drafts; frames come after the user picks them.
+          // Their credit line: “Concept and logic: me. UI, components and specs: a second designer.”
           type: 'noteCard',
           compact: true,
           title: 'Visual coming',
@@ -1134,7 +1145,7 @@ export const betboomGamificationHubCaseStudy = {
         {
           type: 'painCards',
           items: [
-            'The brief: one more page. The task was a seasons page in the app. Tasks, the shop and the token balance would stay elsewhere.',
+            'The brief: one more page. The task was a seasons page in the app. The plan sent users from the profile straight to seasons. Tasks, the shop and the token balance would stay elsewhere.',
             'Many ways in. Gamification ran on Pass.com, betboom.ru and the app. Each surface had its own entry: profile, menu, stories, promo banner.',
             'Seasons change state. A season can be planned, active, ending or finished. A user may have joined it or not. Every case needs its own screen.',
           ],
@@ -1168,7 +1179,6 @@ export const betboomGamificationHubCaseStudy = {
             {
               type: 'text',
               heading: 'Where an entry point could go',
-              // TODO(p32b): the business proposed the avatar spot; why it was not chosen is open, so it is left out.
               paragraphs: [
                 'I collected hypotheses for every surface: the Profile tab, the menu, stories and the promo banner. Each was mapped for signed-in and signed-out users.',
               ],
@@ -1195,6 +1205,29 @@ export const betboomGamificationHubCaseStudy = {
           ],
         },
         {
+          type: 'compareTable',
+          heading: 'Business option vs. my proposal',
+          intro:
+            'The business suggested two things: put the entry point where the avatar is, and send users straight to seasons. Both broke down when there were no seasons.',
+          columns: ['Business option', 'My proposal'],
+          rows: [
+            ['Entry point', 'In place of the avatar', 'Next to the avatar, not competing with it'],
+            ['Where it leads', 'Straight to seasons', 'A hub page'],
+            [
+              'No seasons',
+              'The entry point disappears from the profile or sits inactive; users have questions',
+              'The hub still opens: tasks, shop, “Seasons coming soon”',
+            ],
+            [
+              'Every visit',
+              'Different content for each entry',
+              'The same blocks every time: users know they came to the right place',
+            ],
+            ['Growth', 'One more page for each feature', 'One hub that can grow and scale'],
+          ],
+          note: 'The avatar stands for the user’s profile. Gamification is a separate thing, so it got its own entry next to the avatar.',
+        },
+        {
           // TODO(p32b): designer's EN map (MAP 1:101596) replaces this scheme.
           type: 'featureMedia',
           media: {
@@ -1219,7 +1252,7 @@ export const betboomGamificationHubCaseStudy = {
               type: 'text',
               heading: 'Seasons page or hub',
               paragraphs: [
-                'Option A was the brief: a page that lists seasons. Option B was my proposal: a hub with every state, linking to seasons, tasks and the shop. I agreed option B with the business.',
+                'Option A was the brief: a page that lists seasons. Option B was my proposal: a hub with every state, linking to seasons, tasks and the shop. I defended option B in front of stakeholders.',
               ],
             },
             {
@@ -1340,7 +1373,16 @@ export const betboomGamificationHubCaseStudy = {
               type: 'text',
               heading: 'A hub instead of a seasons page',
               paragraphs: [
-                'I proposed it and agreed it with the business. The hub holds every state. From it, users go to seasons, tasks and the shop.',
+                'I proposed it and defended the concept in front of stakeholders. It is a common pattern on the market, and it works with or without a season.',
+              ],
+            },
+            {
+              type: 'list',
+              heading: 'Why a hub',
+              items: [
+                'Room to grow. The hub can be developed and scaled.',
+                'One way in. Every entry leads to the same blocks, so users know they came to the right place.',
+                'A page to pass through. From the hub, users go to the shop, tasks and seasons.',
               ],
             },
             {
@@ -1354,7 +1396,8 @@ export const betboomGamificationHubCaseStudy = {
               type: 'text',
               heading: 'Entry point',
               paragraphs: [
-                'A widget in the Profile tab of the main BetBoom app, not inside PASS. V.2 states: no progress, progress, timer, max level. On error, the widget is hidden.',
+                'A widget in the Profile tab of the main BetBoom app, not inside PASS. It sits next to the avatar without competing with it: the avatar stands for the profile, the widget for gamification.',
+                'V.2 states: no progress, progress, timer, max level. On error, the widget is hidden.',
                 'It shares the profile carousel with identification, identity proof, loyalty programme and offer widgets. The order is Offer → Profile levels → Loyalty programme. For users not yet identified, it sits under the welcome bonus banner.',
               ],
             },
@@ -1365,7 +1408,7 @@ export const betboomGamificationHubCaseStudy = {
             },
           ],
         },
-        hubVisualComing('Before: a seasons page → After: a hub with links. The brief asked for a page; the hub became a place to start from.'),
+        hubVisualComing('Business option vs. hub: profile → straight to seasons, and the entry point vanishes without a season; profile → hub → seasons / tasks / shop. The plan sent users straight to seasons. The hub works even when there are none.'),
         hubVisualComing('Hub architecture: header → Tasks / Shop → Seasons → season page / archive.'),
         hubVisualComing('The hub with an active season, in dark and light themes.'),
         {
@@ -1417,15 +1460,16 @@ export const betboomGamificationHubCaseStudy = {
           paragraphs: ['Gamification now has a home in the main app, not only inside PASS.'],
         },
         {
-          // TODO(p32b): production status of the hub and the web version is open; metrics, if any appear.
+          // TODO(p32b): is the web version in production? Metrics, if any appear.
           type: 'blocks',
           blocks: [
             {
               type: 'list',
               heading: 'Where it stands',
               items: [
+                'The hub is in production.',
                 'The profile entry point V.2 is in production.',
-                'The hub and the web version: designed and handed off.',
+                'The web version: designed.',
                 'No metrics yet.',
               ],
             },

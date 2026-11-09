@@ -931,6 +931,44 @@ function SectionPart({ part }) {
     );
   }
 
+  if (part.type === 'compareTable') {
+    // Two options side by side, row by row (e.g. the business option and mine).
+    return (
+      <section className="case-compare">
+        {part.heading ? <h3>{part.heading}</h3> : null}
+        {part.intro ? <p className="case-compare__intro">{part.intro}</p> : null}
+        <div className="case-compare__scroll">
+          <table>
+            <thead>
+              <tr>
+                <td />
+                {part.columns.map((column) => (
+                  <th key={column} scope="col">
+                    {column}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {part.rows.map(([label, ...cells]) => (
+                <tr key={label}>
+                  <th scope="row">{label}</th>
+                  {cells.map((cell, index) => (
+                    // data-label: the column name, shown above each cell on a phone.
+                    <td key={`${label}-${index}`} data-label={part.columns[index]}>
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {part.note ? <p className="case-compare__note">{part.note}</p> : null}
+      </section>
+    );
+  }
+
   if (part.type === 'caseTeaser') {
     // A card that leads on to a related case.
     return (
