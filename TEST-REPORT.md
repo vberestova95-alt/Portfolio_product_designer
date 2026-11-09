@@ -1,5 +1,14 @@
 # Отчёт тестировщика
 
+## 2026-11-09 — прогон после отката п. 34 (revert cfe88ca)
+
+**Итог: прошло всё, багов нет.** `cat-app-preview.check.mjs` EN 112/112, RU 115/115 (1440, 768, 390); `home-fluffy-cards.check.mjs` EN 28/28, RU 28/28; `predeploy.spec.mjs` 231/231; `ru-media.check.mjs` 16/16; `other-projects.check.mjs` 185/185. Сборки 4181 и 4182 пересобраны из HEAD.
+- Состояние: брендинг 6 плиток и мозаика, «What the app does» 4 плитки с конструктором, лента Version 2 из 7 экранов (3005×940), тексты карточек Fluffy Chumb как до п. 34.
+- Заглушек «To be replaced / Будет заменено» нет: в слайдере «до/после» теперь настоящий лист «Check the dose» (e707ccc).
+- /ai-projects в нашей ветке рендерит карточку Fluffy Chumb из aiProjects (текст проверен); AI-лендинг из другой ветки здесь не проверялся.
+- Не проверено: iPhone, Safari / WebKit.
+Скриншоты: `docs/review/cat-app-2026-11/test-34revert-*.png`.
+
 ## 2026-11-09 — повторный прогон /cat-app после п. 34 (коммит e4cb5ab)
 
 **Итог: прошло всё, багов нет.** `cat-app-preview.check.mjs`: EN 112/112, RU 115/115. Новый `home-fluffy-cards.check.mjs` (главная и /ai-projects, 1440 и 390): EN 28/28, RU 28/28. `predeploy.spec.mjs` 231/231, `ru-media.check.mjs` 16/16.

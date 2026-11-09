@@ -76,7 +76,7 @@ try {
     const old = await page.evaluate(() => document.querySelectorAll('img[src*="pet-tracker-mvp-screens"]').length);
     check(`${tag}: old MVP strip is gone`, old === 0, `${old} images`);
     const brandSrcs = await page.evaluate(() => [...document.querySelectorAll('.cat-collapsible img')].map((i) => i.currentSrc || i.src));
-    check(`${tag}: brand frames are the shared (non-.ru) files`, brandSrcs.length === 6 && brandSrcs.every((u) => !isRu(u)), `${brandSrcs.length} images`);
+    check(`${tag}: brand frames are the shared (non-.ru) files`, brandSrcs.length === 7 && brandSrcs.every((u) => !isRu(u)), `${brandSrcs.length} images`);
 
     // web-mvp-before is English on purpose (the web MVP screens are in English).
     const enHits = [...new Set(hits.filter((u) => !isRu(u) && !/web-mvp-before/.test(u)))];

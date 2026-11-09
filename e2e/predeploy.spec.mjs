@@ -325,7 +325,7 @@ async function checkCatApp(browser) {
       await brand.locator('.cat-collapsible__trigger').click();
       await page.waitForTimeout(1000);
       const tiles = await brand.locator('.cat-collapsible__tile').count();
-      check(`${tag}: brand block collapsed, opens to 5 tiles`, closed && tiles === 5, `closed ${closed}, tiles ${tiles}`);
+      check(`${tag}: brand block collapsed, opens to 6 tiles`, closed && tiles === 6, `closed ${closed}, tiles ${tiles}`);
       await brand.locator('.cat-collapsible__tile img').first().click();
       const box = page.locator('.case-lightbox__img');
       const opened = await box.waitFor({ state: 'visible', timeout: 5000 }).then(() => true, () => false);

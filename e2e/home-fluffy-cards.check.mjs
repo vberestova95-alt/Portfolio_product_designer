@@ -1,6 +1,6 @@
 /*
- * Fluffy Chumb cards on the home page and /ai-projects (BACKLOG п. 34):
- * the new texts, no "own trackers" / "interviews with MVP users", images load,
+ * Fluffy Chumb cards on the home page and where aiProjects renders them (the
+ * pre-п. 34 texts: п. 34 was cancelled), images load,
  * link goes to /cat-app, console / network clean. 1440 and 390.
  *
  *   EN: BASE=http://localhost:4181 node e2e/home-fluffy-cards.check.mjs
@@ -18,9 +18,9 @@ const SHOTS = process.env.SHOTS ?? path.join(path.dirname(fileURLToPath(import.m
 mkdirSync(SHOTS, { recursive: true });
 const q = RU ? '?lang=ru' : '';
 const NEW = RU
-  ? [/делят дела по уходу на день/, /Общая рутина ухода на день/]
-  : [/share the day’s care tasks/, /A shared daily care routine/];
-const OLD = /set up their own trackers|Custom care trackers|interviews with MVP users|настраивают свои трекеры|Свои трекеры|пользователями MVP/;
+  ? [/настраивают свои трекеры и делят дела на день/, /Свои трекеры ухода и общая рутина дня/]
+  : [/set up their own trackers and share the day’s tasks/, /Custom care trackers and a shared daily routine/];
+const OLD = /share the day’s care tasks|A shared daily care routine|делят дела по уходу на день|Общая рутина ухода на день/;
 
 let total = 0;
 let failed = 0;
@@ -54,8 +54,8 @@ try {
         const all = document.body.innerText;
         return { all, cardCount: nodes.length };
       });
-      check(`${tag}: new Fluffy Chumb text present`, expected.test(info.all), expected.source);
-      check(`${tag}: no old wording`, !OLD.test(info.all), info.all.match(OLD)?.[0] ?? '');
+      check(`${tag}: Fluffy Chumb card text present`, expected.test(info.all), expected.source);
+      check(`${tag}: no п. 34 wording`, !OLD.test(info.all), info.all.match(OLD)?.[0] ?? '');
       const link = await page.evaluate(() => [...document.querySelectorAll('a[href="/cat-app"]')].length);
       check(`${tag}: link(s) to /cat-app`, link >= 1, `${link}`);
       const broken = await page.evaluate(() => [...document.images].filter((i) => !(i.complete && i.naturalWidth > 0) && i.loading !== 'lazy').map((i) => i.src));
@@ -69,7 +69,7 @@ try {
       if (await card.count()) {
         await card.scrollIntoViewIfNeeded();
         await page.waitForTimeout(500);
-        await page.screenshot({ path: path.join(SHOTS, `test-34-${RU ? 'ru' : 'en'}-${label}-${width}.png`) });
+        await page.screenshot({ path: path.join(SHOTS, `test-34revert-${RU ? 'ru' : 'en'}-${label}-${width}.png`) });
       }
       await ctx.close();
     }
