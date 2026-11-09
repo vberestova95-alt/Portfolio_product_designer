@@ -7,9 +7,10 @@
  * and ship untouched.
  */
 import { readFile, rm, writeFile } from 'node:fs/promises'
-import { resolveDeployTarget } from './deploy-targets.mjs'
+import { resolveDeployTarget, resolveDistDirectory } from './deploy-targets.mjs'
 
-const distDirectory = new URL('../dist/', import.meta.url)
+const target = resolveDeployTarget()
+const distDirectory = resolveDistDirectory(target)
 
 function escapeAttribute(value) {
   return value
@@ -84,22 +85,20 @@ async function patchIndexHtml(target) {
 }
 
 async function writeCrawlerFiles(target) {
-  const { origin, routes } = target
+  const { origin, routes, sitemap = routes } = target
 
   await writeFile(
     new URL('robots.txt', distDirectory),
     `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`,
   )
 
-  const entries = routes.map((route) => `  <url><loc>${origin}/${route}</loc></url>`).join('\n')
+  const entries = sitemap.map((route) => `  <url><loc>${origin}/${route}</loc></url>`).join('\n')
 
   await writeFile(
     new URL('sitemap.xml', distDirectory),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`,
   )
 }
-
-const target = resolveDeployTarget()
 
 if (target.metadata) {
   await patchIndexHtml(target)

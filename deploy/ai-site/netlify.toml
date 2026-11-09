@@ -1,0 +1,28 @@
+# Netlify config for the AI portfolio subdomain (ai.vberestova.com).
+#
+# The root netlify.toml belongs to the Pet Injection Tracker site and forces
+# its own command, publish dir and VITE_CASE_ONLY. Netlify reads netlify.toml
+# from the site's base directory, so the AI site sets
+#   Base directory: deploy/ai-site
+# and everything else comes from this file. The build runs from the repo root.
+
+[build]
+  command = "cd ../.. && npm ci && npm run build:ai"
+  publish = "../../dist-ai"
+
+[build.environment]
+  VITE_AI_ONLY = "true"
+  VITE_CASE_ONLY = "false"
+
+# The landing is the home here; its main-site address leads to it.
+[[redirects]]
+  from = "/ai-portfolio"
+  to = "/"
+  status = 301
+
+# SPA fallback. Pre-rendered routes (dist-ai/<route>/index.html) are served as
+# files first; anything else reaches the app, which shows its 404 page.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
