@@ -4251,6 +4251,8 @@ ol.case-bullet-list li::before {
 .case-teaser__media img {
   width: 100%;
   height: auto;
+  /* Phone screen: the box is held until the lazy image loads. */
+  aspect-ratio: auto 390 / 844;
 }
 
 @media (max-width: 640px) {
@@ -4313,6 +4315,10 @@ ol.case-bullet-list li::before {
 .case-phone-row__item img {
   width: 100%;
   height: auto;
+  /* Row frames are phone screens: a 390×844 box is held until the lazy image
+     loads (then its own ratio wins), so the page does not grow under the
+     reader. */
+  aspect-ratio: auto 390 / 844;
   cursor: zoom-in;
   filter: drop-shadow(0 12px 24px rgba(13, 17, 23, 0.14));
 }

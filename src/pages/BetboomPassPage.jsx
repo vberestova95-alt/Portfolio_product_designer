@@ -3,7 +3,12 @@ import { SiteFooter } from '../components/SiteFooter.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
 import { useUi } from '../i18n/LanguageContext.jsx';
 
-function LazyVideo({ src, alt, className = '', playbackRate = 1, poster }) {
+/*
+ * `ratio` (e.g. '1600 / 900') reserves the clip's box before anything loads,
+ * so the page does not grow under the reader as clips arrive — that shift is
+ * what threw Back to the wrong place on this long page.
+ */
+function LazyVideo({ src, alt, className = '', playbackRate = 1, poster, ratio }) {
   const videoRef = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
 
@@ -63,6 +68,7 @@ function LazyVideo({ src, alt, className = '', playbackRate = 1, poster }) {
       className={className}
       src={shouldLoad ? src : undefined}
       poster={poster}
+      style={ratio ? { aspectRatio: ratio } : undefined}
       aria-label={alt}
       autoPlay
       muted
@@ -766,6 +772,7 @@ function CaseMedia({ media, className = '' }) {
         src={media.src}
         poster={media.poster}
         alt={media.alt}
+        ratio={media.ratio}
       />
     );
   }

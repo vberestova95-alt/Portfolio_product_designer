@@ -677,6 +677,7 @@ export const betboomPassCaseStudy = {
               media: {
                 type: 'video',
                 src: betboomAbTestRuVideo,
+                ratio: '1600 / 924',
                 alt: 'The original A/B test recording, in Russian: classic sports task cards in the existing esports catalog',
               },
               caption: 'Original, in Russian.',
@@ -685,6 +686,7 @@ export const betboomPassCaseStudy = {
               media: {
                 type: 'video',
                 src: betboomAbTestVideo,
+                ratio: '1600 / 900',
                 alt: 'EN version: the top carousel slides to the next esports tournament, the page loads and a task opens in a popup',
               },
             },
@@ -898,6 +900,7 @@ export const betboomPassCaseStudy = {
           media: {
             type: 'video',
             src: betboomRedesignVideo,
+            ratio: '1800 / 614',
             alt: 'Task card before and after: the old card with a large illustration, then a scrolling column of the new cards',
           },
           caption: 'Before: the illustration led. After: the condition, reward and deadline lead.',
@@ -1089,6 +1092,7 @@ export const betboomPassCaseStudy = {
           media: {
             type: 'video',
             src: betboomCategoryBarVideo,
+            ratio: '1800 / 248',
             poster: betboomCategoryBarPoster,
             alt: 'The category bar on desktop: esports and sports icons with sort chips below; Valorant, then Hockey, then All are picked in turn',
           },
@@ -1126,6 +1130,7 @@ export const betboomPassCaseStudy = {
           media: {
             type: 'video',
             src: betboomDesktopAfterVideo,
+            ratio: '1600 / 900',
             poster: betboomDesktopAfterPoster,
             alt: 'Desktop task page after the redesign: the MSI 2025 hero, a scroll down to the category bar and the task grid, and hovers over categories',
           },
