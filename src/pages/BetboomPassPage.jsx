@@ -203,7 +203,7 @@ function FlowVideos({ part }) {
   );
 }
 
-function BeforeAfterSlider({ before, after }) {
+function BeforeAfterSlider({ before, after, caption }) {
   const text = useUi().case;
   const [position, setPosition] = useState(50);
   const [animated, setAnimated] = useState(false);
@@ -339,6 +339,7 @@ function BeforeAfterSlider({ before, after }) {
           </div>
         </div>
       </div>
+      <MediaCaption caption={caption} />
     </div>
   );
 }
@@ -441,6 +442,151 @@ function BentoGrid({ part }) {
   );
 }
 
+/*
+ * One line under a picture: what changed and why. `credit` names work that is
+ * not mine (another designer's UI in the frame) and sits on its own line.
+ */
+function MediaCaption({ caption, credit }) {
+  if (!caption && !credit) {
+    return null;
+  }
+
+  return (
+    <p className="case-media-caption">
+      {caption}
+      {credit ? <span className="case-media-caption__credit">{credit}</span> : null}
+    </p>
+  );
+}
+
+/*
+ * Whole phone screens side by side, each with a short caption — a flow or a
+ * set of states. Screens keep their own rounding; the row wraps on a phone.
+ */
+function PhoneRow({ part }) {
+  return (
+    <figure className={`case-phone-row case-phone-row--${Math.min(part.items.length, 4)}`}>
+      {part.label ? <span className="case-phone-row__label">{part.label}</span> : null}
+      <div className="case-phone-row__items">
+        {part.items.map((item) => (
+          <div key={item.src} className="case-phone-row__item">
+            <img src={item.src} alt={item.alt} loading="lazy" />
+            {item.caption ? <span>{item.caption}</span> : null}
+          </div>
+        ))}
+      </div>
+      {part.caption ? (
+        <figcaption className="case-media-caption">{part.caption}</figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
+// Opens a collapsible block by id (see Collapsible) and scrolls to it.
+function openCaseBlock(id) {
+  window.dispatchEvent(new CustomEvent('case:open-block', { detail: id }));
+}
+
+/*
+ * The product as it is now, right under the hero: frames change on their own
+ * like a short clip, and each step can be picked by hand. The clip stops on
+ * hover, on focus and with reduced motion. A frame may tease a block further
+ * down the case (`teaser.target` — the id of a collapsible).
+ */
+function CaseShowcase({ showcase }) {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  );
+  const count = showcase.frames.length;
+
+  useEffect(() => {
+    const query = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+
+    if (!query) {
+      return undefined;
+    }
+
+    const update = () => setReduceMotion(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    if (paused || reduceMotion) {
+      return undefined;
+    }
+
+    const timer = setTimeout(() => setActive((index) => (index + 1) % count), 3200);
+    return () => clearTimeout(timer);
+  }, [active, paused, reduceMotion, count]);
+
+  const frame = showcase.frames[active];
+
+  return (
+    <section
+      className={`case-showcase${paused || reduceMotion ? ' is-paused' : ''}`}
+      data-reveal
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
+      <div className="case-showcase__stage">
+        {showcase.frames.map((item, index) => (
+          <img
+            key={item.src}
+            className={`case-showcase__frame${index === active ? ' is-active' : ''}`}
+            src={item.src}
+            alt={item.alt}
+            aria-hidden={index === active ? undefined : true}
+          />
+        ))}
+      </div>
+
+      <div className="case-showcase__copy">
+        {showcase.label ? <p className="section-label">{showcase.label}</p> : null}
+        {showcase.title ? <h2>{showcase.title}</h2> : null}
+
+        <ol className="case-showcase__steps">
+          {showcase.frames.map((item, index) => (
+            <li key={item.label} className={index === active ? 'is-active' : undefined}>
+              <button type="button" onClick={() => setActive(index)} aria-current={index === active}>
+                <span className="case-showcase__step-label">{item.label}</span>
+                <span className="case-showcase__step-caption">{item.caption}</span>
+                {/* Restarts with each step: the bar shows how long the frame stays. */}
+                <span key={`${active}-${index}`} className="case-showcase__progress" aria-hidden="true" />
+              </button>
+            </li>
+          ))}
+        </ol>
+
+        <p className="case-showcase__credit">{frame.credit || '\u00a0'}</p>
+
+        {showcase.frames
+          .filter((item) => item.teaser)
+          .map((item) => (
+            <a
+              key={item.teaser.target}
+              className="case-showcase__teaser"
+              href={`#${item.teaser.target}`}
+              onClick={(event) => {
+                event.preventDefault();
+                openCaseBlock(item.teaser.target);
+              }}
+            >
+              {item.teaser.text}
+              <span aria-hidden="true">↓</span>
+            </a>
+          ))}
+      </div>
+    </section>
+  );
+}
+
 function CaseMedia({ media, className = '' }) {
   if (media.type === 'video') {
     return (
@@ -455,18 +601,61 @@ function CaseMedia({ media, className = '' }) {
   return <img className={className} src={media.src} alt={media.alt} />;
 }
 
+/*
+ * A block that opens on click. With `id` it can also be opened from elsewhere
+ * on the page (openCaseBlock or a #id link on load) and holds whole parts —
+ * a mini case folded at the end of a case.
+ */
 function Collapsible({ part }) {
   const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef(null);
   const ListTag = part.listType === 'ordered' ? 'ol' : 'ul';
 
+  useEffect(() => {
+    if (!part.id) {
+      return undefined;
+    }
+
+    const open = () => {
+      setIsOpen(true);
+      // After the open state lands, so the scroll aims at the final layout.
+      requestAnimationFrame(() =>
+        rootRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+      );
+    };
+    const onOpen = (event) => {
+      if (event.detail === part.id) {
+        open();
+      }
+    };
+
+    if (window.location.hash === `#${part.id}`) {
+      open();
+    }
+
+    window.addEventListener('case:open-block', onOpen);
+    return () => window.removeEventListener('case:open-block', onOpen);
+  }, [part.id]);
+
   return (
-    <div className={`case-collapsible${isOpen ? ' is-open' : ''}`}>
+    <div
+      ref={rootRef}
+      id={part.id}
+      className={`case-collapsible${part.parts ? ' case-collapsible--rich' : ''}${
+        isOpen ? ' is-open' : ''
+      }`}
+    >
       <button
         className="case-collapsible__trigger"
         onClick={() => setIsOpen((value) => !value)}
         aria-expanded={isOpen}
       >
-        <span className="case-collapsible__title">{part.title}</span>
+        <span>
+          <span className="case-collapsible__title">{part.title}</span>
+          {part.subtitle ? (
+            <span className="case-collapsible__subtitle">{part.subtitle}</span>
+          ) : null}
+        </span>
         <svg className="case-collapsible__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path
             d="M5 7.5L10 12.5L15 7.5"
@@ -493,6 +682,10 @@ function Collapsible({ part }) {
             ))}
           </div>
         ) : null}
+
+        {part.parts?.map((child, index) => (
+          <SectionPart key={`${part.id}-${child.type}-${index}`} part={child} />
+        ))}
       </div>
     </div>
   );
@@ -609,6 +802,7 @@ function SectionPart({ part }) {
             className={part.media.type === 'video' ? 'case-image-band__video' : ''}
           />
         )}
+        <MediaCaption caption={part.caption} credit={part.credit} />
       </div>
     );
   }
@@ -617,6 +811,7 @@ function SectionPart({ part }) {
     return (
       <div className={`case-feature-media${part.wide ? ' case-feature-media--wide' : ''}`}>
         <CaseMedia media={part.media} />
+        <MediaCaption caption={part.caption} credit={part.credit} />
       </div>
     );
   }
@@ -664,12 +859,16 @@ function SectionPart({ part }) {
     );
   }
 
+  if (part.type === 'phoneRow') {
+    return <PhoneRow part={part} />;
+  }
+
   if (part.type === 'flowVideos') {
     return <FlowVideos part={part} />;
   }
 
   if (part.type === 'beforeAfterSlider') {
-    return <BeforeAfterSlider before={part.before} after={part.after} />;
+    return <BeforeAfterSlider before={part.before} after={part.after} caption={part.caption} />;
   }
 
   if (part.type === 'siteLink') {
@@ -831,6 +1030,8 @@ export function CaseStudyPage({
             <img src={caseStudy.hero.image.src} alt={caseStudy.hero.image.alt} />
           </div>
         </section>
+
+        {caseStudy.showcase ? <CaseShowcase showcase={caseStudy.showcase} /> : null}
 
         <div className="case-chapters">
           {caseStudy.sections.map((section) => (
