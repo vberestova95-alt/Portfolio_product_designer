@@ -1,5 +1,16 @@
 # Отчёт тестировщика
 
+## 2026-11-09 — повторный прогон /cat-app после п. 34 (коммит e4cb5ab)
+
+**Итог: прошло всё, багов нет.** `cat-app-preview.check.mjs`: EN 112/112, RU 115/115. Новый `home-fluffy-cards.check.mjs` (главная и /ai-projects, 1440 и 390): EN 28/28, RU 28/28. `predeploy.spec.mjs` 231/231, `ru-media.check.mjs` 16/16.
+- Сборки (EN на 4181, RU-копия на 4182) пересобраны из HEAD, хеши ассетов не изменились: были актуальны.
+- Брендинг: 5 плиток и мозаика (на 390 сетка 2×3). «What the app does / Что умеет приложение»: 3 плитки. Полоса Version 2: 4 экрана (Home, Insulin, History, Family).
+- На странице EN и RU нет custom / own tracker, builder, Build the look, set of tools, flexible, «свой трекер», «конструктор», «набор инструментов», «гибк». Исключений не нашлось (слова проверялись в тексте, alt и aria-label; текст внутри картинок смотрел глазами на полосе v2).
+- Главная и /ai-projects: новые тексты карточки Fluffy Chumb, без «свои трекеры» и «interviews with MVP users»; картинки, ссылка на /cat-app и консоль в порядке.
+- Заглушка «Check the dose / To be replaced» осталась только во второй паре слайдера «до/после» (известна). Три заглушки в полосе v2 ушли. Полоска у края слайдера пропала.
+- Не проверено: iPhone, Safari / WebKit; картинки RU смотрел выборочно.
+Скриншоты: `docs/review/cat-app-2026-11/test-34-*.png`.
+
 ## 2026-11-09 — превью /cat-app (пп. 29, 30, 31, 33), ветка feat/cat-app-preview
 
 **Итог: функционально чисто, блокеров по коду нет. Но на странице видны заглушки «To be replaced / Будет заменено» (см. ниже).** Новый `e2e/cat-app-preview.check.mjs`: EN 103/103, RU 106/106. `predeploy.spec.mjs` 231/231, `ru-media.check.mjs` 16/16, `other-projects.check.mjs` 385/385, `ru-images.check.mjs` проходит.

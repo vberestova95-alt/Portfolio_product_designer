@@ -20,6 +20,7 @@ BASE=http://localhost:4174 node e2e/ru-media.check.mjs   # RU-ролики и л
   лента v2, лента MVP без подложки и без обрезки); `?lang=ru`. Порядок кейсов — константа `CASE_ORDER` в начале файла:
   меняется порядок на сайте — правим её.
 - `cat-app-preview.check.mjs` — /cat-app целиком (пп. 29–33): без битых картинок и ошибок, шаги 1–5, слайдер beforeAfterPairs (на 390 — чипы пар), брендинг (свёрнут, 6 плиток, лайтбокс, сетка 2×3 на 390), нет «Clip A/B», клипы играют и sc1-b зацикливается, ∞ в шапке, 4 карточки Research, 4 «Confirmed / Подтверждено».
+- `home-fluffy-cards.check.mjs` — карточки Fluffy Chumb на главной и в /ai-projects (1440/390): новые тексты, нет старых формулировок, картинки, ссылка, консоль. RU: `BASE=…4182 LANG_CODE=ru`.
 - `ru-images.check.mjs` — у каждого RU-кейса своя обложка, у Fluffy Chumb `.ru.webp`.
 
 Особенности:

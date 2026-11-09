@@ -164,7 +164,7 @@ try {
       check(`${tag}: no pair chips on a desktop`, g.chips.length === 0, '');
     }
 
-    // 5. Brand: collapsed by default, opens, 6 tiles + wide, lightbox, grid.
+    // 5. Brand: collapsed by default, opens, 5 tiles + wide, lightbox, grid.
     const brand = page.locator('.cat-collapsible').first();
     await brand.scrollIntoViewIfNeeded();
     const closedH = await brand.locator('.cat-collapsible__body').evaluate((b) => b.getBoundingClientRect().height);
@@ -179,10 +179,10 @@ try {
       const body = el.querySelector('.cat-collapsible__body');
       return { tiles: tiles.length, cols: cols.size, rows: rows.size, wide: !!wide && wide.complete && wide.naturalWidth > 0, bodyH: body.getBoundingClientRect().height, imgs: [...el.querySelectorAll('img')].every((i) => i.complete && i.naturalWidth > 0), overflow: el.scrollWidth > el.clientWidth + 1 };
     });
-    check(`${tag}: brand opens, 6 tiles + logo takes mosaic, images loaded`, bo.bodyH > 100 && bo.tiles === 6 && bo.wide && bo.imgs, JSON.stringify(bo));
+    check(`${tag}: brand opens, 5 tiles + logo takes mosaic, images loaded`, bo.bodyH > 100 && bo.tiles === 5 && bo.wide && bo.imgs, JSON.stringify(bo));
     check(`${tag}: brand block has no sideways overflow`, !bo.overflow, '');
     if (phone) check(`${tag}: brand grid 2×3`, bo.cols === 2 && bo.rows === 3, `${bo.cols} cols × ${bo.rows} rows`);
-    else check(`${tag}: brand grid (info)`, bo.tiles === 6, `${bo.cols} cols × ${bo.rows} rows`);
+    else check(`${tag}: brand grid (info)`, bo.tiles === 5, `${bo.cols} cols × ${bo.rows} rows`);
     await brand.screenshot({ path: shot('brand-open') });
     for (const how of ['esc', 'click']) {
       await brand.locator('.cat-collapsible__tile img').first().click();
@@ -204,6 +204,19 @@ try {
     check(`${tag}: lightbox opens on the logo takes mosaic`, await page.locator('.case-lightbox__img').waitFor({ state: 'visible', timeout: 4000 }).then(() => true, () => false), '');
     await page.keyboard.press('Escape');
     await page.waitForTimeout(400);
+
+    // 5b. Hidden flexible trackers (BACKLOG п. 34): 3 feature tiles, 4-screen v2 band, no banned words.
+    const feat = await page.evaluate(() => {
+      const bento = document.querySelector('.case-bento');
+      const v2 = [...document.querySelectorAll('.case-image-band img')].find((i) => /fluffy-chumb-v2-screens/.test(i.getAttribute('src') ?? ''));
+      return { tiles: bento ? bento.querySelectorAll('.bento-tile').length : -1, v2: v2 ? v2.naturalWidth / v2.naturalHeight : 0, v2w: v2?.naturalWidth, v2h: v2?.naturalHeight };
+    });
+    check(`${tag}: "${RU ? 'Что умеет приложение' : 'What the app does'}" has 3 tiles, no builder`, feat.tiles === 3, `${feat.tiles} tiles`);
+    check(`${tag}: Version 2 band is 4 screens (ratio ~4 phones, was 7)`, feat.v2 > 0 && feat.v2 < 3.2, `${feat.v2w}x${feat.v2h}, ratio ${feat.v2.toFixed(2)}`);
+    const everything = (await page.evaluate(() => document.body.innerText + ' ' + [...document.querySelectorAll('img')].map((i) => i.alt).join(' ') + ' ' + [...document.querySelectorAll('[aria-label]')].map((e) => e.getAttribute('aria-label')).join(' ')));
+    const banned = /custom tracker|own tracker|builder|Build the look|set of tools|flexible|свой трекер|свои трекеры|своих трекеров|конструктор|набор инструментов|гибк/i;
+    const hit = everything.match(new RegExp(`.{0,40}(${banned.source}).{0,40}`, 'i'));
+    check(`${tag}: no flexible-tracker wording (custom/own tracker, builder, set of tools, flexible)`, !hit, hit?.[0] ?? '');
 
     // 6. Key flows: no clip labels.
     const flowText = await page.evaluate(() => [...document.querySelectorAll('.case-flow')].map((f) => f.innerText).join('\n'));
