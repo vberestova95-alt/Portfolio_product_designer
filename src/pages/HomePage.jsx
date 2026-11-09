@@ -35,6 +35,7 @@ import { SHOW_OBJECT_GRAPHICS } from '../lib/siteGraphics.js';
 import { attachCaseCube } from '../lib/caseCube.js';
 import { attachShotTrail } from '../lib/shotTrail.js';
 import { attachWorkStack } from '../lib/workStack.js';
+import '../styles/home-cards.css';
 
 // Keep the section in code, but hidden until the copy is rewritten.
 const SHOW_ACHIEVEMENTS_SECTION = false;

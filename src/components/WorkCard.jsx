@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useUi } from '../i18n/LanguageContext.jsx';
 
 /*
@@ -58,6 +58,101 @@ function CoverMotion({ motion }) {
   );
 }
 
+// How long a cover frame holds: the beat of the hero's pairs (PAIR_HOLD_MS).
+const FRAME_HOLD_MS = 7000;
+
+/*
+ * A cover with `frames` shows them in turn after its own picture: each holds
+ * for the hero pairs' beat, then the next fades in over it. The count stands
+ * while the card is off screen or the tab is hidden; with reduced motion the
+ * first frame stays.
+ */
+function useFrameTurn(ref, count) {
+  const [shown, setShown] = useState(0);
+
+  useEffect(() => {
+    const node = ref.current;
+
+    if (
+      count < 2 ||
+      !node ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return undefined;
+    }
+
+    let onScreen = false;
+    let timer = 0;
+    const stop = () => {
+      window.clearTimeout(timer);
+      timer = 0;
+    };
+    const run = () => {
+      stop();
+
+      if (onScreen && !document.hidden) {
+        timer = window.setTimeout(() => {
+          setShown((frame) => (frame + 1) % count);
+          run();
+        }, FRAME_HOLD_MS);
+      }
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      run();
+    });
+
+    observer.observe(node);
+    document.addEventListener('visibilitychange', run);
+
+    return () => {
+      stop();
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', run);
+    };
+  }, [ref, count]);
+
+  return shown;
+}
+
+function CoverStage({ item }) {
+  return (
+    <div
+      className="cover-stage"
+      style={{ '--stage-w': item.stage.width, '--stage-h': item.stage.height }}
+    >
+      <img className="cover-stage__base" src={item.image.src} alt={item.image.alt} />
+      <CoverMotion motion={item.motion} />
+    </div>
+  );
+}
+
+function CoverFrames({ item }) {
+  const ref = useRef(null);
+  const frames = [item.image, ...item.frames];
+  const shown = useFrameTurn(ref, frames.length);
+
+  return (
+    <div className="work-card__visual work-card__visual--frames" ref={ref}>
+      {frames.map((frame, place) => (
+        <div
+          key={frame.src}
+          className={`work-card__frame${place === 0 && item.motion ? ' work-card__frame--stage' : ''}${
+            place === shown ? ' is-shown' : ''
+          }`}
+          aria-hidden={place === shown ? undefined : true}
+        >
+          {place === 0 && item.motion ? (
+            <CoverStage item={item} />
+          ) : (
+            <img src={frame.src} alt={frame.alt} />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function WorkCard({ item, index, total }) {
   const text = useUi().home;
 
@@ -107,16 +202,12 @@ export function WorkCard({ item, index, total }) {
               </span>
             ))}
           </div>
+        ) : item.frames ? (
+          <CoverFrames item={item} />
         ) : (
           <div className={`work-card__visual${item.motion ? ' work-card__visual--stage' : ''}`}>
             {item.motion ? (
-              <div
-                className="cover-stage"
-                style={{ '--stage-w': item.stage.width, '--stage-h': item.stage.height }}
-              >
-                <img className="cover-stage__base" src={item.image.src} alt={item.image.alt} />
-                <CoverMotion motion={item.motion} />
-              </div>
+              <CoverStage item={item} />
             ) : (
               <img
                 src={item.image.src}
