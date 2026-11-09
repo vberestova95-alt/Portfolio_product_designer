@@ -25,6 +25,7 @@ const portfolio = {
    * route. Keep this in step with the rewrites in vercel.json.
    */
   routes: [
+    'ai-portfolio',
     'ai-projects',
     'betboom-pass',
     'cat-app',
@@ -35,6 +36,8 @@ const portfolio = {
     'iquoto',
     'kokoc-group',
     'privacy',
+    // Reached only from the AI portfolio landing; kept out of sitemap.xml.
+    'spotless',
     'yandex-turkey',
   ],
   // Nothing to patch — see the note above.
