@@ -9,11 +9,22 @@ import designCringeCategories from '../assets/cases/design-cringe-categories.jpg
 import designCringeIssues from '../assets/cases/design-cringe-issues.jpg';
 import designCringeMobileBad from '../assets/cases/design-cringe-mobile-bad.jpg';
 import designCringeMobileClean from '../assets/cases/design-cringe-mobile-clean.jpg';
-import betboomShowcaseTasks from '../assets/cases/betboom/showcase-tasks.webp';
-import betboomShowcaseOnboarding from '../assets/cases/betboom/showcase-onboarding.webp';
-import betboomShowcaseTop from '../assets/cases/betboom/showcase-top.webp';
-import betboomShowcaseCategoryBar from '../assets/cases/betboom/showcase-category-bar.webp';
 import betboomShowcaseEntryPoint from '../assets/cases/betboom/showcase-entry-point.webp';
+import betboomShowcaseTasksPoster from '../assets/cases/betboom/showcase-tasks-poster.webp';
+import betboomShowcaseTasksWebm from '../assets/cases/betboom/showcase-tasks.webm';
+import betboomShowcaseTasksMov from '../assets/cases/betboom/showcase-tasks.mov';
+import betboomShowcaseWidgetPoster from '../assets/cases/betboom/showcase-widget-poster.webp';
+import betboomShowcaseWidgetWebm from '../assets/cases/betboom/showcase-widget.webm';
+import betboomShowcaseWidgetMov from '../assets/cases/betboom/showcase-widget.mov';
+import betboomShowcaseTaskDetailPoster from '../assets/cases/betboom/showcase-task-detail-poster.webp';
+import betboomShowcaseTaskDetailWebm from '../assets/cases/betboom/showcase-task-detail.webm';
+import betboomShowcaseTaskDetailMov from '../assets/cases/betboom/showcase-task-detail.mov';
+import betboomShowcaseSwitchingPoster from '../assets/cases/betboom/showcase-switching-poster.webp';
+import betboomShowcaseSwitchingWebm from '../assets/cases/betboom/showcase-switching.webm';
+import betboomShowcaseSwitchingMov from '../assets/cases/betboom/showcase-switching.mov';
+import betboomShowcaseCategoryBarPoster from '../assets/cases/betboom/showcase-category-bar-poster.webp';
+import betboomShowcaseCategoryBarWebm from '../assets/cases/betboom/showcase-category-bar.webm';
+import betboomShowcaseCategoryBarMov from '../assets/cases/betboom/showcase-category-bar.mov';
 import betboomSwapConflict from '../assets/cases/betboom/swap-conflict.webp';
 import betboomSwapReturn from '../assets/cases/betboom/swap-return.webp';
 import betboomSwapSwitched from '../assets/cases/betboom/swap-switched.webp';
@@ -439,6 +450,15 @@ export const catAppCaseStudy = {
 // carries this credit (the user's condition for showing it at all).
 const betboomWidgetCredit = '“Your tasks” widget UI by a second designer.';
 
+// A showcase clip with alpha: HEVC .mov for Safari first (other browsers skip
+// the type), VP9 WebM for the rest; the MP4 export has a solid ground, so not used.
+const betboomShowcaseClip = (mov, webm) => ({
+  sources: [
+    { src: mov, type: 'video/quicktime; codecs="hvc1"' },
+    { src: webm, type: 'video/webm; codecs="vp9"' },
+  ],
+});
+
 export const betboomPassCaseStudy = {
   slug: 'betboom-pass',
   backHref: '/',
@@ -469,46 +489,53 @@ export const betboomPassCaseStudy = {
     // TODO(p32): tools — only Figma and FigJam are confirmed; ask the user if there were others.
     points: ['Figma', 'FigJam'],
   },
-  // Frames in production order; plays on its own, a step can be picked by hand.
-  // TODO(p32): a 10–15 s screen recording can replace the frames later (designer).
+  // Clips in production order; each hands over when it ends, a step can be
+  // picked by hand. `duration` is the clip's length, for the progress bar.
   showcase: {
     label: 'In production',
     title: 'What is live now',
     frames: [
       {
-        label: 'Tasks',
-        caption: 'One task page for esports and classic sports.',
-        credit: betboomWidgetCredit,
-        src: betboomShowcaseTasks,
-        alt: 'Task page on mobile web: top tasks carousel, category bar with esports titles, task cards and the “Your tasks” widget',
+        label: 'Tasks and top',
+        caption: 'Top tasks rotate up front, then one feed for esports and classic sports.',
+        src: betboomShowcaseTasksPoster,
+        video: betboomShowcaseClip(betboomShowcaseTasksMov, betboomShowcaseTasksWebm),
+        duration: 8.4,
+        alt: 'Task page in the app: the top tasks carousel turns from MSI 2025 to IEM Cologne 2025, then the feed of task cards scrolls',
       },
       {
-        label: 'Onboarding',
-        caption: 'Onboarding adapts to how the user arrived.',
-        src: betboomShowcaseOnboarding,
-        alt: 'Onboarding welcome screen over the task page: “We’ve updated the portal — take a look at what’s new”, with Let’s go and Skip',
+        label: 'Your tasks widget',
+        caption: 'Active tasks and their progress, one tap from any screen.',
+        credit: '“Your tasks” widget UI: a second designer.',
+        src: betboomShowcaseWidgetPoster,
+        video: betboomShowcaseClip(betboomShowcaseWidgetMov, betboomShowcaseWidgetWebm),
+        duration: 7,
+        alt: 'The “Your tasks” widget opens over the task page: three active tasks, a chain task with progress 300 of 1 200, and a deposit task',
       },
       {
-        label: 'Top tasks',
-        caption: 'Top tasks rotate and stay pinned to the header.',
-        credit: betboomWidgetCredit,
-        src: betboomShowcaseTop,
-        alt: 'Top tasks carousel above a mixed feed of gaming and betting task cards',
+        label: 'Task detail',
+        caption: 'Pick the stake tier and see its reward before you start.',
+        src: betboomShowcaseTaskDetailPoster,
+        video: betboomShowcaseClip(betboomShowcaseTaskDetailMov, betboomShowcaseTaskDetailWebm),
+        duration: 9,
+        alt: 'A hockey task opens: stake tiers from 500 to 3 000 ₽ with token and XP rewards; after Start, the tier becomes active with Place a bet and Cancel task',
       },
       {
-        // TODO(p32): “Category bar” is our working name for the rubricator; confirm with the user.
+        label: 'Switching tasks',
+        caption: 'One active task per category: a popup offers the swap.',
+        src: betboomShowcaseSwitchingPoster,
+        video: betboomShowcaseClip(betboomShowcaseSwitchingMov, betboomShowcaseSwitchingWebm),
+        duration: 9.7,
+        alt: 'Starting a second hockey task opens “These tasks conflict”: the active task, its reward and a warning that progress resets, with Cancel and Switch',
+      },
+      {
         label: 'Category bar',
-        caption: 'Categories collapse in three steps as you scroll.',
-        credit: `Category bar concept and logic: me; UI: a second designer. ${betboomWidgetCredit}`,
-        src: betboomShowcaseCategoryBar,
-        alt: 'Category bar with Table tennis selected and its task cards below',
-      },
-      {
-        // TODO(p32): entry point — option (a), the season widget V.2 (05, not 05b), recommended; not yet confirmed.
-        label: 'Entry point',
-        caption: 'The season widget in the BetBoom app profile.',
-        src: betboomShowcaseEntryPoint,
-        alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
+        caption: 'Pick a sport, and the feed narrows to its tasks.',
+        credit: 'Category bar concept and logic: me; UI: a second designer.',
+        src: betboomShowcaseCategoryBarPoster,
+        video: betboomShowcaseClip(betboomShowcaseCategoryBarMov, betboomShowcaseCategoryBarWebm),
+        duration: 6.2,
+        alt: 'Task page on mobile web: the category bar scrolls to Table tennis, and the feed shows table tennis tasks',
         teaser: { text: 'Next case: the Gamification hub in the BetBoom app', href: '/betboom-gamification-hub' },
       },
     ],

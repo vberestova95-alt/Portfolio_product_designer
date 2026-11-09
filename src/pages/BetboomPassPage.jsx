@@ -535,9 +535,11 @@ function openCaseBlock(id) {
 
 /*
  * The product as it is now, right under the hero: frames change on their own
- * like a short clip, and each step can be picked by hand. The clip stops on
- * hover, on focus and with reduced motion. A frame may tease a block further
- * down the case (`teaser.target` — the id of a collapsible).
+ * like a short clip, and each step can be picked by hand. A frame with `video`
+ * plays its clip and hands over when it ends; a still frame stays
+ * `duration` seconds (3.2 by default). Hover and focus hold the current frame
+ * (its clip loops), reduced motion shows the posters only. A frame may tease
+ * a block further down the case (`teaser.target` — the id of a collapsible).
  */
 function CaseShowcase({ showcase }) {
   const [active, setActive] = useState(0);
@@ -548,6 +550,10 @@ function CaseShowcase({ showcase }) {
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
   );
   const count = showcase.frames.length;
+  const videoRefs = useRef([]);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+  const advance = useCallback(() => setActive((index) => (index + 1) % count), [count]);
 
   useEffect(() => {
     const query = window.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -561,16 +567,60 @@ function CaseShowcase({ showcase }) {
     return () => query.removeEventListener('change', update);
   }, []);
 
+  // Only the active clip plays, from its start.
+  useEffect(() => {
+    videoRefs.current.forEach((video, index) => {
+      if (!video) {
+        return;
+      }
+
+      if (index === active && !reduceMotion) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }, [active, reduceMotion]);
+
+  const frame = showcase.frames[active];
+  const duration = frame.duration ?? 3.2;
+
+  /*
+   * A still frame moves on by the timer. For a clip the timer is a backstop
+   * in case `ended` never comes (autoplay refused): it waits a little longer
+   * than the clip and only fires if the clip is not playing any more.
+   */
   useEffect(() => {
     if (paused || reduceMotion) {
       return undefined;
     }
 
-    const timer = setTimeout(() => setActive((index) => (index + 1) % count), 3200);
-    return () => clearTimeout(timer);
-  }, [active, paused, reduceMotion, count]);
+    let timer;
+    const check = () => {
+      const video = videoRefs.current[active];
 
-  const frame = showcase.frames[active];
+      if (frame.video && video && !video.paused && !video.ended) {
+        timer = setTimeout(check, 1000);
+        return;
+      }
+
+      advance();
+    };
+    timer = setTimeout(check, duration * 1000 + (frame.video ? 1500 : 0));
+    return () => clearTimeout(timer);
+  }, [active, paused, reduceMotion, frame, duration, advance]);
+
+  // On hold the clip starts over instead of handing over.
+  const handleEnded = (event) => {
+    if (pausedRef.current) {
+      event.currentTarget.currentTime = 0;
+      event.currentTarget.play().catch(() => {});
+      return;
+    }
+
+    advance();
+  };
 
   return (
     /*
@@ -588,15 +638,33 @@ function CaseShowcase({ showcase }) {
       onBlur={() => setPaused(false)}
     >
       <div className="case-showcase__stage">
-        {showcase.frames.map((item, index) => (
-          <img
-            key={item.src}
-            className={`case-showcase__frame${index === active ? ' is-active' : ''}`}
-            src={item.src}
-            alt={item.alt}
-            aria-hidden={index === active ? undefined : true}
-          />
-        ))}
+        {showcase.frames.map((item, index) => {
+          const className = `case-showcase__frame${index === active ? ' is-active' : ''}`;
+          const hidden = index === active ? undefined : true;
+
+          return item.video && !reduceMotion ? (
+            <video
+              key={item.label}
+              ref={(node) => {
+                videoRefs.current[index] = node;
+              }}
+              className={className}
+              poster={item.src}
+              aria-label={item.alt}
+              aria-hidden={hidden}
+              muted
+              playsInline
+              preload={index === active ? 'auto' : 'metadata'}
+              onEnded={index === active ? handleEnded : undefined}
+            >
+              {item.video.sources.map((source) => (
+                <source key={source.src} src={source.src} type={source.type} />
+              ))}
+            </video>
+          ) : (
+            <img key={item.label} className={className} src={item.src} alt={item.alt} aria-hidden={hidden} />
+          );
+        })}
       </div>
 
       <div className="case-showcase__copy">
@@ -610,7 +678,12 @@ function CaseShowcase({ showcase }) {
                 <span className="case-showcase__step-label">{item.label}</span>
                 <span className="case-showcase__step-caption">{item.caption}</span>
                 {/* Restarts with each step: the bar shows how long the frame stays. */}
-                <span key={`${active}-${index}`} className="case-showcase__progress" aria-hidden="true" />
+                <span
+                  key={`${active}-${index}`}
+                  className="case-showcase__progress"
+                  style={{ '--showcase-duration': `${item.duration ?? 3.2}s` }}
+                  aria-hidden="true"
+                />
               </button>
             </li>
           ))}

@@ -4359,12 +4359,12 @@ ol.case-bullet-list li::before {
 
 /*
  * Showcase under the hero: the product as it is now. A phone on the left plays
- * the frames; on the right, the steps with a bar that fills while each frame
- * stays. Same black ground as the BetBoom hero.
+ * the clips; on the right, the steps with a bar that fills while each clip
+ * plays. Same black ground as the BetBoom hero.
  */
 .case-showcase {
   display: grid;
-  grid-template-columns: minmax(240px, 340px) minmax(0, 560px);
+  grid-template-columns: minmax(280px, 500px) minmax(0, 520px);
   justify-content: center;
   align-items: center;
   gap: clamp(32px, 6vw, 112px);
@@ -4375,13 +4375,10 @@ ol.case-bullet-list li::before {
   color: var(--inverse);
 }
 
+/* The clips are 3:4 with the phone and its frame on a transparent ground. */
 .case-showcase__stage {
   position: relative;
-  aspect-ratio: 390 / 844;
-  /* The screen's own 44 px corner, so a hairline can trace a dark screen on
-     the black ground. */
-  border-radius: calc(44 / 390 * 100%) / calc(44 / 844 * 100%);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+  aspect-ratio: 1080 / 1440;
 }
 
 .case-showcase__frame {
@@ -4467,7 +4464,7 @@ ol.case-bullet-list li::before {
 }
 
 .case-showcase__steps .is-active .case-showcase__progress {
-  animation: case-showcase-progress 3200ms linear forwards;
+  animation: case-showcase-progress var(--showcase-duration, 3.2s) linear forwards;
 }
 
 .case-showcase[data-paused] .case-showcase__steps .is-active .case-showcase__progress {
@@ -4489,7 +4486,8 @@ ol.case-bullet-list li::before {
 }
 
 .case-showcase__credit {
-  min-height: 1.5em;
+  /* Two lines held for every frame, so a credit does not move the block. */
+  min-height: 3em;
   margin: 0;
   font-size: 13px;
   line-height: 1.5;
@@ -4520,7 +4518,7 @@ ol.case-bullet-list li::before {
   }
 
   .case-showcase__stage {
-    width: min(260px, 72%);
+    width: min(380px, 100%);
     justify-self: center;
   }
 
@@ -4549,6 +4547,11 @@ ol.case-bullet-list li::before {
 
   .case-showcase__steps li:not(.is-active) .case-showcase__step-caption {
     display: none;
+  }
+
+  /* The one caption shown holds two lines, so the block keeps its height. */
+  .case-showcase__steps .is-active .case-showcase__step-caption {
+    min-height: calc(2 * 1.45em);
   }
 }
 

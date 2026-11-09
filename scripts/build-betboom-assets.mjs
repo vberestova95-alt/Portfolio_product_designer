@@ -30,11 +30,16 @@ const IMAGES = {
   cover: { file: '06-cover-v3.png', width: 2704 },
   // Poster of the cover animation: its first frame, transparent around the screens.
   'cover-anim-poster': { file: '06-cover-anim-v3-poster.png' },
-  'showcase-tasks': { file: '01-showcase-tasks-v2.png', phone: true },
-  'showcase-onboarding': { file: '02-showcase-onboarding.png', phone: true },
-  'showcase-top': { file: '03-showcase-top-v2.png', phone: true },
-  'showcase-category-bar': { file: '04-showcase-rubricator-v2.png', phone: true },
+  // The season widget frame; the showcase itself is animated now, it stays
+  // as the picture of the next case teaser.
   'showcase-entry-point': { file: '05-showcase-entry-point.png', phone: true },
+  // Showcase posters: the first frame of each WebM, with its alpha, so nothing
+  // shows behind the phone before the clip starts.
+  'showcase-tasks-poster': { webm: 'showcase-tasks-anim-v3.webm' },
+  'showcase-widget-poster': { webm: 'showcase-widget-anim-v3.webm' },
+  'showcase-task-detail-poster': { webm: 'showcase-task-detail-anim-v3.webm' },
+  'showcase-switching-poster': { webm: 'showcase-switching-anim-v3.webm' },
+  'showcase-category-bar-poster': { webm: 'showcase-category-bar-anim-v3.webm' },
   // Posters of the v3 clips: the first frame of each, so the swap is seamless.
   'swap-conflict': { file: '10-switch-flow-anim-v3-poster.png', phone: true },
   'swap-return': { file: '11-switch-return-task.png', phone: true },
@@ -98,6 +103,16 @@ const CLIPS = {
 const COPIES = {
   'cover-anim.webm': '06-cover-anim-v3.webm',
   'cover-anim.mov': '06-cover-anim-v3.mov',
+  'showcase-tasks.webm': 'showcase-tasks-anim-v3.webm',
+  'showcase-tasks.mov': 'showcase-tasks-anim-v3.mov',
+  'showcase-widget.webm': 'showcase-widget-anim-v3.webm',
+  'showcase-widget.mov': 'showcase-widget-anim-v3.mov',
+  'showcase-task-detail.webm': 'showcase-task-detail-anim-v3.webm',
+  'showcase-task-detail.mov': 'showcase-task-detail-anim-v3.mov',
+  'showcase-switching.webm': 'showcase-switching-anim-v3.webm',
+  'showcase-switching.mov': 'showcase-switching-anim-v3.mov',
+  'showcase-category-bar.webm': 'showcase-category-bar-anim-v3.webm',
+  'showcase-category-bar.mov': 'showcase-category-bar-anim-v3.mov',
 }
 
 function parseArgs(argv) {
@@ -145,8 +160,17 @@ async function encode({ buffer, width }) {
   }
 }
 
+// The first frame of a VP9 WebM with its alpha: ffmpeg needs libvpx to decode it.
+function firstFrame(webm) {
+  return execFileSync('ffmpeg', [
+    '-loglevel', 'error', '-c:v', 'libvpx-vp9', '-i', webm,
+    '-frames:v', '1', '-f', 'image2pipe', '-vcodec', 'png', '-',
+  ])
+}
+
 async function buildImage(slot, spec, src) {
-  const prepared = await prepare(path.join(src, spec.file), spec)
+  const input = spec.webm ? firstFrame(path.join(src, spec.webm)) : path.join(src, spec.file)
+  const prepared = await prepare(input, spec)
   const { webp, quality, size } = await encode(prepared)
   const target = path.join(outDir, `${slot}.webp`)
   await writeFile(target, webp)
