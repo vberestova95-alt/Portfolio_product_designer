@@ -21,10 +21,7 @@ import betboomSwapSwitched from '../assets/cases/betboom/swap-switched.webp';
 import betboomSwapCancelLimit from '../assets/cases/betboom/swap-cancel-limit.webp';
 import betboomTasksBefore from '../assets/cases/betboom/tasks-before.webp';
 import betboomTasksAfter from '../assets/cases/betboom/tasks-after.webp';
-import betboomTopCarousel from '../assets/cases/betboom/top-carousel.webp';
-import betboomCategoryBar1 from '../assets/cases/betboom/category-bar-1.webp';
 import betboomCategoryBar2 from '../assets/cases/betboom/category-bar-2.webp';
-import betboomCategoryBar3 from '../assets/cases/betboom/category-bar-3.webp';
 import betboomOnboardingWelcome from '../assets/cases/betboom/onboarding-welcome.webp';
 import betboomOnboardingDifficulty from '../assets/cases/betboom/onboarding-difficulty.webp';
 import betboomOnboardingTooltip from '../assets/cases/betboom/onboarding-tooltip.webp';
@@ -984,31 +981,12 @@ export const betboomPassCaseStudy = {
           ],
         },
         {
-          type: 'phoneRow',
-          label: 'Top tasks and the category bar',
-          items: [
-            {
-              src: betboomTopCarousel,
-              alt: 'Top tasks carousel at the top of the task page',
-              caption: 'Top tasks stay pinned to the header',
-            },
-            {
-              src: betboomCategoryBar1,
-              alt: 'Category bar, step 1: pinned on scroll with labels and sort chips',
-              caption: 'Step 1: pinned on scroll',
-            },
-            {
-              src: betboomCategoryBar2,
-              alt: 'Category bar, step 2: a sport selected, its label under the icon',
-              caption: 'Step 2: the chosen sport keeps its label',
-            },
-            {
-              src: betboomCategoryBar3,
-              alt: 'Category bar, step 3: deep scroll, icons only',
-              caption: 'Step 3: icons only',
-            },
-          ],
-          caption: `The category bar collapses in three steps as you scroll. ${betboomWidgetCredit}`,
+          // TODO(p32): the user replaces this row with “problem → solution” pairs
+          // from the drafts; frames come after she picks them.
+          type: 'noteCard',
+          compact: true,
+          title: 'Visual coming',
+          paragraphs: ['Problem → solution pairs from the drafts for top tasks and the category bar.'],
         },
       ],
     },
