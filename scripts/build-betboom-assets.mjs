@@ -40,7 +40,7 @@ const IMAGES = {
   'showcase-task-detail-poster': { webm: 'showcase-task-detail-anim-v3.webm', repaired: 'showcase-task-detail' },
   'showcase-switching-poster': { webm: 'showcase-switching-anim-v3.webm', repaired: 'showcase-switching' },
   'showcase-category-bar-poster': { webm: 'showcase-category-bar-anim-v3.webm' },
-  // Hero row, right phone: the “These tasks conflict” popup, from the switching
+  // Hero row, middle phone: the “These tasks conflict” popup, from the switching
   // clip. Not the open “Your tasks” widget: that UI is a second designer's.
   'hero-phone-switching': { webm: 'showcase-switching-anim-v3.webm', repaired: 'showcase-switching', at: 3 },
   // Posters of the v3 clips: the first frame of each, so the swap is seamless.
