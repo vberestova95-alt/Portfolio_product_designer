@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { aiPortfolio } from './data/aiPortfolio.js';
 import { content } from './data/content.js';
+import { geneticsCard, geneticsCaseStudy } from './data/geneticsCase.js';
 import { spotlessCard, spotlessCaseStudy } from './data/spotlessCase.js';
 import { useLanguage, useUi } from './i18n/LanguageContext.jsx';
 import { observeReveal } from './lib/reveal.js';
@@ -22,6 +23,12 @@ const CASE_ONLY_MODE = import.meta.env.VITE_CASE_ONLY === 'true';
 const AI_ONLY_MODE = import.meta.env.VITE_AI_ONLY === 'true';
 const AI_PORTFOLIO_PATH = '/ai-portfolio';
 const SPOTLESS_PATH = '/spotless';
+const GENETICS_PATH = '/genetics-audit';
+// Cases that exist only on the AI landing, keyed by path.
+const AI_LANDING_CASES_BY_PATH = {
+  [SPOTLESS_PATH]: spotlessCaseStudy,
+  [GENETICS_PATH]: geneticsCaseStudy,
+};
 const CASE_STUDY_KEYS_BY_PATH = {
   '/betboom-pass': 'betboomPassCaseStudy',
   '/cat-app': 'catAppCaseStudy',
@@ -46,6 +53,7 @@ const DETAIL_PATHS = new Set([
   AI_PROJECTS_PATH,
   AI_PORTFOLIO_PATH,
   SPOTLESS_PATH,
+  GENETICS_PATH,
   EXPERIENCE_PATH,
   PRIVACY_PATH,
 ]);
@@ -154,14 +162,14 @@ export function App() {
 
   const currentBrowserPathname =
     typeof window === 'undefined' ? '/' : normalizePathname(window.location.pathname);
-  const aiWork = [...aiProjects.items, spotlessCard];
+  const aiWork = [...aiProjects.items, spotlessCard, geneticsCard];
   const pathname = CASE_ONLY_MODE
     ? PET_INJECTION_TRACKER_PATH
     : getAiOnlyPathname(currentBrowserPathname, aiWork);
   const foundCaseStudy =
-    pathname === SPOTLESS_PATH
-      ? spotlessCaseStudy
-      : caseStudies[CASE_STUDY_KEYS_BY_PATH[pathname]] ?? null;
+    AI_LANDING_CASES_BY_PATH[pathname] ??
+    caseStudies[CASE_STUDY_KEYS_BY_PATH[pathname]] ??
+    null;
   // On the AI subdomain every way back leads to the landing, which is its home.
   const currentCaseStudy =
     AI_ONLY_MODE && foundCaseStudy ? { ...foundCaseStudy, backHref: '/' } : foundCaseStudy;
@@ -271,7 +279,7 @@ export function App() {
       <CaseStudyPage
         caseStudy={currentCaseStudy}
         cases={
-          AI_ONLY_MODE || pathname === SPOTLESS_PATH
+          AI_ONLY_MODE || pathname in AI_LANDING_CASES_BY_PATH
             ? aiWork
             : AI_CASE_PATHS.has(pathname)
               ? aiProjects.items

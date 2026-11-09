@@ -38,6 +38,8 @@ const portfolio = {
     'design-cringe',
     'ds-plugins',
     'experience',
+    // Reached only from the AI portfolio landing; kept out of sitemap.xml.
+    'genetics-audit',
     'iquoto',
     'kokoc-group',
     'privacy',
@@ -78,6 +80,7 @@ const aiPortfolioSite = {
     'cat-app',
     'design-cringe',
     'ds-plugins',
+    'genetics-audit',
     'iquoto',
     'kokoc-group',
     'privacy',
@@ -88,6 +91,7 @@ const aiPortfolioSite = {
   sitemap: [
     '',
     'spotless',
+    'genetics-audit',
     'ds-plugins',
     'cat-app',
     'design-cringe',
