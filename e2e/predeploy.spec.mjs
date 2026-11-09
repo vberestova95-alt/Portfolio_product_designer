@@ -31,10 +31,11 @@ const CASE_ORDER = [
   { id: 'iquoto', href: '/iquoto', title: 'IQuoto' },
 ];
 const HERO_LINKS = CASE_ORDER.slice(0, 3).map((c) => c.href);
+const HERO_PAIR = CASE_ORDER.slice(0, 2).map((c) => c.href);
 const CASE_COVERS = {
   'betboom-pass': /betboom-cover/,
   'yandex-news': /yandex-cover/,
-  'cat-app': /fluffy-chumb-v2-cover-[^.]+\.webp/,
+  'cat-app': /fluffy-chumb-home-cover-[^.]+\.webp/,
   // kokoc-main-desktop.png and kokoc-about.png are byte-identical; Vite emits one file.
   'kokoc-group': /kokoc-(main-desktop|about)/,
   iquoto: /iquoto-desktop/,
@@ -176,13 +177,23 @@ async function checkHome(browser) {
         return { href: a.getAttribute('href'), visible };
       });
     });
-    // On a phone the hero fits only two mosaics (known, not a bug).
-    const expectedHero = viewport.width < 600 ? HERO_LINKS.slice(0, 2) : HERO_LINKS;
-    check(
-      `${tag}: hero mosaics link to ${expectedHero.join(', ')}`,
-      !!hero && JSON.stringify(hero.map((h) => h.href)) === JSON.stringify(expectedHero),
-      hero ? `got ${hero.map((h) => `${h.href}${h.visible ? '' : '(offscreen)'}`).join(', ')}` : 'no hero mosaic nav',
-    );
+    // ≤640 (п. 24): two mosaics at a time, the first pair of the round; the hidden
+    // button turns the pair from a keyboard. The pairs have their own spec
+    // (e2e/hero-pairs.check.mjs).
+    const nextButton = await page.locator('.hero-panel__next').count();
+    if (viewport.width <= 640) {
+      check(
+        `${tag}: hero mosaics link to ${HERO_PAIR.join(', ')}, next-pair button`,
+        !!hero && JSON.stringify(hero.map((h) => h.href)) === JSON.stringify(HERO_PAIR) && hero.every((h) => h.visible) && nextButton === 1,
+        hero ? `got ${hero.map((h) => `${h.href}${h.visible ? '' : '(offscreen)'}`).join(', ')}, button ${nextButton}` : 'no hero mosaic nav',
+      );
+    } else {
+      check(
+        `${tag}: hero mosaics link to ${HERO_LINKS.join(', ')}, no next-pair button`,
+        !!hero && JSON.stringify(hero.map((h) => h.href)) === JSON.stringify(HERO_LINKS) && nextButton === 0,
+        hero ? `got ${hero.map((h) => `${h.href}${h.visible ? '' : '(offscreen)'}`).join(', ')}, button ${nextButton}` : 'no hero mosaic nav',
+      );
+    }
 
     const cards = await page.evaluate(() =>
       [...document.querySelectorAll('.case-cube__face .work-card, .work-stack > .work-card')].map((card) => ({

@@ -147,6 +147,8 @@ export const ui = {
       gameDone: 'Все найдены!',
       gameClose: 'Закрыть игру',
       heroCasesLabel: 'Главные кейсы',
+      heroPairNext: 'Следующие кейсы',
+      heroPairShown: 'Сейчас на экране: {titles}',
       aboutTitle: 'Обо мне',
       aboutCopy: [
         'В свободное время я снимаю на плёнку, хожу в горы, катаюсь на сноуборде и занимаюсь живописью.',
@@ -341,6 +343,8 @@ export const ui = {
       gameDone: 'All found!',
       gameClose: 'Close the game',
       heroCasesLabel: 'Main cases',
+      heroPairNext: 'Next cases',
+      heroPairShown: 'Now showing: {titles}',
       aboutTitle: 'About me',
       aboutCopy: [
         'In my free time I shoot film, hike in the mountains, snowboard and paint.',

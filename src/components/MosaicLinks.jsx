@@ -14,6 +14,10 @@ const SMALL_MOSAIC = 160;
  *
  * `decorative` links repeat a link the card already has: they still answer
  * the pointer, but stay out of the tab order and away from screen readers.
+ *
+ * A mosaic may move on to another case (`pairs` in lib/heroMosaic.js): its link
+ * stays the same element, so focus stays on it, and leads to the new case at
+ * once. `turned` says that has happened: the new name comes in with the pieces.
  */
 export function MosaicLinks({
   items,
@@ -23,6 +27,7 @@ export function MosaicLinks({
   theme = 'dark',
   decorative = false,
   active = null,
+  turned = false,
 }) {
   const send = (type, index) => {
     canvasRef.current?.dispatchEvent(new CustomEvent(type, { detail: index }));
@@ -30,16 +35,16 @@ export function MosaicLinks({
 
   return (
     <nav
-      className={`mosaic-links mosaic-links--${theme}`}
+      className={`mosaic-links mosaic-links--${theme}${turned ? ' mosaic-links--turned' : ''}`}
       aria-label={decorative ? undefined : label}
       aria-hidden={decorative || undefined}
     >
-      {boxes.map(({ index, x, y, w, h }) => {
+      {boxes.map(({ index, x, y, w, h }, place) => {
         const item = items[index];
 
         return (
           <a
-            key={item.id ?? index}
+            key={place}
             className={`mosaic-link${w < SMALL_MOSAIC ? ' mosaic-link--small' : ''}${
               index === active ? ' is-active' : ''
             }`}
@@ -51,7 +56,7 @@ export function MosaicLinks({
             onFocus={() => send('mosaic:show', index)}
             onBlur={() => send('mosaic:hide', index)}
           >
-            <span className="mosaic-link__label">
+            <span key={item.id ?? index} className="mosaic-link__label">
               {item.tag ? <span className="mosaic-link__tag">{item.tag}</span> : null}
               <span className="mosaic-link__title">{item.title}</span>
               <span className="mosaic-link__arrow" aria-hidden="true">

@@ -6,6 +6,7 @@
 import * as en from './portfolioData.js';
 // The one asset kept here: the Fluffy Chumb preview has Russian screens.
 import fluffyChumbV2CoverRu from '../assets/cases/fluffy-chumb-v2-cover.ru.webp';
+import fluffyChumbHomeCoverRu from '../assets/cases/fluffy-chumb-home-cover.ru.webp';
 
 function byIndex(list, texts) {
   return list.map((item, index) => ({ ...item, ...texts[index] }));
@@ -61,6 +62,12 @@ export const cases = byId(en.cases, {
       'Редизайн core-продукта геймификации, который вырос из киберспортивных механик и вышел на широкую спортивную аудиторию.',
     metrics: ['+60% DAU', '+75% retention'],
     image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Интерфейс BetBoom PASS' },
+    frames: [
+      {
+        ...entryOf(en.cases, 'betboom-pass').frames[0],
+        alt: 'Три мобильных экрана BetBoom PASS: задания, главная PASS с сезоном MSI 2025 и смена задания',
+      },
+    ],
   },
   'yandex-news': {
     title: 'Яндекс Новости Турция',
@@ -83,7 +90,7 @@ export const cases = byId(en.cases, {
     description:
       'От трекера инсулина для одного кота — к приложению, где семья и пет-ситтер настраивают свои трекеры и делят дела на день. Пересобрано после интервью с пользователями MVP.',
     metrics: ['MVP → v2', '12 бета-тестеров'],
-    image: { ...entryOf(en.cases, 'cat-app').image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
+    image: { ...entryOf(en.cases, 'cat-app').image, src: fluffyChumbHomeCoverRu, alt: 'Три экрана Fluffy Chumb: все трекеры, главная с трекерами питомца и инсулин с дозами за неделю' },
   },
   iquoto: {
     category: 'Финтех / Регистрация',
@@ -99,7 +106,13 @@ export const cases = byId(en.cases, {
     description:
       'Новый раздел приложения BetBoom, который собирает сезоны, задания и магазин. В брифе была страница сезонов — я предложила хаб.',
     metrics: ['Приложение и веб', '4 крайних случая'],
-    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: задания, топ заданий и виджет сезона в профиле' },
+    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: сезоны, профиль с виджетом зимнего сезона и хаб в светлой теме' },
+    frames: [
+      {
+        ...entryOf(en.cases, 'betboom-gamification-hub').frames[0],
+        alt: 'Экраны BetBoom: сезоны, хаб геймификации с заданиями, магазином и сезонами и хаб в светлой теме',
+      },
+    ],
   },
 });
 
