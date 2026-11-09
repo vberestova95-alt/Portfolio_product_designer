@@ -1,5 +1,38 @@
 # Отчёт тестировщика
 
+## 2026-11-10 — релиз release-2026-11-10, этап 1 (сборка на 4185, Chromium + WebKit)
+
+**Итог: реальных дефектов в коде сайта не найдено.** Все падения были устаревшими ожиданиями тестов (состав 6 кейсов и 5 плиток).
+
+| Сценарий | Было | Стало |
+|---|---|---|
+| `predeploy.spec.mjs` | 215/231 (16 FAIL) | 273/273 |
+| `other-projects.check.mjs` | ложные падения по составу и сетке | 222/222 |
+| `cat-app-preview.check.mjs` | - | 112/112 |
+| `home-fluffy-cards.check.mjs` | - | 28/28 |
+| `hero-pairs.check.mjs` (EN: chromium-en, webkit-en, regress) | - | 399/399 |
+| `webkit-safari.check.mjs` (новый, Playwright WebKit) | - | 118/118 |
+
+**Что обновлено.**
+- `predeploy`: `CASE_ORDER` теперь 6 кейсов (в конце BetBoom - Gamification hub, обложка `betboom-hub-home-profile`), блок «more work» - 5 плиток; `CASE_ROUTES` и `ROUTES` дополнены (hub, ai-portfolio, genetics-audit, spotless - как в `scripts/deploy-targets.mjs`). Проверка «no error page» искала подстроку «something went wrong», а в кейсе hub это текст про граничный случай в приложении (ложное падение) - теперь ищет точное совпадение заголовка/абзаца «Page not found / Something went wrong».
+- `other-projects`: `ORDER` из 6 кейсов, 5 плиток вместо 4. Правило «одна точка - один цвет» устарело, не дефект: точка берёт цвет `surface` кейса (`.case-next__card--<surface>`), у PASS и Gamification hub обе `ink` (#000), BACKLOG п. 21: «точки цвета - пользователь оставила как есть». Заменено на более строгую проверку: у каждой плитки точка точно в цвете своей поверхности (ink, paper, pet, mint, graphite). Сетка: на 1440 один ряд из 5, на 1024 и 390 две колонки 2+2+1 (раньше требовалось rows*cols = число плиток; для 5 это невозможно).
+- Не ослаблено: порядок плиток, равный размер, вложенность частей, обрезка заголовков, фокус, переход и «Назад», ошибки страницы.
+- Новый `e2e/webkit-safari.check.mjs`: 8 страниц на 1440 и 390 (консоль, битые картинки, горизонтальный скролл), клипы .mov/.webm, шаги showcase PASS, возврат «Назад».
+- Карточек Fluffy Chumb на главной сценарий: `home-fluffy-cards.check.mjs`.
+
+**WebKit (Playwright, Safari-движок; не настоящий Safari и не iPhone).**
+- Ошибок консоли, битых картинок и горизонтального скролла нет на `/`, `/betboom-pass`, `/betboom-gamification-hub`, `/cat-app`, `/ai-portfolio`, `/ai-projects`, `/spotless`, `/genetics-audit` (1440 и 390).
+- Showcase PASS: во всех 5 шагах (1440 и 390) играет .mov (HEVC с альфой), readyState 4, время идёт; средняя альфа по кадру 0.49, непрозрачного чёрного 5-7 %: прозрачность сохраняется, чёрный фон не появляется. Неактивные клипы стоят на паузе до выбора шага (readyState 1) - так задумано.
+- Хиро /betboom-pass и /betboom-gamification-hub - статичные картинки (три экрана), видео в них нет; карточка BetBoom PASS на главной - webm-баннер поверх картинки, играет, виден (скриншоты ниже). У hub видео нет вообще.
+- Назад: из плитки «Other projects» на /betboom-pass в кейс (страница открывается сверху), «Назад» возвращает на /betboom-pass в то же место (разница прокрутки <= 80 px) на 1440 и 390.
+
+**Замечания (не баги).**
+1. На главной баннер BetBoom - только `.webm` без `.mov` и без `poster`. В Playwright WebKit играет; настоящий Safari и iPhone руками не проверены. Если не воспроизведётся, останется статичная картинка под ним, пустого прямоугольника не будет (проверить на iPhone).
+2. На ширинах <= 1240 плиток «Other projects» 5: сетка 2+2+1, последняя плитка одна в первой колонке. По вкусу пользователя проверить глазами.
+3. Проверка альфы идёт по данным кадра (canvas), потому что фон showcase чёрный и визуально «прозрачно» от «чёрного» не отличить: нужен просмотр на iPhone и в Safari руками.
+
+Скриншоты: `docs/review/release-2026-11-10/tests/` (webkit-top-*, webkit-showcase-*, other-en-betboom-pass-*).
+
 ## 2026-11-09 — прогон после отката п. 34 (revert cfe88ca)
 
 **Итог: прошло всё, багов нет.** `cat-app-preview.check.mjs` EN 112/112, RU 115/115 (1440, 768, 390); `home-fluffy-cards.check.mjs` EN 28/28, RU 28/28; `predeploy.spec.mjs` 231/231; `ru-media.check.mjs` 16/16; `other-projects.check.mjs` 185/185. Сборки 4181 и 4182 пересобраны из HEAD.
