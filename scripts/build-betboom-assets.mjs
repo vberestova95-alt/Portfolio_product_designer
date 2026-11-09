@@ -27,7 +27,9 @@ const PHONE = { width: 390, radius: 44 }
 
 // slot → source file and how to treat it. Prefer -v2 where the designer made one.
 const IMAGES = {
-  cover: { file: '06-cover-v4.png' },
+  // The static PASS cover, for its card on the home page. Not `cover`: that
+  // file is the Gamification hub card's picture.
+  'pass-cover': { file: '06-cover-v4.png' },
   // Poster of the cover animation: its first frame, transparent around the screens.
   'cover-anim-poster': { file: '06-cover-anim-v4-poster.png' },
   // The season widget frame; the showcase itself is animated now, it stays

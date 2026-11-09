@@ -61,7 +61,6 @@ export const cases = byId(en.cases, {
       'Редизайн core-продукта геймификации, который вырос из киберспортивных механик и вышел на широкую спортивную аудиторию.',
     metrics: ['+60% DAU', '+75% retention'],
     image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Интерфейс BetBoom PASS' },
-    mobileImage: { ...entryOf(en.cases, 'betboom-pass').mobileImage, alt: 'Мобильный интерфейс BetBoom PASS' },
   },
   'yandex-news': {
     title: 'Яндекс Новости Турция',
