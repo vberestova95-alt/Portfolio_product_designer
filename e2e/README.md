@@ -9,6 +9,7 @@ npx vite preview --port 4173 --strictPort        # порт сначала за�
 node e2e/predeploy.spec.mjs                      # BASE=http://localhost:4173, SHOTS=<папка для скриншотов>
 node e2e/ru-images.check.mjs                     # RU-данные карточек через vite ssrLoadModule, сервер не нужен
 node e2e/other-projects.check.mjs              # блок «Other projects»; RU_BASE=…4174 для RU, BASELINE=<сборка прошлого коммита> для сравнения главной
+node e2e/cat-app-preview.check.mjs                    # /cat-app: шаги истории, пары до/после, бренд, ключевые флоу, метрика ∞, Research/Decisions; 1440/768/390. RU: BASE=…4182 LANG_CODE=ru, SHOTS=<папка>
 BASE=http://localhost:4174 node e2e/ru-media.check.mjs   # RU-ролики и лента; нужна временная сборка с RU_ENABLED=true (рецепт в шапке файла)
 ```
 
@@ -18,6 +19,7 @@ BASE=http://localhost:4174 node e2e/ru-media.check.mjs   # RU-ролики и л
   битые картинки, консоль; все маршруты из `scripts/deploy-targets.mjs` (1440/390); блок «следующие кейсы»; /cat-app (герой,
   лента v2, лента MVP без подложки и без обрезки); `?lang=ru`. Порядок кейсов — константа `CASE_ORDER` в начале файла:
   меняется порядок на сайте — правим её.
+- `cat-app-preview.check.mjs` — /cat-app целиком (пп. 29–33): без битых картинок и ошибок, шаги 1–5, слайдер beforeAfterPairs (на 390 — чипы пар), брендинг (свёрнут, 6 плиток, лайтбокс, сетка 2×3 на 390), нет «Clip A/B», клипы играют и sc1-b зацикливается, ∞ в шапке, 4 карточки Research, 4 «Confirmed / Подтверждено».
 - `ru-images.check.mjs` — у каждого RU-кейса своя обложка, у Fluffy Chumb `.ru.webp`.
 
 Особенности:
