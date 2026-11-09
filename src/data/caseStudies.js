@@ -475,7 +475,7 @@ export const betboomPassCaseStudy = {
         caption: 'The season widget in the BetBoom app profile.',
         src: betboomShowcaseEntryPoint,
         alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
-        teaser: { text: 'Next: a new app section for seasons', href: '/betboom-gamification-hub' },
+        teaser: { text: 'Next case: the Gamification hub in the BetBoom app', href: '/betboom-gamification-hub' },
       },
     ],
   },
@@ -1087,10 +1087,11 @@ export const betboomPassCaseStudy = {
           // The entry point is its own case now; this card leads there.
           type: 'caseTeaser',
           label: 'Next case',
-          title: 'Next: a new app section for seasons',
-          text: 'Gamification moved from the PASS section into the main BetBoom app: a season widget in the Profile tab, live as V.2.',
+          title: 'Next: the Gamification hub',
+          text: 'The brief asked for a seasons page. I designed a hub for seasons, tasks and the shop in the BetBoom app.',
           href: '/betboom-gamification-hub',
-          cta: 'Open the case',
+          // TODO(p32b): link wording to be confirmed by the user.
+          cta: 'Read the Gamification hub case',
           image: {
             src: betboomShowcaseEntryPoint,
             alt: 'BetBoom app profile with the Winter season widget',
@@ -1102,12 +1103,20 @@ export const betboomPassCaseStudy = {
 };
 
 /*
- * The entry point to gamification in the main BetBoom app, split out of the
- * BetBoom PASS case at the user's request (p. 32b).
- * TODO(p32b): skeleton — the editor sends the text; frames come from the
- * designer (docs/review/betboom-pass/entry-point/). Until then the facts are
- * the ones from the old mini case and the placeholders say so.
+ * The Gamification hub in the main BetBoom app, split out of the BetBoom PASS
+ * case at the user's request (p. 32b). Text — the editor's draft, doc tab
+ * «Gamification hub case EN». Its sections follow that draft (no Context or
+ * What I learned there).
+ * TODO(p32b): frames come from the designer (docs/review/betboom-pass/entry-point/);
+ * until then the parts marked “Visual coming” hold their place.
  */
+const hubVisualComing = (what) => ({
+  type: 'noteCard',
+  compact: true,
+  title: 'Visual coming',
+  paragraphs: [what],
+});
+
 export const betboomGamificationHubCaseStudy = {
   slug: 'betboom-gamification-hub',
   backHref: '/betboom-pass',
@@ -1115,19 +1124,22 @@ export const betboomGamificationHubCaseStudy = {
   hero: {
     title: 'BetBoom — Gamification hub',
     description:
-      'Gamification moved from the PASS section into the main BetBoom app. The entry point is a season widget in the Profile tab, live as V.2.',
+      'A new section of the BetBoom app that brings seasons, tasks and the shop together. The brief asked for a seasons page. I proposed a hub instead and designed its architecture.',
+    // TODO(p32b): years of the hub work are open.
     meta: 'Product Designer / BetBoom app',
     image: {
-      // TODO(p32b): cover from the designer.
+      // TODO(p32b): cover from the designer — the hub with an active season, the profile widget and the web season list.
       src: betboomEntryProgress,
       alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
       fit: 'contain',
     },
+    // No metrics yet: facts from the layouts, as the editor proposed.
     stats: [
-      { value: 'V.2', label: 'live in the BetBoom app' },
-      { value: '6', label: 'season states, dark and light' },
-      { value: '2', label: 'surfaces: app and web' },
+      { value: '2', label: 'platforms: app and desktop web' },
+      { value: '2', label: 'themes: dark and light' },
+      { value: '4', label: 'edge cases designed: signed out, no seasons, error, outdated app' },
     ],
+    points: ['Figma', 'FigJam'],
   },
   sections: [
     {
@@ -1136,40 +1148,27 @@ export const betboomGamificationHubCaseStudy = {
       title: 'The Problem',
       parts: [
         {
-          // TODO(p32b): editor's text.
-          type: 'noteCard',
-          title: 'Draft',
-          paragraphs: ['Text is coming from the editor.'],
-        },
-      ],
-    },
-    {
-      id: 'context',
-      navLabel: 'Context',
-      title: 'Context',
-      parts: [
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'text',
-              heading: 'From the task section to the main app',
-              paragraphs: [
-                'After BetBoom PASS, gamification moved into the main BetBoom app. The entry point is a season widget in the app’s Profile tab. It is live as V.2.',
-              ],
-            },
-            {
-              type: 'text',
-              heading: 'Who did what',
-              paragraphs: ['I designed the entry point on my own: research, flows and the widget.'],
-            },
+          type: 'richTextLead',
+          paragraphs: [
+            'The original brief was simple: a separate seasons page. But gamification already lived on three surfaces, and a season changes state many times. A single page would not cover that.',
           ],
         },
         {
-          type: 'siteLink',
-          label: 'Where it started',
-          href: '/betboom-pass',
-          text: 'BetBoom PASS — the task section this grew out of',
+          type: 'painCards',
+          items: [
+            'The brief: one more page. The task was a seasons page in the app. Tasks, the shop and the token balance would stay elsewhere.',
+            'Many ways in. Gamification ran on Pass.com, betboom.ru and the app. Each surface had its own entry: profile, menu, stories, promo banner.',
+            'Seasons change state. A season can be planned, active, ending or finished. A user may have joined it or not. Every case needs its own screen.',
+          ],
+        },
+        {
+          type: 'noteCard',
+          compact: true,
+          title: 'Role · platforms',
+          items: [
+            'The only designer. Hub architecture, every state, and the entry point in the app profile.',
+            'BetBoom app (iOS, Android) and desktop web.',
+          ],
         },
       ],
     },
@@ -1183,21 +1182,94 @@ export const betboomGamificationHubCaseStudy = {
           blocks: [
             {
               type: 'text',
-              heading: 'Where users can enter',
+              heading: 'Product structure',
               paragraphs: [
-                'A map of entry points: profile, menu, stories, promo banner. A flow from the app into PASS and a user journey map.',
+                'I analysed the structure of the whole product. Traffic comes from three sources: Pass.com, betboom.ru web and the app. Marketing links from Telegram and ads lead to Pass.com.',
               ],
+            },
+            {
+              type: 'text',
+              heading: 'Where an entry point could go',
+              // TODO(p32b): the business proposed the avatar spot; why it was not chosen is open, so it is left out.
+              paragraphs: [
+                'I collected hypotheses for every surface: the Profile tab, the menu, stories and the promo banner. Each was mapped for signed-in and signed-out users.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Flows into the app',
+              paragraphs: [
+                'Signed-in users see their season progress. Signed-out users see an entry point and then sign-in. On mobile web, users with the app go to the app; others stay on web.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'User journey',
+              paragraphs: [
+                'Hub → choose a task → accept it → place a bet in the core product → bet confirmed. If the conditions are met, tokens and experience are credited, and the user returns to the hub.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'States',
+              paragraphs: ['Signed in or signed out × season active, coming soon or none.'],
             },
           ],
         },
         {
+          // TODO(p32b): designer's EN map (MAP 1:101596) replaces this scheme.
           type: 'featureMedia',
           media: {
             src: betboomSchemeEntryPoints,
-            alt: 'Scheme of entry points into gamification: profile, menu, stories, promo banner',
+            alt: 'Scheme of entry points into gamification: the app profile, menu, stories and promo banner, and the web account menu, all leading to BetBoom PASS',
           },
-          caption: 'Where users can enter gamification: profile, menu, stories, promo banner.',
+          caption: 'Profile, menu, stories, promo banner: four ways into one hub.',
         },
+        hubVisualComing('Flow of transitions: signed in, signed out, with or without the app — every path ends in the hub.'),
+        hubVisualComing('User journey: from the hub to a bet and back, with tokens and experience on the way.'),
+      ],
+    },
+    {
+      id: 'drafts',
+      navLabel: 'Drafts',
+      title: 'Drafts & Options',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Seasons page or hub',
+              paragraphs: [
+                'Option A was the brief: a page that lists seasons. Option B was my proposal: a hub with every state, linking to seasons, tasks and the shop. I agreed option B with the business.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Entry widget, V.1 → V.2',
+              paragraphs: [
+                'V.1 was a compact 72 px row with the season, level and progress. V.2 is 102 px tall: the season name reads first, and progress gets its own line. Both have dark and light themes and a skeleton.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Season cards',
+              paragraphs: [
+                'A large card for the current or upcoming season. Small cards for the archive. Variants with and without a level bar.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Profile header',
+              paragraphs: [
+                'Three data cases: full name + ID, nickname + ID, ID only. The token balance sits on the right.',
+              ],
+            },
+          ],
+        },
+        hubVisualComing('Widget V.1 and V.2 side by side, dark and light: V.1 squeezed the season into one row, V.2 gives the name and progress room.'),
+        hubVisualComing('Season card drafts: large cards for the current season, small ones for the archive.'),
+        hubVisualComing('Profile header with three data cases: name, nickname or just an ID.'),
       ],
     },
     {
@@ -1206,38 +1278,126 @@ export const betboomGamificationHubCaseStudy = {
       title: 'Key Flows',
       parts: [
         {
-          // TODO(p32b): profile → widget → tasks clip from the designer.
-          type: 'noteCard',
-          title: 'Draft',
-          paragraphs: ['Flow from the profile to the season and its tasks — frames are coming from the designer.'],
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'ordered-list',
+              heading: 'Flow 1. Getting in',
+              items: [
+                'Open the Profile tab in the BetBoom app.',
+                'The widget shows season progress if a season is active. Otherwise it invites you to start.',
+                'Tap it to open the hub.',
+                'On web, the way in is the account menu.',
+              ],
+            },
+          ],
         },
+        hubVisualComing('From the profile to the hub in one tap.'),
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'ordered-list',
+              heading: 'Flow 2. A season’s life cycle',
+              items: [
+                'Planned: the card shows the start date. If no season is active, the upcoming one comes first.',
+                'Active, no progress yet.',
+                'Active with progress: level and progress bar.',
+                'Less than 24 hours left: a timer.',
+                'Finished: the user joined but earned nothing, or did not join.',
+                'For 7 days after the end, users can still see levels and rewards.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Rewards and the archive',
+              paragraphs: [
+                'A gift icon flags a reward waiting. Seasons can be combined: active + planned, planned + finished, or a single season in history. Past seasons move to the archive as cards.',
+              ],
+            },
+          ],
+        },
+        hubVisualComing('Planned, active, ending, finished: one card, every stage.'),
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'Flow 3. Edge cases',
+              items: [
+                'Signed out: the hub shows seasons, or “Seasons coming soon” with a link to tasks.',
+                'No seasons: the same empty state.',
+                'Error: “Something went wrong” and a refresh button.',
+                'Outdated app: an “Update” screen for iOS and Android when the page opens in an old version.',
+                'Missing nickname or balance, broken image links, long names: each has a fallback.',
+              ],
+            },
+          ],
+        },
+        hubVisualComing('Signed out, no seasons, error, outdated app.'),
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Flow 4. Web',
+              paragraphs: [
+                'The season list on desktop and mobile web: active and planned seasons, the archive, an empty archive and an error. Dark and light themes.',
+              ],
+            },
+          ],
+        },
+        hubVisualComing('The season list on web, desktop and mobile.'),
       ],
     },
     {
-      id: 'decisions',
-      navLabel: 'Decisions',
-      title: 'Decisions',
+      id: 'solution',
+      navLabel: 'Solution',
+      title: 'Solution',
       parts: [
         {
           type: 'blocks',
           blocks: [
             {
               type: 'text',
-              heading: 'Season states',
+              heading: 'A hub instead of a seasons page',
               paragraphs: [
-                'Season without progress, with progress, countdown to season end, max level, no season, error. Dark and light themes.',
-                'The widget sits next to ID verification, the loyalty programme and the offer carousel.',
+                'I proposed it and agreed it with the business. The hub holds every state. From it, users go to seasons, tasks and the shop.',
               ],
+            },
+            {
+              type: 'text',
+              heading: 'Architecture',
+              paragraphs: [
+                'Header: name or nickname, ID, token balance. Then two tiles: Tasks and Shop. Then Seasons: the current season card, archive cards and “See all”.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Entry point',
+              paragraphs: [
+                'A widget in the Profile tab of the main BetBoom app, not inside PASS. V.2 states: no progress, progress, timer, max level. On error, the widget is hidden.',
+                'It shares the profile carousel with identification, identity proof, loyalty programme and offer widgets. The order is Offer → Profile levels → Loyalty programme. For users not yet identified, it sits under the welcome bonus banner.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Desktop',
+              paragraphs: ['On web, the entry point sits in the account menu.'],
             },
           ],
         },
+        hubVisualComing('Before: a seasons page → After: a hub with links. The brief asked for a page; the hub became a place to start from.'),
+        hubVisualComing('Hub architecture: header → Tasks / Shop → Seasons → season page / archive.'),
+        hubVisualComing('The hub with an active season, in dark and light themes.'),
         {
+          // TODO(p32b): the designer may replace these with the widget in the profile carousel.
           type: 'phoneRow',
           items: [
             {
               src: betboomEntryNoLevel,
-              alt: 'Profile with the Winter season widget: active season, no level yet',
-              caption: 'No level yet',
+              alt: 'Profile with the Winter season widget: active season, no progress yet',
+              caption: 'No progress',
             },
             {
               src: betboomEntryProgress,
@@ -1247,7 +1407,7 @@ export const betboomGamificationHubCaseStudy = {
             {
               src: betboomEntrySeasonTimer,
               alt: 'Season widget with a countdown to the end of the season',
-              caption: 'Countdown to season end',
+              caption: 'Timer',
             },
             {
               src: betboomEntryMaxLevel,
@@ -1255,17 +1415,7 @@ export const betboomGamificationHubCaseStudy = {
               caption: 'Max level',
             },
           ],
-          caption: 'Season states in the BetBoom app profile, dark theme.',
-        },
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'text',
-              heading: 'Web too',
-              paragraphs: ['A web entry point and a season list for web.'],
-            },
-          ],
+          caption: 'The profile widget: no progress, progress, timer, max level reached.',
         },
         {
           type: 'phoneRow',
@@ -1275,7 +1425,7 @@ export const betboomGamificationHubCaseStudy = {
               alt: 'Web account menu, dark theme: Winter season widget above Account, Bet history and other items',
             },
           ],
-          caption: 'The entry point on web, in the account menu.',
+          caption: 'On web, the hub is one click away in the account menu.',
         },
       ],
     },
@@ -1286,28 +1436,33 @@ export const betboomGamificationHubCaseStudy = {
       parts: [
         {
           type: 'richTextLead',
-          paragraphs: [
-            'Gamification left the PASS section and reached the main app. This is the next step of scaling it.',
+          paragraphs: ['Gamification now has a home in the main app, not only inside PASS.'],
+        },
+        {
+          // TODO(p32b): production status of the hub and the web version is open; metrics, if any appear.
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'Where it stands',
+              items: [
+                'The profile entry point V.2 is in production.',
+                'The hub and the web version: designed and handed off.',
+                'No metrics yet.',
+              ],
+            },
           ],
         },
-      ],
-    },
-    {
-      id: 'learned',
-      navLabel: 'What I learned',
-      title: 'What I Learned',
-      parts: [
         {
-          // TODO(p32b): editor's text.
-          type: 'noteCard',
-          title: 'Draft',
-          paragraphs: ['Text is coming from the editor.'],
+          type: 'siteLink',
+          label: 'Where it started',
+          href: '/betboom-pass',
+          text: 'BetBoom PASS — the task section this grew out of',
         },
       ],
     },
   ],
 };
-
 
 export const iquotoCaseStudy = {
   slug: 'iquoto',

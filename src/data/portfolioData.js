@@ -199,8 +199,8 @@ export const cases = [
     category: 'Gamification / BetBoom app',
     // TODO(p32b): card copy and cover — from the editor and the designer.
     description:
-      'Gamification moved from the PASS section into the main BetBoom app: a season widget in the Profile tab, live as V.2.',
-    metrics: ['Live as V.2', 'App and web'],
+      'A new section of the BetBoom app that brings seasons, tasks and the shop together. The brief asked for a seasons page; I proposed a hub.',
+    metrics: ['App and web', '4 edge cases'],
     surface: 'ink',
     image: {
       src: betboomEntryPointCover,

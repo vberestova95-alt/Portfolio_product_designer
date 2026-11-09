@@ -98,8 +98,8 @@ export const cases = byId(en.cases, {
     title: 'BetBoom — Gamification hub',
     category: 'Геймификация / Приложение BetBoom',
     description:
-      'Геймификация вышла из раздела PASS в основное приложение BetBoom: виджет сезона во вкладке «Профиль», в проде как V.2.',
-    metrics: ['В проде V.2', 'Приложение и веб'],
+      'Новый раздел приложения BetBoom, который собирает сезоны, задания и магазин. В брифе была страница сезонов — я предложила хаб.',
+    metrics: ['Приложение и веб', '4 крайних случая'],
     image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: задания, топ заданий и виджет сезона в профиле' },
   },
 });
