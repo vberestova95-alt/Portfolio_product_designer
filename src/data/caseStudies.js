@@ -9,12 +9,45 @@ import designCringeCategories from '../assets/cases/design-cringe-categories.jpg
 import designCringeIssues from '../assets/cases/design-cringe-issues.jpg';
 import designCringeMobileBad from '../assets/cases/design-cringe-mobile-bad.jpg';
 import designCringeMobileClean from '../assets/cases/design-cringe-mobile-clean.jpg';
-import redesignVideo from '../assets/redesign-cards.mp4';
-import betboomCaseHero from '../assets/betboom-case-hero.png';
-import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png';
-import betboomHypothesis from '../assets/betboom-hypothesis.jpg';
-import betboomCoverImage from '../assets/betboom-cover.png';
-import betboomTopScreen from '../assets/betboom-top-screen.png';
+import betboomCover from '../assets/cases/betboom/cover.webp';
+import betboomShowcaseTasks from '../assets/cases/betboom/showcase-tasks.webp';
+import betboomShowcaseOnboarding from '../assets/cases/betboom/showcase-onboarding.webp';
+import betboomShowcaseTop from '../assets/cases/betboom/showcase-top.webp';
+import betboomShowcaseCategoryBar from '../assets/cases/betboom/showcase-category-bar.webp';
+import betboomShowcaseEntryPoint from '../assets/cases/betboom/showcase-entry-point.webp';
+import betboomSwapConflict from '../assets/cases/betboom/swap-conflict.webp';
+import betboomSwapReturn from '../assets/cases/betboom/swap-return.webp';
+import betboomSwapSwitched from '../assets/cases/betboom/swap-switched.webp';
+import betboomSwapCancelLimit from '../assets/cases/betboom/swap-cancel-limit.webp';
+import betboomTasksBefore from '../assets/cases/betboom/tasks-before.webp';
+import betboomTasksAfter from '../assets/cases/betboom/tasks-after.webp';
+import betboomTopCarousel from '../assets/cases/betboom/top-carousel.webp';
+import betboomCategoryBar1 from '../assets/cases/betboom/category-bar-1.webp';
+import betboomCategoryBar2 from '../assets/cases/betboom/category-bar-2.webp';
+import betboomCategoryBar3 from '../assets/cases/betboom/category-bar-3.webp';
+import betboomOnboardingWelcome from '../assets/cases/betboom/onboarding-welcome.webp';
+import betboomOnboardingDifficulty from '../assets/cases/betboom/onboarding-difficulty.webp';
+import betboomOnboardingTooltip from '../assets/cases/betboom/onboarding-tooltip.webp';
+import betboomEntryNoLevel from '../assets/cases/betboom/entry-no-level.webp';
+import betboomEntryProgress from '../assets/cases/betboom/entry-progress.webp';
+import betboomEntrySeasonTimer from '../assets/cases/betboom/entry-season-timer.webp';
+import betboomEntryMaxLevel from '../assets/cases/betboom/entry-max-level.webp';
+import betboomEntryWeb from '../assets/cases/betboom/entry-web.webp';
+import betboomDesktopBefore from '../assets/cases/betboom/desktop-before.webp';
+import betboomDesktopAfter from '../assets/cases/betboom/desktop-after.webp';
+import betboomDetailConditions from '../assets/cases/betboom/detail-conditions.webp';
+import betboomDetailRewardDeadline from '../assets/cases/betboom/detail-reward-deadline.webp';
+import betboomDetailCategoryFilters from '../assets/cases/betboom/detail-category-filters.webp';
+import betboomDetailSportEsports from '../assets/cases/betboom/detail-sport-esports.webp';
+import betboomDetailPromoTask from '../assets/cases/betboom/detail-promo-task.webp';
+import betboomSchemePlatforms from '../assets/cases/betboom/scheme-platforms.webp';
+import betboomSchemeTaskTypes from '../assets/cases/betboom/scheme-task-types.webp';
+import betboomSchemeConflictRule from '../assets/cases/betboom/scheme-conflict-rule.webp';
+import betboomSchemeSwitching from '../assets/cases/betboom/scheme-switching.webp';
+import betboomSchemeOnboarding from '../assets/cases/betboom/scheme-onboarding.webp';
+import betboomSchemeEntryPoints from '../assets/cases/betboom/scheme-entry-points.webp';
+import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
+import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
 import iquotoCaseHero from '../assets/cases/iquoto-desktop.png';
 import iquotoAsIsVideo from '../assets/cases/iquoto-as-is.webm';
 import iquotoFunnel from '../assets/cases/iquoto-funnel.svg';
@@ -22,7 +55,6 @@ import iquotoMapAsIs from '../assets/cases/iquoto-map-as-is.jpg';
 import iquotoMapToBe from '../assets/cases/iquoto-map-to-be.jpg';
 import iquotoVariants from '../assets/cases/iquoto-variants.png';
 import iquotoResult from '../assets/cases/iquoto-result.png';
-import betboomAbTestVideo from '../assets/betboom-ab-test.mp4';
 import catAppScreens from '../assets/cases/cat-app-screens.svg';
 import petTrackerMvpScreens from '../assets/cases/pet-tracker-mvp-screens.webp';
 import petTrackerMvpScreensMobile from '../assets/cases/pet-tracker-mvp-screens.mobile.webp';
@@ -63,9 +95,6 @@ import flowSc4B from '../assets/cases/fluffy-chumb/flows/sc4-b.mp4';
 import flowSc4BWebm from '../assets/cases/fluffy-chumb/flows/sc4-b.webm';
 import flowSc4BPoster from '../assets/cases/fluffy-chumb/flows/sc4-b.poster.webp';
 
-const heroImage = betboomCoverImage;
-const sportsTasksImage = betboomHypothesis;
-const hypothesisResultImage = betboomCaseHero;
 
 export const catAppCaseStudy = {
   slug: 'cat-app',
@@ -378,124 +407,165 @@ export const catAppCaseStudy = {
   ],
 };
 
+// The “Your tasks” widget is a second designer's UI: every frame that shows it
+// carries this credit (the user's condition for showing it at all).
+const betboomWidgetCredit = '“Your tasks” widget UI by a second designer.';
+
 export const betboomPassCaseStudy = {
   slug: 'betboom-pass',
   backHref: '/',
   hero: {
     title: 'BetBoom PASS',
     description:
-      'A bonus programme that started life as an esports marketing tool. Over a year I turned it into a product section that could carry classic sports too, without losing the audience that was already there.',
+      'A bonus programme where users complete tasks and earn free bets, skins and prizes. It started as an esports marketing tool. Over a year I turned it into a product section that carries classic sports too, without losing the esports audience.',
     meta: 'Product Designer / 2025-2026',
     image: {
-      src: heroImage,
-      alt: 'Hero screen of the BetBoom PASS case study',
+      src: betboomCover,
+      alt: 'Three BetBoom PASS screens: the task page on mobile web, top tasks with a mixed feed, and the season widget in the BetBoom app profile',
     },
     stats: [
-      { value: '+75%', label: 'Retention' },
-      { value: '+60%', label: 'DAU' },
-      { value: 'NDA', label: 'Users' },
+      { value: '+75%', label: 'Retention, over the testing period' },
+      { value: '+60%', label: 'DAU, over the testing period' },
+      { value: '3', label: 'platforms: app WebView, mobile web, desktop' },
+    ],
+    // TODO(p32): tools — only Figma and FigJam are confirmed; ask the user if there were others.
+    points: ['Figma', 'FigJam'],
+  },
+  // Frames in production order; plays on its own, a step can be picked by hand.
+  // TODO(p32): a 10–15 s screen recording can replace the frames later (designer).
+  showcase: {
+    label: 'In production',
+    title: 'What is live now',
+    frames: [
+      {
+        label: 'Tasks',
+        caption: 'One task page for esports and classic sports.',
+        credit: betboomWidgetCredit,
+        src: betboomShowcaseTasks,
+        alt: 'Task page on mobile web: top tasks carousel, category bar with esports titles, task cards and the “Your tasks” widget',
+      },
+      {
+        label: 'Onboarding',
+        caption: 'Onboarding adapts to how the user arrived.',
+        src: betboomShowcaseOnboarding,
+        alt: 'Onboarding welcome screen over the task page: “We’ve updated the portal — take a look at what’s new”, with Let’s go and Skip',
+      },
+      {
+        label: 'Top tasks',
+        caption: 'Top tasks rotate and stay pinned to the header.',
+        credit: betboomWidgetCredit,
+        src: betboomShowcaseTop,
+        alt: 'Top tasks carousel above a mixed feed of gaming and betting task cards',
+      },
+      {
+        // TODO(p32): “Category bar” is our working name for the rubricator; confirm with the user.
+        label: 'Category bar',
+        caption: 'Categories collapse in three steps as you scroll.',
+        credit: betboomWidgetCredit,
+        src: betboomShowcaseCategoryBar,
+        alt: 'Category bar with Table tennis selected and its task cards below',
+      },
+      {
+        // TODO(p32): entry point — option (a), the season widget V.2 (05, not 05b), recommended; not yet confirmed.
+        label: 'Entry point',
+        caption: 'The season widget in the BetBoom app profile.',
+        src: betboomShowcaseEntryPoint,
+        alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
+        teaser: { text: '+ Mini case: the gamification entry point', target: 'entry-point' },
+      },
     ],
   },
   sections: [
     {
-      id: 'about',
-      navLabel: 'About',
-      title: 'About the Project',
+      id: 'problem',
+      navLabel: 'Problem',
+      title: 'The Problem',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'PASS was built for gamers and esports fans, and those habits were working. The business wanted classic sports fans in the same section, to lift LTV across segments.',
+            'Anything we added had to leave the esports audience alone.',
+          ],
+        },
+        {
+          type: 'painCards',
+          items: [
+            'Two audiences, one screen. Football, basketball, hockey, tennis and table tennis fans next to Dota and CS players. Losing the esports core was the main risk.',
+            'A card that decorates. The illustration took all the attention. The title did not explain the rules. The card led with task type, while people searched by category.',
+            'A wall instead of a rule. Only one task per category can be active. A returning user saw a disabled button: “You’re already doing this task.” No way forward, no explanation.',
+          ],
+        },
+        {
+          // TODO(p32): the frame shows the chain task sheet; the disabled button itself is below the fold — designer to re-export if needed.
+          type: 'phoneRow',
+          items: [
+            {
+              src: betboomTasksBefore,
+              alt: 'Before: a chain task sheet, 3 of 12 done, with a 2 000 token reward',
+            },
+          ],
+          caption: 'Before: a chain task on a second visit led to a disabled button and no way to swap the task.',
+        },
+      ],
+    },
+    {
+      id: 'context',
+      navLabel: 'Context',
+      title: 'Context',
       parts: [
         {
           type: 'blocks',
           blocks: [
             {
               type: 'text',
-              heading: 'What BetBoom Pass is',
+              heading: 'Product',
               paragraphs: [
-                'Users complete tasks and earn rewards: free bets, in-game skins, prizes. Simple enough on the surface.',
-                'The catch was who it was built for. At launch the whole thing was shaped around gamers and esports fans, and those habits were working. Anything we added had to leave them alone.',
+                'PASS began as a marketing tool. When I joined, it was already a section of the core BetBoom product. The standalone platform kept running alongside it.',
               ],
             },
             {
               type: 'text',
-              heading: 'How it ended up inside the core product',
+              heading: 'Platforms',
               paragraphs: [
-                'It began as a marketing tool. By the time I joined it had grown into a real section of the core product, live in both the app and on web — while the original standalone platform kept running alongside it. Two surfaces, one set of mechanics.',
+                'One set of mechanics, three surfaces: WebView in the BetBoom app, mobile web and desktop. Layouts were reviewed on betboompass.com and betboom.ru.',
+                'The integration review caught bugs that appeared only in WebView.',
               ],
             },
             {
               type: 'text',
-              heading: 'The actual goal',
+              heading: 'Role · team · timeline',
               paragraphs: [
-                'Bring a new audience into the gamification flow with classic sports tasks, and lift LTV across segments.',
-                'Football, basketball, hockey, tennis, table tennis. A very different crowd from Dota and CS players, sharing the same screen.',
-              ],
-            },
-            {
-              type: 'list',
-              heading: 'What we watched',
-              items: [
-                'MAU -> WAU -> DAU',
-                'Retention (D7, D30)',
-                'Churn rate — the early warning that we were breaking things for the old audience',
+                'Product Designer, 2025-2026. Research, mechanics and user flows — me. UI — a second designer I brought in, working from my drafts and flows.',
               ],
             },
             {
               type: 'list',
               heading: 'What I did',
               items: [
-                'Started from nothing and gathered the requirements myself',
-                'UX and user flows',
+                'Gathered the requirements from scratch',
+                'Research, mechanics and user flows',
                 'Prototypes and the visual concept',
-                'Every stakeholder presentation',
-                'Split the design work and coordinated the other designers',
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'hypothesis',
-      navLabel: 'A/B Test',
-      title: 'Running the A/B Test',
-      parts: [
-        {
-          type: 'richTextLead',
-          paragraphs: [
-            'Before redesigning anything, I wanted to know whether the esports audience would tolerate classic sports at all.',
-            'The hypothesis: a wider task catalog raises engagement, does not push the current audience out, and gives us room to grow.',
-          ],
-        },
-        {
-          type: 'imageBand',
-          label: 'New classic sports tasks',
-          media: {
-            type: 'video',
-            src: betboomAbTestVideo,
-            alt: 'New classic sports tasks in BetBoom PASS',
-          },
-        },
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'text',
-              heading: 'What we wanted to find out',
-              paragraphs: [
-                'Whether the product actually needed a new category of tasks at all — and whether the mechanic could carry it without damaging what already worked.',
+                'Stakeholder presentations',
+                'Brought in a second designer for UI and handed over my drafts and flows',
               ],
             },
             {
-              type: 'text',
-              heading: 'How we ran it',
-              paragraphs: [
-                'An A/B test on the gamification elements, with task cards for football, basketball, hockey, and tennis dropped into the existing catalog.',
+              type: 'list',
+              heading: 'What we watched',
+              items: [
+                'MAU → WAU → DAU',
+                'Retention D7 and D30',
+                'Churn — the early warning that we were breaking things for the esports audience',
               ],
             },
             {
-              type: 'text',
-              heading: 'What came back',
-              paragraphs: [
-                'The response was positive, and football pulled the strongest numbers of the four.',
-                'That reframed the whole thing. This was not a content update — it was a growth lever for retention and DAU.',
+              type: 'list',
+              heading: 'Constraints',
+              items: [
+                'The rule “one active task per category” stays.',
+                'The esports audience must not churn.',
+                'Every change works on all three surfaces.',
               ],
             },
           ],
@@ -503,43 +573,250 @@ export const betboomPassCaseStudy = {
         {
           type: 'featureMedia',
           media: {
-            src: hypothesisResultImage,
-            alt: 'Hypothesis validation results in the BetBoom PASS interface',
+            src: betboomSchemePlatforms,
+            alt: 'Scheme “One mechanic, three surfaces”: the same task page in the app WebView, on mobile web and on desktop',
           },
+          caption: 'The same task page in the app WebView, on mobile web and on desktop.',
+        },
+      ],
+    },
+    {
+      id: 'research',
+      navLabel: 'Research',
+      title: 'Research',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Before redesigning anything, I checked two things. Would the esports audience tolerate classic sports at all? And how do different users pick and swap tasks?',
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'A/B test: classic sports',
+              paragraphs: [
+                'Hypothesis: a wider catalog raises engagement and does not push the current audience out.',
+                'We added football, basketball, hockey and tennis cards to the existing catalog. The response was positive, and football pulled the strongest numbers.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'imageBand',
+          label: 'A/B test',
+          media: {
+            type: 'video',
+            src: betboomAbTestVideo,
+            alt: 'Desktop task page: the top carousel slides to the next tournament, the page loads and a task opens in a modal',
+          },
+          caption: 'Classic sports tasks added to the existing esports catalog.',
+          credit: betboomWidgetCredit,
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Jobs and task types',
+              // TODO(p32): the doc asks for 2–3 of the 6 JTBD verbatim — not chosen yet, so none are quoted.
+              paragraphs: [
+                'In FigJam I mapped 6 jobs to be done, a task taxonomy and difficulty levels 1–3+. Task types: game, esports and sports betting, deposit, social, chains and ladders.',
+                'Benchmarks: T-Bank, Yandex Plus, Zolotoe Yabloko and others.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: betboomSchemeTaskTypes,
+            alt: 'Scheme of task types and difficulty levels on one map',
+          },
+          caption: 'Task types and difficulty levels on one map.',
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              // TODO(p32): number of respondents and test format are open — left out until the user confirms.
+              heading: 'Usability tests: four tests and a retest, four respondent types',
+              items: [
+                'A PASS power user',
+                'Knows PASS, mostly plays game tasks',
+                'Knows PASS but never used it, bets a lot',
+                'Never opened PASS, does not play games, but bets',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'insightCards',
+          heading: 'Insights',
+          items: [
+            'I1 · Confirmed by the A/B test. Classic sports land, and the esports audience stays.',
+            // TODO(p32): which analytics showed this is open; the old case said “analytics showed”.
+            'I2 · Confirmed by analytics. People search by category, not by task type.',
+            'I3 · Confirmed in tests. Newcomers pick by picture and filters. Experienced users look at the reward, the amount and the odds.',
+            'I4 · Confirmed in tests. Every respondent swapped tasks through Cancel.',
+            'I5 · Confirmed in tests. A newcomer did not understand the in-game currency.',
+            'I6 · Confirmed by the AS IS audit. A task conflict reads as a bug: a disabled button and no explanation.',
+            'I7 · Hypothesis. More tasks mean more repetition, and the section starts to read as noise.',
+          ],
         },
         {
           type: 'noteCard',
-          title: 'Three things the test settled',
-          items: [
-            'Classic sports tasks land well',
-            'The existing audience stayed put',
-            'The mechanic can carry more than it currently does',
-          ],
+          title: 'Hypothesis, before → after',
           paragraphs: [
-            'Which meant the next problem was structural: the card itself, and the logic of the section around it.',
+            'Before: classic sports were new content to add.',
+            'After: they were a growth lever for retention and DAU. The card, the rules and onboarding had to change for them.',
           ],
         },
       ],
     },
     {
-      id: 'redesign',
-      navLabel: 'Redesign',
-      title: 'Task Card Redesign',
+      id: 'scenarios',
+      navLabel: 'Key flows',
+      title: 'Key Flows',
       parts: [
         {
-          type: 'richTextLead',
-          paragraphs: [
-            'The classic sports audience wanted different things from the card. Not atmosphere — rules and rewards, stated plainly. So I pulled the emphasis off the illustration and put it on the information.',
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'ordered-list',
+              heading: 'Flow 1. Take a task, place a bet, get the reward',
+              // TODO(p32): where the bet is placed and how the reward is credited are open — steps stay general.
+              items: [
+                'Pick a category in the category bar.',
+                'Open a task and choose the difficulty.',
+                'Place the qualifying bet.',
+                'Progress counts, and the reward lands.',
+              ],
+            },
           ],
         },
         {
-          type: 'noteCard',
-          title: 'What was wrong with the old card',
-          compact: true,
+          type: 'phoneRow',
+          label: 'Take a task, bet, get the reward',
           items: [
-            'The illustration took all the attention.',
-            'The title did not explain the rules.',
-            'It led with task type — but analytics showed people filter by category.',
+            {
+              src: betboomTasksAfter,
+              alt: 'Task page in the app: balance, top tasks carousel, category bar and task cards',
+              caption: 'The task page',
+            },
+            {
+              src: betboomCategoryBar2,
+              alt: 'Category bar with Table tennis selected',
+              caption: 'Pick a category',
+            },
+            {
+              src: betboomDetailConditions,
+              alt: 'Task card close-up: stake range, condition, reward and XP',
+              caption: 'Condition and reward on the card',
+            },
+          ],
+          caption: betboomWidgetCredit,
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'ordered-list',
+              heading: 'Flow 2. Swap a task',
+              items: [
+                'Tap a task in a category that already has an active one.',
+                'A popup names the active task: “The new one will replace it and reset progress. Switch?”',
+                'Replace it, or look at another sport.',
+                'For 10 seconds, “Return task” undoes the swap.',
+                'Cancel returns you where you came from: the widget or the home page.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'phoneRow',
+          label: 'Swap a task, with 10 seconds to undo',
+          items: [
+            {
+              src: betboomSwapConflict,
+              alt: 'Popup “These tasks conflict” naming the active hockey task, with Cancel and Switch',
+              caption: 'The popup names the active task',
+            },
+            {
+              src: betboomSwapReturn,
+              alt: 'After the swap: a “Return task 00:10” button counts down',
+              caption: '10 seconds to bring it back',
+            },
+            {
+              src: betboomSwapSwitched,
+              alt: '“Task switched” toast, a Cancel task button and a list of tasks to switch to',
+              caption: 'Switched, with Replace in the list',
+            },
+            {
+              src: betboomSwapCancelLimit,
+              alt: '“Oops! You can’t cancel now” — try again in 12 hours',
+              caption: 'Cancel too often — 12-hour pause',
+            },
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'list',
+              heading: 'Flow 3. Onboarding',
+              items: [
+                'A new user sees onboarding after sign-up.',
+                'An existing user sees it after the update.',
+                'On a second device, it can be skipped.',
+                'Signed-out users do not see it.',
+                'The token balance tooltip appears once.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'phoneRow',
+          label: 'Onboarding: open a task, choose the difficulty, one active task per category',
+          items: [
+            {
+              src: betboomOnboardingWelcome,
+              alt: 'Onboarding welcome: “Complete tasks here and get rewards”',
+              caption: 'Welcome',
+            },
+            {
+              src: betboomOnboardingDifficulty,
+              alt: 'Onboarding step “Choose your difficulty”: only one task per category can be active',
+              caption: 'Difficulty and the one-task rule',
+            },
+            {
+              src: betboomOnboardingTooltip,
+              alt: 'Tooltip on the token balance: your BB Pass token history will show up here',
+              caption: 'Token balance tooltip, shown once',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'decisions',
+      navLabel: 'Decisions',
+      title: 'Decisions',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'D1. Task card redesign',
+              paragraphs: [
+                'From I2, I3 · confirmed.',
+                'The classic sports audience wanted rules and rewards, stated plainly. So I pulled the emphasis off the illustration and put it on the information. Filters moved to category.',
+              ],
+            },
           ],
         },
         {
@@ -547,141 +824,171 @@ export const betboomPassCaseStudy = {
           wide: true,
           media: {
             type: 'video',
-            src: redesignVideo,
-            alt: 'BetBoom PASS task card redesign before and after',
+            src: betboomRedesignVideo,
+            alt: 'Task card before and after: the old card with a large illustration, then a scrolling column of the new cards',
           },
+          caption: 'Before: the illustration led. After: the condition, reward and deadline lead.',
         },
         {
           type: 'bento',
           label: 'Anatomy of the new card',
           tiles: [
             {
-              src: betboomFeaturedDesktop,
-              alt: 'Category filters and sorting above the task grid',
-              span: 'full',
-              zoom: 1.5,
-              fx: '47%',
-              fy: '52.6%',
+              src: betboomDetailCategoryFilters,
+              alt: 'Detail: category icons and sort chips in one strip',
+              span: 'third',
+              variant: 'whole',
               caption: 'Filters moved to category, because that is how people actually searched.',
             },
             {
-              src: betboomFeaturedDesktop,
-              alt: 'Close-up of a single task card',
-              span: 'half',
-              zoom: 3.6,
-              fx: '20.5%',
-              fy: '58.6%',
-              caption: 'The condition sits first, the illustration no longer competes with it.',
+              src: betboomDetailConditions,
+              alt: 'Detail: stake range, condition, reward and XP on a task card',
+              span: 'third',
+              variant: 'whole',
+              caption: 'The condition sits first; the illustration no longer competes with it.',
             },
             {
-              src: betboomFeaturedDesktop,
-              alt: 'Task card with a countdown timer',
-              span: 'half',
-              zoom: 3.6,
-              fx: '47%',
-              fy: '74.5%',
+              src: betboomDetailPromoTask,
+              alt: 'Detail: featured tournament task as the first card of the top carousel',
+              span: 'third',
+              variant: 'whole',
+              caption: 'Promo tasks reuse the same anatomy.',
+            },
+            {
+              src: betboomDetailRewardDeadline,
+              alt: 'Detail on desktop: category, timer and reward on task cards',
+              span: 'full',
+              variant: 'whole',
               caption: 'Reward and deadline are readable without opening the card.',
             },
             {
-              src: betboomFeaturedDesktop,
-              alt: 'Grid of task cards across sports categories',
-              span: 'wide',
-              zoom: 1.8,
-              fx: '47%',
-              fy: '66.5%',
+              src: betboomDetailSportEsports,
+              alt: 'Detail on desktop: one category bar with esports titles and classic sports',
+              span: 'full',
+              variant: 'whole',
               caption: 'One grid holds esports and classic sports without splitting the section.',
             },
+          ],
+        },
+        {
+          type: 'blocks',
+          blocks: [
             {
-              src: betboomTopScreen,
-              alt: 'Promo task card on the platform home screen',
-              span: 'third',
-              zoom: 3.6,
-              fx: '72%',
-              fy: '54.3%',
-              caption: 'Promo tasks reuse the same anatomy.',
+              type: 'text',
+              heading: 'One card is never one card',
+              paragraphs: [
+                'New filters, task categories, widget logic and promo tasks followed.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'D2. Levels',
+              // TODO(p32): D2 is marked hypothesis — no research behind it unless the user has data; no frame yet.
+              paragraphs: [
+                'From I7 · hypothesis.',
+                'A levels mechanic with difficulty 1–3+. It gives the scenario a shape people can follow. The catalog grows without the interface growing with it.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'D3. Swapping tasks: one active per category, without the wall',
+              paragraphs: [
+                'From I6, I4 · confirmed.',
+                'The rule stayed: one active task per category. A conflict is checked by sport, then tournament, then match. What changed is how hitting the rule feels.',
+              ],
+            },
+            {
+              type: 'list',
+              heading: 'What changed in the swap',
+              // TODO(p32): how a task taken from the middle of the list is highlighted in production is open — not described.
+              items: [
+                'Replace instead of block. The popup names the conflicting task and offers a swap.',
+                '10 seconds to undo. “Return task” covers a mis-tap.',
+                'A 12-hour limit on cancels. Cancel too often, and swapping pauses for 12 hours. The rule cannot be gamed.',
+                'Cancel → Replace. In tests, every respondent swapped through Cancel. So both paths stay, and the conflict popup got a Replace button.',
+              ],
             },
           ],
         },
         {
-          type: 'noteCard',
-          title: 'What followed the card',
+          type: 'featureMedia',
+          media: {
+            src: betboomSchemeSwitching,
+            alt: 'Scheme “Task switching: AS IS → TO BE”: an error and a dead end before; a conflict popup, Return task, Cancel and a 12-hour limit after',
+          },
+          caption: 'Before: a disabled button. After: swap, undo, or pick another sport.',
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: betboomSchemeConflictRule,
+            alt: 'Scheme of the conflict rule: sport, then tournament, then match',
+          },
+          caption: 'A conflict is checked by sport, then tournament, then match.',
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'D4. Onboarding by entry context',
+              paragraphs: [
+                'From I5, I3 · confirmed.',
+                'Goals: fewer drop-offs in the first days, a faster first target action, less time to get oriented. Onboarding depends on how the user arrived. The token balance tooltip explains the currency once.',
+                'The copy changed after tests: “Open a task and choose the difficulty. Only one task per category can be active.”',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: betboomSchemeOnboarding,
+            alt: 'Scheme “Onboarding by entry context”: new sign-up, after the update, second device, signed out',
+          },
+          caption: 'Who sees onboarding, and when.',
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              // TODO(p32): “top tasks” / “category bar” are working names; the 14 s rotation (2 × 7 s?) is unconfirmed, so no number.
+              heading: 'D5. Top tasks and the category bar',
+              paragraphs: [
+                'From I2, I3 · hypothesis.',
+                'Top tasks rotate on a timer and pin to the header on scroll. Signed-out users see only game tasks.',
+                'The category bar collapses in three steps on scroll, with 4 sort options and a colour per category.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'phoneRow',
+          label: 'Top tasks and the category bar',
           items: [
-            'New filters',
-            'New task categories',
-            'Updated widget logic',
-            'Promo tasks',
-          ],
-          paragraphs: [
-            'One card is never one card. Once the hypothesis held, we went after the layer around it — mostly to stop inheriting old decisions every time we added a mechanic.',
-          ],
-        },
-      ],
-    },
-    {
-      id: 'mechanics',
-      navLabel: 'Mechanic',
-      title: 'A New Mechanic',
-      parts: [
-        {
-          type: 'blocks',
-          blocks: [
             {
-              type: 'text',
-              heading: 'The problem',
-              paragraphs: [
-                'More tasks meant more repetition. The section started to read as noise.',
-              ],
+              src: betboomTopCarousel,
+              alt: 'Top tasks carousel at the top of the task page',
+              caption: 'Top tasks stay pinned to the header',
             },
             {
-              type: 'text',
-              heading: 'What I did',
-              paragraphs: [
-                'A levels mechanic. It gave the scenario a shape people could follow, and let the catalog grow without the interface growing with it.',
-              ],
+              src: betboomCategoryBar1,
+              alt: 'Category bar, step 1: pinned on scroll with labels and sort chips',
+              caption: 'Step 1: pinned on scroll',
             },
             {
-              type: 'list',
-              heading: 'Why it mattered',
-              items: [
-                'Users could finally tell what a reward was worth and what it would cost them',
-                'The business got a catalog it could keep filling',
-              ],
+              src: betboomCategoryBar2,
+              alt: 'Category bar, step 2: a sport selected, its label under the icon',
+              caption: 'Step 2: the chosen sport keeps its label',
+            },
+            {
+              src: betboomCategoryBar3,
+              alt: 'Category bar, step 3: deep scroll, icons only',
+              caption: 'Step 3: icons only',
             },
           ],
-        },
-      ],
-    },
-    {
-      id: 'active-tasks',
-      navLabel: 'Active Tasks',
-      title: 'Active Tasks',
-      parts: [
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'text',
-              heading: 'The problem',
-              paragraphs: [
-                'More sports tasks meant tasks that contradicted each other. Two hockey tasks on two different matches, both active — the system could not count them both, so it simply would not let you.',
-              ],
-            },
-            {
-              type: 'text',
-              heading: 'What I did',
-              paragraphs: [
-                'A modal that explains the conflict at the moment it happens. The rule did not change; the feeling of hitting a wall did.',
-              ],
-            },
-            {
-              type: 'list',
-              heading: 'The two things it has to do',
-              items: [
-                'Leave a way back to the task already running',
-                'Read as a rule, not as a bug',
-              ],
-            },
-          ],
+          caption: `The category bar collapses in three steps as you scroll. ${betboomWidgetCredit}`,
         },
       ],
     },
@@ -693,42 +1000,169 @@ export const betboomPassCaseStudy = {
         {
           type: 'richTextLead',
           paragraphs: [
-            'A year in, BetBoom Pass is no longer a marketing tool with a product bolted on. It is a section that can be extended without a redesign every time.',
+            'BetBoom PASS is no longer a marketing tool with a product bolted on. It is a section that can be extended without a redesign every time. Everything above is in production.',
           ],
         },
         {
           type: 'beforeAfterSlider',
           before: {
-            src: hypothesisResultImage,
-            alt: 'BetBoom PASS interface before the redesign',
+            src: betboomDesktopBefore,
+            alt: 'Desktop task page before the redesign: cards led by sport conditions and illustrations',
           },
           after: {
-            src: sportsTasksImage,
-            alt: 'BetBoom PASS interface after the redesign',
+            src: betboomDesktopAfter,
+            alt: 'Desktop task page after the redesign: hero carousel, one category bar for sports and esports, sort chips and three columns of cards',
           },
+          caption: `Drag to compare the task page before and after the redesign. ${betboomWidgetCredit}`,
         },
         {
           type: 'blocks',
           blocks: [
             {
               type: 'stats',
-              heading: 'Key metrics',
+              heading: 'Key metrics, over the testing period',
               stats: [
                 { value: '+75%', label: 'Retention' },
                 { value: '+60%', label: 'DAU' },
-                { value: 'NDA', label: 'Users' },
+                { value: 'No churn', label: 'noted after onboarding launched' },
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'What the numbers cover',
+              paragraphs: [
+                'Retention and DAU were measured over the testing period, before the entry point was added.',
               ],
             },
             {
               type: 'list',
               heading: 'Where it left the product',
               items: [
-                'Classic sports stuck — the audience took to them',
-                'New tasks can be added without touching the mechanic',
-                'A bigger catalog means more LTV headroom across segments',
-                'People come back to the section instead of visiting it once',
-                'The next change will not have to start by undoing this one',
+                'Classic sports stuck — the audience took to them.',
+                'New tasks can be added without touching the mechanic.',
+                'Onboarding, task swapping, top tasks, the category bar and the entry point are live.',
+                'The work laid the groundwork for scaling gamification.',
               ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'learned',
+      navLabel: 'What I learned',
+      title: 'What I Learned',
+      parts: [
+        {
+          // TODO(p32): editor's draft — the user rewrites these in her own words.
+          type: 'noteCard',
+          items: [
+            'A strict rule can stay if the interface explains it. We kept one task per category and removed the wall.',
+            'Design around what people already do. Respondents swapped tasks through Cancel, so we gave that path a proper Replace.',
+            'Three surfaces need three checks. Some bugs lived only in WebView.',
+          ],
+        },
+        {
+          // Mini case, option C: collapsed at the end, the showcase teaser opens it.
+          type: 'collapsible',
+          id: 'entry-point',
+          title: 'Mini case: the gamification entry point',
+          subtitle: 'The season widget in the BetBoom app, live as V.2',
+          parts: [
+            {
+              type: 'blocks',
+              blocks: [
+                {
+                  type: 'text',
+                  heading: 'From the task section to the main app',
+                  // TODO(p32): “once the task section worked” as the reason is unconfirmed — stated as a sequence only.
+                  paragraphs: [
+                    'Next, gamification moved into the main BetBoom app. The entry point is a season widget in the app’s Profile tab. It is live as V.2.',
+                  ],
+                },
+                {
+                  type: 'text',
+                  heading: 'Who did what',
+                  // TODO(p32): the second designer's name (with consent) and my part of the entry point are open.
+                  paragraphs: ['The season widget UI is by a second designer.'],
+                },
+                {
+                  type: 'text',
+                  heading: 'Research',
+                  paragraphs: [
+                    'A map of entry points: profile, menu, stories, promo banner. A flow from the app into PASS and a user journey map.',
+                  ],
+                },
+                {
+                  type: 'text',
+                  heading: 'States',
+                  paragraphs: [
+                    'Season without progress, with progress, countdown to season end, max level, no season, error. Dark and light themes.',
+                    'The widget sits next to ID verification, the loyalty programme and the offer carousel.',
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'phoneRow',
+              items: [
+                {
+                  src: betboomEntryNoLevel,
+                  alt: 'Profile with the Winter season widget: active season, no level yet',
+                  caption: 'No level yet',
+                },
+                {
+                  src: betboomEntryProgress,
+                  alt: 'Season widget with progress: level 99 on the way to level 100',
+                  caption: 'Progress',
+                },
+                {
+                  src: betboomEntrySeasonTimer,
+                  alt: 'Season widget with a countdown to the end of the season',
+                  caption: 'Countdown to season end',
+                },
+                {
+                  src: betboomEntryMaxLevel,
+                  alt: 'Season widget at the maximum level, 100',
+                  caption: 'Max level',
+                },
+              ],
+              caption: 'Season states in the BetBoom app profile, dark theme. Season widget UI by a second designer.',
+            },
+            {
+              type: 'featureMedia',
+              media: {
+                src: betboomSchemeEntryPoints,
+                alt: 'Scheme of entry points into gamification: profile, menu, stories, promo banner',
+              },
+              caption: 'Where users can enter gamification: profile, menu, stories, promo banner.',
+            },
+            {
+              type: 'blocks',
+              blocks: [
+                {
+                  type: 'text',
+                  heading: 'Web too',
+                  paragraphs: ['A web entry point and a season list for web.'],
+                },
+                {
+                  type: 'text',
+                  heading: 'What it changed',
+                  paragraphs: [
+                    'Gamification left the PASS section and reached the main app. This is the next step of scaling it.',
+                  ],
+                },
+              ],
+            },
+            {
+              type: 'phoneRow',
+              items: [
+                {
+                  src: betboomEntryWeb,
+                  alt: 'Web account menu, dark theme: Winter season widget above Account, Bet history and other items',
+                },
+              ],
+              caption: 'The entry point on web, in the account menu.',
             },
           ],
         },
