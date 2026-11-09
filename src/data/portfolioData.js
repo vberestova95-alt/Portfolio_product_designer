@@ -199,7 +199,7 @@ export const cases = [
   {
     id: 'betboom-gamification-hub',
     title: 'BetBoom — Gamification hub',
-    year: '2025–2026',
+    year: '2026',
     category: 'Gamification / BetBoom app',
     // TODO(p32b): card copy and cover — from the editor and the designer.
     description:
