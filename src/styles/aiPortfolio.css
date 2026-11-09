@@ -153,6 +153,19 @@
 
 /* ---------- Work ---------- */
 
+/*
+ * The work is the end of the page. The stack's run-out (16vh, 10vh on a phone)
+ * and the section's bottom gap stood as an empty strip over the footer, which
+ * brings its own top gap — that one is left, the same as between the blocks.
+ */
+.ai-work.section {
+  padding-bottom: 0;
+}
+
+.ai-work .work-stack {
+  padding-bottom: 0;
+}
+
 .ai-work__group + .ai-work__group {
   margin-top: var(--gap-section);
 }
