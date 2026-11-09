@@ -616,17 +616,23 @@ function CaseShowcase({ showcase }) {
         {showcase.frames
           .filter((item) => item.teaser)
           .map((item) => (
+            // A teaser either opens a block further down (`target`) or leads
+            // to another case (`href`).
             <a
-              key={item.teaser.target}
+              key={item.teaser.text}
               className="case-showcase__teaser"
-              href={`#${item.teaser.target}`}
-              onClick={(event) => {
-                event.preventDefault();
-                openCaseBlock(item.teaser.target);
-              }}
+              href={item.teaser.href || `#${item.teaser.target}`}
+              onClick={
+                item.teaser.href
+                  ? undefined
+                  : (event) => {
+                      event.preventDefault();
+                      openCaseBlock(item.teaser.target);
+                    }
+              }
             >
               {item.teaser.text}
-              <span aria-hidden="true">↓</span>
+              <span aria-hidden="true">{item.teaser.href ? '→' : '↓'}</span>
             </a>
           ))}
       </div>
@@ -925,6 +931,28 @@ function SectionPart({ part }) {
     );
   }
 
+  if (part.type === 'caseTeaser') {
+    // A card that leads on to a related case.
+    return (
+      <a className="case-teaser" href={part.href}>
+        <span className="case-teaser__copy">
+          {part.label ? <span className="case-teaser__label">{part.label}</span> : null}
+          <span className="case-teaser__title">{part.title}</span>
+          {part.text ? <span className="case-teaser__text">{part.text}</span> : null}
+          <span className="case-teaser__cta">
+            {part.cta}
+            <span aria-hidden="true">→</span>
+          </span>
+        </span>
+        {part.image ? (
+          <span className="case-teaser__media">
+            <img src={part.image.src} alt={part.image.alt} loading="lazy" />
+          </span>
+        ) : null}
+      </a>
+    );
+  }
+
   if (part.type === 'phoneRow') {
     return <PhoneRow part={part} />;
   }
@@ -1053,7 +1081,8 @@ export function CaseStudyPage({
     if (
       event.target.tagName === 'IMG' &&
       !event.target.closest('.case-ba-slider') &&
-      !event.target.closest('.case-next')
+      !event.target.closest('.case-next') &&
+      !event.target.closest('.case-teaser')
     ) {
       setLightbox({
         // currentSrc: the file <picture> actually picked (the phone's take).
@@ -1110,7 +1139,10 @@ export function CaseStudyPage({
                   <a className="case-back-link case-section-back" href={caseStudy.backHref}>
                     <span aria-hidden="true">←</span>
                     {/* Cases opened from a listing other than home lead back to it. */}
-                    <span>{caseStudy.backHref === '/' ? text.allWork : text.back}</span>
+                    <span>
+                      {caseStudy.backLabel ||
+                        (caseStudy.backHref === '/' ? text.allWork : text.back)}
+                    </span>
                   </a>
                 ) : null}
               </div>

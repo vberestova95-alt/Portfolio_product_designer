@@ -475,7 +475,7 @@ export const betboomPassCaseStudy = {
         caption: 'The season widget in the BetBoom app profile.',
         src: betboomShowcaseEntryPoint,
         alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
-        teaser: { text: '+ Mini case: the gamification entry point', target: 'entry-point' },
+        teaser: { text: 'Next: a new app section for seasons', href: '/betboom-gamification-hub' },
       },
     ],
   },
@@ -1084,112 +1084,230 @@ export const betboomPassCaseStudy = {
           ],
         },
         {
-          // Mini case, option C: collapsed at the end, the showcase teaser opens it.
-          type: 'collapsible',
-          id: 'entry-point',
-          title: 'Mini case: the gamification entry point',
-          subtitle: 'The season widget in the BetBoom app, live as V.2',
-          parts: [
-            {
-              type: 'blocks',
-              blocks: [
-                {
-                  type: 'text',
-                  heading: 'From the task section to the main app',
-                  // TODO(p32): “once the task section worked” as the reason is unconfirmed — stated as a sequence only.
-                  paragraphs: [
-                    'Next, gamification moved into the main BetBoom app. The entry point is a season widget in the app’s Profile tab. It is live as V.2.',
-                  ],
-                },
-                {
-                  type: 'text',
-                  heading: 'Who did what',
-                  paragraphs: ['I designed the entry point on my own: research, flows and the widget.'],
-                },
-                {
-                  type: 'text',
-                  heading: 'Research',
-                  paragraphs: [
-                    'A map of entry points: profile, menu, stories, promo banner. A flow from the app into PASS and a user journey map.',
-                  ],
-                },
-                {
-                  type: 'text',
-                  heading: 'States',
-                  paragraphs: [
-                    'Season without progress, with progress, countdown to season end, max level, no season, error. Dark and light themes.',
-                    'The widget sits next to ID verification, the loyalty programme and the offer carousel.',
-                  ],
-                },
-              ],
-            },
-            {
-              type: 'phoneRow',
-              items: [
-                {
-                  src: betboomEntryNoLevel,
-                  alt: 'Profile with the Winter season widget: active season, no level yet',
-                  caption: 'No level yet',
-                },
-                {
-                  src: betboomEntryProgress,
-                  alt: 'Season widget with progress: level 99 on the way to level 100',
-                  caption: 'Progress',
-                },
-                {
-                  src: betboomEntrySeasonTimer,
-                  alt: 'Season widget with a countdown to the end of the season',
-                  caption: 'Countdown to season end',
-                },
-                {
-                  src: betboomEntryMaxLevel,
-                  alt: 'Season widget at the maximum level, 100',
-                  caption: 'Max level',
-                },
-              ],
-              caption: 'Season states in the BetBoom app profile, dark theme.',
-            },
-            {
-              type: 'featureMedia',
-              media: {
-                src: betboomSchemeEntryPoints,
-                alt: 'Scheme of entry points into gamification: profile, menu, stories, promo banner',
-              },
-              caption: 'Where users can enter gamification: profile, menu, stories, promo banner.',
-            },
-            {
-              type: 'blocks',
-              blocks: [
-                {
-                  type: 'text',
-                  heading: 'Web too',
-                  paragraphs: ['A web entry point and a season list for web.'],
-                },
-                {
-                  type: 'text',
-                  heading: 'What it changed',
-                  paragraphs: [
-                    'Gamification left the PASS section and reached the main app. This is the next step of scaling it.',
-                  ],
-                },
-              ],
-            },
-            {
-              type: 'phoneRow',
-              items: [
-                {
-                  src: betboomEntryWeb,
-                  alt: 'Web account menu, dark theme: Winter season widget above Account, Bet history and other items',
-                },
-              ],
-              caption: 'The entry point on web, in the account menu.',
-            },
-          ],
+          // The entry point is its own case now; this card leads there.
+          type: 'caseTeaser',
+          label: 'Next case',
+          title: 'Next: a new app section for seasons',
+          text: 'Gamification moved from the PASS section into the main BetBoom app: a season widget in the Profile tab, live as V.2.',
+          href: '/betboom-gamification-hub',
+          cta: 'Open the case',
+          image: {
+            src: betboomShowcaseEntryPoint,
+            alt: 'BetBoom app profile with the Winter season widget',
+          },
         },
       ],
     },
   ],
 };
+
+/*
+ * The entry point to gamification in the main BetBoom app, split out of the
+ * BetBoom PASS case at the user's request (p. 32b).
+ * TODO(p32b): skeleton — the editor sends the text; frames come from the
+ * designer (docs/review/betboom-pass/entry-point/). Until then the facts are
+ * the ones from the old mini case and the placeholders say so.
+ */
+export const betboomGamificationHubCaseStudy = {
+  slug: 'betboom-gamification-hub',
+  backHref: '/betboom-pass',
+  backLabel: 'Back to BetBoom PASS',
+  hero: {
+    title: 'BetBoom — Gamification hub',
+    description:
+      'Gamification moved from the PASS section into the main BetBoom app. The entry point is a season widget in the Profile tab, live as V.2.',
+    meta: 'Product Designer / BetBoom app',
+    image: {
+      // TODO(p32b): cover from the designer.
+      src: betboomEntryProgress,
+      alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
+      fit: 'contain',
+    },
+    stats: [
+      { value: 'V.2', label: 'live in the BetBoom app' },
+      { value: '6', label: 'season states, dark and light' },
+      { value: '2', label: 'surfaces: app and web' },
+    ],
+  },
+  sections: [
+    {
+      id: 'problem',
+      navLabel: 'Problem',
+      title: 'The Problem',
+      parts: [
+        {
+          // TODO(p32b): editor's text.
+          type: 'noteCard',
+          title: 'Draft',
+          paragraphs: ['Text is coming from the editor.'],
+        },
+      ],
+    },
+    {
+      id: 'context',
+      navLabel: 'Context',
+      title: 'Context',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'From the task section to the main app',
+              paragraphs: [
+                'After BetBoom PASS, gamification moved into the main BetBoom app. The entry point is a season widget in the app’s Profile tab. It is live as V.2.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: 'Who did what',
+              paragraphs: ['I designed the entry point on my own: research, flows and the widget.'],
+            },
+          ],
+        },
+        {
+          type: 'siteLink',
+          label: 'Where it started',
+          href: '/betboom-pass',
+          text: 'BetBoom PASS — the task section this grew out of',
+        },
+      ],
+    },
+    {
+      id: 'research',
+      navLabel: 'Research',
+      title: 'Research',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Where users can enter',
+              paragraphs: [
+                'A map of entry points: profile, menu, stories, promo banner. A flow from the app into PASS and a user journey map.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: betboomSchemeEntryPoints,
+            alt: 'Scheme of entry points into gamification: profile, menu, stories, promo banner',
+          },
+          caption: 'Where users can enter gamification: profile, menu, stories, promo banner.',
+        },
+      ],
+    },
+    {
+      id: 'scenarios',
+      navLabel: 'Key flows',
+      title: 'Key Flows',
+      parts: [
+        {
+          // TODO(p32b): profile → widget → tasks clip from the designer.
+          type: 'noteCard',
+          title: 'Draft',
+          paragraphs: ['Flow from the profile to the season and its tasks — frames are coming from the designer.'],
+        },
+      ],
+    },
+    {
+      id: 'decisions',
+      navLabel: 'Decisions',
+      title: 'Decisions',
+      parts: [
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Season states',
+              paragraphs: [
+                'Season without progress, with progress, countdown to season end, max level, no season, error. Dark and light themes.',
+                'The widget sits next to ID verification, the loyalty programme and the offer carousel.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'phoneRow',
+          items: [
+            {
+              src: betboomEntryNoLevel,
+              alt: 'Profile with the Winter season widget: active season, no level yet',
+              caption: 'No level yet',
+            },
+            {
+              src: betboomEntryProgress,
+              alt: 'Season widget with progress: level 99 on the way to level 100',
+              caption: 'Progress',
+            },
+            {
+              src: betboomEntrySeasonTimer,
+              alt: 'Season widget with a countdown to the end of the season',
+              caption: 'Countdown to season end',
+            },
+            {
+              src: betboomEntryMaxLevel,
+              alt: 'Season widget at the maximum level, 100',
+              caption: 'Max level',
+            },
+          ],
+          caption: 'Season states in the BetBoom app profile, dark theme.',
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Web too',
+              paragraphs: ['A web entry point and a season list for web.'],
+            },
+          ],
+        },
+        {
+          type: 'phoneRow',
+          items: [
+            {
+              src: betboomEntryWeb,
+              alt: 'Web account menu, dark theme: Winter season widget above Account, Bet history and other items',
+            },
+          ],
+          caption: 'The entry point on web, in the account menu.',
+        },
+      ],
+    },
+    {
+      id: 'result',
+      navLabel: 'Result',
+      title: 'Result',
+      parts: [
+        {
+          type: 'richTextLead',
+          paragraphs: [
+            'Gamification left the PASS section and reached the main app. This is the next step of scaling it.',
+          ],
+        },
+      ],
+    },
+    {
+      id: 'learned',
+      navLabel: 'What I learned',
+      title: 'What I Learned',
+      parts: [
+        {
+          // TODO(p32b): editor's text.
+          type: 'noteCard',
+          title: 'Draft',
+          paragraphs: ['Text is coming from the editor.'],
+        },
+      ],
+    },
+  ],
+};
+
 
 export const iquotoCaseStudy = {
   slug: 'iquoto',

@@ -32,6 +32,7 @@ const SCROLL_MARKS = [25, 50, 75, 100];
 // Internal paths that are a project, keyed to the id the dashboard shows.
 const PROJECT_PATHS = {
   '/betboom-pass': 'betboom-pass',
+  '/betboom-gamification-hub': 'betboom-gamification-hub',
   '/yandex-turkey': 'yandex-turkey',
   '/kokoc-group': 'kokoc-group',
   '/cat-app': 'cat-app',

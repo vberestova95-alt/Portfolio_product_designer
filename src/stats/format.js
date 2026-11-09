@@ -6,6 +6,7 @@
 const PAGE_NAMES = {
   '/': 'Главная',
   '/betboom-pass': 'BetBoom PASS',
+  '/betboom-gamification-hub': 'BetBoom — Gamification hub',
   '/yandex-turkey': 'Yandex News Turkey',
   '/kokoc-group': 'Kokoc Group',
   '/cat-app': 'Fluffy Chumb',

@@ -3139,7 +3139,8 @@ ol.case-bullet-list li::before {
   object-position: center top;
 }
 
-.case-page--betboom-pass .case-hero {
+.case-page--betboom-pass .case-hero,
+.case-page--betboom-gamification-hub .case-hero {
   background: #000;
   /* Black ground: a tenth of white would read as grey, not as a lift. */
   --case-stat-plate: rgba(255, 255, 255, 0.06);
@@ -4065,6 +4066,70 @@ ol.case-bullet-list li::before {
   margin: 2px 0 0;
   font-size: 13px;
   color: var(--ink-faint);
+}
+
+/* A card leading on to a related case: copy on the left, a screen on the right. */
+.case-teaser {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 220px);
+  align-items: center;
+  gap: clamp(20px, 3vw, 48px);
+  padding: clamp(24px, 2.2vw, 36px);
+  border-radius: var(--r-card);
+  background: #000;
+  color: var(--inverse);
+  transition: transform 200ms ease;
+}
+
+.case-teaser:hover {
+  transform: translateY(-2px);
+}
+
+.case-teaser:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.case-teaser__copy {
+  display: grid;
+  gap: 12px;
+}
+
+.case-teaser__label {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--inverse-soft);
+}
+
+.case-teaser__title {
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.case-teaser__text {
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--inverse-soft);
+}
+
+.case-teaser__cta {
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+.case-teaser__media img {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 640px) {
+  .case-teaser {
+    grid-template-columns: minmax(0, 1fr) 110px;
+  }
 }
 
 /* Two clips or pictures side by side; stacked on a phone. */

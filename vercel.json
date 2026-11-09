@@ -5,6 +5,7 @@
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/betboom-pass", "destination": "/index.html" },
+    { "source": "/betboom-gamification-hub", "destination": "/index.html" },
     { "source": "/cat-app", "destination": "/index.html" },
     { "source": "/iquoto", "destination": "/index.html" },
     { "source": "/kokoc-group", "destination": "/index.html" },

@@ -18,6 +18,7 @@ import {
 const CASE_ONLY_MODE = import.meta.env.VITE_CASE_ONLY === 'true';
 const CASE_STUDY_KEYS_BY_PATH = {
   '/betboom-pass': 'betboomPassCaseStudy',
+  '/betboom-gamification-hub': 'betboomGamificationHubCaseStudy',
   '/cat-app': 'catAppCaseStudy',
   '/iquoto': 'iquotoCaseStudy',
   '/kokoc-group': 'kokocCaseStudy',

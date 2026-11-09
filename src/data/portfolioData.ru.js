@@ -93,6 +93,15 @@ export const cases = byId(en.cases, {
     metrics: ['5 → 3 шага', 'Меньше трения'],
     image: { ...entryOf(en.cases, 'iquoto').image, alt: 'Экраны редизайна регистрации IQuoto' },
   },
+  // TODO(p32b): RU copy from the editor; RU case page shows the EN text for now.
+  'betboom-gamification-hub': {
+    title: 'BetBoom — Gamification hub',
+    category: 'Геймификация / Приложение BetBoom',
+    description:
+      'Геймификация вышла из раздела PASS в основное приложение BetBoom: виджет сезона во вкладке «Профиль», в проде как V.2.',
+    metrics: ['В проде V.2', 'Приложение и веб'],
+    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: задания, топ заданий и виджет сезона в профиле' },
+  },
 });
 
 export const designConceptTeaser = {

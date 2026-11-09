@@ -1,3 +1,5 @@
+// TODO(p32b): placeholder — the BetBoom PASS EN cover until the designer's own one arrives.
+import betboomEntryPointCover from '../assets/cases/betboom/cover.webp';
 import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png';
 import betboomFeaturedMobile from '../assets/cases/betboom-featured-mobile.png';
 import iquotoDesktop from '../assets/cases/iquoto-desktop.png';
@@ -189,6 +191,22 @@ export const cases = [
       alt: 'IQuoto registration redesign screens',
     },
     href: '/iquoto',
+  },
+  {
+    id: 'betboom-gamification-hub',
+    title: 'BetBoom — Gamification hub',
+    year: '2025–2026',
+    category: 'Gamification / BetBoom app',
+    // TODO(p32b): card copy and cover — from the editor and the designer.
+    description:
+      'Gamification moved from the PASS section into the main BetBoom app: a season widget in the Profile tab, live as V.2.',
+    metrics: ['Live as V.2', 'App and web'],
+    surface: 'ink',
+    image: {
+      src: betboomEntryPointCover,
+      alt: 'BetBoom screens: the task page, top tasks and the season widget in the app profile',
+    },
+    href: '/betboom-gamification-hub',
   },
 ];
 
