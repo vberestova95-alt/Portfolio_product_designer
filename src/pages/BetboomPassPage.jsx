@@ -906,8 +906,12 @@ function NoteCard({ card }) {
   );
 }
 
+import { catAppParts } from '../components/case/catAppParts.js';
+
 function SectionPart({ part }) {
   const text = useUi().case;
+  const CatAppPart = catAppParts[part.type];
+  if (CatAppPart) return <CatAppPart part={part} />;
 
   if (part.type === 'richTextLead') {
     return (

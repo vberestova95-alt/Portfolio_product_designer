@@ -10,14 +10,15 @@
  *   BASE=http://localhost:4174 node e2e/ru-media.check.mjs
  *
  * Checks at 1440 and 390: the RU page loads only `.ru` flow clips, `.ru`
- * posters and the `.ru` MVP strip (the `.mobile.ru` one on a phone), the
- * lightbox opens the same RU file, and no EN flow/MVP file is requested.
+ * posters and the `.ru` story pictures, the pairs slider shows the .ru web MVP
+ * pair, and no EN flow file is requested. (The old pet-tracker-mvp-screens strip
+ * is gone from the page. The full RU page check is cat-app-preview.check.mjs.)
  */
 import { chromium } from 'playwright';
 
 const BASE = process.env.BASE ?? 'http://localhost:4174';
 const FLOW = /\/sc[14]-[ab](\.ru)?(\.poster)?-[^/]+\.(mp4|webm|webp)$/;
-const MVP = /\/pet-tracker-mvp-screens(\.mobile)?(\.ru)?-[^/]+\.webp$/;
+const MVP = /\/web-mvp-(before|after)(\.ru)?-[^/]+\.webp$/;
 const isRu = (url) => /\.ru[.-][^/]*\.\w+$/.test(url.split('/').pop());
 
 let failed = 0;
@@ -69,24 +70,18 @@ try {
     );
     check(`${tag}: 4 RU clips played`, playing.length === 4 && playing.every((v) => isRu(v.src) && v.t > 0), playing.map((v) => `${v.src.split('/').pop()} t ${v.t.toFixed(1)}`).join(', '));
 
-    const mvp = await page.evaluate(() => document.querySelector('.case-image-band img[src*="pet-tracker-mvp-screens"]')?.currentSrc ?? '');
-    const wantMobile = viewport.width <= 640;
-    check(
-      `${tag}: MVP strip is the RU ${wantMobile ? '.mobile' : 'horizontal'} file`,
-      isRu(mvp) && (wantMobile ? /\.mobile\.ru-/.test(mvp) : !/\.mobile/.test(mvp)),
-      mvp.split('/').pop(),
-    );
-    const img = page.locator('.case-image-band img[src*="pet-tracker-mvp-screens"]').first();
-    await img.scrollIntoViewIfNeeded();
-    await img.click();
-    const box = page.locator('.case-lightbox__img');
-    const opened = await box.waitFor({ state: 'visible', timeout: 5000 }).then(() => true, () => false);
-    const boxSrc = opened ? await box.getAttribute('src') : '';
-    check(`${tag}: lightbox opens the same RU file`, opened && boxSrc === mvp, (boxSrc ?? '').split('/').pop());
+    // The web MVP is one pairs slider: the web MVP screens stay English (before, shared file), the v2 side is the .ru file.
+    const pair = await page.evaluate(() => [...document.querySelectorAll('.cat-ba-slider__img')].map((i) => i.currentSrc));
+    check(`${tag}: pairs slider: EN web MVP before, RU v2 after`, pair.length === 2 && !isRu(pair[0]) && isRu(pair[1]) && /web-mvp-before/.test(pair[0]) && /web-mvp-after/.test(pair[1]), pair.map((u) => u.split('/').pop()).join(', '));
+    const old = await page.evaluate(() => document.querySelectorAll('img[src*="pet-tracker-mvp-screens"]').length);
+    check(`${tag}: old MVP strip is gone`, old === 0, `${old} images`);
+    const brandSrcs = await page.evaluate(() => [...document.querySelectorAll('.cat-collapsible img')].map((i) => i.currentSrc || i.src));
+    check(`${tag}: brand frames are the shared (non-.ru) files`, brandSrcs.length === 7 && brandSrcs.every((u) => !isRu(u)), `${brandSrcs.length} images`);
 
-    const enHits = [...new Set(hits.filter((u) => !isRu(u)))];
+    // web-mvp-before is English on purpose (the web MVP screens are in English).
+    const enHits = [...new Set(hits.filter((u) => !isRu(u) && !/web-mvp-before/.test(u)))];
     const ruHits = [...new Set(hits.filter(isRu))];
-    check(`${tag}: no EN flow / MVP file requested`, enHits.length === 0, enHits.map((u) => u.split('/').pop()).join(', '));
+    check(`${tag}: no EN flow / web MVP file requested`, enHits.length === 0, enHits.map((u) => u.split('/').pop()).join(', '));
     check(`${tag}: RU files requested`, ruHits.length >= 5, ruHits.map((u) => u.split('/').pop()).join(', '));
     check(`${tag}: no errors`, errors.length === 0, errors.join(' | '));
     await context.close();

@@ -96,10 +96,25 @@ import iquotoMapToBe from '../assets/cases/iquoto-map-to-be.jpg';
 import iquotoVariants from '../assets/cases/iquoto-variants.png';
 import iquotoResult from '../assets/cases/iquoto-result.png';
 import catAppScreens from '../assets/cases/cat-app-screens.svg';
-import petTrackerMvpScreens from '../assets/cases/pet-tracker-mvp-screens.webp';
-import petTrackerMvpScreensMobile from '../assets/cases/pet-tracker-mvp-screens.mobile.webp';
+import fluffyChumbStoryWebMvpBefore from '../assets/cases/fluffy-chumb/story/web-mvp-before.webp';
+import fluffyChumbStoryWebMvpAfter from '../assets/cases/fluffy-chumb/story/web-mvp-after.webp';
+import fluffyChumbStoryShared from '../assets/cases/fluffy-chumb/story/shared.webp';
+import fluffyChumbStorySharedMobile from '../assets/cases/fluffy-chumb/story/shared.mobile.webp';
+import fluffyChumbStoryV2 from '../assets/cases/fluffy-chumb/story/v2.webp';
+import fluffyChumbStoryV2Mobile from '../assets/cases/fluffy-chumb/story/v2.mobile.webp';
+import fluffyChumbBrandFirstTake from '../assets/cases/fluffy-chumb/brand/01-first-take.webp';
+import fluffyChumbBrandStyleConcepts from '../assets/cases/fluffy-chumb/brand/02-style-concepts.webp';
+import fluffyChumbBrandFirstGuide from '../assets/cases/fluffy-chumb/brand/03-first-guide.webp';
+import fluffyChumbBrandLogoTakes from '../assets/cases/fluffy-chumb/brand/04-logo-takes.webp';
+import fluffyChumbBrandBook from '../assets/cases/fluffy-chumb/brand/05-brand-book.webp';
+import fluffyChumbBrandPalette from '../assets/cases/fluffy-chumb/brand/06-palette.webp';
+import fluffyChumbBrandToolTiles from '../assets/cases/fluffy-chumb/brand/07-tool-tiles.webp';
 import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.webp';
 import fluffyChumbV2Screens from '../assets/cases/fluffy-chumb-v2-screens.webp';
+import fluffyChumbFeatureInjectionMap from '../assets/cases/fluffy-chumb/features/injection-map.webp';
+import fluffyChumbFeatureBuilder from '../assets/cases/fluffy-chumb/features/builder.webp';
+import fluffyChumbFeatureHistory from '../assets/cases/fluffy-chumb/features/history.webp';
+import fluffyChumbFeatureFamily from '../assets/cases/fluffy-chumb/features/family.webp';
 import kokocCaseHero from '../assets/cases/kokoc-main-desktop.png';
 import kokocAbout from '../assets/cases/kokoc-about.png';
 import kokocPrototype from '../assets/cases/kokoc-prototype.png';
@@ -142,16 +157,16 @@ export const catAppCaseStudy = {
   hero: {
     title: 'Fluffy Chumb',
     description:
-      'I built an insulin tracker for my own cat. Interviews with MVP users showed that care is not one task but a lot of small ones shared by several people. Version two is about flexible trackers and a daily routine the whole household shares.',
+      'We built an insulin tracker for our own cat. Interviews with an owner of a diabetic cat and demos showed that care is not one task but many small ones shared by several people. Version two is about flexible trackers and a daily routine the whole household shares.',
     meta: 'Pet care tracker / Side project / MVP → v2',
     image: {
       src: fluffyChumbV2Cover,
       alt: 'Two Fluffy Chumb screens: home with the pet’s trackers and today’s routine with tasks done, skipped and due now',
     },
     stats: [
-      { value: '2', label: 'user groups interviewed' },
-      { value: '12', label: 'beta testers from the landing page' },
-      { value: '1 → any', label: 'trackers, set up by the household' },
+      { value: '2', label: 'interviews with an owner of a diabetic cat' },
+      { value: '12', label: 'beta sign-ups from the landing page' },
+      { value: '∞', label: 'happy pets' },
     ],
     points: ['Codex', 'Claude Code', 'Figma Make'],
   },
@@ -162,22 +177,40 @@ export const catAppCaseStudy = {
       title: 'Where It Started',
       parts: [
         {
-          type: 'richTextLead',
-          paragraphs: [
-            'The MVP solved one problem: never miss an insulin shot and never inject the same spot twice. The home screen was a photo of the pet with a map of injection sites, plus the week.',
-            'We used it ourselves. To find out whether anyone else needed it, I gave the MVP to other owners and talked to them.',
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: '1. Lutik',
+              paragraphs: [
+                'It started with our cat Lutik and his diabetes. His care means insulin shots and glucose checks, and no shot can be missed.',
+              ],
+            },
+            {
+              type: 'text',
+              heading: '2. Site rotation · May 2026',
+              paragraphs: [
+                'We kept no log of shots before the app. The vet told us to rotate injection sites, and that’s where the idea of a site map came from. In May 2026, together with a backend engineer, we launched a web MVP built around it.',
+                'The home screen was a week on the pet’s photo: 14 numbered marks, morning and evening, joined by a dashed line. You see where the last shot went and pick the next site. Each entry kept the site, dose, time, glucose and notes.',
+              ],
+            },
           ],
         },
         {
-          type: 'imageBand',
-          label: 'MVP',
-          variant: 'bare',
-          media: {
-            type: 'image',
-            src: petTrackerMvpScreens,
-            mobileSrc: petTrackerMvpScreensMobile,
-            alt: 'MVP screens: pet settings, welcome screen and the injection map on the pet’s photo',
+          // One screen per pair on a phone: the chips under the slider switch pairs.
+          type: 'beforeAfterPairs',
+          before: {
+            src: fluffyChumbStoryWebMvpBefore,
+            alt: 'Web MVP, May 2026: the tracker with a week of numbered marks on the cat’s photo, the evening injection pop-up, and Injection History with 14 records',
           },
+          after: {
+            src: fluffyChumbStoryWebMvpAfter,
+            alt: 'Version two, the same steps: the injection map on the whole screen while a new site is placed, the Check the dose sheet over the map, and History with glucose and insulin charts',
+          },
+          // The pictures in 1x px (scripts/build-case-frames.mjs): three 390 px
+          // screens 40 px apart; a phone shows a 430 px window round each.
+          crop: { width: 1330, height: 944, start: 20, window: 430 },
+          pairs: [{ label: 'Injection map' }, { label: 'Dose' }, { label: 'History' }],
         },
       ],
     },
@@ -190,25 +223,56 @@ export const catAppCaseStudy = {
           type: 'blocks',
           blocks: [
             {
-              type: 'ordered-list',
-              heading: 'From MVP to beta in six steps',
-              items: [
-                'MVP — an injection tracker for my own cat.',
-                'Competitor review.',
-                'Interviews with two groups of MVP users.',
-                'The hypothesis gets refined.',
-                'New positioning and the second version.',
-                'A test build, a landing page and 12 beta testers.',
+              type: 'text',
+              heading: '3. Shared care · 13 October',
+              paragraphs: [
+                'Several people look after a diabetic pet. The first MVP had one account for everyone. On 13 October it got Google sign-in and shared access: the owner invites someone by email, and they accept or decline.',
+              ],
+            },
+          ],
+        },
+        {
+          type: 'imageBand',
+          label: 'Shared care · in the app',
+          variant: 'bare',
+          media: {
+            type: 'image',
+            src: fluffyChumbStoryShared,
+            mobileSrc: fluffyChumbStorySharedMobile,
+            alt: 'Fluffy Chumb app screens: inviting someone to care for the cat by email, the people caring for the cat with their access, and the shared history with glucose and insulin charts',
+          },
+        },
+        {
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: '4. First users',
+              paragraphs: [
+                'We used the MVP ourselves, with Lutik. I held 2 interviews with an owner of a cat with diabetes and showed demos to several people — the diabetes features were not relevant to them.',
+                'In October the MVP changed. Glucose got its own entry, separate from shots, and all records moved to one History page with a date filter and CSV export. The morning / evening slot gave way to exact time: not every pet is on a twice-a-day schedule.',
               ],
             },
             {
               type: 'text',
-              heading: 'The turning point',
+              heading: '5. Deciding on version two · 22–26 October',
               paragraphs: [
-                'The interviews. After them the product stopped being a tracker for one disease and became a tool for everyone who looks after the pet.',
+                'In late October I moved the web MVP into Figma as it was — 24 screens, 8 flows — and audited it. Then I reviewed 14 care and health apps. Family apps reduce care to a tick with no data; disease trackers leave the family out.',
+                'A protocol for a pet with kidney disease — drips twice a day plus pills — did not fit a tracker built for one disease. On 26 October we chose a new model: trackers are a set of tools, and their schedules feed one daily list for the household. Version two became a mobile app for iOS and Android on that model.',
               ],
             },
           ],
+        },
+        {
+          type: 'imageBand',
+          label: 'Version two',
+          variant: 'bare',
+          media: {
+            type: 'image',
+            src: fluffyChumbStoryV2,
+            mobileSrc: fluffyChumbStoryV2Mobile,
+            alt: 'Version two screens: glucose readings, today’s routine, Not now, skipping a task with a reason, the injection map with the site marked, adding a new site, and checking the dose',
+          },
         },
       ],
     },
@@ -220,43 +284,26 @@ export const catAppCaseStudy = {
         {
           type: 'richTextLead',
           paragraphs: [
-            'Competitor trackers are sets of preset actions. There is a lot of information, and most of it is irrelevant to a particular pet — people dig for their action among everyone else’s.',
-          ],
-        },
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'text',
-              heading: 'Hypothesis before the interviews',
-              paragraphs: ['People want to set up their own tracker so they have fewer actions to take.'],
-            },
-            {
-              type: 'text',
-              heading: 'After the interviews',
-              paragraphs: [
-                'A detailed tracker helps in the moment but gets in the way when all you need is one simple action. Setup is not about adding more — it is about keeping only what matters and extending it when treatment changes. And the tracker is used by more than one person.',
-              ],
-            },
+            'I reviewed 14 care and health apps. Family apps reduce care to a tick with no data; disease trackers leave the family out. None of them marks the injection site on a photo of the pet.',
           ],
         },
         {
           type: 'collapsible',
-          title: 'Who we talked to',
+          title: 'Who I talked to',
           items: [
-            'Group 1 — a family: husband, wife and a child. Their cat has diabetes and a treatment protocol. The parents want to teach the child to look after the cat, so it has to be clear and interesting for a kid.',
-            'Group 2 — a couple with an adult diabetic cat. They inject insulin twice a day, the protocol keeps changing, and a pet sitter helps them.',
+            'Ourselves and Lutik, the cat it all started with: we used the web MVP.',
+            'An owner of a cat with diabetes: 2 interviews.',
+            'Other people: several demos; the features were not relevant to them.',
           ],
         },
         {
           type: 'painCards',
-          heading: 'What we learned',
+          heading: 'What I learned',
           items: [
-            'Extra structure pushes people away. One user only needed to measure glucose, not inject. He used the injection map three times and gave up — it boxed him in.',
-            'Care is shared, and not everyone needs the whole protocol. A child needs one clear task, not a treatment plan.',
-            'The protocol changes. Insulin is a big task but not the only one: pills appear, with times and course lengths that change.',
-            'Sensitive topics need their own place. The diabetes tracker had nowhere to put them.',
-            'People outside the family take part. The sitter needs up-to-date instructions; the owners want to see what is done without checking on her.',
+            'Rotation is the core job. The vet told us to rotate sites, and none of the 14 apps I reviewed marks the site on the pet’s photo.',
+            'Routines don’t fit one slot. Glucose gets measured without a shot, and not every pet gets shots twice a day.',
+            'Care is shared, but apps split it. Family apps track ticks with no data; disease trackers leave the family out.',
+            'Diabetes features are niche. In my demos, they were not relevant to other owners.',
           ],
         },
       ],
@@ -271,33 +318,35 @@ export const catAppCaseStudy = {
           blocks: [
             {
               type: 'text',
-              heading: 'The injection map got in the way of someone who only measures glucose',
-              paragraphs: ['Insulin and glucose became separate trackers: someone who only measures glucose never sees the injection map.'],
+              heading: 'Site rotation is the core job',
+              paragraphs: [
+                'We kept the site map in the Insulin tracker: numbered marks on the pet’s photo, or on a back silhouette without one, show where the last shot went.',
+                'Confirmed: the vet’s advice and my review of 14 apps.',
+              ],
             },
             {
               type: 'text',
-              heading: 'A child needs one clear task, not the whole protocol',
-              paragraphs: ['Every task has an assignee. People open the app and see what is assigned to them.'],
+              heading: 'Routines don’t fit one slot',
+              paragraphs: [
+                'Insulin and Glucose became separate trackers, each with its own rhythm and time. A glucose reading never needs a shot.',
+                'Confirmed: the web MVP already logged glucose separately and dropped the morning / evening slot.',
+              ],
             },
             {
               type: 'text',
-              heading: 'The protocol changes and new pills appear',
-              paragraphs: ['Anyone in the household can create a new tracker; time and rhythm are configurable.'],
+              heading: 'Care is shared, but apps split it',
+              paragraphs: [
+                'We made the day one routine for the household: tasks from every tracker in one list. Anyone invited by email marks them, and a done task shows who did it.',
+                'Confirmed: my review of 14 apps. Whether households mark tasks together, the beta will show.',
+              ],
             },
             {
               type: 'text',
-              heading: 'Sensitive topics had no place',
-              paragraphs: ['A separate custom tracker for each topic.'],
-            },
-            {
-              type: 'text',
-              heading: 'The sitter needs current instructions',
-              paragraphs: ['The pet profile can be shared: the sitter sees the tasks and marks them done.'],
-            },
-            {
-              type: 'text',
-              heading: 'Owners don’t want to keep checking on the sitter',
-              paragraphs: ['Today’s routine shows who did what, and reminders arrive on each phone — no need to ask.'],
+              heading: 'Diabetes features are niche',
+              paragraphs: [
+                'Diabetes became a ready-made set of two trackers. At onboarding each household picks its trackers, and anyone can build their own.',
+                'Confirmed in my demos. Whether people get to their first custom tracker, the beta will show.',
+              ],
             },
           ],
         },
@@ -324,6 +373,60 @@ export const catAppCaseStudy = {
           },
         },
         {
+          type: 'collapsibleMedia',
+          title: 'How the brand took shape',
+          items: [
+            '25–26 Oct: 14 logo takes, starting with a “smart health tracker” — a paw with a pulse line. Along the way came style concepts and a first brand guide — a cloud-and-paw logo on a Navy palette. On it: the “Daily routine” home screen, MVP v1 (12 screens) and UI Kit v1.',
+            '25–26 Oct: Flows v1, 53 screens. On 26 Oct came the product formula: a tracker is a set of tools, and their schedules feed one daily list.',
+            '27 Oct: the brand was rebuilt around that formula — “a set of tools”: a brand book, the final design file (~90 screens) and the beta landing page. Navy left the palette, and the logo became “Fluffy Chumb” in capitals. The final palette is Graphite #232121 and Cream #F2F2F2.',
+            'Built-in trackers have a fixed tile tint, shape and fur; a custom tracker is built from the same parts. In our layouts the fur contrasts with its tile. In the tracker builder people pick any combination — no limits and no hints.',
+          ],
+          tiles: [
+            {
+              src: fluffyChumbBrandFirstTake,
+              date: '25 Oct',
+              caption: 'First take: a “smart health tracker”',
+              alt: 'First take, a “smart health tracker”: the Pulse Paw direction, its app icon and the “Fluffy Pet · smart pet health tracker” lockups',
+            },
+            {
+              src: fluffyChumbBrandStyleConcepts,
+              date: '25 Oct',
+              caption: 'Style concepts',
+              alt: 'Five style concepts: Fluff Ball, Cozy Stack, Cloud Paw, Cotton Soft and Soft Pulse Paw',
+            },
+            {
+              src: fluffyChumbBrandFirstGuide,
+              date: '25 Oct',
+              caption: 'First brand guide: cloud-and-paw logo on Navy',
+              alt: 'First brand guide: the cloud-and-paw mark as app icons and lockups in Navy and Cream',
+            },
+            {
+              src: fluffyChumbBrandBook,
+              date: '27 Oct',
+              caption: 'Brand book: “Fluffy Chumb”',
+              alt: 'Brand book cover: the paw mark, “Fluffy Chumb” in capitals and a paw of pink fur',
+            },
+            {
+              src: fluffyChumbBrandPalette,
+              date: '27 Oct',
+              caption: 'Graphite #232121 · Cream #F2F2F2',
+              alt: 'The final palette: Graphite #232121 and Cream #F2F2F2',
+            },
+            {
+              src: fluffyChumbBrandToolTiles,
+              date: '27 Oct',
+              caption: 'A set of tools: tile tint, shape and fur',
+              alt: 'A set of tools: the Diabetes, Glucose, Mood and Custom tracker tiles, each with its own tint, shape and fur',
+            },
+          ],
+          wide: {
+            src: fluffyChumbBrandLogoTakes,
+            date: '25–26 Oct',
+            caption: 'Logo takes',
+            alt: 'Fourteen logo takes from 25–26 October, one board each, from Pulse Paw and Cloud Paw to Brand 2.0 and Soft cloud',
+          },
+        },
+        {
           type: 'blocks',
           blocks: [
             {
@@ -331,7 +434,7 @@ export const catAppCaseStudy = {
               heading: 'Shared care',
               items: [
                 'Today’s routine — tasks from every tracker’s schedule in one list: mark done, skip with a reason or snooze.',
-                'Each task shows who it is for and who did it, so everyone keeps focus on their own part of the protocol.',
+                'A done task shows who marked it and when; assigning a task to someone is the next step.',
                 'Family — invite people by email, including the pet sitter: they can edit, and you can remove access any time.',
                 'Reminders — notifications on each phone, everyone turns on their own. A family-wide push is the next step.',
                 'History and export for the vet — 7 or 30 days, charts and a text summary to share.',
@@ -345,6 +448,44 @@ export const catAppCaseStudy = {
                 'Simple trackers for pills, vitamins, walks and food; Mood is a ready-made preset.',
                 'Diabetes is a ready-made set of Insulin and Glucose, and each works on its own — the injection map only for those who inject.',
               ],
+            },
+          ],
+        },
+        {
+          type: 'bento',
+          label: 'What the app does',
+          tiles: [
+            {
+              src: fluffyChumbFeatureInjectionMap,
+              alt: 'Injection map: the dose screen with six numbered sites on the cat’s photo, and dragging the new site into place before confirming',
+              span: 'full',
+              variant: 'phones',
+              caption: 'Mark each shot on the pet’s photo: the numbers show the order, so you can see where the last shot went.',
+            },
+            // Not now and who marked it: Fluffy Chumb is fixing these frames in
+            // Final (374:16898, 374:16970). Once they are exported, add the tile
+            // here and make the injection map a half next to it. Caption:
+            // 'Tick a task in one tap, or tap Not now to be reminded later or skip with a reason the family sees; a done task shows who marked it.'
+            {
+              src: fluffyChumbFeatureBuilder,
+              alt: 'Tracker builder in four steps: name and kind of care, the fields each log asks for, tile, shape and fur, rhythm and reminders',
+              span: 'full',
+              variant: 'phones-wide',
+              caption: 'Make a tracker for anything: name it, pick the fields, choose a tile, shape and fur, and set the rhythm with reminders on this phone.',
+            },
+            {
+              src: fluffyChumbFeatureHistory,
+              alt: 'History for 7 days with glucose and insulin charts, and the export sheet with a text summary or a CSV file',
+              span: 'half',
+              variant: 'phones',
+              caption: 'See 7 or 30 days in charts and send the vet a text summary or CSV.',
+            },
+            {
+              src: fluffyChumbFeatureFamily,
+              alt: 'Family: people caring for the cat with their access, and the sheet inviting someone by email',
+              span: 'half',
+              variant: 'phones',
+              caption: 'Invite someone by email: they see the same routine and history, and you can remove access any time.',
             },
           ],
         },
@@ -364,7 +505,6 @@ export const catAppCaseStudy = {
                   src: flowSc1A,
                   webm: flowSc1AWebm,
                   poster: flowSc1APoster,
-                  label: 'Clip A',
                   caption: 'Anna marks the spot on the map, checks the dose and saves — “Done by Anna · 08:00”.',
                   alt: 'Screen recording: Anna opens the insulin dose from today’s routine, marks the injection site on the cat map, checks the dose and saves; the task shows “Done by Anna · 08:00”',
                 },
@@ -372,7 +512,6 @@ export const catAppCaseStudy = {
                   src: flowSc1B,
                   webm: flowSc1BWebm,
                   poster: flowSc1BPoster,
-                  label: 'Clip B',
                   caption: 'Max opens the app and sees the dose is already done: “Done by Anna · 08:00”.',
                   alt: 'Screen recording: Max opens the app on his phone and scrolls today’s routine to the insulin task, already marked “Done by Anna · 08:00”',
                 },
@@ -390,7 +529,6 @@ export const catAppCaseStudy = {
                   src: flowSc4A,
                   webm: flowSc4AWebm,
                   poster: flowSc4APoster,
-                  label: 'Clip A',
                   caption: 'Anna invites max@example.com to care for Meow.',
                   alt: 'Screen recording: on the Family screen Anna taps “Invite someone”, types max@example.com and sends; Max appears with “Invite sent”',
                 },
@@ -398,7 +536,6 @@ export const catAppCaseStudy = {
                   src: flowSc4B,
                   webm: flowSc4BWebm,
                   poster: flowSc4BPoster,
-                  label: 'Clip B',
                   caption: 'Max accepts — Meow appears in “Your pets”, marked “Shared with you”.',
                   alt: 'Screen recording: Max accepts Anna’s invitation on the Family screen and opens “Your pets”, where the shared pet is marked “Shared with you”',
                 },
@@ -417,7 +554,7 @@ export const catAppCaseStudy = {
         {
           type: 'richTextLead',
           paragraphs: [
-            'I put together a test build and launched a landing page to recruit beta testers. Twelve people signed up and are ready to test the product.',
+            'The MVP of the mobile app is installed on my iPhone; the beta starts once the backend is ready. The landing page has collected 12 sign-ups — nobody has tested yet.',
           ],
         },
         {
@@ -439,7 +576,7 @@ export const catAppCaseStudy = {
           type: 'noteCard',
           title: 'What I learned',
           paragraphs: [
-            'A tracker built for myself solved my problem precisely — and got in the way of everyone else’s. The interviews showed that the product is not about a disease but about the people around the pet and who does what.',
+            'A tracker built for myself solved my problem precisely — and got in the way of everyone else’s. Version two is not about a disease but about the people around the pet and who does what.',
           ],
         },
       ],

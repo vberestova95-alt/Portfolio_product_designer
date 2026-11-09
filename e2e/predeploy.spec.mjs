@@ -303,56 +303,49 @@ async function checkCatApp(browser) {
         };
       }),
     );
-    const mvp = bands.find((b) => /pet-tracker-mvp-screens/.test(b.src ?? ''));
     const v2 = bands.find((b) => /fluffy-chumb-v2-screens/.test(b.src ?? ''));
     check(`${tag}: v2 strip present and loaded`, !!v2 && v2.loaded, v2 ? v2.src : 'missing');
-    const noBacking =
-      !!mvp &&
-      /--bare/.test(mvp.cls) &&
-      /rgba\(0, 0, 0, 0\) none/.test(mvp.bandBg) &&
-      /rgba\(0, 0, 0, 0\) none/.test(mvp.imgBg) &&
-      mvp.bandPadding === '0px';
-    check(`${tag}: MVP strip has no backing`, noBacking, mvp ? `band bg "${mvp.bandBg}", img bg "${mvp.imgBg}", padding ${mvp.bandPadding}` : 'missing');
-    const ratioOk = !!mvp && mvp.loaded && Math.abs(mvp.naturalRatio - mvp.renderedRatio) / mvp.naturalRatio < 0.02;
-    const ratioDetail = mvp
-      ? `natural ${mvp.naturalRatio?.toFixed(3)} vs rendered ${mvp.renderedRatio?.toFixed(3)}, object-fit ${mvp.objectFit}`
-      : 'missing';
+    // The old web MVP strip (pet-tracker-mvp-screens*) is gone: the MVP is the before side of the pairs slider.
+    check(`${tag}: old MVP strip is gone`, !bands.some((b) => /pet-tracker-mvp-screens/.test(b.src ?? '')), '');
     const pageOverflow = await horizontalOverflow(page);
-    if (viewport.width > 640) {
-      // Desktop: the horizontal strip, three screens whole.
-      check(`${tag}: MVP strip is the EN horizontal picture`, !!mvp && /pet-tracker-mvp-screens-[^./]+\.webp/.test(mvp.currentSrc ?? ''), mvp?.currentSrc ?? 'missing');
-      check(`${tag}: MVP strip shown whole (not cropped)`, ratioOk && mvp.inside && mvp.inViewportWidth, `${ratioDetail}, inside ${mvp?.inside}`);
-    } else {
-      // Phone (≤640): <picture> swaps in a vertical .mobile image that fits the width.
-      check(`${tag}: MVP strip uses the EN .mobile picture`, !!mvp && /pet-tracker-mvp-screens\.mobile-[^./]+\.webp/.test(mvp.currentSrc ?? ''), mvp?.currentSrc ?? 'missing');
-      check(`${tag}: MVP strip keeps proportions and fits the width`, ratioOk && mvp.inside && mvp.inViewportWidth, `${ratioDetail}, inside ${mvp?.inside}`);
-      check(
-        `${tag}: MVP strip has no sideways scroll`,
-        !!mvp && mvp.bandScrollWidth <= mvp.bandClientWidth,
-        mvp ? `band scrollWidth ${mvp.bandScrollWidth} / clientWidth ${mvp.bandClientWidth}, overflow-x ${mvp.overflowX}` : 'missing',
-      );
-    }
     check(`${tag}: page has no horizontal scroll`, pageOverflow.over <= 0, `scrollWidth ${pageOverflow.scrollWidth} / clientWidth ${pageOverflow.clientWidth}`);
 
-    // Lightbox: clicking the MVP strip opens the same take the page shows.
+    // Web MVP before / after pairs (beforeAfterPairs): one slider, both pictures loaded, same box.
+    const pairs = await page.evaluate(() => {
+      const w = document.querySelector('.cat-ba-wrap');
+      if (!w) return null;
+      const imgs = [...w.querySelectorAll('.cat-ba-slider__img')];
+      const r = imgs.map((i) => i.getBoundingClientRect());
+      return {
+        loaded: imgs.length === 2 && imgs.every((i) => i.complete && i.naturalWidth > 0),
+        same: r.length === 2 && r[0].left === r[1].left && r[0].width === r[1].width && r[0].top === r[1].top,
+        chips: w.querySelectorAll('.cat-ba-pairs__chip').length,
+        scrollW: w.scrollWidth,
+        clientW: w.clientWidth,
+      };
+    });
+    check(`${tag}: before/after pairs slider loaded, images in one box`, !!pairs && pairs.loaded && pairs.same, JSON.stringify(pairs));
+    check(`${tag}: pair chips ${viewport.width <= 640 ? '(3 on a phone)' : '(none on a desktop)'}`, !!pairs && pairs.chips === (viewport.width <= 640 ? 3 : 0), `${pairs?.chips}`);
+    check(`${tag}: pairs slider has no sideways scroll`, !!pairs && pairs.scrollW <= pairs.clientW + 1, `${pairs?.scrollW}/${pairs?.clientW}`);
+
+    // Brand block: collapsed, opens, lightbox on a tile. Full checks: cat-app-preview.check.mjs.
     {
-      const img = page.locator('.case-image-band img[src*="pet-tracker-mvp-screens"]').first();
-      await img.scrollIntoViewIfNeeded();
-      await img.click();
+      const brand = page.locator('.cat-collapsible').first();
+      await brand.scrollIntoViewIfNeeded();
+      const closed = await brand.locator('.cat-collapsible__body').evaluate((el) => el.getBoundingClientRect().height < 2);
+      await brand.locator('.cat-collapsible__trigger').click();
+      await page.waitForTimeout(1000);
+      const tiles = await brand.locator('.cat-collapsible__tile').count();
+      check(`${tag}: brand block collapsed, opens to 6 tiles`, closed && tiles === 6, `closed ${closed}, tiles ${tiles}`);
+      await brand.locator('.cat-collapsible__tile img').first().click();
       const box = page.locator('.case-lightbox__img');
       const opened = await box.waitFor({ state: 'visible', timeout: 5000 }).then(() => true, () => false);
-      const boxSrc = opened ? await box.getAttribute('src') : null;
       const loaded = opened ? await box.evaluate((el) => el.complete && el.naturalWidth > 0) : false;
-      const wantMobile = viewport.width <= 640;
-      const okSrc = !!boxSrc && (wantMobile ? /pet-tracker-mvp-screens\.mobile-[^./]+\.webp/.test(boxSrc) : /pet-tracker-mvp-screens-[^./]+\.webp/.test(boxSrc));
-      check(`${tag}: MVP lightbox opens the EN ${wantMobile ? '.mobile' : 'horizontal'} picture`, opened && okSrc && loaded, boxSrc ?? 'lightbox did not open');
-      if (opened) {
-        await page.screenshot({ path: path.join(SHOTS, `cat-app-${viewport.width}-mvp-lightbox.png`) });
-        await page.locator('.case-lightbox__close').click();
-      }
+      check(`${tag}: brand lightbox opens a loaded picture`, opened && loaded, '');
+      if (opened) await page.keyboard.press('Escape');
     }
-    for (const [name, sel] of [['mvp', 'img[src*="pet-tracker-mvp-screens"]'], ['v2', 'img[src*="fluffy-chumb-v2-screens"]']]) {
-      const band = page.locator('.case-image-band', { has: page.locator(sel) }).first();
+    for (const [name, sel] of [['pairs', '.cat-ba-wrap'], ['v2', 'img[src*="fluffy-chumb-v2-screens"]']]) {
+      const band = name === 'pairs' ? page.locator(sel).first() : page.locator('.case-image-band', { has: page.locator(sel) }).first();
       if (await band.count()) {
         await band.scrollIntoViewIfNeeded();
         await page.waitForTimeout(400);
