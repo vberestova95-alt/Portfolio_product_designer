@@ -62,6 +62,7 @@ import flowSc4ARuPoster from '../assets/cases/fluffy-chumb/flows/sc4-a.ru.poster
 import flowSc4BRu from '../assets/cases/fluffy-chumb/flows/sc4-b.ru.mp4';
 import flowSc4BRuWebm from '../assets/cases/fluffy-chumb/flows/sc4-b.ru.webm';
 import flowSc4BRuPoster from '../assets/cases/fluffy-chumb/flows/sc4-b.ru.poster.webp';
+import insulinTrackerVideo from '../assets/cases/fluffy-chumb/insulin-tracker.mp4';
 
 const heroImage = betboomCoverImage;
 const sportsTasksImage = betboomHypothesis;
@@ -278,6 +279,16 @@ export const catAppCaseStudy = {
               ],
             },
           ],
+        },
+        {
+          type: 'imageBand',
+          label: 'Трекер инсулина',
+          variant: 'portrait',
+          media: {
+            type: 'video',
+            src: insulinTrackerVideo,
+            alt: 'Анимация: экраны Insulin и History с графиками доз и глюкозы сходятся в один телефон; на экране Log insulin добавляют фото спины кота из галереи, проверяют и сохраняют дозу, появляется карточка Done!',
+          },
         },
         {
           type: 'flowVideos',

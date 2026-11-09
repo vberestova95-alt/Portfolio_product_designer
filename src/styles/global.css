@@ -3749,6 +3749,15 @@ ol.case-bullet-list li::before {
   background: none;
 }
 
+/* A tall 4:5 clip (phones on their own grey ground): kept to a readable
+   width and centred, so it does not fill the whole page height. */
+.case-image-band--portrait video {
+  display: block;
+  max-width: 560px;
+  margin: 0 auto;
+  aspect-ratio: 4 / 5;
+}
+
 /* The phone take of a bare band (screens in a column) comes in through
    <picture>; the wrapper just has to sit as a block like the image did. */
 .case-image-band--bare picture {
