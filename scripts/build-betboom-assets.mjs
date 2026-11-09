@@ -58,7 +58,9 @@ const IMAGES = {
   'onboarding-difficulty': { file: '21-onboarding-difficulty-v3.png', phone: true },
   'onboarding-tooltip': { file: '22-onboarding-balance-tooltip.png', phone: true },
   'entry-no-level': { file: '23-entry-profile-no-level.png', phone: true },
-  'entry-progress': { file: '24-entry-profile-progress.png', phone: true },
+  // v2: the designer's take with a thin light edge (22 %), so the dark screen
+  // does not merge with a dark ground.
+  'entry-progress': { file: '24-entry-profile-progress-v2.png', phone: true },
   'entry-season-timer': { file: '25-entry-profile-season-timer.png', phone: true },
   'entry-max-level': { file: '26-entry-profile-max-level.png', phone: true },
   'entry-web': { file: '27-entry-web-sidebar.png', radius: 24 },
@@ -84,7 +86,9 @@ const IMAGES = {
   'scheme-conflict-rule': { file: '42-scheme-conflict-rule.png', width: 1800 },
   'scheme-switching': { file: '43-scheme-switching-asis-tobe.png', width: 1800 },
   'scheme-onboarding': { file: '44-scheme-onboarding-contexts.png', width: 1800 },
-  'scheme-entry-points': { file: '45-scheme-entry-points.png', width: 1800 },
+  // v2: neater arrows. Its corners come transparent (r 40): `flatten` fills
+  // them with the scheme's own ground, like the other schemes.
+  'scheme-entry-points': { file: '45-scheme-entry-points-v2.png', width: 1800, flatten: true },
 }
 
 const CLIPS = {
@@ -163,6 +167,12 @@ async function prepare(file, spec) {
   const height = Math.round((meta.height * width) / meta.width)
   const radius = spec.phone ? Math.round((PHONE.radius * width) / PHONE.width) : spec.radius ?? 0
   let image = sharp(file).resize(width, height)
+  if (spec.flatten) {
+    // The ground colour, from the middle of the top edge.
+    const data = await sharp(file).extract({ left: Math.round(meta.width / 2), top: 4, width: 1, height: 1 })
+      .removeAlpha().raw().toBuffer()
+    image = image.flatten({ background: { r: data[0], g: data[1], b: data[2] } })
+  }
   if (radius) {
     image = sharp(await image.png().toBuffer()).composite([
       { input: roundedMask(width, height, radius), blend: 'dest-in' },
