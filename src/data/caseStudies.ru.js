@@ -24,8 +24,8 @@ import iquotoVariants from '../assets/cases/iquoto-variants.png';
 import iquotoResult from '../assets/cases/iquoto-result.png';
 import betboomAbTestVideo from '../assets/betboom-ab-test.mp4';
 import catAppScreens from '../assets/cases/cat-app-screens.svg';
-import fluffyChumbStoryWebMvp from '../assets/cases/fluffy-chumb/story/web-mvp.ru.webp';
-import fluffyChumbStoryWebMvpMobile from '../assets/cases/fluffy-chumb/story/web-mvp.mobile.ru.webp';
+import fluffyChumbStoryWebMvpBefore from '../assets/cases/fluffy-chumb/story/web-mvp-before.ru.webp';
+import fluffyChumbStoryWebMvpAfter from '../assets/cases/fluffy-chumb/story/web-mvp-after.ru.webp';
 import fluffyChumbStoryShared from '../assets/cases/fluffy-chumb/story/shared.ru.webp';
 import fluffyChumbStorySharedMobile from '../assets/cases/fluffy-chumb/story/shared.mobile.ru.webp';
 import fluffyChumbStoryV2 from '../assets/cases/fluffy-chumb/story/v2.ru.webp';
@@ -121,14 +121,16 @@ export const catAppCaseStudy = {
           ],
         },
         {
-          type: 'imageBand',
-          label: 'Веб-MVP, май 2026 → вторая версия',
-          variant: 'bare',
-          media: {
-            type: 'image',
-            src: fluffyChumbStoryWebMvp,
-            mobileSrc: fluffyChumbStoryWebMvpMobile,
-            alt: 'До и после, три пары: трекер веб-MVP с неделей пронумерованных меток на фото кота и трекер «Инсулин» во второй версии; попап укола в веб-MVP и запись инсулина с картой уколов во второй версии; неделя с новой меткой в веб-MVP и «История» с графиками глюкозы и инсулина во второй версии',
+          // The slider's Before tab slides the left layer away and shows the
+          // `after` picture (as on IQuoto), so the web MVP goes in `after`.
+          type: 'beforeAfterSlider',
+          before: {
+            src: fluffyChumbStoryWebMvpAfter,
+            alt: 'Вторая версия, те же страницы: трекер «Инсулин», запись инсулина с картой уколов и «История» с графиками глюкозы и инсулина',
+          },
+          after: {
+            src: fluffyChumbStoryWebMvpBefore,
+            alt: 'Веб-MVP, май 2026: трекер с неделей пронумерованных меток на фото кота, попап вечернего укола и неделя с новой меткой',
           },
         },
       ],

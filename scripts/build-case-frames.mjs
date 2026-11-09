@@ -206,70 +206,24 @@ for (const [name, slots] of Object.entries(STORY_BANDS)) {
   STORY[`${name}-mobile`] = storyMobile(file, slots)
 }
 
-// Step 2: the web MVP set against version two, page by page — three pairs of
-// the same screen, before (web MVP) and after (v2), each pair titled and each
-// screen marked Before / After. The labels are drawn into the picture in the
-// page's language; the web MVP screens themselves are English only.
-const BEFORE_AFTER = {
-  file: 'fluffy-chumb/story/web-mvp',
-  pairs: [
-    { title: { en: 'Tracker', ru: 'Трекер' }, slots: ['web-mvp-week-map', 'insulin'] },
-    { title: { en: 'Pop-up', ru: 'Попап' }, slots: ['web-mvp-injection-form', 'log-insulin'] },
-    { title: { en: 'History', ru: 'История' }, slots: ['web-mvp-new-marker', 'history'] },
-  ],
-  marks: { en: ['Before', 'After'], ru: ['До', 'После'] },
-  pad: 40,
-  inner: 30,
-  outer: 90,
-  head: 130,
-  title: { size: 44, weight: 700, color: '#0d1117' },
-  mark: { size: 32, weight: 500, color: 'rgba(13, 17, 23, 0.55)' },
-}
-
-// Pairs in a row (`row`) or stacked, one pair per row (`column`, the phone take).
-function beforeAfterLayout(mode) {
-  const { pad, inner, outer, head } = BEFORE_AFTER
-  const pairWidth = SCREEN.width * 2 + inner
-  const pairHeight = head + SCREEN.height
-  const slots = []
-  const labels = []
-  BEFORE_AFTER.pairs.forEach((pair, index) => {
-    const left = mode === 'row' ? pad + index * (pairWidth + outer) : pad
-    const top = mode === 'row' ? pad : pad + index * (pairHeight + outer)
-    labels.push({ kind: 'title', text: (lang) => pair.title[lang], x: left, y: top + 44 })
-    pair.slots.forEach((slot, side) => {
-      const x = left + side * (SCREEN.width + inner)
-      slots.push({ slot, x, y: top + head })
-      labels.push({ kind: 'mark', text: (lang) => BEFORE_AFTER.marks[lang][side], x, y: top + head - 26 })
-    })
-  })
-  const width = mode === 'row' ? pad * 2 + 3 * pairWidth + 2 * outer : pad * 2 + pairWidth
-  const height = mode === 'row' ? pad + pairHeight + 50 : pad + 3 * pairHeight + 2 * outer + 50
-  return {
-    file: mode === 'row' ? BEFORE_AFTER.file : `${BEFORE_AFTER.file}.mobile`,
-    scale: 1,
-    size: [width, height],
-    slots,
-    labels,
-  }
-}
-
-STORY['story-web-mvp'] = beforeAfterLayout('row')
-STORY['story-web-mvp-mobile'] = beforeAfterLayout('column')
+// Step 2: the web MVP and version two, the same three pages in the same order
+// (tracker, injection pop-up, history), for the case's before / after slider.
+// Both pictures share one geometry, so the screens stay put when it moves.
+// No text inside: the slider's tabs say Before and After.
+const beforeAfter = (file, slots) => ({
+  file,
+  // 1.5x: the slider is about 1000 px wide on a desktop.
+  scale: 1.5,
+  size: [40 * 2 + slots.length * SCREEN.width + (slots.length - 1) * 40, 40 + SCREEN.height + 60],
+  slots: slots.map((slot, index) => ({ slot, x: 40 + index * (SCREEN.width + 40), y: 40 })),
+})
+STORY['story-web-mvp-before'] = beforeAfter('fluffy-chumb/story/web-mvp-before', [
+  'web-mvp-week-map',
+  'web-mvp-injection-form',
+  'web-mvp-new-marker',
+])
+STORY['story-web-mvp-after'] = beforeAfter('fluffy-chumb/story/web-mvp-after', ['insulin', 'log-insulin', 'history'])
 Object.assign(LAYOUTS, STORY)
-
-// Text drawn over a composed picture: { kind: 'title' | 'mark', text(lang), x, y } in 1x px.
-function labelsLayer([width, height], labels, lang, scale) {
-  const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;')
-  const texts = labels.map(({ kind, text, x, y }) => {
-    const style = BEFORE_AFTER[kind]
-    return (
-      `<text x="${x * scale}" y="${y * scale}" font-family="Manrope, Inter, Helvetica, Arial, sans-serif" ` +
-      `font-size="${style.size * scale}" font-weight="${style.weight}" fill="${style.color}">${escape(text(lang))}</text>`
-    )
-  })
-  return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${texts.join('')}</svg>`)
-}
 
 const MVP = {
   source: path.join(casesDir, 'pet-tracker-cover-screens.png'),
@@ -431,13 +385,7 @@ async function buildLayout(name, args) {
     return
   }
   const size = layout.size.map((value) => Math.round(value * scale))
-  let png = await compose(size, items, { shadow: SHADOW, hairline: HAIRLINE, scale })
-  if (layout.labels) {
-    png = await sharp(png)
-      .composite([{ input: labelsLayer(size, layout.labels, args.lang, scale), left: 0, top: 0 }])
-      .png()
-      .toBuffer()
-  }
+  const png = await compose(size, items, { shadow: SHADOW, hairline: HAIRLINE, scale })
   const suffix = args.lang === 'ru' ? '.ru' : ''
   const target = path.join(args.out, `${layout.file}${suffix}.webp`)
   await mkdir(path.dirname(target), { recursive: true })

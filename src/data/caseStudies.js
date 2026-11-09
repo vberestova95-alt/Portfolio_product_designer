@@ -24,8 +24,8 @@ import iquotoVariants from '../assets/cases/iquoto-variants.png';
 import iquotoResult from '../assets/cases/iquoto-result.png';
 import betboomAbTestVideo from '../assets/betboom-ab-test.mp4';
 import catAppScreens from '../assets/cases/cat-app-screens.svg';
-import fluffyChumbStoryWebMvp from '../assets/cases/fluffy-chumb/story/web-mvp.webp';
-import fluffyChumbStoryWebMvpMobile from '../assets/cases/fluffy-chumb/story/web-mvp.mobile.webp';
+import fluffyChumbStoryWebMvpBefore from '../assets/cases/fluffy-chumb/story/web-mvp-before.webp';
+import fluffyChumbStoryWebMvpAfter from '../assets/cases/fluffy-chumb/story/web-mvp-after.webp';
 import fluffyChumbStoryShared from '../assets/cases/fluffy-chumb/story/shared.webp';
 import fluffyChumbStorySharedMobile from '../assets/cases/fluffy-chumb/story/shared.mobile.webp';
 import fluffyChumbStoryV2 from '../assets/cases/fluffy-chumb/story/v2.webp';
@@ -121,14 +121,16 @@ export const catAppCaseStudy = {
           ],
         },
         {
-          type: 'imageBand',
-          label: 'Web MVP, May 2026 → version two',
-          variant: 'bare',
-          media: {
-            type: 'image',
-            src: fluffyChumbStoryWebMvp,
-            mobileSrc: fluffyChumbStoryWebMvpMobile,
-            alt: 'Before and after, three pairs: the web MVP tracker with a week of numbered marks on the cat’s photo next to the v2 Insulin tracker; the web MVP injection pop-up next to the v2 insulin log with the injection map; the web MVP week with a new mark next to the v2 History with glucose and insulin charts',
+          // The slider's Before tab slides the left layer away and shows the
+          // `after` picture (as on IQuoto), so the web MVP goes in `after`.
+          type: 'beforeAfterSlider',
+          before: {
+            src: fluffyChumbStoryWebMvpAfter,
+            alt: 'Version two, the same pages: the Insulin tracker, the insulin log with the injection map, and History with glucose and insulin charts',
+          },
+          after: {
+            src: fluffyChumbStoryWebMvpBefore,
+            alt: 'Web MVP, May 2026: the tracker with a week of numbered marks on the cat’s photo, the evening injection pop-up, and the week with a new mark added',
           },
         },
       ],

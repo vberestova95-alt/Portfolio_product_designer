@@ -4181,6 +4181,13 @@ ol.case-bullet-list li::before {
   height: 20px;
 }
 
+/* The Fluffy Chumb pictures are wide and transparent: on a phone the slider's
+   minimum height would stretch only the "before" layer and the screens would
+   jump. Let the picture set the height so both layers keep one size. */
+.case-page--cat-app .case-ba-slider {
+  min-height: 0;
+}
+
 .case-lightbox {
   position: fixed;
   inset: 0;
