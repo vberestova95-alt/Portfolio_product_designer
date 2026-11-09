@@ -4067,6 +4067,23 @@ ol.case-bullet-list li::before {
   color: var(--ink-faint);
 }
 
+/* Two clips or pictures side by side; stacked on a phone. */
+.case-media-pair__items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+}
+
+.case-media-pair__item {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .case-media-pair__items {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* Whole phone screens in a row (a flow or a set of states). */
 .case-phone-row {
   margin: 0;

@@ -48,6 +48,7 @@ import betboomSchemeOnboarding from '../assets/cases/betboom/scheme-onboarding.w
 import betboomSchemeEntryPoints from '../assets/cases/betboom/scheme-entry-points.webp';
 import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
 import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
+import betboomAbTestRuVideo from '../assets/cases/betboom/ab-test-ru.mp4';
 import iquotoCaseHero from '../assets/cases/iquoto-desktop.png';
 import iquotoAsIsVideo from '../assets/cases/iquoto-as-is.webm';
 import iquotoFunnel from '../assets/cases/iquoto-funnel.svg';
@@ -605,15 +606,28 @@ export const betboomPassCaseStudy = {
           ],
         },
         {
-          type: 'imageBand',
+          type: 'mediaPair',
           label: 'A/B test',
-          media: {
-            type: 'video',
-            src: betboomAbTestVideo,
-            alt: 'Desktop task page: the top carousel slides to the next tournament, the page loads and a task opens in a modal',
-          },
+          items: [
+            {
+              media: {
+                type: 'video',
+                src: betboomAbTestRuVideo,
+                alt: 'The original A/B test recording, in Russian: classic sports task cards in the existing esports catalog',
+              },
+              caption: 'Original, in Russian.',
+            },
+            {
+              media: {
+                type: 'video',
+                src: betboomAbTestVideo,
+                alt: 'EN version: the top carousel slides to the next esports tournament, the page loads and a task opens in a popup',
+              },
+              caption: 'EN version: esports tasks and the task popup.',
+              credit: betboomWidgetCredit,
+            },
+          ],
           caption: 'Classic sports tasks added to the existing esports catalog.',
-          credit: betboomWidgetCredit,
         },
         {
           type: 'blocks',

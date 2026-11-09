@@ -69,6 +69,9 @@ const IMAGES = {
 const CLIPS = {
   'redesign-cards': { file: '60-anim-redesign-cards-v2.mp4', width: 1800 },
   'ab-test': { file: '61-anim-ab-test.mp4', width: 1600 },
+  // The original A/B clip, in Russian, shown next to the EN re-shoot. It lives
+  // in the repo already (4.5 MB, 60 fps), so it is read from there, not --src.
+  'ab-test-ru': { repoFile: 'src/assets/betboom-ab-test.mp4', width: 1600, fps: 30 },
 }
 
 function parseArgs(argv) {
@@ -128,9 +131,9 @@ async function buildClip(slot, spec, src) {
   const target = path.join(outDir, `${slot}.mp4`)
   execFileSync('ffmpeg', [
     '-y', '-loglevel', 'error',
-    '-i', path.join(src, spec.file),
+    '-i', spec.repoFile ? path.join(root, spec.repoFile) : path.join(src, spec.file),
     '-an',
-    '-vf', `scale=${spec.width}:-2`,
+    '-vf', `scale=${spec.width}:-2${spec.fps ? `,fps=${spec.fps}` : ''}`,
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '26',
     '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
     target,

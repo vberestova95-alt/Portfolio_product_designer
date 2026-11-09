@@ -865,6 +865,25 @@ function SectionPart({ part }) {
     );
   }
 
+  if (part.type === 'mediaPair') {
+    // Two takes side by side (e.g. the original clip and its EN re-shoot);
+    // stacked on a phone.
+    return (
+      <div className="case-image-band case-media-pair">
+        {part.label ? <span>{part.label}</span> : null}
+        <div className="case-media-pair__items">
+          {part.items.map((item) => (
+            <figure key={item.media.src} className="case-media-pair__item">
+              <CaseMedia media={item.media} />
+              <MediaCaption caption={item.caption} credit={item.credit} />
+            </figure>
+          ))}
+        </div>
+        <MediaCaption caption={part.caption} credit={part.credit} />
+      </div>
+    );
+  }
+
   if (part.type === 'phoneRow') {
     return <PhoneRow part={part} />;
   }
