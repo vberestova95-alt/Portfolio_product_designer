@@ -1,7 +1,7 @@
 /**
  * Spotless — small AI-project case, shown only on the /ai-portfolio landing.
  * Same object shape as designCringeCaseStudy in caseStudies.js.
- * Frames: Playwright captures of the Spotless build (dist), EN UI. The scan is a film photo from
+ * Frames: Playwright captures of the Spotless build (dist), EN UI, windows cut out of their backdrop. The scan is a film photo from
  * src/assets/film with synthetic dust added, so the before/after pair is illustrative, not a real roll.
  * Facts: Spotless README.md, docs/kb/context.md, docs/kb/decisions.md, git log (5 commits, 23–24.10.2026),
  * src/exporter.ts. Not deployed; no prices, no users besides the author.
@@ -10,7 +10,6 @@ import spotlessAfter from '../assets/cases/spotless-after.webp';
 import spotlessBefore from '../assets/cases/spotless-before.webp';
 import spotlessBrush from '../assets/cases/spotless-brush.webp';
 import spotlessCardImage from '../assets/cases/spotless-card.webp';
-import spotlessScan from '../assets/cases/spotless-scan.webp';
 import spotlessUpload from '../assets/cases/spotless-upload.webp';
 
 export const spotlessCaseStudy = {
@@ -22,8 +21,9 @@ export const spotlessCaseStudy = {
       'A browser tool that cleans dust, hairs, scratches and streaks from film scans. I built it for my own scans: everything runs on the device, and photos are never uploaded.',
     meta: 'Side project / Photo tooling',
     image: {
-      src: spotlessScan,
-      alt: 'Spotless detail view: a film scan with found dust and scratches marked, before and after',
+      // The film roll window, cut out on transparency: shown whole, no backdrop.
+      src: spotlessCardImage,
+      alt: 'Spotless film roll: three scans with dust, scratch and streak counts',
     },
     stats: [
       { value: '2 days', label: 'from first commit to the brush' },
@@ -47,6 +47,8 @@ export const spotlessCaseStudy = {
         },
         {
           type: 'imageBand',
+          // The window is cut out of its backdrop, so no plate around it either.
+          variant: 'bare',
           media: {
             type: 'image',
             src: spotlessUpload,
