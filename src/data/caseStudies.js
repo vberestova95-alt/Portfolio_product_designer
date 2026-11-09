@@ -31,7 +31,7 @@ import betboomEntryMaxLevel from '../assets/cases/betboom/entry-max-level.webp';
 import betboomEntryWeb from '../assets/cases/betboom/entry-web.webp';
 import betboomDesktopBefore from '../assets/cases/betboom/desktop-before.webp';
 import betboomDesktopAfter from '../assets/cases/betboom/desktop-after.webp';
-import betboomDetailConditions from '../assets/cases/betboom/detail-conditions.webp';
+import betboomTaskDetail from '../assets/cases/betboom/task-detail.webp';
 import betboomDetailRewardDeadline from '../assets/cases/betboom/detail-reward-deadline.webp';
 import betboomDetailCategoryFilters from '../assets/cases/betboom/detail-category-filters.webp';
 import betboomDetailSportEsports from '../assets/cases/betboom/detail-sport-esports.webp';
@@ -635,8 +635,6 @@ export const betboomPassCaseStudy = {
                 src: betboomAbTestVideo,
                 alt: 'EN version: the top carousel slides to the next esports tournament, the page loads and a task opens in a popup',
               },
-              caption: 'EN version: esports tasks and the task popup.',
-              credit: betboomWidgetCredit,
             },
           ],
           caption: 'Classic sports tasks added to the existing esports catalog.',
@@ -740,9 +738,9 @@ export const betboomPassCaseStudy = {
               caption: 'Pick a category',
             },
             {
-              src: betboomDetailConditions,
-              alt: 'Task card close-up: stake range, condition, reward and XP',
-              caption: 'Condition and reward on the card',
+              src: betboomTaskDetail,
+              alt: 'Task detail: hockey bets from 500 to 100 000 ₽, stake tiers 500, 1 200, 2 000 and 3 000 ₽ with token and XP rewards',
+              caption: 'Task detail: stake tiers and rewards',
             },
           ],
           caption: betboomWidgetCredit,
@@ -863,28 +861,29 @@ export const betboomPassCaseStudy = {
           tiles: [
             {
               src: betboomDetailCategoryFilters,
-              alt: 'Detail: category icons and sort chips in one strip',
+              alt: 'Task page with Table tennis picked in the category bar, sort chips below and table tennis task cards',
               span: 'third',
               variant: 'whole',
               caption: 'Filters moved to category, because that is how people actually searched.',
+              credit: 'Category bar UI: a second designer.',
             },
             {
-              src: betboomDetailConditions,
-              alt: 'Detail: stake range, condition, reward and XP on a task card',
+              src: betboomTaskDetail,
+              alt: 'Task detail: hockey bets from 500 to 100 000 ₽, stake tiers 500, 1 200, 2 000 and 3 000 ₽ with token and XP rewards',
               span: 'third',
               variant: 'whole',
-              caption: 'The condition sits first; the illustration no longer competes with it.',
+              caption: 'Task detail: stake tiers and rewards.',
             },
             {
               src: betboomDetailPromoTask,
-              alt: 'Detail: featured tournament task as the first card of the top carousel',
+              alt: 'Task page on mobile web: the MSI 2025 promo task leads the top carousel above the category bar and task cards',
               span: 'third',
               variant: 'whole',
               caption: 'Promo tasks reuse the same anatomy.',
             },
             {
               src: betboomDetailRewardDeadline,
-              alt: 'Detail on desktop: category, timer and reward on task cards',
+              alt: 'Reward and deadline: two task cards with a category chip, timer, token reward and XP',
               span: 'full',
               variant: 'whole',
               caption: 'Reward and deadline are readable without opening the card.',
@@ -896,6 +895,7 @@ export const betboomPassCaseStudy = {
               span: 'full',
               variant: 'whole',
               caption: 'One grid holds esports and classic sports without splitting the section.',
+              credit: 'Category bar UI: a second designer.',
             },
           ],
         },

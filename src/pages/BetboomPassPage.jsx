@@ -461,7 +461,12 @@ function BentoTile({ tile }) {
           <img src={tile.src} alt={tile.alt} />
         )}
       </div>
-      {tile.caption ? <figcaption>{tile.caption}</figcaption> : null}
+      {tile.caption || tile.credit ? (
+        <figcaption>
+          {tile.caption}
+          {tile.credit ? <span className="case-media-caption__credit">{tile.credit}</span> : null}
+        </figcaption>
+      ) : null}
     </figure>
   );
 }
