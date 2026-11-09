@@ -138,6 +138,8 @@ export const aiPortfolio = {
         id: 'product',
         title: 'Product design',
         lead: 'Products I designed in teams, from discovery to launch and iteration.',
+        // Cases from the main site that stay off this landing (user, 2026-11-09).
+        exclude: ['/betboom-pass'],
       },
     ],
   },

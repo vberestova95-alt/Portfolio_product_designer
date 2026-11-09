@@ -55,9 +55,10 @@ export function AiPortfolioPage({ page, aiWork, productWork, profile, standalone
 
   // A product built with AI already sits in the first group; it is not listed twice.
   const aiHrefs = new Set(aiWork.map((item) => item.href));
+  const productExclude = new Set(cases.groups.find((group) => group.id === 'product')?.exclude ?? []);
   const itemsByGroup = {
     ai: aiWork,
-    product: productWork.filter((item) => !aiHrefs.has(item.href)),
+    product: productWork.filter((item) => !aiHrefs.has(item.href) && !productExclude.has(item.href)),
   };
 
   useEffect(
