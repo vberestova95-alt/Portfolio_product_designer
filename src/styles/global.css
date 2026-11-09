@@ -3126,20 +3126,32 @@ ol.case-bullet-list li::before {
 }
 
 /* Screens sit straight on the black ground, with no lighter plate of their own. */
-.case-page--betboom-pass .case-hero__media,
 .case-page--betboom-pass .bento-tile__media {
   background: #000;
 }
 
-/* Same interface artwork as the cover: fills the slot, anchored to the header. */
-.case-page--betboom-pass .case-hero__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+/*
+ * The PASS hero follows the Fluffy Chumb LinkedIn clip: a calm light grey with
+ * a faint haze of colour, so the dark phones read whole against it.
+ */
+.case-page--betboom-pass .case-hero {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(246, 222, 210, 0.55), transparent 34%),
+    radial-gradient(circle at 92% 30%, rgba(240, 214, 226, 0.45), transparent 32%),
+    radial-gradient(circle at 40% 100%, rgba(214, 208, 236, 0.45), transparent 38%),
+    radial-gradient(circle at 96% 96%, rgba(204, 220, 236, 0.5), transparent 34%),
+    linear-gradient(180deg, #e4e3e3 0%, #dedde0 100%);
+  color: #141418;
+  --case-stat-plate: rgba(255, 255, 255, 0.5);
+  --case-stat-line: rgba(20, 20, 24, 0.08);
 }
 
-.case-page--betboom-pass .case-hero,
+.case-page--betboom-pass .case-hero__description,
+.case-page--betboom-pass .case-stat-card span,
+.case-page--betboom-pass .case-hero__meta {
+  color: rgba(20, 20, 24, 0.68);
+}
+
 .case-page--betboom-gamification-hub .case-hero {
   background: #000;
   /* Black ground: a tenth of white would read as grey, not as a lift. */
@@ -4312,16 +4324,8 @@ ol.case-bullet-list li::before {
 }
 
 /* A hero animation or picture shown whole, on no plate of its own. */
-.case-hero__media--contain,
-.case-page--betboom-pass .case-hero__media--contain {
+.case-hero__media--contain {
   background: none;
-}
-
-/* The PASS cover is 1352×1220: the slot takes its proportions, so contain
-   leaves no empty bands above and below the screens. */
-.case-page--betboom-pass .case-hero__media--contain {
-  height: auto;
-  aspect-ratio: 1352 / 1220;
 }
 
 .case-hero__media video {
@@ -4331,10 +4335,61 @@ ol.case-bullet-list li::before {
 }
 
 .case-hero__media--contain img,
-.case-hero__media--contain video,
-.case-page--betboom-pass .case-hero__media--contain img {
+.case-hero__media--contain video {
   object-fit: contain;
   object-position: center;
+}
+
+/*
+ * A row of phones in the hero (the LinkedIn clip's row): one line, even gaps,
+ * every phone whole and about half the plate's height, one soft shadow each.
+ * Each picture is a 1080×1440 showcase frame; the frame crops it to the phone
+ * body (605×1260 at 237, 90), which also drops the shadow baked into the clips.
+ */
+.case-hero__media--phones {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2.2vw, 28px);
+  overflow: visible;
+  background: none;
+}
+
+.case-hero__phone {
+  flex: 0 0 auto;
+  width: calc(var(--case-hero-media-h) * 0.52 * 605 / 1260);
+  filter: drop-shadow(0 8px 12px rgba(20, 20, 24, 0.3));
+}
+
+.case-hero__phone-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 605 / 1260;
+  border-radius: 14.9% / 7.1%;
+}
+
+.case-hero__phone-frame img,
+.case-hero__phone-frame video {
+  position: absolute;
+  top: calc(-90 / 1260 * 100%);
+  left: calc(-237 / 605 * 100%);
+  width: calc(1080 / 605 * 100%);
+  max-width: none;
+  height: auto;
+  aspect-ratio: 1080 / 1440;
+  object-fit: fill;
+}
+
+/* Stacked under the copy, the row is sized by the plate's width instead. */
+@media (max-width: 1240px) {
+  .case-hero__media--phones {
+    height: auto;
+    padding: clamp(12px, 3vw, 32px) 0;
+  }
+
+  .case-hero__phone {
+    width: min(28%, 190px);
+  }
 }
 
 /* A clip in a phone row keeps the screen's own 44 px corner. */
@@ -4399,18 +4454,23 @@ ol.case-bullet-list li::before {
 .case-showcase__stage {
   position: relative;
   justify-self: center;
-  height: min(760px, calc(100vh - 140px));
-  aspect-ratio: 640 / 1286;
+  /* A step down from the full block height: the same phone as the hero row,
+     large enough to read the clip, with air above and below it. */
+  height: min(640px, calc(100vh - 200px));
+  /* Cropped to the phone body like the hero row, so the clips' baked shadow
+     leaves no lighter box around the phone on the black ground. */
+  aspect-ratio: 605 / 1260;
   overflow: hidden;
+  border-radius: 14.9% / 7.1%;
 }
 
 .case-showcase__frame {
   position: absolute;
-  top: calc(-80 / 1286 * 100%);
-  left: calc(-220 / 640 * 100%);
-  width: calc(1080 / 640 * 100%);
+  top: calc(-90 / 1260 * 100%);
+  left: calc(-237 / 605 * 100%);
+  width: calc(1080 / 605 * 100%);
   max-width: none;
-  height: calc(1440 / 1286 * 100%);
+  height: calc(1440 / 1260 * 100%);
   object-fit: contain;
   opacity: 0;
   pointer-events: none;

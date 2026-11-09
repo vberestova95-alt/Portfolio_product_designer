@@ -30,8 +30,6 @@ const IMAGES = {
   // The static PASS cover, for its card on the home page. Not `cover`: that
   // file is the Gamification hub card's picture.
   'pass-cover': { file: '06-cover-v4.png' },
-  // Poster of the cover animation: its first frame, transparent around the screens.
-  'cover-anim-poster': { file: '06-cover-anim-v4-poster.png' },
   // The season widget frame; the showcase itself is animated now, it stays
   // as the picture of the next case teaser.
   'showcase-entry-point': { file: '05-showcase-entry-point.png', phone: true },
@@ -42,6 +40,9 @@ const IMAGES = {
   'showcase-task-detail-poster': { webm: 'showcase-task-detail-anim-v3.webm', repaired: 'showcase-task-detail' },
   'showcase-switching-poster': { webm: 'showcase-switching-anim-v3.webm', repaired: 'showcase-switching' },
   'showcase-category-bar-poster': { webm: 'showcase-category-bar-anim-v3.webm' },
+  // Hero row, right phone: the “These tasks conflict” popup, from the switching
+  // clip. Not the open “Your tasks” widget: that UI is a second designer's.
+  'hero-phone-switching': { webm: 'showcase-switching-anim-v3.webm', repaired: 'showcase-switching', at: 3 },
   // Posters of the v3 clips: the first frame of each, so the swap is seamless.
   'swap-conflict': { file: '10-switch-flow-anim-v3-poster.png', phone: true },
   'swap-return': { file: '11-switch-return-task.png', phone: true },
@@ -99,13 +100,11 @@ const CLIPS = {
 }
 
 /*
- * Files that go in as the designer exported them. The cover animation keeps its
- * alpha only in these two encodings — WebM VP9 (Chrome, Firefox) and HEVC .mov
+ * Files that go in as the designer exported them. A clip keeps its alpha only
+ * in these two encodings — WebM VP9 (Chrome, Firefox) and HEVC .mov
  * (Safari) — and re-encoding with ffmpeg here would drop it.
  */
 const COPIES = {
-  'cover-anim.webm': '06-cover-anim-v4.webm',
-  'cover-anim.mov': '06-cover-anim-v4.mov',
   'showcase-category-bar.webm': 'showcase-category-bar-anim-v3.webm',
   'showcase-category-bar.mov': 'showcase-category-bar-anim-v3.mov',
 }
@@ -126,6 +125,19 @@ const BADGE_REPAIRS = {
 // Where the top card's badge sits in the 1080×1440 v3 frame: its rows, its
 // middle and its half height and half width. The phone's own edge is at x 841.
 const BADGE = { top: 349, bottom: 389, middle: 369, halfHeight: 18.5, radius: 21, maxCut: 835 }
+
+/*
+ * Hero row, left phone: the profile with the season widget (the PASS entry
+ * point) in the same phone as the showcase clips, so the three hero phones
+ * share one frame, one scale and one crop. The flat screen goes into the
+ * screen of a showcase frame, and the Dynamic Island is laid back on top.
+ */
+const HERO_PHONES = {
+  'hero-phone-profile': { frame: 'showcase-widget-anim-v3-poster.png', screen: '05-showcase-entry-point.png' },
+}
+// The screen and the island in the 1080×1440 v3 frame.
+const V3_SCREEN = { left: 258, top: 110, width: 563, height: 1218, radius: 69 }
+const V3_ISLAND = { left: 450, top: 127, width: 184, height: 56 }
 
 function parseArgs(argv) {
   const args = { src: null, only: null }
@@ -173,9 +185,9 @@ async function encode({ buffer, width }) {
 }
 
 // The first frame of a VP9 WebM with its alpha: ffmpeg needs libvpx to decode it.
-function firstFrame(webm) {
+function firstFrame(webm, at = 0) {
   return execFileSync('ffmpeg', [
-    '-loglevel', 'error', '-c:v', 'libvpx-vp9', '-i', webm,
+    '-loglevel', 'error', '-c:v', 'libvpx-vp9', '-ss', String(at), '-i', webm,
     '-frames:v', '1', '-f', 'image2pipe', '-vcodec', 'png', '-',
   ])
 }
@@ -276,9 +288,34 @@ async function repairClip(slot, file, src) {
   }
 }
 
+async function buildHeroPhone(slot, spec, src) {
+  const frame = path.join(src, spec.frame)
+  const { left, top, width, height, radius } = V3_SCREEN
+  const screen = await sharp(path.join(src, spec.screen))
+    .resize(width, height)
+    .composite([{ input: roundedMask(width, height, radius), blend: 'dest-in' }])
+    .png()
+    .toBuffer()
+  const island = await sharp(frame)
+    .extract(V3_ISLAND)
+    .composite([{ input: roundedMask(V3_ISLAND.width, V3_ISLAND.height, V3_ISLAND.height / 2), blend: 'dest-in' }])
+    .png()
+    .toBuffer()
+  const buffer = await sharp(frame)
+    .composite([
+      { input: screen, left, top },
+      { input: island, left: V3_ISLAND.left, top: V3_ISLAND.top },
+    ])
+    .png()
+    .toBuffer()
+  const { webp, quality, size } = await encode({ buffer, width: 1080 })
+  await writeFile(path.join(outDir, `${slot}.webp`), webp)
+  console.log(`${slot}.webp  ${size}px  q${quality}  ${Math.round(webp.length / 1024)} KB`)
+}
+
 async function buildImage(slot, spec, src) {
   const clip = spec.repaired ? path.join(outDir, `${spec.repaired}.webm`) : path.join(src, spec.webm ?? '')
-  const input = spec.webm ? firstFrame(clip) : path.join(src, spec.file)
+  const input = spec.webm ? firstFrame(clip, spec.at) : path.join(src, spec.file)
   const prepared = await prepare(input, spec)
   const { webp, quality, size } = await encode(prepared)
   const target = path.join(outDir, `${slot}.webp`)
@@ -312,6 +349,9 @@ for (const [slot, file] of Object.entries(BADGE_REPAIRS)) {
 }
 for (const [slot, spec] of Object.entries(IMAGES)) {
   if (wanted(slot)) await buildImage(slot, spec, args.src)
+}
+for (const [slot, spec] of Object.entries(HERO_PHONES)) {
+  if (wanted(slot)) await buildHeroPhone(slot, spec, args.src)
 }
 for (const [slot, spec] of Object.entries(CLIPS)) {
   if (wanted(slot)) await buildClip(slot, spec, args.src)

@@ -52,9 +52,8 @@ import betboomSchemeConflictRule from '../assets/cases/betboom/scheme-conflict-r
 import betboomSchemeSwitching from '../assets/cases/betboom/scheme-switching.webp';
 import betboomSchemeOnboarding from '../assets/cases/betboom/scheme-onboarding.webp';
 import betboomSchemeEntryPoints from '../assets/cases/betboom/scheme-entry-points.webp';
-import betboomCoverAnimPoster from '../assets/cases/betboom/cover-anim-poster.webp';
-import betboomCoverAnimWebm from '../assets/cases/betboom/cover-anim.webm';
-import betboomCoverAnimMov from '../assets/cases/betboom/cover-anim.mov';
+import betboomHeroPhoneProfile from '../assets/cases/betboom/hero-phone-profile.webp';
+import betboomHeroPhoneSwitching from '../assets/cases/betboom/hero-phone-switching.webp';
 import betboomTasksAfterVideo from '../assets/cases/betboom/tasks-after.mp4';
 import betboomSwitchFlowVideo from '../assets/cases/betboom/switch-flow.mp4';
 import betboomCategoryBarVideo from '../assets/cases/betboom/category-bar.mp4';
@@ -467,19 +466,19 @@ export const betboomPassCaseStudy = {
     description:
       'A bonus programme where users complete tasks and earn free bets, skins and prizes. It started as an esports marketing tool. Over a year I turned it into a product section that carries classic sports too, without losing the esports audience.',
     meta: 'Product Designer / 2025-2026',
-    // The cover animation on a transparent ground: HEVC with alpha for Safari
-    // first (other browsers skip the type), WebM VP9 with alpha for the rest.
-    // Without either, the poster stays.
+    // Three phones in a row, as in the Fluffy Chumb LinkedIn clip: the same
+    // phone frames as the showcase below, on a light ground. The middle one
+    // plays the task detail clip (its loop is seamless).
     image: {
-      src: betboomCoverAnimPoster,
-      alt: 'Three BetBoom PASS screens: the task page in the app, a task with stake tiers, and the season widget in the BetBoom app profile',
-      fit: 'contain',
-      video: {
-        sources: [
-          { src: betboomCoverAnimMov, type: 'video/quicktime; codecs="hvc1"' },
-          { src: betboomCoverAnimWebm, type: 'video/webm; codecs="vp9"' },
-        ],
-      },
+      alt: 'Three BetBoom PASS screens: the season widget in the BetBoom app profile, a hockey task with stake tiers opening from the task page, and the “These tasks conflict” popup that offers to switch tasks',
+      phones: [
+        { src: betboomHeroPhoneProfile },
+        {
+          src: betboomShowcaseTaskDetailPoster,
+          video: betboomShowcaseClip(betboomShowcaseTaskDetailMov, betboomShowcaseTaskDetailWebm),
+        },
+        { src: betboomHeroPhoneSwitching },
+      ],
     },
     stats: [
       { value: '+75%', label: 'Retention, over the testing period' },
