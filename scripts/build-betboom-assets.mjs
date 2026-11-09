@@ -14,7 +14,7 @@
  * Clips are re-encoded to H.264 without sound, under 2 MB.
  */
 import { copyFile, mkdir, stat, writeFile } from 'node:fs/promises'
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import sharp from 'sharp'
@@ -37,10 +37,10 @@ const IMAGES = {
   'showcase-entry-point': { file: '05-showcase-entry-point.png', phone: true },
   // Showcase posters: the first frame of each WebM, with its alpha, so nothing
   // shows behind the phone before the clip starts.
-  'showcase-tasks-poster': { webm: 'showcase-tasks-anim-v3.webm' },
-  'showcase-widget-poster': { webm: 'showcase-widget-anim-v3.webm' },
-  'showcase-task-detail-poster': { webm: 'showcase-task-detail-anim-v3.webm' },
-  'showcase-switching-poster': { webm: 'showcase-switching-anim-v3.webm' },
+  'showcase-tasks-poster': { webm: 'showcase-tasks-anim-v3.webm', repaired: 'showcase-tasks' },
+  'showcase-widget-poster': { webm: 'showcase-widget-anim-v3.webm', repaired: 'showcase-widget' },
+  'showcase-task-detail-poster': { webm: 'showcase-task-detail-anim-v3.webm', repaired: 'showcase-task-detail' },
+  'showcase-switching-poster': { webm: 'showcase-switching-anim-v3.webm', repaired: 'showcase-switching' },
   'showcase-category-bar-poster': { webm: 'showcase-category-bar-anim-v3.webm' },
   // Posters of the v3 clips: the first frame of each, so the swap is seamless.
   'swap-conflict': { file: '10-switch-flow-anim-v3-poster.png', phone: true },
@@ -106,17 +106,26 @@ const CLIPS = {
 const COPIES = {
   'cover-anim.webm': '06-cover-anim-v4.webm',
   'cover-anim.mov': '06-cover-anim-v4.mov',
-  'showcase-tasks.webm': 'showcase-tasks-anim-v3.webm',
-  'showcase-tasks.mov': 'showcase-tasks-anim-v3.mov',
-  'showcase-widget.webm': 'showcase-widget-anim-v3.webm',
-  'showcase-widget.mov': 'showcase-widget-anim-v3.mov',
-  'showcase-task-detail.webm': 'showcase-task-detail-anim-v3.webm',
-  'showcase-task-detail.mov': 'showcase-task-detail-anim-v3.mov',
-  'showcase-switching.webm': 'showcase-switching-anim-v3.webm',
-  'showcase-switching.mov': 'showcase-switching-anim-v3.mov',
   'showcase-category-bar.webm': 'showcase-category-bar-anim-v3.webm',
   'showcase-category-bar.mov': 'showcase-category-bar-anim-v3.mov',
 }
+
+/*
+ * Showcase clips that open on the task page. In the export the game badge on
+ * the top task card is clipped by the card: its right side is cut flat (the
+ * user: "the icon on the top tasks is cut off"). Each frame is repaired by
+ * mirroring the badge's left half over the cut, then the clip is encoded again
+ * in both alpha formats. The posters come from the repaired WebM.
+ */
+const BADGE_REPAIRS = {
+  'showcase-tasks': 'showcase-tasks-anim-v3.webm',
+  'showcase-widget': 'showcase-widget-anim-v3.webm',
+  'showcase-task-detail': 'showcase-task-detail-anim-v3.webm',
+  'showcase-switching': 'showcase-switching-anim-v3.webm',
+}
+// Where the top card's badge sits in the 1080×1440 v3 frame: its rows, its
+// middle and its half height and half width. The phone's own edge is at x 841.
+const BADGE = { top: 349, bottom: 389, middle: 369, halfHeight: 18.5, radius: 21, maxCut: 835 }
 
 function parseArgs(argv) {
   const args = { src: null, only: null }
@@ -171,8 +180,105 @@ function firstFrame(webm) {
   ])
 }
 
+const luma = (frame, i) => frame[i] + frame[i + 1] + frame[i + 2]
+
+// Finds the flat cuts (a column of badge pixels with background right after)
+// and paints the missing right side as a mirror of the left one. The centre
+// comes from the badge's own left edge: while the carousel slides, the card
+// moves under the badge and the cut wanders.
+function repairBadge(frame, width) {
+  const solid = (x, y) => luma(frame, (y * width + x) * 4) > 140
+  for (let x = 300; x < BADGE.maxCut; x += 1) {
+    let lit = 0
+    let after = 0
+    for (let y = BADGE.top + 2; y < BADGE.bottom - 3; y += 1) {
+      const v = luma(frame, (y * width + x) * 4)
+      const next = luma(frame, (y * width + x + 1) * 4)
+      if (v > 140 && v < 330) lit += 1
+      if (next > 140) after += 1
+    }
+    if (lit < 20 || after >= 4) continue
+    // The badge's left edge in each row: the start of the solid run that
+    // reaches the cut.
+    const lefts = new Map()
+    for (let y = BADGE.top; y <= BADGE.bottom; y += 1) {
+      if (!solid(x, y)) continue
+      let left = x
+      while (left > x - 2 * BADGE.radius && solid(left - 1, y)) left -= 1
+      lefts.set(y, left)
+    }
+    if (lefts.size < 20) continue
+    // The third smallest edge: a row or two run on along the card's top border.
+    const centre = [...lefts.values()].sort((a, b) => a - b)[2] + BADGE.radius
+    if (centre > x) continue
+    // The badge's own fill, from just inside the cut (the logo is brighter).
+    const fill = [0, 0, 0]
+    let samples = 0
+    for (let y = BADGE.top + 10; y <= BADGE.bottom - 10; y += 1) {
+      const at = (y * width + x - 1) * 4
+      const v = luma(frame, at)
+      if (v <= 140 || v >= 330) continue
+      for (let c = 0; c < 3; c += 1) fill[c] += frame[at + c]
+      samples += 1
+    }
+    if (!samples) continue
+    for (let c = 0; c < 3; c += 1) fill[c] /= samples
+    // The missing right side is drawn as the badge's shape (an oval a little
+    // wider than tall), anti-aliased, in the badge's fill.
+    for (let y = BADGE.top; y <= BADGE.bottom; y += 1) {
+      const dy = (y + 0.5 - BADGE.middle) / BADGE.halfHeight
+      if (Math.abs(dy) >= 1) continue
+      const right = centre + 0.5 + BADGE.radius * Math.sqrt(1 - dy * dy)
+      for (let rx = x + 1; rx < right + 1; rx += 1) {
+        const cover = Math.min(1, Math.max(0, right - rx))
+        const to = (y * width + rx) * 4
+        for (let c = 0; c < 3; c += 1) frame[to + c] = Math.round(frame[to + c] * (1 - cover) + fill[c] * cover)
+      }
+    }
+    x += 2 * BADGE.radius
+  }
+}
+
+async function repairClip(slot, file, src) {
+  const width = 1080
+  const height = 1440
+  const size = width * height * 4
+  const raw = ['-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', `${width}x${height}`, '-r', '30', '-i', '-']
+  const encoders = [
+    spawn('ffmpeg', ['-y', '-loglevel', 'error', ...raw, '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p',
+      '-b:v', '0', '-crf', '30', '-row-mt', '1', '-auto-alt-ref', '0', path.join(outDir, `${slot}.webm`)]),
+    spawn('ffmpeg', ['-y', '-loglevel', 'error', ...raw, '-c:v', 'hevc_videotoolbox', '-alpha_quality', '0.75',
+      '-b:v', '650k', '-tag:v', 'hvc1', '-movflags', '+faststart', path.join(outDir, `${slot}.mov`)]),
+  ]
+  const done = encoders.map((encoder) => new Promise((resolve, reject) => {
+    encoder.on('close', (code) => (code ? reject(new Error(`${slot}: ffmpeg exited ${code}`)) : resolve()))
+  }))
+  const decoder = spawn('ffmpeg', ['-loglevel', 'error', '-c:v', 'libvpx-vp9', '-i', path.join(src, file),
+    '-f', 'rawvideo', '-pix_fmt', 'rgba', '-'])
+  let pending = Buffer.alloc(0)
+  let frames = 0
+  for await (const chunk of decoder.stdout) {
+    pending = Buffer.concat([pending, chunk])
+    while (pending.length >= size) {
+      const frame = Buffer.from(pending.subarray(0, size))
+      pending = pending.subarray(size)
+      repairBadge(frame, width)
+      frames += 1
+      await Promise.all(encoders.map((encoder) =>
+        encoder.stdin.write(frame) ? null : new Promise((resolve) => encoder.stdin.once('drain', resolve))))
+    }
+  }
+  encoders.forEach((encoder) => encoder.stdin.end())
+  await Promise.all(done)
+  for (const ext of ['webm', 'mov']) {
+    const { size: bytes } = await stat(path.join(outDir, `${slot}.${ext}`))
+    console.log(`${slot}.${ext}  ${frames} frames, badge repaired  ${Math.round(bytes / 1024)} KB`)
+  }
+}
+
 async function buildImage(slot, spec, src) {
-  const input = spec.webm ? firstFrame(path.join(src, spec.webm)) : path.join(src, spec.file)
+  const clip = spec.repaired ? path.join(outDir, `${spec.repaired}.webm`) : path.join(src, spec.webm ?? '')
+  const input = spec.webm ? firstFrame(clip) : path.join(src, spec.file)
   const prepared = await prepare(input, spec)
   const { webp, quality, size } = await encode(prepared)
   const target = path.join(outDir, `${slot}.webp`)
@@ -200,6 +306,10 @@ const args = parseArgs(process.argv.slice(2))
 await mkdir(outDir, { recursive: true })
 const wanted = (slot) => !args.only || args.only.includes(slot)
 
+// Before the images: the showcase posters are cut from the repaired clips.
+for (const [slot, file] of Object.entries(BADGE_REPAIRS)) {
+  if (wanted(slot)) await repairClip(slot, file, args.src)
+}
 for (const [slot, spec] of Object.entries(IMAGES)) {
   if (wanted(slot)) await buildImage(slot, spec, args.src)
 }
