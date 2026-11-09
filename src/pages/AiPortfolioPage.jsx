@@ -46,20 +46,14 @@ function WorkGroup({ group, items }) {
   );
 }
 
-export function AiPortfolioPage({ page, aiWork, productWork, profile, standalone = false }) {
+export function AiPortfolioPage({ page, aiWork, profile, standalone = false }) {
   const text = useUi().case;
   const mosaicRef = useRef(null);
   const titleRef = useRef(null);
   const topRef = useRef(null);
   const { hero, pipeline, numbers, cases } = page;
 
-  // A product built with AI already sits in the first group; it is not listed twice.
-  const aiHrefs = new Set(aiWork.map((item) => item.href));
-  const productExclude = new Set(cases.groups.find((group) => group.id === 'product')?.exclude ?? []);
-  const itemsByGroup = {
-    ai: aiWork,
-    product: productWork.filter((item) => !aiHrefs.has(item.href) && !productExclude.has(item.href)),
-  };
+  const itemsByGroup = { ai: aiWork };
 
   useEffect(
     () =>

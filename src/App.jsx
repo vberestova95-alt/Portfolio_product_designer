@@ -6,7 +6,6 @@ import { useLanguage, useUi } from './i18n/LanguageContext.jsx';
 import { observeReveal } from './lib/reveal.js';
 import { attachReturnNavigation } from './lib/returnNavigation.js';
 import { AiPortfolioPage } from './pages/AiPortfolioPage.jsx';
-import { AiProjectsPage } from './pages/AiProjectsPage.jsx';
 import { ExperiencePage } from './pages/ExperiencePage.jsx';
 import { HomePage } from './pages/HomePage.jsx';
 import { PrivacyPage } from './pages/PrivacyPage.jsx';
@@ -75,7 +74,7 @@ function getAiOnlyPathname(pathname, cards) {
     return pathname;
   }
 
-  if (pathname === '/' || pathname === AI_PORTFOLIO_PATH) {
+  if (pathname === '/' || LISTING_PATHS.has(pathname)) {
     return AI_PORTFOLIO_PATH;
   }
 
@@ -112,15 +111,8 @@ function getPageMetadata(pathname, currentCaseStudy, petCaseStudy, meta) {
     };
   }
 
-  if (pathname === AI_PORTFOLIO_PATH) {
+  if (LISTING_PATHS.has(pathname)) {
     return aiPortfolio.meta;
-  }
-
-  if (pathname === AI_PROJECTS_PATH) {
-    return {
-      title: meta.aiProjectsTitle,
-      description: meta.aiProjectsDescription,
-    };
   }
 
   if (pathname === PET_INJECTION_TRACKER_PATH) {
@@ -165,7 +157,7 @@ export function App() {
   const aiWork = [...aiProjects.items, spotlessCard];
   const pathname = CASE_ONLY_MODE
     ? PET_INJECTION_TRACKER_PATH
-    : getAiOnlyPathname(currentBrowserPathname, [...aiWork, ...cases]);
+    : getAiOnlyPathname(currentBrowserPathname, aiWork);
   const foundCaseStudy =
     pathname === SPOTLESS_PATH
       ? spotlessCaseStudy
@@ -256,20 +248,16 @@ export function App() {
     return <PrivacyPage profile={profile} />;
   }
 
-  if (pathname === AI_PORTFOLIO_PATH) {
+  // The AI projects link opens the landing as well (user, 2026-11-09).
+  if (LISTING_PATHS.has(pathname)) {
     return (
       <AiPortfolioPage
         page={aiPortfolio}
         aiWork={aiWork}
-        productWork={cases}
         profile={profile}
         standalone={AI_ONLY_MODE}
       />
     );
-  }
-
-  if (pathname === AI_PROJECTS_PATH) {
-    return <AiProjectsPage archive={aiProjects} profile={profile} />;
   }
 
   if (pathname === PET_INJECTION_TRACKER_PATH) {
@@ -283,7 +271,11 @@ export function App() {
       <CaseStudyPage
         caseStudy={currentCaseStudy}
         cases={
-          pathname === SPOTLESS_PATH ? aiWork : AI_CASE_PATHS.has(pathname) ? aiProjects.items : cases
+          AI_ONLY_MODE || pathname === SPOTLESS_PATH
+            ? aiWork
+            : AI_CASE_PATHS.has(pathname)
+              ? aiProjects.items
+              : cases
         }
         profile={profile}
         showReturnHome={!AI_ONLY_MODE}

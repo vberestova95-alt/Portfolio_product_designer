@@ -127,19 +127,12 @@ export const aiPortfolio = {
 
   cases: {
     title: 'Selected work',
-    lead: 'Products I built myself with AI agents, and the product work behind the numbers above.',
+    lead: 'Products I built myself with AI agents.',
     groups: [
       {
         id: 'ai',
         title: 'Built with AI',
         lead: 'Tools and side projects I took from the problem and the spec to working code.',
-      },
-      {
-        id: 'product',
-        title: 'Product design',
-        lead: 'Products I designed in teams, from discovery to launch and iteration.',
-        // Cases from the main site that stay off this landing (user, 2026-11-09).
-        exclude: ['/betboom-pass'],
       },
     ],
   },
