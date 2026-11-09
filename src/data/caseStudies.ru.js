@@ -28,6 +28,10 @@ import petTrackerMvpScreens from '../assets/cases/pet-tracker-mvp-screens.ru.web
 import petTrackerMvpScreensMobile from '../assets/cases/pet-tracker-mvp-screens.mobile.ru.webp';
 import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.ru.webp';
 import fluffyChumbV2Screens from '../assets/cases/fluffy-chumb-v2-screens.ru.webp';
+import fluffyChumbFeatureInjectionMap from '../assets/cases/fluffy-chumb/features/injection-map.ru.webp';
+import fluffyChumbFeatureBuilder from '../assets/cases/fluffy-chumb/features/builder.ru.webp';
+import fluffyChumbFeatureHistory from '../assets/cases/fluffy-chumb/features/history.ru.webp';
+import fluffyChumbFeatureFamily from '../assets/cases/fluffy-chumb/features/family.ru.webp';
 import kokocCaseHero from '../assets/cases/kokoc-main-desktop.png';
 import kokocAbout from '../assets/cases/kokoc-about.png';
 import kokocPrototype from '../assets/cases/kokoc-prototype.png';
@@ -276,6 +280,44 @@ export const catAppCaseStudy = {
                 'Простые трекеры для таблеток, витаминов, прогулок и еды; Mood — готовый пресет.',
                 'Диабет — готовый набор из Insulin и Glucose, и каждый работает отдельно: карта уколов — только для тех, кто колет.',
               ],
+            },
+          ],
+        },
+        {
+          type: 'bento',
+          label: 'Что умеет приложение',
+          tiles: [
+            {
+              src: fluffyChumbFeatureInjectionMap,
+              alt: 'Карта уколов: экран дозы с шестью пронумерованными местами на фото кота и новое место, которое перетаскивают перед подтверждением',
+              span: 'full',
+              variant: 'phones',
+              caption: 'Отмечайте каждый укол на фото питомца: номера показывают порядок, и видно, куда был прошлый укол.',
+            },
+            // Not now and who marked it: Fluffy Chumb is fixing these frames in
+            // Final (374:18735, 374:18807). Once they are exported, add the tile
+            // here and make the injection map a half next to it. Caption:
+            // 'Задача отмечается в один тап, а «Не сейчас» — напомнить позже или пропустить с причиной, которую видит семья; у сделанной задачи видно, кто её отметил.'
+            {
+              src: fluffyChumbFeatureBuilder,
+              alt: 'Конструктор трекера в четыре шага: имя и вид ухода, поля записи, плитка, форма и мех, ритм и напоминания',
+              span: 'full',
+              variant: 'phones-wide',
+              caption: 'Трекер для чего угодно: имя, поля, плитка, форма и мех, ритм и напоминания на этом телефоне.',
+            },
+            {
+              src: fluffyChumbFeatureHistory,
+              alt: 'История за 7 дней с графиками глюкозы и инсулина и шторка экспорта: текстовая сводка или файл CSV',
+              span: 'half',
+              variant: 'phones',
+              caption: '7 или 30 дней на графиках; ветеринару — текстовая сводка или CSV.',
+            },
+            {
+              src: fluffyChumbFeatureFamily,
+              alt: 'Семья: кто заботится о коте и с каким доступом, и шторка приглашения по email',
+              span: 'half',
+              variant: 'phones',
+              caption: 'Приглашение по email: тот же день и та же история, доступ можно убрать в любой момент.',
             },
           ],
         },

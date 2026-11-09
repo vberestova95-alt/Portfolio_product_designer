@@ -28,6 +28,10 @@ import petTrackerMvpScreens from '../assets/cases/pet-tracker-mvp-screens.webp';
 import petTrackerMvpScreensMobile from '../assets/cases/pet-tracker-mvp-screens.mobile.webp';
 import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.webp';
 import fluffyChumbV2Screens from '../assets/cases/fluffy-chumb-v2-screens.webp';
+import fluffyChumbFeatureInjectionMap from '../assets/cases/fluffy-chumb/features/injection-map.webp';
+import fluffyChumbFeatureBuilder from '../assets/cases/fluffy-chumb/features/builder.webp';
+import fluffyChumbFeatureHistory from '../assets/cases/fluffy-chumb/features/history.webp';
+import fluffyChumbFeatureFamily from '../assets/cases/fluffy-chumb/features/family.webp';
 import kokocCaseHero from '../assets/cases/kokoc-main-desktop.png';
 import kokocAbout from '../assets/cases/kokoc-about.png';
 import kokocPrototype from '../assets/cases/kokoc-prototype.png';
@@ -276,6 +280,44 @@ export const catAppCaseStudy = {
                 'Simple trackers for pills, vitamins, walks and food; Mood is a ready-made preset.',
                 'Diabetes is a ready-made set of Insulin and Glucose, and each works on its own — the injection map only for those who inject.',
               ],
+            },
+          ],
+        },
+        {
+          type: 'bento',
+          label: 'What the app does',
+          tiles: [
+            {
+              src: fluffyChumbFeatureInjectionMap,
+              alt: 'Injection map: the dose screen with six numbered sites on the cat’s photo, and dragging the new site into place before confirming',
+              span: 'full',
+              variant: 'phones',
+              caption: 'Mark each shot on the pet’s photo: the numbers show the order, so you can see where the last shot went.',
+            },
+            // Not now and who marked it: Fluffy Chumb is fixing these frames in
+            // Final (374:16898, 374:16970). Once they are exported, add the tile
+            // here and make the injection map a half next to it. Caption:
+            // 'Tick a task in one tap, or tap Not now to be reminded later or skip with a reason the family sees; a done task shows who marked it.'
+            {
+              src: fluffyChumbFeatureBuilder,
+              alt: 'Tracker builder in four steps: name and kind of care, the fields each log asks for, tile, shape and fur, rhythm and reminders',
+              span: 'full',
+              variant: 'phones-wide',
+              caption: 'Make a tracker for anything: name it, pick the fields, choose a tile, shape and fur, and set the rhythm with reminders on this phone.',
+            },
+            {
+              src: fluffyChumbFeatureHistory,
+              alt: 'History for 7 days with glucose and insulin charts, and the export sheet with a text summary or a CSV file',
+              span: 'half',
+              variant: 'phones',
+              caption: 'See 7 or 30 days in charts and send the vet a text summary or CSV.',
+            },
+            {
+              src: fluffyChumbFeatureFamily,
+              alt: 'Family: people caring for the cat with their access, and the sheet inviting someone by email',
+              span: 'half',
+              variant: 'phones',
+              caption: 'Invite someone by email: they see the same routine and history, and you can remove access any time.',
             },
           ],
         },
