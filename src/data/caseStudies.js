@@ -1112,7 +1112,7 @@ export const betboomPassCaseStudy = {
           type: 'beforeAfterSlider',
           before: {
             src: betboomDesktopBefore,
-            alt: 'Desktop task page before the redesign: cards led by sport conditions and illustrations',
+            alt: 'Desktop task page before the redesign: the BetBoom site header, the MSI 2025 promo banner, category icons and cards led by sport conditions',
           },
           after: {
             src: betboomDesktopAfter,
