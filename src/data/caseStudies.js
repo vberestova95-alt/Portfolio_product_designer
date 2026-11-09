@@ -49,6 +49,8 @@ import betboomTasksAfterVideo from '../assets/cases/betboom/tasks-after.mp4';
 import betboomSwitchFlowVideo from '../assets/cases/betboom/switch-flow.mp4';
 import betboomCategoryBarVideo from '../assets/cases/betboom/category-bar.mp4';
 import betboomCategoryBarPoster from '../assets/cases/betboom/category-bar-poster.webp';
+import betboomDesktopAfterVideo from '../assets/cases/betboom/desktop-after.mp4';
+import betboomDesktopAfterPoster from '../assets/cases/betboom/desktop-after-anim-poster.webp';
 import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
 import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
 import betboomAbTestRuVideo from '../assets/cases/betboom/ab-test-ru.mp4';
@@ -1046,12 +1048,22 @@ export const betboomPassCaseStudy = {
             alt: 'Desktop task page before the redesign: cards led by sport conditions and illustrations',
           },
           after: {
-            // TODO(p32): v3 clip of the new page — add `video: <mp4>`, this frame stays the poster.
             src: betboomDesktopAfter,
             alt: 'Desktop task page after the redesign: one category bar for sports and esports, sort chips and three columns of cards with a condition, timer, token reward and XP',
           },
           // The after frame has no “Your tasks” widget, so no widget credit here.
           caption: 'Drag to compare the task page before and after the redesign.',
+        },
+        {
+          type: 'featureMedia',
+          wide: true,
+          media: {
+            type: 'video',
+            src: betboomDesktopAfterVideo,
+            poster: betboomDesktopAfterPoster,
+            alt: 'Desktop task page after the redesign: the MSI 2025 hero, a scroll down to the category bar and the task grid, and hovers over categories',
+          },
+          caption: 'Desktop: category bar and task grid.',
         },
         {
           type: 'blocks',

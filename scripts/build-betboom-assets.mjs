@@ -59,6 +59,7 @@ const IMAGES = {
   'task-detail': { file: '30-task-detail-v3.png', phone: true },
   'detail-reward-deadline': { file: '31-detail-reward-deadline-v3.png', width: 1800 },
   'detail-category-filters': { file: '32-category-filters-screen-v3.png', phone: true },
+  'desktop-after-anim-poster': { file: '29-desktop-after-anim-v3-poster.png', width: 1600 },
   'category-bar-poster': { file: '33-category-bar-anim-v3-poster.png', width: 1800 },
   'detail-sport-esports': { file: '33-detail-sport-esports-rubricator-v2.png', width: 1800 },
   'detail-promo-task': { file: '34-top-promo-screen-v3.png', phone: true },
@@ -75,6 +76,7 @@ const CLIPS = {
   'switch-flow': { file: '10-switch-flow-anim-v3.mp4', width: 750 },
   'tasks-after': { file: '15-tasks-after-anim-v3.mp4', width: 750 },
   'category-bar': { file: '33-category-bar-anim-v3.mp4', width: 1800 },
+  'desktop-after': { file: '29-desktop-after-anim-v3.mp4', width: 1600 },
   'ab-test': { file: '61-anim-ab-test.mp4', width: 1600 },
   // The original A/B clip, in Russian, shown next to the EN re-shoot. It lives
   // in the repo already (4.5 MB, 60 fps), so it is read from there, not --src.
