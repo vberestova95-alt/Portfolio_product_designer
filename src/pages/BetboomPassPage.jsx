@@ -689,6 +689,19 @@ function CaseShowcase({ showcase }) {
           ))}
         </ol>
 
+        {/* Phones only (CSS): the list shows just the active step there. */}
+        <div className="case-showcase__dots">
+          {showcase.frames.map((item, index) => (
+            <button
+              key={item.label}
+              type="button"
+              aria-label={item.label}
+              aria-current={index === active}
+              onClick={() => setActive(index)}
+            />
+          ))}
+        </div>
+
         <p className="case-showcase__credit">{frame.credit || '\u00a0'}</p>
 
         {showcase.frames

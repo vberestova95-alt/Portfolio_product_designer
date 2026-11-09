@@ -4364,28 +4364,38 @@ ol.case-bullet-list li::before {
  */
 .case-showcase {
   display: grid;
-  grid-template-columns: minmax(280px, 500px) minmax(0, 520px);
+  grid-template-columns: 45% minmax(0, 520px);
   justify-content: center;
   align-items: center;
-  gap: clamp(32px, 6vw, 112px);
+  gap: clamp(32px, 5vw, 80px);
   margin-top: var(--gap-block);
-  padding: clamp(32px, 4vw, 64px) clamp(24px, 4vw, 64px);
+  padding: 40px clamp(24px, 4vw, 64px);
   border-radius: var(--r-shell);
   background: #000;
   color: var(--inverse);
 }
 
-/* The clips are 3:4 with the phone and its frame on a transparent ground. */
+/*
+ * The clips are 1080×1440 with the phone in the middle on a transparent
+ * ground. The stage keeps only the phone (x 220–860, y 80–1366 of the clip)
+ * and the clip is placed so that box fills it: the empty margins never take
+ * room, and the phone is as tall as the stage.
+ */
 .case-showcase__stage {
   position: relative;
-  aspect-ratio: 1080 / 1440;
+  justify-self: center;
+  height: min(760px, calc(100vh - 140px));
+  aspect-ratio: 640 / 1286;
+  overflow: hidden;
 }
 
 .case-showcase__frame {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: calc(-80 / 1286 * 100%);
+  left: calc(-220 / 640 * 100%);
+  width: calc(1080 / 640 * 100%);
+  max-width: none;
+  height: calc(1440 / 1286 * 100%);
   object-fit: contain;
   opacity: 0;
   pointer-events: none;
@@ -4510,6 +4520,11 @@ ol.case-bullet-list li::before {
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* On a phone the dots stand in for the list of steps. */
+.case-showcase__dots {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .case-showcase {
     grid-template-columns: minmax(0, 1fr);
@@ -4518,8 +4533,7 @@ ol.case-bullet-list li::before {
   }
 
   .case-showcase__stage {
-    width: min(380px, 100%);
-    justify-self: center;
+    height: min(600px, 62vh);
   }
 
   .case-phone-row__items {
@@ -4552,6 +4566,81 @@ ol.case-bullet-list li::before {
   /* The one caption shown holds two lines, so the block keeps its height. */
   .case-showcase__steps .is-active .case-showcase__step-caption {
     min-height: calc(2 * 1.45em);
+  }
+
+  /*
+   * The whole block fits one phone screen: a big phone, then only the active
+   * step with its caption. The dots switch steps and name them for screen
+   * readers, so the hidden steps stay reachable.
+   */
+  .case-showcase {
+    gap: 16px;
+    padding: 20px 20px 24px;
+  }
+
+  .case-showcase__stage {
+    height: min(440px, 52vh);
+  }
+
+  .case-showcase__copy {
+    gap: 12px;
+  }
+
+  .case-showcase .section-label {
+    display: none;
+  }
+
+  .case-showcase h2 {
+    font-size: 26px;
+  }
+
+  .case-showcase__steps {
+    margin: 0;
+  }
+
+  .case-showcase__steps li:not(.is-active) {
+    display: none;
+  }
+
+  .case-showcase__steps button {
+    padding-top: 0;
+  }
+
+  .case-showcase__dots {
+    display: flex;
+    gap: 4px;
+    margin: -4px 0 0 -10px;
+  }
+
+  .case-showcase__dots button {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .case-showcase__dots button::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--inverse);
+    opacity: 0.32;
+    transition: opacity 160ms ease;
+  }
+
+  .case-showcase__dots button[aria-current='true']::before {
+    opacity: 1;
+  }
+
+  .case-showcase__dots button:focus-visible {
+    outline: 2px solid var(--inverse);
+    outline-offset: -2px;
+    border-radius: 50%;
   }
 }
 
