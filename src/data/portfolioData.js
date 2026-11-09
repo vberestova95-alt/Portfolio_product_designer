@@ -125,13 +125,13 @@ export const cases = [
     surface: 'ink',
     image: {
       src: betboomCoverImage,
-      alt: 'BetBoom PASS interface preview',
+      alt: 'BetBoom PASS live desktop task page, in Russian',
     },
     // Then the mobile app, in English: flat screens, as on the other covers.
     frames: [
       {
         src: betboomPassHomeMobile,
-        alt: 'Three BetBoom PASS mobile screens: tasks, the PASS home with the MSI 2025 season, and a switched task',
+        alt: 'Three BetBoom PASS mobile screens: tasks, the PASS home with the MSI 2025 season, and the “These tasks conflict” prompt',
       },
     ],
     href: '/betboom-pass',
@@ -158,7 +158,7 @@ export const cases = [
     category: 'Pet Health / Side Project',
     description:
       'From an insulin tracker for one cat to an app where a family and a pet sitter set up their own trackers and share the day’s tasks. Rebuilt after interviews with MVP users.',
-    metrics: ['MVP → v2', '12 beta testers'],
+    metrics: ['MVP → v2', '12 beta sign-ups'],
     surface: 'pet',
     image: {
       src: fluffyChumbHomeCover,
@@ -199,7 +199,7 @@ export const cases = [
   {
     id: 'betboom-gamification-hub',
     title: 'BetBoom — Gamification hub',
-    year: '2025–2026',
+    year: '2026',
     category: 'Gamification / BetBoom app',
     // TODO(p32b): card copy and cover — from the editor and the designer.
     description:
@@ -282,7 +282,7 @@ export const aiProjects = {
       category: 'Pet Health / Side Project',
       description:
         'Custom care trackers and a shared daily routine for the family and the pet sitter — the second version, rebuilt after interviews with MVP users.',
-      metrics: ['MVP → v2', '12 beta testers'],
+      metrics: ['MVP → v2', '12 beta sign-ups'],
       surface: 'pet',
       image: {
         src: fluffyChumbV2Cover,

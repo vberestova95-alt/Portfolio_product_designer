@@ -40,7 +40,7 @@ const IMAGES = {
   'showcase-task-detail-poster': { webm: 'showcase-task-detail-anim-v3.webm', repaired: 'showcase-task-detail' },
   'showcase-switching-poster': { webm: 'showcase-switching-anim-v3.webm', repaired: 'showcase-switching' },
   'showcase-category-bar-poster': { webm: 'showcase-category-bar-anim-v3.webm' },
-  // Hero row, right phone: the “These tasks conflict” popup, from the switching
+  // Hero row, middle phone: the “These tasks conflict” popup, from the switching
   // clip. Not the open “Your tasks” widget: that UI is a second designer's.
   'hero-phone-switching': { webm: 'showcase-switching-anim-v3.webm', repaired: 'showcase-switching', at: 3 },
   // Posters of the v3 clips: the first frame of each, so the swap is seamless.
@@ -56,7 +56,13 @@ const IMAGES = {
   'category-bar-3': { file: '19-rubricator-step3-v2.png', phone: true },
   'onboarding-welcome': { file: '20-onboarding-welcome-v3.png', phone: true },
   'onboarding-difficulty': { file: '21-onboarding-difficulty-v3.png', phone: true },
-  'onboarding-tooltip': { file: '22-onboarding-balance-tooltip.png', phone: true },
+  // The header still carries Figma's “Title” placeholder; it is painted over
+  // with the dimmed header's own colour (no text of ours put in its place).
+  'onboarding-tooltip': {
+    file: '22-onboarding-balance-tooltip.png',
+    phone: true,
+    paint: [{ left: 24, top: 216, width: 116, height: 64, from: [16, 248] }],
+  },
   'entry-no-level': { file: '23-entry-profile-no-level.png', phone: true },
   // v2: the designer's take with a thin light edge (22 %), so the dark screen
   // does not merge with a dark ground.
@@ -68,12 +74,31 @@ const IMAGES = {
   // which already showed the new category bar.
   'desktop-before': { file: '28-desktop-before-slider.png', width: 1920 },
   'desktop-after': { file: '29-desktop-after-slider-v3b.png', width: 1920 },
-  'detail-reward-deadline': { file: '31-detail-reward-deadline-v3.png', width: 1800 },
+  // Two thin edges of the card stacked behind the right one showed over its
+  // top edge (y 424–447); the strip above the card is painted with the ground.
+  'detail-reward-deadline': {
+    file: '31-detail-reward-deadline-v3.png',
+    width: 1800,
+    paint: [{ left: 1780, top: 400, width: 1820, height: 62, from: [3000, 400] }],
+  },
   'detail-category-filters': { file: '32-category-filters-screen-v3.png', phone: true },
   'desktop-after-anim-poster': { file: '29-desktop-after-anim-v3-poster.png', width: 1600 },
   // Drafts behind D1 and D3, picked by the user (v3, EN).
-  'draft-d1-card-grid': { file: 'd1-01-08-as-is-card-to-content-grid-v3-draft.png', width: 2400 },
-  'draft-d1-condition-length': { file: 'd1-05-condition-text-length-v3-draft.png', width: 2400 },
+  // The fourth column (a phone) sat 100 px from the plate's right edge, the
+  // first one 120 px from its left: the plate is widened by 20 px there.
+  'draft-d1-card-grid': {
+    file: 'd1-01-08-as-is-card-to-content-grid-v3-draft.png',
+    width: 2400,
+    widen: { at: 5600, by: 20 },
+  },
+  // Only the guideline note and the three columns of cards, with a 24 px
+  // (48 px at ×2) margin of the plate's own grey: the title and the empty
+  // third of the plate around them are gone, so the cards read larger.
+  'draft-d1-condition-length': {
+    file: 'd1-05-condition-text-length-v3-draft.png',
+    width: 2400,
+    crop: { left: 221, top: 546, width: 3374, height: 3350 },
+  },
   'draft-d3-modal-a': { file: 'd3-04-modal-a-keep-switch-v3-draft.png', phone: true },
   'draft-d3-modal-b': { file: 'd3-05-modal-b-buttons-swapped-v3-draft.png', phone: true },
   'draft-d3-undo': { file: 'd3-06-undo-10s-v3-draft.png', phone: true },
@@ -164,7 +189,46 @@ const roundedMask = (width, height, radius) =>
       `<rect width="${width}" height="${height}" rx="${radius}" ry="${radius}" fill="#000"/></svg>`,
   )
 
-async function prepare(file, spec) {
+/*
+ * Fixes to a source picture before it is sized: `crop` keeps a box, `paint`
+ * fills boxes with the colour at `from` (to hide a stray edge or placeholder),
+ * `widen` repeats the pixel column at `at` `by` times (a wider plate with all
+ * its edges intact). Coordinates are in the export's pixels.
+ */
+async function edit(file, spec) {
+  if (!spec.crop && !spec.paint && !spec.widen) return file
+  let image = sharp(file).ensureAlpha()
+  if (spec.crop) image = image.extract(spec.crop)
+  const { data, info } = await image.raw().toBuffer({ resolveWithObject: true })
+  let { width, height } = info
+  let pixels = data
+  for (const box of spec.paint ?? []) {
+    const at = (box.from[1] * width + box.from[0]) * 4
+    const colour = Buffer.from(pixels.subarray(at, at + 4))
+    for (let y = box.top; y < box.top + box.height; y += 1) {
+      for (let x = box.left; x < Math.min(box.left + box.width, width); x += 1) {
+        pixels.set(colour, (y * width + x) * 4)
+      }
+    }
+  }
+  if (spec.widen) {
+    const { at, by } = spec.widen
+    const wider = Buffer.alloc((width + by) * height * 4)
+    for (let y = 0; y < height; y += 1) {
+      const row = pixels.subarray(y * width * 4, (y + 1) * width * 4)
+      const out = y * (width + by) * 4
+      row.copy(wider, out, 0, at * 4)
+      for (let i = 0; i <= by; i += 1) row.copy(wider, out + (at + i) * 4, at * 4, (at + 1) * 4)
+      row.copy(wider, out + (at + by) * 4, at * 4)
+    }
+    pixels = wider
+    width += by
+  }
+  return sharp(pixels, { raw: { width, height, channels: 4 } }).png().toBuffer()
+}
+
+async function prepare(source, spec) {
+  const file = await edit(source, spec)
   const meta = await sharp(file).metadata()
   const width = spec.width ? Math.min(spec.width, meta.width) : meta.width
   const height = Math.round((meta.height * width) / meta.width)

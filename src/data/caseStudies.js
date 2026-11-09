@@ -605,17 +605,19 @@ export const betboomPassCaseStudy = {
       'A bonus programme where users complete tasks and earn free bets, skins and prizes. It started as an esports marketing tool. Over a year I turned it into a product section that carries classic sports too, without losing the esports audience.',
     meta: 'Product Designer / 2025-2026',
     // Three phones in a row, as in the Fluffy Chumb LinkedIn clip: the same
-    // phone frames as the showcase below, on a light ground. The middle one
-    // plays the task detail clip (its loop is seamless).
+    // phone frames as the showcase below, on a light ground. The dimmed one
+    // (the conflict popup) stands in the middle, so the two bright screens
+    // frame it and the row reads even; the right one plays the task detail
+    // clip (its loop is seamless).
     image: {
-      alt: 'Three BetBoom PASS screens: the season widget in the BetBoom app profile, a hockey task with stake tiers opening from the task page, and the “These tasks conflict” popup that offers to switch tasks',
+      alt: 'Three BetBoom PASS screens: the season widget in the BetBoom app profile, the “These tasks conflict” popup that offers to switch tasks, and a hockey task with stake tiers opening from the task page',
       phones: [
         { src: betboomHeroPhoneProfile },
+        { src: betboomHeroPhoneSwitching },
         {
           src: betboomShowcaseTaskDetailPoster,
           video: betboomShowcaseClip(betboomShowcaseTaskDetailMov, betboomShowcaseTaskDetailWebm),
         },
-        { src: betboomHeroPhoneSwitching },
       ],
     },
     stats: [

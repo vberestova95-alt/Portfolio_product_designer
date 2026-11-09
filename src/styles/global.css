@@ -1679,6 +1679,18 @@ html[lang='ru'] .error-page__visual > span {
 
 .work-card--iquoto .work-card__visual > img {
   --iquoto-art-width: max(100cqw, calc(100cqh * 1800 / 1418));
+  /*
+   * The panel's own corners are drawn small (20 of 1800px) and shrink with
+   * the image; its top two are cut to the page's 16px by this mask (used on
+   * tablets and phones, where the panel shows whole), the bottom two by the
+   * frame, which there ends at the panel's foot (art row 1631 of 1662,
+   * its top at 353). The phone above the panel stays whole.
+   */
+  --iquoto-panel-mask:
+    linear-gradient(to right, transparent var(--r-media), #000 var(--r-media) calc(100% - var(--r-media)), transparent calc(100% - var(--r-media))),
+    linear-gradient(to bottom, transparent calc(100% * 353 / 1662 + var(--r-media)), #000 calc(100% * 353 / 1662 + var(--r-media))),
+    radial-gradient(circle var(--r-media) at var(--r-media) calc(100% * 353 / 1662 + var(--r-media)), #000 calc(var(--r-media) - 0.5px), transparent var(--r-media)),
+    radial-gradient(circle var(--r-media) at calc(100% - var(--r-media)) calc(100% * 353 / 1662 + var(--r-media)), #000 calc(var(--r-media) - 0.5px), transparent var(--r-media));
   left: 0;
   top: calc(var(--iquoto-art-width) * -244 / 1800);
   width: var(--iquoto-art-width);
@@ -3537,6 +3549,16 @@ ol.case-bullet-list li::before {
 }
 
 /*
+ * Stacked, the intro does not travel with the chapter, so the link stood
+ * between every title and its text. Once, in the first chapter, is enough.
+ */
+@media (max-width: 768px) {
+  .case-study-section:not(:first-child) .case-section-back {
+    display: none;
+  }
+}
+
+/*
  * The whole intro travels, not just the link. Sticking the link on its own made
  * it slide up over the chapter title on every scroll.
  */
@@ -4528,6 +4550,25 @@ ol.case-bullet-list li::before {
 
   .case-hero__phone:only-child {
     width: min(44%, 230px);
+  }
+}
+
+/*
+ * On a phone the row takes the plate's full content width, so the screens are
+ * big enough to read: 8 px gaps, the plate's 24 px gap above (from the credit
+ * line) and 32 px to its bottom edge (20 px padding + 12). The fixed 280 px
+ * media height of small screens left empty bands over and under the row.
+ */
+@media (max-width: 480px) {
+  /* Two classes: the small-screen `.case-hero__media` height comes later. */
+  .case-hero__media.case-hero__media--phones {
+    height: auto;
+    gap: 8px;
+    padding: 0 0 12px;
+  }
+
+  .case-hero__phone {
+    width: calc((100% - 16px) / 3);
   }
 }
 
@@ -5716,8 +5757,9 @@ ol.case-bullet-list li::before {
 
   /*
    * Fitted to the frame's width rather than covering it, so the white panel is
-   * never cut at the side and shows all four of its own small corners. The
-   * frame takes the artwork's ratio below the trimmed band (1418 of 1662px).
+   * never cut at the side and shows all four of its corners. The
+   * frame takes the artwork's ratio from the trimmed band to the panel's foot
+   * (1387 of 1662px).
    */
   /*
    * Width set outright: with an aspect ratio Safari no longer stretches a grid
@@ -5730,16 +5772,18 @@ ol.case-bullet-list li::before {
     width: 100%;
     height: auto;
     min-height: 0;
-    aspect-ratio: 1800 / 1418;
+    aspect-ratio: 1800 / 1387;
     margin-bottom: 0;
-    /* Small as the panel's own corners, so the frame never rounds them more. */
-    border-radius: 6px;
+    /* The same 16px as every other cover on the page. */
+    border-radius: var(--r-media);
   }
 
-  /* The trimmed 244px band, as a share of the frame's 1418px height. */
+  /* The trimmed 244px band, as a share of the frame's 1387px height. */
   .work-card--iquoto .work-card__visual > img {
-    top: calc(-100% * 244 / 1418);
+    top: calc(-100% * 244 / 1387);
     width: 100%;
+    -webkit-mask-image: var(--iquoto-panel-mask);
+    mask-image: var(--iquoto-panel-mask);
   }
 
   /*
@@ -6563,14 +6607,17 @@ ol.case-bullet-list li::before {
     container-type: normal;
     width: 100%;
     height: auto;
-    aspect-ratio: 1800 / 1418;
+    aspect-ratio: 1800 / 1387;
     margin-bottom: 0;
-    border-radius: 6px;
+    border-radius: var(--r-media);
   }
 
   .work-card--iquoto .work-card__visual > img {
-    top: calc(-100% * 244 / 1418);
+    top: calc(-100% * 244 / 1387);
     width: 100%;
+    /* The panel's corners cut to 16px — see the mask on the base rule. */
+    -webkit-mask-image: var(--iquoto-panel-mask);
+    mask-image: var(--iquoto-panel-mask);
   }
 
   .work-card--ds-plugins .work-card__visual > img,
