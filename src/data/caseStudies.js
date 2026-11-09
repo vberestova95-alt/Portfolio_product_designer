@@ -1032,9 +1032,10 @@ export const betboomPassCaseStudy = {
           after: {
             // TODO(p32): v3 clip of the new page — add `video: <mp4>`, this frame stays the poster.
             src: betboomDesktopAfter,
-            alt: 'Desktop task page after the redesign: hero carousel, one category bar for sports and esports, sort chips and three columns of cards',
+            alt: 'Desktop task page after the redesign: one category bar for sports and esports, sort chips and three columns of cards with a condition, timer, token reward and XP',
           },
-          caption: `Drag to compare the task page before and after the redesign. ${betboomWidgetCredit}`,
+          // The after frame has no “Your tasks” widget, so no widget credit here.
+          caption: 'Drag to compare the task page before and after the redesign.',
         },
         {
           type: 'blocks',
