@@ -125,7 +125,7 @@ export const cases = [
     surface: 'ink',
     image: {
       src: betboomCoverImage,
-      alt: 'BetBoom PASS interface preview',
+      alt: 'BetBoom PASS live desktop task page, in Russian',
     },
     // Then the mobile app, in English: flat screens, as on the other covers.
     frames: [

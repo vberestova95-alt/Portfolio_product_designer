@@ -61,7 +61,7 @@ export const cases = byId(en.cases, {
     description:
       'Редизайн core-продукта геймификации, который вырос из киберспортивных механик и вышел на широкую спортивную аудиторию.',
     metrics: ['+60% DAU', '+75% retention'],
-    image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Интерфейс BetBoom PASS' },
+    image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Страница задания BetBoom PASS на десктопе, живой интерфейс на русском' },
     frames: [
       {
         ...entryOf(en.cases, 'betboom-pass').frames[0],
