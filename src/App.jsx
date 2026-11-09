@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
+import { aiPortfolio } from './data/aiPortfolio.js';
 import { content } from './data/content.js';
+import { geneticsCard, geneticsCaseStudy } from './data/geneticsCase.js';
+import { spotlessCard, spotlessCaseStudy } from './data/spotlessCase.js';
 import { useLanguage, useUi } from './i18n/LanguageContext.jsx';
 import { observeReveal } from './lib/reveal.js';
 import { attachReturnNavigation } from './lib/returnNavigation.js';
-import { AiProjectsPage } from './pages/AiProjectsPage.jsx';
+import { AiPortfolioPage } from './pages/AiPortfolioPage.jsx';
 import { ExperiencePage } from './pages/ExperiencePage.jsx';
 import { HomePage } from './pages/HomePage.jsx';
 import { PrivacyPage } from './pages/PrivacyPage.jsx';
@@ -16,6 +19,16 @@ import {
 } from './pages/PetInjectionTrackerPage.jsx';
 
 const CASE_ONLY_MODE = import.meta.env.VITE_CASE_ONLY === 'true';
+// The AI portfolio subdomain: the landing at /, plus only the cases it links to.
+const AI_ONLY_MODE = import.meta.env.VITE_AI_ONLY === 'true';
+const AI_PORTFOLIO_PATH = '/ai-portfolio';
+const SPOTLESS_PATH = '/spotless';
+const GENETICS_PATH = '/genetics-audit';
+// Cases that exist only on the AI landing, keyed by path.
+const AI_LANDING_CASES_BY_PATH = {
+  [SPOTLESS_PATH]: spotlessCaseStudy,
+  [GENETICS_PATH]: geneticsCaseStudy,
+};
 const CASE_STUDY_KEYS_BY_PATH = {
   '/betboom-pass': 'betboomPassCaseStudy',
   '/betboom-gamification-hub': 'betboomGamificationHubCaseStudy',
@@ -31,7 +44,7 @@ const CASE_STUDY_KEYS_BY_PATH = {
 // the other AI projects rather than the main selected work.
 const AI_CASE_PATHS = new Set(['/ds-plugins', '/design-cringe']);
 const AI_PROJECTS_PATH = '/ai-projects';
-const LISTING_PATHS = new Set([AI_PROJECTS_PATH]);
+const LISTING_PATHS = new Set([AI_PROJECTS_PATH, AI_PORTFOLIO_PATH]);
 const EXPERIENCE_PATH = '/experience';
 const PRIVACY_PATH = '/privacy';
 
@@ -39,6 +52,9 @@ const DETAIL_PATHS = new Set([
   ...Object.keys(CASE_STUDY_KEYS_BY_PATH),
   '/design-concepts',
   AI_PROJECTS_PATH,
+  AI_PORTFOLIO_PATH,
+  SPOTLESS_PATH,
+  GENETICS_PATH,
   EXPERIENCE_PATH,
   PRIVACY_PATH,
 ]);
@@ -56,6 +72,23 @@ function normalizePathname(pathname) {
   }
 
   return withoutIndex;
+}
+
+/*
+ * The AI subdomain serves the landing at / and only the cases its cards link
+ * to (plus the privacy page the footer links to). Anything else gets the 404.
+ */
+function getAiOnlyPathname(pathname, cards) {
+  if (!AI_ONLY_MODE) {
+    return pathname;
+  }
+
+  if (pathname === '/' || LISTING_PATHS.has(pathname)) {
+    return AI_PORTFOLIO_PATH;
+  }
+
+  const allowed = new Set([...cards.map((item) => item.href), PRIVACY_PATH]);
+  return allowed.has(pathname) ? pathname : null;
 }
 
 function getPageMetadata(pathname, currentCaseStudy, petCaseStudy, meta) {
@@ -87,11 +120,8 @@ function getPageMetadata(pathname, currentCaseStudy, petCaseStudy, meta) {
     };
   }
 
-  if (pathname === AI_PROJECTS_PATH) {
-    return {
-      title: meta.aiProjectsTitle,
-      description: meta.aiProjectsDescription,
-    };
+  if (LISTING_PATHS.has(pathname)) {
+    return aiPortfolio.meta;
   }
 
   if (pathname === PET_INJECTION_TRACKER_PATH) {
@@ -133,8 +163,17 @@ export function App() {
 
   const currentBrowserPathname =
     typeof window === 'undefined' ? '/' : normalizePathname(window.location.pathname);
-  const pathname = CASE_ONLY_MODE ? PET_INJECTION_TRACKER_PATH : currentBrowserPathname;
-  const currentCaseStudy = caseStudies[CASE_STUDY_KEYS_BY_PATH[pathname]] ?? null;
+  const aiWork = [...aiProjects.items, spotlessCard, geneticsCard];
+  const pathname = CASE_ONLY_MODE
+    ? PET_INJECTION_TRACKER_PATH
+    : getAiOnlyPathname(currentBrowserPathname, aiWork);
+  const foundCaseStudy =
+    AI_LANDING_CASES_BY_PATH[pathname] ??
+    caseStudies[CASE_STUDY_KEYS_BY_PATH[pathname]] ??
+    null;
+  // On the AI subdomain every way back leads to the landing, which is its home.
+  const currentCaseStudy =
+    AI_ONLY_MODE && foundCaseStudy ? { ...foundCaseStudy, backHref: '/' } : foundCaseStudy;
   const metadata = getPageMetadata(
     pathname,
     currentCaseStudy,
@@ -174,6 +213,16 @@ export function App() {
   }, [currentBrowserPathname]);
 
   useEffect(() => {
+    if (AI_ONLY_MODE && currentBrowserPathname === AI_PORTFOLIO_PATH) {
+      window.history.replaceState(
+        window.history.state,
+        '',
+        `/${window.location.search}${window.location.hash}`,
+      );
+    }
+  }, [currentBrowserPathname]);
+
+  useEffect(() => {
     if (!metadata) {
       return;
     }
@@ -185,7 +234,8 @@ export function App() {
     const openGraphUrl = document.querySelector('meta[property="og:url"]');
     const siteOrigin =
       typeof window === 'undefined' ? 'https://vberestova.com' : window.location.origin;
-    const canonicalUrl = `${siteOrigin}${pathname === '/' ? '/' : pathname}`;
+    const canonicalPath = AI_ONLY_MODE && pathname === AI_PORTFOLIO_PATH ? '/' : pathname;
+    const canonicalUrl = `${siteOrigin}${canonicalPath}`;
 
     document.title = metadata.title;
     description?.setAttribute('content', metadata.description);
@@ -207,8 +257,16 @@ export function App() {
     return <PrivacyPage profile={profile} />;
   }
 
-  if (pathname === AI_PROJECTS_PATH) {
-    return <AiProjectsPage archive={aiProjects} profile={profile} />;
+  // The AI projects link opens the landing as well (user, 2026-11-09).
+  if (LISTING_PATHS.has(pathname)) {
+    return (
+      <AiPortfolioPage
+        page={aiPortfolio}
+        aiWork={aiWork}
+        profile={profile}
+        standalone={AI_ONLY_MODE}
+      />
+    );
   }
 
   if (pathname === PET_INJECTION_TRACKER_PATH) {
@@ -221,8 +279,15 @@ export function App() {
     return (
       <CaseStudyPage
         caseStudy={currentCaseStudy}
-        cases={AI_CASE_PATHS.has(pathname) ? aiProjects.items : cases}
+        cases={
+          AI_ONLY_MODE || pathname in AI_LANDING_CASES_BY_PATH
+            ? aiWork
+            : AI_CASE_PATHS.has(pathname)
+              ? aiProjects.items
+              : cases
+        }
         profile={profile}
+        showReturnHome={!AI_ONLY_MODE}
       />
     );
   }

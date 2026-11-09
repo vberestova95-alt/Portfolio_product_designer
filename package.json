@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:ai": "VITE_AI_ONLY=true npm run build",
     "postbuild": "node scripts/apply-deploy-metadata.mjs && node scripts/create-static-routes.mjs",
     "preview": "vite preview"
   },
