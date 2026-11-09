@@ -4459,6 +4459,25 @@ ol.case-bullet-list li::before {
   }
 }
 
+/*
+ * On a phone the row takes the plate's full content width, so the screens are
+ * big enough to read: 8 px gaps, the plate's 24 px gap above (from the credit
+ * line) and 32 px to its bottom edge (20 px padding + 12). The fixed 280 px
+ * media height of small screens left empty bands over and under the row.
+ */
+@media (max-width: 480px) {
+  /* Two classes: the small-screen `.case-hero__media` height comes later. */
+  .case-hero__media.case-hero__media--phones {
+    height: auto;
+    gap: 8px;
+    padding: 0 0 12px;
+  }
+
+  .case-hero__phone {
+    width: calc((100% - 16px) / 3);
+  }
+}
+
 /* A clip in a phone row keeps the screen's own 44 px corner. */
 .case-phone-row__item video {
   width: 100%;
