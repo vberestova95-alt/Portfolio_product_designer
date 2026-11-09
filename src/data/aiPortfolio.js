@@ -7,7 +7,7 @@ export const aiPortfolio = {
   meta: {
     title: 'AI Portfolio - Vladislava Berestova',
     description:
-      'Product designer who builds with AI agents: six products shipped from spec to code, results from product work, and how the pipeline runs.',
+      'Product designer who builds with AI agents: six products shipped from spec to code, and how the pipeline runs.',
   },
 
   hero: {
@@ -84,41 +84,6 @@ export const aiPortfolio = {
             value: '12',
             label: 'beta testers signed up for Fluffy Chumb',
             source: 'portfolioData.js aiProjects cat-app metrics; caseStudies.js Cat App stats «12 beta testers from the landing page».',
-          },
-        ],
-      },
-      {
-        label: 'Product results',
-        items: [
-          {
-            value: '+60%',
-            label: 'DAU in BetBoom PASS',
-            source: 'caseStudies.js BetBoom PASS hero stats and «Key metrics»; portfolioData.js cases metrics.',
-          },
-          {
-            value: '+75%',
-            label: 'retention in BetBoom PASS',
-            source: 'caseStudies.js BetBoom PASS hero stats and «Key metrics»; portfolioData.js cases metrics.',
-          },
-          {
-            value: '2×',
-            label: 'faster handoff after a UI kit audit',
-            source: 'portfolioData.js achievements: «proposed a component handoff that cut handoff time in half».',
-          },
-          {
-            value: '−15%',
-            label: 'dev effort on new features after a design system migration',
-            source: 'portfolioData.js experiences, Ujin: «led the migration of Ujin Service to a new design system — 15% less dev effort on new features».',
-          },
-          {
-            value: '70%',
-            label: 'of my Ronas IT concepts made Top of the Day on Dribbble',
-            source: 'portfolioData.js additionalAchievements.',
-          },
-          {
-            value: '12',
-            label: 'designers at my Figma plugins workshop',
-            source: 'portfolioData.js additionalAchievements: «Ran a Figma plugins workshop for 12 designers».',
           },
         ],
       },
