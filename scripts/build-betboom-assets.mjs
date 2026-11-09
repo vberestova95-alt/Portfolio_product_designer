@@ -60,6 +60,13 @@ const IMAGES = {
   'detail-reward-deadline': { file: '31-detail-reward-deadline-v3.png', width: 1800 },
   'detail-category-filters': { file: '32-category-filters-screen-v3.png', phone: true },
   'desktop-after-anim-poster': { file: '29-desktop-after-anim-v3-poster.png', width: 1600 },
+  // Drafts behind D1 and D3, picked by the user (v3, EN).
+  'draft-d1-card-grid': { file: 'd1-01-08-as-is-card-to-content-grid-v3-draft.png', width: 2400 },
+  'draft-d1-condition-length': { file: 'd1-05-condition-text-length-v3-draft.png', width: 2400 },
+  'draft-d3-modal-a': { file: 'd3-04-modal-a-keep-switch-v3-draft.png', phone: true },
+  'draft-d3-modal-b': { file: 'd3-05-modal-b-buttons-swapped-v3-draft.png', phone: true },
+  'draft-d3-undo': { file: 'd3-06-undo-10s-v3-draft.png', phone: true },
+  'draft-d3-cancel-task': { file: 'd3-09-03-as-is-to-cancel-task-v3-draft.png', width: 2400 },
   'category-bar-poster': { file: '33-category-bar-anim-v3-poster.png', width: 1800 },
   'detail-sport-esports': { file: '33-detail-sport-esports-rubricator-v2.png', width: 1800 },
   'detail-promo-task': { file: '34-top-promo-screen-v3.png', phone: true },

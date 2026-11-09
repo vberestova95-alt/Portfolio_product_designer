@@ -4272,6 +4272,7 @@ ol.case-bullet-list li::before {
   background: var(--paper);
 }
 
+.case-feature-media__label,
 .case-phone-row__label {
   display: block;
   margin-bottom: 14px;

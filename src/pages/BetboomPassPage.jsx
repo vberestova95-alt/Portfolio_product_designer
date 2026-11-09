@@ -869,6 +869,7 @@ function SectionPart({ part }) {
   if (part.type === 'featureMedia') {
     return (
       <div className={`case-feature-media${part.wide ? ' case-feature-media--wide' : ''}`}>
+        {part.label ? <span className="case-feature-media__label">{part.label}</span> : null}
         <CaseMedia media={part.media} />
         <MediaCaption caption={part.caption} credit={part.credit} />
       </div>

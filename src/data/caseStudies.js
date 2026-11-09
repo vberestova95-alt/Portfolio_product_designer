@@ -51,6 +51,12 @@ import betboomCategoryBarVideo from '../assets/cases/betboom/category-bar.mp4';
 import betboomCategoryBarPoster from '../assets/cases/betboom/category-bar-poster.webp';
 import betboomDesktopAfterVideo from '../assets/cases/betboom/desktop-after.mp4';
 import betboomDesktopAfterPoster from '../assets/cases/betboom/desktop-after-anim-poster.webp';
+import betboomDraftD1CardGrid from '../assets/cases/betboom/draft-d1-card-grid.webp';
+import betboomDraftD1ConditionLength from '../assets/cases/betboom/draft-d1-condition-length.webp';
+import betboomDraftD3ModalA from '../assets/cases/betboom/draft-d3-modal-a.webp';
+import betboomDraftD3ModalB from '../assets/cases/betboom/draft-d3-modal-b.webp';
+import betboomDraftD3Undo from '../assets/cases/betboom/draft-d3-undo.webp';
+import betboomDraftD3CancelTask from '../assets/cases/betboom/draft-d3-cancel-task.webp';
 import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
 import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
 import betboomAbTestRuVideo from '../assets/cases/betboom/ab-test-ru.mp4';
@@ -904,15 +910,24 @@ export const betboomPassCaseStudy = {
           ],
         },
         {
-          // TODO(p32): visuals from the drafts — the pair d1-01 → d1-08 and the frame d1-05,
-          // in EN; the captions below go under them.
-          type: 'noteCard',
-          compact: true,
-          title: 'Visual coming: problem → solution (drafts)',
-          paragraphs: [
+          type: 'featureMedia',
+          wide: true,
+          label: 'Problem → solution (drafts)',
+          media: {
+            src: betboomDraftD1CardGrid,
+            alt: 'Draft “From one AS IS card to a content grid”: the old chain task card with skulls art and a task name, an arrow, then grids of new task cards for every task type on mobile and desktop',
+          },
+          caption:
             'Before: art and a task name filled the card, and the condition was hidden in a generic description. After: the condition comes first, with the stake range, timer and reward in tokens and experience.',
+        },
+        {
+          type: 'featureMedia',
+          media: {
+            src: betboomDraftD1ConditionLength,
+            alt: 'Draft “Condition text length: 35 / 69 / 90 characters”: the same task card with short, medium and full-length conditions, mobile and desktop',
+          },
+          caption:
             'A rule for the condition text: longer than one line. 35 characters is too short. 65–68 work but can look empty on large cards. 75–90 read best. Mobile and desktop use the same length.',
-          ],
         },
         {
           type: 'blocks',
@@ -971,15 +986,36 @@ export const betboomPassCaseStudy = {
           caption: 'A conflict is checked by sport, then tournament, then match.',
         },
         {
-          // TODO(p32): visuals from the drafts — the row d3-04 / d3-05 / d3-06 and the pair
-          // d3-09 → d3-03, in EN; the captions below go under them.
-          type: 'noteCard',
-          compact: true,
-          title: 'Visual coming: problem → solution (drafts)',
-          paragraphs: [
-            'The conflict popup names the active task and its progress, and warns that a swap resets it. After a swap, ‘Undo’ stays for 10 seconds.',
-            'Before: a returning user hit a disabled button, ‘You’re already doing this task’. After: any task can be cancelled from its card, with a warning that progress resets.',
+          type: 'phoneRow',
+          label: 'Problem → solution (drafts)',
+          items: [
+            {
+              src: betboomDraftD3ModalA,
+              alt: 'Draft popup “You already have a task”: the active hockey task with progress 0/10 000, a note that switching resets progress, Keep and Switch buttons',
+            },
+            {
+              src: betboomDraftD3ModalB,
+              alt: 'The same draft popup with the buttons swapped: Switch on the left, Keep on the right',
+            },
+            {
+              src: betboomDraftD3Undo,
+              alt: 'Draft popup after a switch: one “Undo 00:10” button in place of Keep and Switch',
+            },
           ],
+          // TODO(p32): the Undo part of this caption waits for the user's answer.
+          caption:
+            'The conflict popup names the active task and its progress, and warns that a swap resets it. After a swap, ‘Undo’ stays for 10 seconds.',
+        },
+        {
+          // The second designer's credit is on the frame itself, so not repeated here.
+          type: 'featureMedia',
+          wide: true,
+          media: {
+            src: betboomDraftD3CancelTask,
+            alt: 'Draft “From “You’re already doing this task” to “Cancel task””: the AS IS flow and production screens with the disabled button on top, the new flow for cancelling a task from its card below',
+          },
+          caption:
+            'Before: a returning user hit a disabled button, ‘You’re already doing this task’. After: any task can be cancelled from its card, with a warning that progress resets.',
         },
         {
           type: 'blocks',
