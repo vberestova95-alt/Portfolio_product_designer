@@ -1,5 +1,39 @@
 # Отчёт тестировщика
 
+## 2026-11-10 — релиз release-2026-11-10, этап 2 (финальный прогон, HEAD 5153822, сборка на 4185)
+
+| Прогон | Результат |
+|---|---|
+| predeploy | 273/273 |
+| other-projects | 222/222 |
+| cat-app-preview | 112/112 |
+| home-fluffy-cards | 28/28 |
+| hero-pairs (Chromium EN 201, WebKit EN 190, regress 8) | 399/399 |
+| webkit-safari (8 страниц 1440/390, альфа-клипы, «Назад» из Other projects) | 118/118 |
+| back-navigation (новый: Chromium + WebKit, 1440/390, 3 сценария) | 24/24 |
+
+Ожидания не менялись: падений из-за намеренных правок нет. Дефектов нет.
+
+**«Назад».** /betboom-pass → тизер Gamification hub (вверху кейса): страница встаёт на +20 px от места клика (ссылка чуть ниже
+центра экрана на 20 px), Chromium и WebKit одинаково. Карточка Other projects (/betboom-pass и /betboom-gamification-hub):
++43…45 px. Открытый кейс всегда с scrollY 0. На /betboom-gamification-hub вверху кейса тизера нет, сценарий там — только карточка
+Other projects. Новый сценарий `e2e/back-navigation.check.mjs` (допуск 80 px).
+
+**Ссылка «Back to …».** На 768 и 390 видна одна (первая секция), на 1440 во всех секциях: /betboom-pass, /betboom-gamification-hub,
+/yandex-turkey, /cat-app, /kokoc-group, Chromium и WebKit.
+
+**WebKit 1440/390**: /, /betboom-pass, /betboom-gamification-hub, /ai-portfolio, /spotless, /genetics-audit (и /cat-app,
+/ai-projects) — консоль чистая, битых картинок нет, горизонтального скролла нет; видео-обложки (в т.ч. PASS на главной)
+играют, прозрачность не чёрная (`webkit-video-home-*.png`).
+
+**Замечание (не дефект).** `hero-pairs` печатает FINDING «turn by a tap +0/+150 ms»: в первые 150 мс после тапа карточка ещё
+смотрит на кейс прежней пары — это скорость смены, известное поведение, не падение.
+
+### Не проверено
+
+- Свайп в WebKit (нет способа в Playwright), реальный iPhone/Safari; RU-версия (выключена флагом), прод-деплой и Метрика.
+- hero-pairs RU и сравнение с продом (PROD) не запускались.
+
 ## 2026-11-10 — релиз release-2026-11-10, этап 1 (сборка на 4185, Chromium + WebKit)
 
 **Итог: реальных дефектов в коде сайта не найдено.** Все падения были устаревшими ожиданиями тестов (состав 6 кейсов и 5 плиток).

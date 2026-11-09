@@ -12,6 +12,7 @@ node e2e/hero-pairs.check.mjs                   # смена пар в хиро 
 node e2e/other-projects.check.mjs              # блок «Other projects»; RU_BASE=…4174 для RU, BASELINE=<сборка прошлого коммита> для сравнения главной
 node e2e/cat-app-preview.check.mjs                    # /cat-app: шаги истории, пары до/после, бренд, ключевые флоу, метрика ∞, Research/Decisions; 1440/768/390. RU: BASE=…4182 LANG_CODE=ru, SHOTS=<папка>
 node e2e/webkit-safari.check.mjs                # Playwright WebKit: 8 страниц на 1440/390 (консоль, картинки, h-scroll), .mov/.webm с альфой, шаги showcase PASS, «Назад» из Other projects; нужен `npx playwright install webkit`
+node e2e/back-navigation.check.mjs              # «Назад» из тизера Gamification hub и карточек Other projects (Chromium + WebKit, 1440/390): страница встаёт к ссылке, допуск 80 px
 BASE=http://localhost:4174 node e2e/ru-media.check.mjs   # RU-ролики и лента; нужна временная сборка с RU_ENABLED=true (рецепт в шапке файла)
 ```
 
