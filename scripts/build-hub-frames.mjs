@@ -13,7 +13,8 @@
  *             inside the edge, no shadow (phoneRow adds it in CSS);
  *   band    — screens in a row like fluffy-chumb-v2-screens (425 px per slot,
  *             30 px margins), cut to the 844 px phone viewport, with hairline
- *             and shadow as in build-case-frames.mjs;
+ *             and shadow as in build-case-frames.mjs; `.mobile` — the same
+ *             screens in two columns for phones;
  *   desktop — a web screen scaled to 1800, rounded, hairline inside the edge;
  *   wide    — a finished composition or scheme, only scaled to 1800.
  * Output goes to src/assets/cases/betboom-hub/; RU files get a `.ru` suffix.
@@ -50,6 +51,28 @@ const band = (slots, scale) => ({
   slots: slots.map((slot, index) => ({ slot, x: 30 + index * 425, y: 40 })),
 })
 
+/*
+ * The same screens in two columns, for phones (imageBand mobileSrc): 425 px
+ * per column and 35 px between rows, as in the band; an odd last screen sits
+ * in the middle. `width` is the file width in px.
+ */
+const grid = (slots, width) => {
+  const columns = 2
+  const rows = Math.ceil(slots.length / columns)
+  const size = [30 + columns * 425, 40 + rows * (SCREEN.height + 35) - 35 + 56]
+  const middle = (size[0] - SCREEN.width) / 2
+  return {
+    kind: 'band',
+    scale: width / size[0],
+    size,
+    slots: slots.map((slot, index) => {
+      const row = Math.floor(index / columns)
+      const alone = index === slots.length - 1 && index % columns === 0
+      return { slot, x: alone ? middle : 30 + (index % columns) * 425, y: 40 + row * (SCREEN.height + 35) }
+    }),
+  }
+}
+
 const phone = (slot) => ({ kind: 'phone', slot })
 
 const TARGETS = {
@@ -65,6 +88,8 @@ const TARGETS = {
   'k4-web-mobile': phone('k4-web-mobile'),
   // The season from planned to ended, in scenario order (3005×940).
   'k2-season-lifecycle': band(K2, 1),
+  // The same seven for phones: two columns, 1170 px wide.
+  'k2-season-lifecycle.mobile': grid(K2, 1170),
   // Four edge cases; scale 1.7 keeps them readable and under 3005 px (2941×1598).
   'k3-edge-cases': band(K3, 1.7),
   'k4-web-desktop': { kind: 'desktop', slot: 'k4-web-desktop' },

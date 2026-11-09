@@ -82,6 +82,7 @@ import hubHeaderName from '../assets/cases/betboom-hub/d3-header-name.webp';
 import hubHeaderNickname from '../assets/cases/betboom-hub/d3-header-nickname.webp';
 import hubScreen from '../assets/cases/betboom-hub/k1-hub.webp';
 import hubSeasonLifecycle from '../assets/cases/betboom-hub/k2-season-lifecycle.webp';
+import hubSeasonLifecycleMobile from '../assets/cases/betboom-hub/k2-season-lifecycle.mobile.webp';
 import hubEdgeCases from '../assets/cases/betboom-hub/k3-edge-cases.webp';
 import hubWebDesktop from '../assets/cases/betboom-hub/k4-web-desktop.webp';
 import hubWebMobile from '../assets/cases/betboom-hub/k4-web-mobile.webp';
@@ -1503,6 +1504,7 @@ export const betboomGamificationHubCaseStudy = {
           media: {
             type: 'image',
             src: hubSeasonLifecycle,
+            mobileSrc: hubSeasonLifecycleMobile,
             alt: 'Seven hub screens of a season’s life cycle: planned, active without progress, active with progress, under 24 hours left, no gift, ended and joined, ended and not joined',
           },
           caption: 'Planned, active, ending, finished: one card, every stage.',
