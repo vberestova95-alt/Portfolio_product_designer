@@ -549,7 +549,7 @@ export const betboomPassCaseStudy = {
               type: 'text',
               heading: 'Role · team · timeline',
               paragraphs: [
-                'Product Designer, 2025-2026. Research, mechanics, user flows, concepts and UI — me. I brought in a second designer for the UI of the “Your tasks” widget and the category bar, built on my concepts.',
+                'Product Designer, 2025-2026. Research, mechanics, user flows and concepts — me. I brought in a second designer for the UI of the widget and the category bar.',
               ],
             },
             {
@@ -900,11 +900,15 @@ export const betboomPassCaseStudy = {
           ],
         },
         {
-          // TODO(p32): 1–2 “problem → solution” pairs from the card drafts; the designer picks candidates, the user chooses.
+          // TODO(p32): visuals from the drafts — the pair d1-01 → d1-08 and the frame d1-05,
+          // in EN; the captions below go under them.
           type: 'noteCard',
           compact: true,
-          title: 'Visual coming',
-          paragraphs: ['Problem → solution: variants from the card drafts.'],
+          title: 'Visual coming: problem → solution (drafts)',
+          paragraphs: [
+            'Before: art and a task name filled the card, and the condition was hidden in a generic description. After: the condition comes first, with the stake range, timer and reward in tokens and experience.',
+            'A rule for the condition text: longer than one line. 35 characters is too short. 65–68 work but can look empty on large cards. 75–90 read best. Mobile and desktop use the same length.',
+          ],
         },
         {
           type: 'blocks',
@@ -963,11 +967,15 @@ export const betboomPassCaseStudy = {
           caption: 'A conflict is checked by sport, then tournament, then match.',
         },
         {
-          // TODO(p32): 1–2 “problem → solution” pairs from the conflict and swap drafts; the designer picks candidates.
+          // TODO(p32): visuals from the drafts — the row d3-04 / d3-05 / d3-06 and the pair
+          // d3-09 → d3-03, in EN; the captions below go under them.
           type: 'noteCard',
           compact: true,
-          title: 'Visual coming',
-          paragraphs: ['Problem → solution: variants from the conflict and swap drafts.'],
+          title: 'Visual coming: problem → solution (drafts)',
+          paragraphs: [
+            'The conflict popup names the active task and its progress, and warns that a swap resets it. After a swap, ‘Undo’ stays for 10 seconds.',
+            'Before: a returning user hit a disabled button, ‘You’re already doing this task’. After: any task can be cancelled from its card, with a warning that progress resets.',
+          ],
         },
         {
           type: 'blocks',
@@ -997,18 +1005,21 @@ export const betboomPassCaseStudy = {
             {
               type: 'text',
               heading: 'D5. Top tasks and the category bar',
-              paragraphs: ['From I2, I3 · problem → solution from the drafts.'],
+              paragraphs: [
+                'From I2, I3 · hypothesis.',
+                'Top tasks rotate and stay pinned to the header on scroll. Signed-out users see only game tasks. The category bar collapses in three steps on scroll, with 4 sort options and a colour per category.',
+              ],
             },
           ],
         },
         {
-          // TODO(p32): the decision is built on 1–2 “problem → solution” pairs
-          // from the top and category bar drafts; frames come after the user picks them.
-          // Their credit line: “Concept and logic: me. UI, components and specs: a second designer.”
+          // TODO(p13): the category bar collapse animation, EN, no row of screens.
           type: 'noteCard',
           compact: true,
           title: 'Visual coming',
-          paragraphs: ['Problem → solution pairs from the drafts for top tasks and the category bar.'],
+          paragraphs: [
+            'The category bar collapses in three steps as you scroll. Category bar concept and logic: me; UI: a second designer.',
+          ],
         },
       ],
     },
