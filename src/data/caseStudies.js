@@ -47,6 +47,8 @@ import betboomCoverAnimWebm from '../assets/cases/betboom/cover-anim.webm';
 import betboomCoverAnimMov from '../assets/cases/betboom/cover-anim.mov';
 import betboomTasksAfterVideo from '../assets/cases/betboom/tasks-after.mp4';
 import betboomSwitchFlowVideo from '../assets/cases/betboom/switch-flow.mp4';
+import betboomCategoryBarVideo from '../assets/cases/betboom/category-bar.mp4';
+import betboomCategoryBarPoster from '../assets/cases/betboom/category-bar-poster.webp';
 import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
 import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
 import betboomAbTestRuVideo from '../assets/cases/betboom/ab-test-ru.mp4';
@@ -1013,13 +1015,16 @@ export const betboomPassCaseStudy = {
           ],
         },
         {
-          // TODO(p13): the category bar collapse animation, EN, no row of screens.
-          type: 'noteCard',
-          compact: true,
-          title: 'Visual coming',
-          paragraphs: [
-            'The category bar collapses in three steps as you scroll. Category bar concept and logic: me; UI: a second designer.',
-          ],
+          // A wide strip, not a phone: it keeps its own proportions at any width.
+          type: 'featureMedia',
+          wide: true,
+          media: {
+            type: 'video',
+            src: betboomCategoryBarVideo,
+            poster: betboomCategoryBarPoster,
+            alt: 'The category bar on desktop: esports and sports icons with sort chips below; Valorant, then Hockey, then All are picked in turn',
+          },
+          caption: 'Category bar concept and logic: me; UI: a second designer.',
         },
       ],
     },

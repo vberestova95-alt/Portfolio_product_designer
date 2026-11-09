@@ -651,6 +651,7 @@ function CaseMedia({ media, className = '' }) {
       <LazyVideo
         className={className}
         src={media.src}
+        poster={media.poster}
         alt={media.alt}
       />
     );
