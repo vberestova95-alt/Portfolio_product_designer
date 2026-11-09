@@ -1,0 +1,152 @@
+/*
+ * Builds the BetBoom PASS case images and clips from the designer's EN exports.
+ *
+ *   node scripts/build-betboom-assets.mjs --src <dir> [--only slot,slot]
+ *
+ * <dir> holds the PNG ×2 and MP4 exports from Figma «Portfolio · Case · BetBoom
+ * PASS» (yEae1aMLgORY8UkZAsPqR5), named as in docs/review/betboom-pass/README.md
+ * (e.g. 01-showcase-tasks-v2.png). The exports are ~60 MB, so they stay out of
+ * the repo; only the built files land in src/assets/cases/betboom/.
+ *
+ * Phone screens are rounded like a 390-wide screen with a 44 px corner and kept
+ * at their export size (×2). Wide pictures are scaled to `width`. Every WebP is
+ * squeezed under the case budget (300 KB): quality first, then size.
+ * Clips are re-encoded to H.264 without sound, under 2 MB.
+ */
+import { mkdir, stat } from 'node:fs/promises'
+import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
+import path from 'node:path'
+import sharp from 'sharp'
+
+const root = fileURLToPath(new URL('../', import.meta.url))
+const outDir = path.join(root, 'src/assets/cases/betboom')
+
+const IMAGE_BUDGET = 300 * 1024
+const PHONE = { width: 390, radius: 44 }
+
+// slot → source file and how to treat it. Prefer -v2 where the designer made one.
+const IMAGES = {
+  cover: { file: '06-cover-v2.png', width: 2704 },
+  'showcase-tasks': { file: '01-showcase-tasks-v2.png', phone: true },
+  'showcase-onboarding': { file: '02-showcase-onboarding.png', phone: true },
+  'showcase-top': { file: '03-showcase-top-v2.png', phone: true },
+  'showcase-category-bar': { file: '04-showcase-rubricator-v2.png', phone: true },
+  'showcase-entry-point': { file: '05-showcase-entry-point.png', phone: true },
+  'swap-conflict': { file: '10-switch-conflict-modal.png', phone: true },
+  'swap-return': { file: '11-switch-return-task.png', phone: true },
+  'swap-switched': { file: '12-switch-task-switched.png', phone: true },
+  'swap-cancel-limit': { file: '13-switch-cancel-limit-12h.png', phone: true },
+  'tasks-before': { file: '14-tasks-before-asis.png', phone: true },
+  'tasks-after': { file: '15-tasks-after-v2.png', phone: true },
+  'top-carousel': { file: '16-top-carousel-v2.png', phone: true },
+  'category-bar-1': { file: '17-rubricator-step1-v2.png', phone: true },
+  'category-bar-2': { file: '18-rubricator-step2-v2.png', phone: true },
+  'category-bar-3': { file: '19-rubricator-step3-v2.png', phone: true },
+  'onboarding-welcome': { file: '20-onboarding-welcome.png', phone: true },
+  'onboarding-difficulty': { file: '21-onboarding-difficulty.png', phone: true },
+  'onboarding-tooltip': { file: '22-onboarding-balance-tooltip.png', phone: true },
+  'entry-no-level': { file: '23-entry-profile-no-level.png', phone: true },
+  'entry-progress': { file: '24-entry-profile-progress.png', phone: true },
+  'entry-season-timer': { file: '25-entry-profile-season-timer.png', phone: true },
+  'entry-max-level': { file: '26-entry-profile-max-level.png', phone: true },
+  'entry-web': { file: '27-entry-web-sidebar.png', radius: 24 },
+  'desktop-before': { file: '28-desktop-before-slider.png', width: 1920 },
+  'desktop-after': { file: '29-desktop-after-slider-v2.png', width: 1920 },
+  'detail-conditions': { file: '30-detail-conditions-v2.png', phone: true },
+  'detail-reward-deadline': { file: '31-detail-reward-deadline-v2.png', width: 1800 },
+  'detail-category-filters': { file: '32-detail-category-filters-v2.png', phone: true },
+  'detail-sport-esports': { file: '33-detail-sport-esports-rubricator-v2.png', width: 1800 },
+  'detail-promo-task': { file: '34-detail-promo-task-v2.png', phone: true },
+  'scheme-platforms': { file: '40-scheme-three-platforms.png', width: 1800 },
+  'scheme-task-types': { file: '41-scheme-task-types.png', width: 1800 },
+  'scheme-conflict-rule': { file: '42-scheme-conflict-rule.png', width: 1800 },
+  'scheme-switching': { file: '43-scheme-switching-asis-tobe.png', width: 1800 },
+  'scheme-onboarding': { file: '44-scheme-onboarding-contexts.png', width: 1800 },
+  'scheme-entry-points': { file: '45-scheme-entry-points.png', width: 1800 },
+}
+
+const CLIPS = {
+  'redesign-cards': { file: '60-anim-redesign-cards-v2.mp4', width: 1800 },
+  'ab-test': { file: '61-anim-ab-test.mp4', width: 1600 },
+}
+
+function parseArgs(argv) {
+  const args = { src: null, only: null }
+  for (let i = 0; i < argv.length; i += 1) {
+    const key = argv[i]
+    if (key === '--src') args.src = path.resolve(argv[++i])
+    else if (key === '--only') args.only = argv[++i].split(',')
+    else throw new Error(`Unknown argument: ${key}`)
+  }
+  if (!args.src) throw new Error('--src <dir with the designer exports> is required')
+  return args
+}
+
+const roundedMask = (width, height, radius) =>
+  Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+      `<rect width="${width}" height="${height}" rx="${radius}" ry="${radius}" fill="#000"/></svg>`,
+  )
+
+async function prepare(file, spec) {
+  const meta = await sharp(file).metadata()
+  const width = spec.width ? Math.min(spec.width, meta.width) : meta.width
+  const height = Math.round((meta.height * width) / meta.width)
+  const radius = spec.phone ? Math.round((PHONE.radius * width) / PHONE.width) : spec.radius ?? 0
+  let image = sharp(file).resize(width, height)
+  if (radius) {
+    image = sharp(await image.png().toBuffer()).composite([
+      { input: roundedMask(width, height, radius), blend: 'dest-in' },
+    ])
+  }
+  return { buffer: await image.png().toBuffer(), width }
+}
+
+// Quality first, then 85 % steps of size, until the file fits the budget.
+async function encode({ buffer, width }) {
+  let size = width
+  for (;;) {
+    const scaled = size === width ? buffer : await sharp(buffer).resize(size).png().toBuffer()
+    for (const quality of [84, 76, 68, 60]) {
+      const webp = await sharp(scaled).webp({ quality, alphaQuality: 90, effort: 6 }).toBuffer()
+      if (webp.length <= IMAGE_BUDGET) return { webp, quality, size }
+    }
+    size = Math.round(size * 0.85)
+  }
+}
+
+async function buildImage(slot, spec, src) {
+  const prepared = await prepare(path.join(src, spec.file), spec)
+  const { webp, quality, size } = await encode(prepared)
+  const target = path.join(outDir, `${slot}.webp`)
+  await sharp(webp).toFile(target)
+  console.log(`${slot}.webp  ${size}px  q${quality}  ${Math.round(webp.length / 1024)} KB`)
+}
+
+async function buildClip(slot, spec, src) {
+  const target = path.join(outDir, `${slot}.mp4`)
+  execFileSync('ffmpeg', [
+    '-y', '-loglevel', 'error',
+    '-i', path.join(src, spec.file),
+    '-an',
+    '-vf', `scale=${spec.width}:-2`,
+    '-c:v', 'libx264', '-preset', 'slow', '-crf', '26',
+    '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
+    target,
+  ])
+  const { size } = await stat(target)
+  console.log(`${slot}.mp4  ${spec.width}px  ${Math.round(size / 1024)} KB`)
+  if (size > 2 * 1024 * 1024) console.warn(`  ! ${slot}.mp4 is over the 2 MB budget`)
+}
+
+const args = parseArgs(process.argv.slice(2))
+await mkdir(outDir, { recursive: true })
+const wanted = (slot) => !args.only || args.only.includes(slot)
+
+for (const [slot, spec] of Object.entries(IMAGES)) {
+  if (wanted(slot)) await buildImage(slot, spec, args.src)
+}
+for (const [slot, spec] of Object.entries(CLIPS)) {
+  if (wanted(slot)) await buildClip(slot, spec, args.src)
+}
