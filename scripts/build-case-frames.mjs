@@ -1,15 +1,16 @@
 /*
  * Builds the Fluffy Chumb (cat app) case images from screen exports.
  *
- *   node scripts/build-case-frames.mjs --lang en|ru [--only v2-screens,v2-cover,mvp]
- *                                      [--draft] [--out <dir>] [--scale 1]
+ *   node scripts/build-case-frames.mjs --lang en|ru
+ *        [--only v2-screens,v2-cover,mvp,features,home-cover] [--draft] [--out <dir>] [--scale 1]
+ *
+ * With no --only it builds v2-screens, v2-cover, mvp and the feature frames;
+ * home-cover (the case card on the home page) is built only when asked for.
  *
  * Sources live in src/assets/cases/src/ and are never imported by the app, so
  * Vite does not bundle them:
- *   fluffy-chumb/<lang>/<slot>.png — Figma frame exports at scale 2 (780 px wide).
- *     Home and Routine come from «Portfolio · Fluffy Chumb case frames»
- *     (9ga2w6jOKhMAWknjd54O5U), the rest from «Fluffy Chumb · App — Final»
- *     (EoVlDmLhUGV5mSzlsvEMW0); both are read only.
+ *   fluffy-chumb/<lang>/<slot>.png — Figma frame exports at scale 2 (780 px wide)
+ *     from «Fluffy Chumb · App — Final» (EoVlDmLhUGV5mSzlsvEMW0, read only).
  *     The node behind each slot is listed in SCREENS below; to swap a screen,
  *     export its node with download_assets (png, scale 2) into <slot>.png and
  *     update the node-id here.
@@ -21,7 +22,8 @@
  * in Russian, so EN swaps it for fluffy-chumb/en/mvp-tracker.png (MVP.replacements)
  * and RU keeps it, writing the `.ru` band.
  *
- * Output goes next to the old files under new names; RU files get a `.ru` suffix.
+ * Output goes next to the old files under new names (feature frames into
+ * fluffy-chumb/features/); RU files get a `.ru` suffix.
  * --draft fills a missing slot with a labelled placeholder (for review only —
  * pass --out to keep drafts out of the repo).
  */
@@ -34,17 +36,34 @@ const root = fileURLToPath(new URL('../', import.meta.url))
 const casesDir = path.join(root, 'src/assets/cases')
 const sourceDir = path.join(casesDir, 'src/fluffy-chumb')
 
-// Figma nodes per slot. Home and Routine — the case frames file, page 0:1
-// (390×961); the rest — Final, EN page 77:19 (MVP), RU page 280:6149 (MVP · RU).
+// Figma nodes per slot in Final: EN page 77:19 (Beta · EN), RU page 280:6149
+// (Beta · RU). Trackers and the builder come from the Archive page: those are
+// the versions the app ships, the new mockups R2·116/117 are not built yet.
+// Home and Routine still hold the old exports from «Portfolio · Fluffy Chumb
+// case frames» (1:2 / 1:202, 2:136 / 2:140): Fluffy Chumb is fixing these
+// frames in Final, so re-export them from the nodes below once they are done,
+// then rebuild v2-cover, v2-screens and home-cover.
 const SCREENS = {
-  home: { en: '1:2', ru: '1:202' },
-  routine: { en: '2:136', ru: '2:140' },
-  'choose-trackers': { en: '78:10323', ru: '280:6182' },
-  trackers: { en: '78:10852', ru: '280:6632' },
-  'build-the-look': { en: '78:10975', ru: '280:6716' },
-  insulin: { en: '78:10538', ru: '280:6384' },
-  history: { en: '78:11090', ru: '280:6831' },
-  family: { en: '78:11449', ru: '280:6919' },
+  home: { en: '373:8005', ru: '374:18247' },
+  routine: { en: '371:5680', ru: '374:18294' },
+  'choose-trackers': { en: '387:9295', ru: '387:26554' },
+  trackers: { en: '387:9384', ru: '387:26643' },
+  'build-the-look': { en: '387:9459', ru: '387:26718' },
+  insulin: { en: '387:9694', ru: '387:26953' },
+  history: { en: '387:10162', ru: '387:27421' },
+  family: { en: '387:10272', ru: '387:27531' },
+  // Feature frames (the bento in the v2 section).
+  'map-site-marked': { en: '387:9777', ru: '387:27036' },
+  'map-adding-site': { en: '387:9885', ru: '387:27144' },
+  'builder-name': { en: '387:9413', ru: '387:26672' },
+  'builder-fields': { en: '387:9436', ru: '387:26695' },
+  'builder-rhythm': { en: '387:9530', ru: '387:26789' },
+  'history-export': { en: '387:10212', ru: '387:27471' },
+  'family-invite': { en: '387:10347', ru: '387:27606' },
+  // Not now and the dose check sheet: Final is being fixed, not exported yet.
+  // 'not-now': { en: '374:16898', ru: '374:18735' },
+  // 'not-now-skip': { en: '374:16970', ru: '374:18807' },
+  // 'check-dose': { en: '387:9931', ru: '387:27190' },
 }
 
 // Geometry in 1x px, measured from the current pet-tracker-v2-*.webp. A slot
@@ -74,7 +93,46 @@ const LAYOUTS = {
       { slot: 'routine', x: 698, y: 240, zoom: 1.05, crop: 860 },
     ],
   },
+  // The case card on the home page: Trackers, Home and Insulin, the middle one
+  // raised, the right one cut by the bottom edge. Measured from the current
+  // fluffy-chumb-home-cover.webp. Build it only after Home is re-exported.
+  'home-cover': {
+    file: 'fluffy-chumb-home-cover',
+    size: [1627, 1537],
+    slots: [
+      { slot: 'trackers', x: 6, y: 316, zoom: 1.33, crop: 820 },
+      { slot: 'home', x: 555, y: 176, zoom: 1.33, crop: 844 },
+      { slot: 'insulin', x: 1104, y: 404, zoom: 1.33, crop: 850 },
+    ],
+  },
 }
+
+// Feature frames: whole phone screens in a row, one picture per feature, for
+// the bento tiles in the v2 section. Two screens make 870×924, four 1710×924.
+const FEATURE_GAP = 30
+const featureLayout = (file, slots, options = {}) => ({
+  ...options,
+  file,
+  size: [FEATURE_GAP + slots.length * (SCREEN.width + FEATURE_GAP), FEATURE_GAP + SCREEN.height + 50],
+  slots: slots.map((slot, index) => ({ slot, x: FEATURE_GAP + index * (SCREEN.width + FEATURE_GAP), y: FEATURE_GAP })),
+})
+
+const FEATURES = {
+  // The cat photo is heavy: a lower quality keeps the picture under 300 KB.
+  'feature-injection-map': featureLayout('fluffy-chumb/features/injection-map', ['map-site-marked', 'map-adding-site'], {
+    quality: 80,
+  }),
+  // 'feature-not-now': featureLayout('fluffy-chumb/features/not-now', ['not-now', 'not-now-skip']),
+  'feature-builder': featureLayout('fluffy-chumb/features/builder', [
+    'builder-name',
+    'builder-fields',
+    'build-the-look',
+    'builder-rhythm',
+  ]),
+  'feature-history': featureLayout('fluffy-chumb/features/history', ['history', 'history-export']),
+  'feature-family': featureLayout('fluffy-chumb/features/family', ['family', 'family-invite']),
+}
+Object.assign(LAYOUTS, FEATURES)
 
 const MVP = {
   source: path.join(casesDir, 'pet-tracker-cover-screens.png'),
@@ -230,7 +288,8 @@ async function buildLayout(name, args) {
   const png = await compose(size, items, { shadow: SHADOW, hairline: HAIRLINE, scale })
   const suffix = args.lang === 'ru' ? '.ru' : ''
   const target = path.join(args.out, `${layout.file}${suffix}.webp`)
-  const info = await sharp(png).webp({ quality: 86, alphaQuality: 90, effort: 6 }).toFile(target)
+  await mkdir(path.dirname(target), { recursive: true })
+  const info = await sharp(png).webp({ quality: layout.quality ?? 86, alphaQuality: 90, effort: 6 }).toFile(target)
   console.log(`${path.relative(root, target)}  ${info.width}×${info.height}  ${Math.round(info.size / 1024)} KB`)
 }
 
@@ -338,9 +397,10 @@ async function writeMvp(args, file, size, items) {
 
 const args = parseArgs(process.argv.slice(2))
 await mkdir(args.out, { recursive: true })
-const targets = args.only ?? ['v2-screens', 'v2-cover', 'mvp']
+const targets = args.only ?? ['v2-screens', 'v2-cover', 'mvp', 'features']
 for (const name of targets) {
   if (name === 'mvp') await buildMvp(args)
+  else if (name === 'features') for (const feature of Object.keys(FEATURES)) await buildLayout(feature, args)
   else if (LAYOUTS[name]) await buildLayout(name, args)
   else throw new Error(`Unknown target: ${name}`)
 }

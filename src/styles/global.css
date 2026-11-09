@@ -3825,6 +3825,46 @@ ol.case-bullet-list li::before {
   color: var(--ink-soft);
 }
 
+/*
+ * Whole phone screens instead of a zoomed crop: the picture brings its own
+ * hairline and shadow, sits on a light plate at its own proportions and is
+ * capped in height, so two screens in a half and four in a full tile come out
+ * the same size. The extra class beats the per-span ratios on phones.
+ */
+.bento-tile.bento-tile--phones .bento-tile__media,
+.bento-tile.bento-tile--phones-wide .bento-tile__media {
+  display: flex;
+  justify-content: center;
+  aspect-ratio: auto;
+  padding: 12px;
+  background: #f6f8fb;
+}
+
+.bento-tile--phones .bento-tile__media img,
+.bento-tile--phones-wide .bento-tile__media img {
+  position: static;
+  width: auto;
+  max-width: 100%;
+  max-height: 480px;
+  transform: none;
+  cursor: zoom-in;
+}
+
+/* Four screens in a row would shrink to thumbnails on a phone: keep them at
+   the height of a two-screen tile and let the row scroll sideways. */
+@media (max-width: 640px) {
+  .bento-tile.bento-tile--phones-wide .bento-tile__media {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .bento-tile--phones-wide .bento-tile__media img {
+    max-width: none;
+    height: 360px;
+    max-height: none;
+  }
+}
+
 .case-phone-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
