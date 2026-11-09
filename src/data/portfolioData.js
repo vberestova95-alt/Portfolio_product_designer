@@ -131,7 +131,7 @@ export const cases = [
     frames: [
       {
         src: betboomPassHomeMobile,
-        alt: 'Three BetBoom PASS mobile screens: tasks, the PASS home with the MSI 2025 season, and a switched task',
+        alt: 'Three BetBoom PASS mobile screens: tasks, the PASS home with the MSI 2025 season, and the “These tasks conflict” prompt',
       },
     ],
     href: '/betboom-pass',

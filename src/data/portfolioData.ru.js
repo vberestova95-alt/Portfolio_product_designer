@@ -65,7 +65,7 @@ export const cases = byId(en.cases, {
     frames: [
       {
         ...entryOf(en.cases, 'betboom-pass').frames[0],
-        alt: 'Три мобильных экрана BetBoom PASS: задания, главная PASS с сезоном MSI 2025 и смена задания',
+        alt: 'Три мобильных экрана BetBoom PASS: задания, главная PASS с сезоном MSI 2025 и предупреждение «These tasks conflict»',
       },
     ],
   },
