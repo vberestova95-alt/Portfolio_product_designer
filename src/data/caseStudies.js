@@ -67,6 +67,7 @@ import betboomDraftD3ModalB from '../assets/cases/betboom/draft-d3-modal-b.webp'
 import betboomDraftD3Undo from '../assets/cases/betboom/draft-d3-undo.webp';
 import betboomDraftD3CancelTask from '../assets/cases/betboom/draft-d3-cancel-task.webp';
 import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
+import betboomRedesignPoster from '../assets/cases/betboom/redesign-cards-poster.webp';
 import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
 import betboomAbTestRuVideo from '../assets/cases/betboom/ab-test-ru.mp4';
 import hubSchemeUserPath from '../assets/cases/betboom-hub/scheme-r-user-path.webp';
@@ -1034,6 +1035,7 @@ export const betboomPassCaseStudy = {
             type: 'video',
             src: betboomRedesignVideo,
             ratio: '1800 / 614',
+            poster: betboomRedesignPoster,
             alt: 'Task card before and after: the old card with a large illustration, then a scrolling column of the new cards',
           },
           caption: 'Before: the illustration led. After: the condition, reward and deadline lead.',

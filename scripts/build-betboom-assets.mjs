@@ -105,6 +105,7 @@ const IMAGES = {
   'draft-d3-modal-b': { file: 'd3-05-modal-b-buttons-swapped-v3-draft.png', phone: true },
   'draft-d3-undo': { file: 'd3-06-undo-10s-v3-draft.png', phone: true },
   'draft-d3-cancel-task': { file: 'd3-09-03-as-is-to-cancel-task-v3-draft.png', width: 2400 },
+  'redesign-cards-poster': { file: '60-anim-redesign-cards-r2-poster.png', width: 1800 },
   'category-bar-poster': { file: '33-category-bar-anim-v3-poster.png', width: 1800 },
   'detail-sport-esports': { file: '33-detail-sport-esports-rubricator-v2.png', width: 1800 },
   'detail-promo-task': { file: '34-top-promo-screen-v3.png', phone: true },
@@ -119,7 +120,7 @@ const IMAGES = {
 }
 
 const CLIPS = {
-  'redesign-cards': { file: '60-anim-redesign-cards-v3.mp4', width: 1800 },
+  'redesign-cards': { file: '60-anim-redesign-cards-r2.mp4', width: 1800 },
   'switch-flow': { file: '10-switch-flow-anim-v3.mp4', width: 750 },
   'tasks-after': { file: '15-tasks-after-anim-v3.mp4', width: 750 },
   'category-bar': { file: '33-category-bar-anim-v3.mp4', width: 1800 },
