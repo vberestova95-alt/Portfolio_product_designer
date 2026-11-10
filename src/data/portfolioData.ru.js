@@ -65,7 +65,15 @@ export const cases = byId(en.cases, {
     frames: [
       {
         ...entryOf(en.cases, 'betboom-pass').frames[0],
-        alt: 'Три мобильных экрана BetBoom PASS: задания, главная PASS с киберспортивными категориями и главная PASS со спортивными категориями',
+        alt: 'Страница заданий BetBoom PASS в приложении: топ-задание MSI 2025, рубрикатор и карточки заданий',
+      },
+      {
+        ...entryOf(en.cases, 'betboom-pass').frames[1],
+        alt: 'Деталь хоккейного задания: старт другой ступени открывает «Эти задания конфликтуют», Switch меняет задания местами, появляется тост «Task switched»',
+      },
+      {
+        ...entryOf(en.cases, 'betboom-pass').frames[2],
+        alt: 'Открытый виджет «Your tasks» над страницей заданий: три активных задания с наградами и прогрессом',
       },
     ],
   },

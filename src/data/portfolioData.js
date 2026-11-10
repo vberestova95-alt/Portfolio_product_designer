@@ -1,4 +1,8 @@
-import betboomPassHomeMobile from '../assets/cases/betboom-pass-home-mobile.webp';
+import betboomPassHomeTasks from '../assets/cases/betboom-pass-home-mobile-01-tasks.webp';
+import betboomPassHomeSwitchPoster from '../assets/cases/betboom-pass-home-mobile-02-switch-poster.webp';
+import betboomPassHomeSwitchMov from '../assets/cases/betboom-pass-home-mobile-02-switch.mov';
+import betboomPassHomeSwitchWebm from '../assets/cases/betboom-pass-home-mobile-02-switch.webm';
+import betboomPassHomeWidget from '../assets/cases/betboom-pass-home-mobile-03-widget-open.webp';
 import betboomHubHomeProfile from '../assets/cases/betboom-hub-home-profile.webp';
 import betboomHubHomeHub from '../assets/cases/betboom-hub-home-hub.webp';
 import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png';
@@ -127,11 +131,34 @@ export const cases = [
       src: betboomCoverImage,
       alt: 'BetBoom PASS live desktop task page, in Russian',
     },
-    // Then the mobile app, in English: flat screens, as on the other covers.
+    /*
+     * Then the mobile app, in English: flat screens, as on the other covers.
+     * The three screens come in one by one, each in its own place on one
+     * canvas: the task list, a task detail where a conflicting task is
+     * switched (a clip, held for its 6.6 s; .mov is 1 px wider, a transparent
+     * column, as HEVC needs an even width), and the open “Your tasks” widget.
+     */
+    stackFrames: true,
     frames: [
       {
-        src: betboomPassHomeMobile,
-        alt: 'Three BetBoom PASS mobile screens: tasks, the PASS home with esports categories, and the PASS home with sports categories',
+        src: betboomPassHomeTasks,
+        alt: 'BetBoom PASS task page in the app: the MSI 2025 top task, the category bar and task cards',
+        hold: 3000,
+      },
+      {
+        src: betboomPassHomeSwitchPoster,
+        alt: 'A hockey task detail: starting another tier opens “These tasks conflict”, Switch swaps the tasks and a “Task switched” toast shows',
+        video: {
+          sources: [
+            { src: betboomPassHomeSwitchMov, type: 'video/quicktime; codecs="hvc1"' },
+            { src: betboomPassHomeSwitchWebm, type: 'video/webm; codecs="vp9"' },
+          ],
+        },
+        hold: 6600,
+      },
+      {
+        src: betboomPassHomeWidget,
+        alt: 'The “Your tasks” widget open over the task page: three active tasks with their rewards and progress',
       },
     ],
     href: '/betboom-pass',

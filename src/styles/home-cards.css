@@ -7,7 +7,7 @@
  * The screen frames are laid out as the Yandex News and Fluffy Chumb covers
  * (global.css): flat screens on a transparent ground, held to the bottom of the
  * slot, and from 1240px down set wider and held to the top, so the screens'
- * headers read.
+ * headers read. A frame that is a clip (the PASS switch) is laid out as a still.
  */
 .work-card .work-card__visual.work-card__visual--frames {
   border: 0;
@@ -41,7 +41,8 @@
   background: #121212;
 }
 
-.work-card__frame > img {
+.work-card__frame > img,
+.work-card__frame > video {
   position: absolute;
   left: 0;
   top: 0;
@@ -60,7 +61,8 @@
 }
 
 @media (max-width: 1240px) {
-  .work-card__frame > img {
+  .work-card__frame > img,
+.work-card__frame > video {
     object-position: center top;
   }
 }
@@ -74,7 +76,8 @@
     border-radius: 0;
   }
 
-  .work-card__frame > img {
+  .work-card__frame > img,
+.work-card__frame > video {
     left: 50%;
     width: min(100%, 820px);
     height: auto;
@@ -92,7 +95,8 @@
     border-radius: 0;
   }
 
-  .work-card__frame > img {
+  .work-card__frame > img,
+.work-card__frame > video {
     left: 50%;
     width: 150%;
     height: auto;

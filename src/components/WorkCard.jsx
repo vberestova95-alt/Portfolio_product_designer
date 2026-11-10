@@ -67,14 +67,18 @@ const COVER_HOLD_MS = { 'betboom-pass': 5000 };
 
 /*
  * A cover with `frames` shows them in turn after its own picture: each holds
- * for the hero pairs' beat (the cover itself `coverHold`), then the next fades
- * in over it. The count stands
- * while the card is off screen or the tab is hidden; with reduced motion the
- * first frame stays.
+ * for the hero pairs' beat (the cover itself `coverHold`, a frame its own
+ * `hold`), then the next fades in over it. The count stands while the card is
+ * off screen or the tab is hidden; with reduced motion the first frame stays.
+ * `seen` turns on the first time the card comes on screen: a frame's clip is
+ * not fetched before that.
  */
-function useFrameTurn(ref, count, coverHold = FRAME_HOLD_MS) {
+function useFrameTurn(ref, holds) {
   const [shown, setShown] = useState(0);
+  const [seen, setSeen] = useState(false);
   const shownRef = useRef(0);
+  const count = holds.length;
+  const beat = holds.join();
 
   useEffect(() => {
     const node = ref.current;
@@ -87,6 +91,7 @@ function useFrameTurn(ref, count, coverHold = FRAME_HOLD_MS) {
       return undefined;
     }
 
+    const holdOf = beat.split(',').map(Number);
     let onScreen = false;
     let timer = 0;
     const stop = () => {
@@ -101,11 +106,16 @@ function useFrameTurn(ref, count, coverHold = FRAME_HOLD_MS) {
           shownRef.current = (shownRef.current + 1) % count;
           setShown(shownRef.current);
           run();
-        }, shownRef.current === 0 ? coverHold : FRAME_HOLD_MS);
+        }, holdOf[shownRef.current]);
       }
     };
     const observer = new IntersectionObserver(([entry]) => {
       onScreen = entry.isIntersecting;
+
+      if (onScreen) {
+        setSeen(true);
+      }
+
       run();
     });
 
@@ -117,9 +127,65 @@ function useFrameTurn(ref, count, coverHold = FRAME_HOLD_MS) {
       observer.disconnect();
       document.removeEventListener('visibilitychange', run);
     };
-  }, [ref, count, coverHold]);
+  }, [ref, count, beat]);
 
-  return shown;
+  return { shown, seen };
+}
+
+/*
+ * A frame that is a clip: its poster until the card has been on screen, then
+ * the clip, which starts over each time the frame comes in and stops when it
+ * leaves. `sources` in the order to try: HEVC with alpha (.mov) for Safari,
+ * VP9 with alpha (WebM) for the rest. Muted is set on the element itself, as
+ * in CoverMotion, for Safari's autoplay check.
+ */
+function FrameClip({ frame, active, load }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const node = ref.current;
+
+    if (!node) {
+      return undefined;
+    }
+
+    node.muted = true;
+    node.defaultMuted = true;
+
+    if (!active) {
+      node.pause();
+      return undefined;
+    }
+
+    node.currentTime = 0;
+    const attempt = node.play();
+
+    if (attempt && typeof attempt.catch === 'function') {
+      attempt.catch(() => {});
+    }
+
+    return undefined;
+  }, [active, load]);
+
+  if (!load) {
+    return <img src={frame.src} alt={frame.alt} />;
+  }
+
+  return (
+    <video
+      ref={ref}
+      poster={frame.src}
+      aria-label={frame.alt}
+      muted
+      loop
+      playsInline
+      preload="auto"
+    >
+      {frame.video.sources.map((source) => (
+        <source key={source.src} src={source.src} type={source.type} />
+      ))}
+    </video>
+  );
 }
 
 function CoverStage({ item }) {
@@ -134,10 +200,26 @@ function CoverStage({ item }) {
   );
 }
 
+/*
+ * With `stackFrames` the frames after the cover build up instead of taking
+ * turns: each screen comes in next to the ones already shown (the exports
+ * share one canvas, every screen in its own place), and all of them leave
+ * together when the cover comes back.
+ */
 function CoverFrames({ item }) {
   const ref = useRef(null);
   const frames = [item.image, ...item.frames];
-  const shown = useFrameTurn(ref, frames.length, COVER_HOLD_MS[item.id]);
+  const holds = frames.map((frame, place) =>
+    place === 0 ? COVER_HOLD_MS[item.id] ?? FRAME_HOLD_MS : frame.hold ?? FRAME_HOLD_MS,
+  );
+  const { shown, seen } = useFrameTurn(ref, holds);
+  const [reduceMotion] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  );
+  const isShown = (place) =>
+    item.stackFrames && place > 0 ? place <= shown : place === shown;
 
   return (
     <div className="work-card__visual work-card__visual--frames" ref={ref}>
@@ -145,12 +227,14 @@ function CoverFrames({ item }) {
         <div
           key={frame.src}
           className={`work-card__frame${place === 0 && item.motion ? ' work-card__frame--stage' : ''}${
-            place === shown ? ' is-shown' : ''
+            isShown(place) ? ' is-shown' : ''
           }`}
-          aria-hidden={place === shown ? undefined : true}
+          aria-hidden={isShown(place) ? undefined : true}
         >
           {place === 0 && item.motion ? (
             <CoverStage item={item} />
+          ) : frame.video && !reduceMotion ? (
+            <FrameClip frame={frame} active={isShown(place)} load={seen} />
           ) : (
             <img src={frame.src} alt={frame.alt} />
           )}
