@@ -4506,7 +4506,8 @@ ol.case-bullet-list li::before {
 
 /*
  * A row of phones in the hero (the LinkedIn clip's row): one line, even gaps,
- * every phone whole and about half the plate's height, one soft shadow each.
+ * every phone whole and about 0.6 of the plate's height (0.52 read too small,
+ * user's edit 2026-11-10), one soft shadow each.
  * Each picture is a 1080×1440 showcase frame; the frame crops it to the phone
  * body (605×1260 at 237, 90), which also drops the shadow baked into the clips.
  */
@@ -4521,7 +4522,7 @@ ol.case-bullet-list li::before {
 
 .case-hero__phone {
   flex: 0 0 auto;
-  width: calc(var(--case-hero-media-h) * 0.52 * 605 / 1260);
+  width: calc(var(--case-hero-media-h) * 0.61 * 605 / 1260);
   filter: drop-shadow(0 8px 12px rgba(20, 20, 24, 0.3));
 }
 
