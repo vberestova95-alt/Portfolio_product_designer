@@ -2,17 +2,19 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import {
   ConceptFooter,
   ConceptHeader,
-  FluidShape,
+  CubeShape,
   WorkIndex,
   projectFrames,
 } from '../components/AiConcept.jsx';
+import { SiteHeader } from '../components/SiteHeader.jsx';
 import { attachAiVortex } from '../lib/aiVortex.js';
 import '../styles/aiConcept.css';
 
 /*
- * The AI landing, concept version: the work spirals out of the fluid shape on
- * the first screen; then how I run agents set in wide serif capitals, the
- * numbers, and the numbered index of the work on black.
+ * The AI landing: the work spirals out of the blue cube on the first screen;
+ * then how I run agents, the numbers, and the numbered index of the work on
+ * black. Opened by the main site's AI projects link and, on its own, as the
+ * home of the AI subdomain (`standalone`).
  */
 export function AiLandingConcept({ page, projects, caseStudies, profile, standalone = false }) {
   const canvasRef = useRef(null);
@@ -39,10 +41,20 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
     <div className="ai-concept ai-concept--landing">
       <section className="ai-hero">
         <canvas className="ai-hero__vortex" ref={canvasRef} aria-hidden="true" />
-        <ConceptHeader profile={profile} current="landing" standalone={standalone} />
+        {/* Reached from the main site, the page keeps the site's own header;
+            on the subdomain it is the home, with a header of its own. */}
+        {standalone ? (
+          <ConceptHeader profile={profile} />
+        ) : (
+          <div className="ai-topbar">
+            <div className="case-page__shell">
+              <SiteHeader profile={profile} />
+            </div>
+          </div>
+        )}
 
         <div className="ai-hero__center">
-          <FluidShape shapeRef={shapeRef} className="ai-hero__shape" />
+          <CubeShape shapeRef={shapeRef} className="ai-hero__shape" />
           <div className="ai-hero__copy" ref={copyRef}>
             <p className="ai-hero__eyebrow">{hero.eyebrow}</p>
             <h1>
@@ -60,7 +72,7 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
         </p>
       </section>
 
-      <section className="ai-manifesto" aria-labelledby="ai-how">
+      <section className="ai-manifesto" id="how" aria-labelledby="ai-how">
         <p className="ai-label" id="ai-how">
           {pipeline.title}
         </p>
@@ -109,10 +121,6 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
           </header>
 
           <WorkIndex items={projects} />
-
-          <a className="ai-pill ai-pill--light" href="/ai-projects">
-            All AI projects
-          </a>
         </div>
 
         <ConceptFooter profile={profile} />

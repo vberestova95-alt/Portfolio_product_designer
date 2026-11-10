@@ -1,13 +1,13 @@
-import React, { useRef } from 'react';
-import fluidShape from '../assets/ai/fluid-shape.mp4';
-import fluidShapePoster from '../assets/ai/fluid-shape-poster.jpg';
+import React, { useEffect, useRef } from 'react';
+import { attachAiCube } from '../lib/aiCube.js';
+import { BrandLogo } from './BrandLogo.jsx';
 import { PrivacyLinks } from './ConsentBanner.jsx';
 
 /*
- * Shared parts of the AI landing concept (/ai-portfolio and /ai-projects):
- * a quiet header, the blue fluid shape, the numbered work index and the
- * closing line. The look borrows from editorial studio sites — a light grey
- * page, wide-tracked serif capitals, small grotesk labels, a black index.
+ * Parts of the AI landing (/ai-portfolio, /ai-projects and the AI subdomain):
+ * a quiet header with the site's mark, the blue cube, the numbered work index
+ * and the closing line. The look borrows from editorial studio sites — a light
+ * grey page, small caps labels, a black index — set in the site's own faces.
  */
 
 const IMAGE_PATTERN = /\.(webp|jpe?g|png|avif)(\?.*)?$/i;
@@ -35,52 +35,39 @@ export function projectFrames(item, caseStudy, limit = 4) {
   return [...new Set(frames)].slice(0, limit);
 }
 
-export function FluidShape({ className = '', shapeRef }) {
+/* The blue cube in its clear shell (lib/aiCube.js), over a plain square fallback. */
+export function CubeShape({ className = '', shapeRef }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => attachAiCube(canvasRef.current), []);
+
   return (
     <div className={`ai-shape ${className}`} ref={shapeRef} aria-hidden="true">
-      <video
-        className="ai-shape__video"
-        src={fluidShape}
-        poster={fluidShapePoster}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-      />
+      <canvas className="ai-shape__canvas" ref={canvasRef} />
     </div>
   );
 }
 
-export function ConceptHeader({ profile, current, standalone, tone = 'light' }) {
+/* The subdomain's header: the site's mark, the page's anchors, a way to write. */
+export function ConceptHeader({ profile }) {
   const links = [
-    { key: 'landing', href: standalone ? '/' : '/ai-portfolio', label: 'AI portfolio' },
-    { key: 'projects', href: '/ai-projects', label: 'Projects' },
+    { key: 'how', href: '#how', label: 'How I work' },
+    { key: 'work', href: '#work', label: 'Work' },
     { key: 'contact', href: `mailto:${profile.email}`, label: 'Contact' },
   ];
 
   return (
-    <header className={`ai-header ai-header--${tone}`}>
-      <a className="ai-header__mark" href={links[0].href}>
-        <span>{profile.name}</span>
-        <span className="ai-header__role">{profile.title} · AI</span>
+    <header className="ai-header">
+      <a className="ai-header__mark" href="/">
+        <BrandLogo name={profile.name} />
       </a>
 
       <nav className="ai-header__nav" aria-label="AI portfolio">
         {links.map((link) => (
-          <a
-            key={link.key}
-            href={link.href}
-            aria-current={link.key === current ? 'page' : undefined}
-          >
+          <a key={link.key} href={link.href}>
             {link.label}
           </a>
         ))}
-        {standalone ? null : (
-          <a className="ai-header__out" href="/">
-            Main site <span aria-hidden="true">↗</span>
-          </a>
-        )}
       </nav>
     </header>
   );

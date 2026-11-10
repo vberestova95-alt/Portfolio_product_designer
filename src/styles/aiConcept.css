@@ -1,13 +1,11 @@
 /*
- * AI landing concept (/ai-portfolio, /ai-projects).
- * Light grey paper that matches the fluid shape's own backdrop, wide-tracked
- * serif capitals for statements, small grotesk caps for labels, black for the
- * work. Everything is scoped under .ai-concept so the rest of the site keeps
- * its look.
+ * The AI landing (/ai-portfolio, /ai-projects, the AI subdomain).
+ * A light grey paper, small caps labels, black for the work — set in the
+ * site's own face: Manrope, with the site's tight heading tracking. Everything is
+ * scoped under .ai-concept so the rest of the site keeps its look.
  */
 
 .ai-concept {
-  /* The shape video's backdrop runs from #d4d9d9 at the top to #eaeeef. */
   --ai-paper: #e3e7e7;
   --ai-ink: #0b0c0c;
   --ai-mute: rgba(11, 12, 12, 0.45);
@@ -16,9 +14,8 @@
   --ai-night-ink: #ecefee;
   --ai-night-mute: rgba(236, 239, 238, 0.5);
   --ai-night-line: rgba(236, 239, 238, 0.14);
-  --ai-blue: #1d3bff;
-  --ai-serif: 'Instrument Serif', 'Times New Roman', serif;
-  --ai-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --ai-blue: #2550ff;
+  --ai-sans: 'Manrope', sans-serif;
   --ai-gutter: clamp(16px, 2vw, 28px);
 
   min-height: 100vh;
@@ -26,11 +23,6 @@
   color: var(--ai-ink);
   font-family: var(--ai-sans);
   overflow-x: clip;
-}
-
-.ai-concept--projects {
-  background: var(--ai-night);
-  color: var(--ai-night-ink);
 }
 
 .ai-concept a {
@@ -46,7 +38,7 @@
 .ai-label {
   margin: 0;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -58,7 +50,7 @@
   inset: 0 0 auto;
   z-index: 20;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
   padding: var(--ai-gutter);
@@ -69,54 +61,31 @@
   pointer-events: auto;
 }
 
-.ai-header__mark {
-  display: grid;
-  gap: 2px;
-  font-family: var(--ai-serif);
-  font-size: clamp(24px, 2.2vw, 34px);
-  line-height: 0.95;
-  letter-spacing: -0.01em;
-}
-
-.ai-header__role {
-  font-family: var(--ai-sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.55;
-}
-
 .ai-header__nav {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 8px 28px;
-  padding-top: 6px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .ai-header__nav a {
-  position: relative;
+  transition: color 0.2s ease;
 }
 
-.ai-header__nav a[aria-current='page']::before {
-  content: '';
+.ai-header__nav a:hover {
+  color: var(--ai-blue);
+}
+
+/* The main site's header, laid over the hero the way the subdomain's is. */
+.ai-topbar {
   position: absolute;
-  top: 50%;
-  left: -12px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
-  transform: translateY(-50%);
-}
-
-.ai-header__out {
-  opacity: 0.55;
+  inset: 0 0 auto;
+  z-index: 20;
+  padding-top: 24px;
 }
 
 /* ---- Pill ---- */
@@ -125,13 +94,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 34px;
-  padding: 0 16px;
+  min-height: 36px;
+  padding: 0 18px;
   border-radius: 999px;
   background: var(--ai-ink);
   color: var(--ai-paper) !important;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   transition: transform 0.25s ease, background 0.25s ease;
 }
 
@@ -140,32 +109,36 @@
   background: var(--ai-blue);
 }
 
-.ai-pill--light {
-  background: var(--ai-night-ink);
-  color: var(--ai-night) !important;
-}
-
-/* ---- Fluid shape ---- */
+/* ---- Cube ---- */
 
 .ai-shape {
   position: relative;
-  aspect-ratio: 3 / 4;
-  /* The video's own backdrop fades into the page from its middle out. */
-  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
-  mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+  aspect-ratio: 1;
 }
 
-.ai-shape__video {
+/* Shown until WebGL draws, and instead of it where there is none. */
+.ai-shape::before {
+  content: '';
+  position: absolute;
+  inset: 30%;
+  border-radius: 22%;
+  background: linear-gradient(145deg, #3d63ff, #0a1a9c);
+  transform: rotate(-12deg);
+  transition: opacity 0.4s ease;
+}
+
+.ai-shape:has(.is-live)::before {
+  opacity: 0;
+}
+
+.ai-shape__canvas {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* Lifts the clip's greys onto the page's paper. */
-  mix-blend-mode: multiply;
-  filter: brightness(1.04) contrast(1.04);
 }
 
-/* ---- Landing hero ---- */
+/* ---- Hero ---- */
 
 .ai-hero {
   position: relative;
@@ -190,8 +163,8 @@
 }
 
 .ai-hero__shape {
-  width: clamp(180px, 20vw, 300px);
-  margin-top: -10vh;
+  width: clamp(220px, 22vw, 340px);
+  margin-top: -11vh;
 }
 
 .ai-hero__copy {
@@ -200,7 +173,7 @@
   display: grid;
   justify-items: center;
   gap: 18px;
-  width: min(560px, calc(100% - 48px));
+  width: min(580px, calc(100% - 48px));
   text-align: center;
   pointer-events: auto;
 }
@@ -208,7 +181,7 @@
 .ai-hero__eyebrow {
   margin: 0;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ai-mute);
@@ -216,10 +189,10 @@
 
 .ai-hero__copy h1 {
   margin: 0;
-  font-size: clamp(19px, 1.5vw, 23px);
-  font-weight: 600;
+  font-size: clamp(20px, 1.6vw, 25px);
+  font-weight: 700;
   line-height: 1.18;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .ai-hero__copy h1 span {
@@ -233,7 +206,7 @@
   justify-content: space-between;
   margin: 0;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ai-mute);
@@ -250,13 +223,13 @@
 }
 
 .ai-manifesto__lead {
-  max-width: 980px;
+  max-width: 1040px;
   margin: 0;
-  font-family: var(--ai-serif);
-  font-size: clamp(30px, 4.2vw, 64px);
-  line-height: 1.02;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: clamp(32px, 4.4vw, 68px);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
 }
 
 .ai-steps {
@@ -273,37 +246,35 @@
   grid-template-columns: 56px minmax(0, 1fr) minmax(0, 340px);
   align-items: baseline;
   gap: 24px;
-  padding: 22px 0;
+  padding: 24px 0;
   border-bottom: 1px solid var(--ai-line);
   text-align: left;
 }
 
 .ai-step__index {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--ai-mute);
 }
 
 .ai-step__title {
   margin: 0;
-  font-family: var(--ai-serif);
   font-size: clamp(26px, 3vw, 46px);
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: letter-spacing 0.5s ease, color 0.3s ease;
+  letter-spacing: -0.04em;
+  transition: color 0.3s ease, transform 0.4s ease;
 }
 
 .ai-step:hover .ai-step__title {
-  letter-spacing: 0.16em;
   color: var(--ai-blue);
+  transform: translateX(8px);
 }
 
 .ai-step__text {
   margin: 0;
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.5;
   color: var(--ai-mute);
 }
 
@@ -322,7 +293,7 @@
   border: 1px solid var(--ai-line);
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* ---- Dark part: numbers, work, footer ---- */
@@ -334,11 +305,6 @@
   border-radius: clamp(20px, 2.4vw, 36px) clamp(20px, 2.4vw, 36px) 0 0;
   background: var(--ai-night);
   color: var(--ai-night-ink);
-}
-
-.ai-dark--flush {
-  border-radius: 0;
-  padding-top: clamp(48px, 6vw, 96px);
 }
 
 .ai-dark .ai-label {
@@ -367,17 +333,16 @@
 }
 
 .ai-numbers__row strong {
-  font-family: var(--ai-serif);
-  font-size: clamp(56px, 6.4vw, 104px);
-  font-weight: 400;
+  font-size: clamp(52px, 6vw, 96px);
+  font-weight: 700;
   line-height: 0.9;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.055em;
 }
 
 .ai-numbers__row span {
   max-width: 220px;
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.45;
   color: var(--ai-night-mute);
 }
 
@@ -391,16 +356,6 @@
   display: grid;
   gap: 16px;
   max-width: 860px;
-}
-
-.ai-work__statement {
-  margin: 0;
-  font-family: var(--ai-serif);
-  font-size: clamp(36px, 5vw, 76px);
-  font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 
 .ai-work__lead {
@@ -430,29 +385,29 @@
   grid-template-columns: 64px minmax(0, 1fr) minmax(0, 300px) 24px;
   align-items: baseline;
   gap: 20px;
-  padding: 20px 0;
+  padding: 22px 0;
   border-bottom: 1px solid var(--ai-night-line);
   transition: padding 0.35s ease, color 0.3s ease;
 }
 
 .ai-index__number {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--ai-night-mute);
 }
 
 .ai-index__title {
-  font-family: var(--ai-serif);
   font-size: clamp(30px, 4vw, 64px);
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: -0.045em;
 }
 
 .ai-index__meta {
   display: grid;
   gap: 4px;
   font-size: 12px;
+  font-weight: 500;
   line-height: 1.4;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -520,11 +475,10 @@
 }
 
 .ai-footer__line {
-  font-family: var(--ai-serif);
-  font-size: clamp(40px, 8vw, 132px);
-  line-height: 0.92;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: clamp(44px, 8vw, 132px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.055em;
   transition: color 0.3s ease;
 }
 
@@ -539,7 +493,7 @@
   justify-content: space-between;
   gap: 16px 32px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ai-night-mute);
@@ -574,144 +528,21 @@
   cursor: pointer;
 }
 
-/* ---- Projects ring ---- */
-
-.ai-ring {
-  position: relative;
-  height: 100svh;
-  min-height: 640px;
-  overflow: hidden;
-}
-
-.ai-ring__stage {
-  position: absolute;
-  inset: 0;
-}
-
-.ai-ring__frame {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: block;
-  overflow: hidden;
-  background: #151515;
-  transition: opacity 0.4s ease, filter 0.4s ease;
-  will-change: transform;
-}
-
-.ai-ring__frame img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 11;
-  object-fit: cover;
-  object-position: top center;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.ai-ring__frame:hover img,
-.ai-ring__frame:focus-visible img {
-  transform: scale(1.06);
-}
-
-.ai-ring__frame.is-dim {
-  opacity: 0.08;
-  filter: grayscale(1);
-}
-
-.ai-ring__center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 3000;
-  display: grid;
-  justify-items: center;
-  width: min(360px, 60vw);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.ai-ring__shape {
-  width: clamp(70px, 7vw, 110px);
-  /* On black the clip's light backdrop must go, so the shape is inverted out. */
-  -webkit-mask-image: radial-gradient(closest-side, #000 50%, transparent 92%);
-  mask-image: radial-gradient(closest-side, #000 50%, transparent 92%);
-  transition: opacity 0.3s ease;
-}
-
-.ai-ring__shape .ai-shape__video {
-  mix-blend-mode: normal;
-  filter: invert(1) hue-rotate(180deg) brightness(1.1) contrast(1.3);
-}
-
-.ai-ring__caption {
-  position: absolute;
-  top: 50%;
-  display: grid;
-  justify-items: center;
-  gap: 8px;
-  margin: 0;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(-50%);
-  transition: opacity 0.3s ease;
-}
-
-.ai-ring__caption.is-on {
-  opacity: 1;
-}
-
-.ai-ring__stage[data-active]:not([data-active='']) .ai-ring__shape {
-  opacity: 0;
-}
-
-.ai-ring__title {
-  font-family: var(--ai-serif);
-  font-size: clamp(28px, 3vw, 46px);
-  line-height: 1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.ai-ring__category {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ai-night-mute);
-}
-
-.ai-ring__hint {
-  position: absolute;
-  inset: auto var(--ai-gutter) var(--ai-gutter);
-  margin: 0;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-align: center;
-  text-transform: uppercase;
-  color: var(--ai-night-mute);
-}
-
 /* ---- Small screens ---- */
 
 @media (max-width: 760px) {
-  .ai-header__role,
-  .ai-header__out {
-    display: none;
-  }
-
   .ai-header__nav {
     gap: 6px 18px;
     font-size: 11px;
   }
 
   .ai-hero__shape {
-    width: 46vw;
+    width: 58vw;
     margin-top: -16vh;
   }
 
   .ai-hero__copy {
-    top: calc(50% + 18vw);
+    top: calc(50% + 20vw);
   }
 
   .ai-step {
@@ -744,8 +575,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ai-step__title,
-  .ai-index__row,
-  .ai-ring__frame img {
+  .ai-index__row {
     transition: none;
   }
 }
