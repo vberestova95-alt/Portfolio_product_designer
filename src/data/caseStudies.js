@@ -1309,9 +1309,10 @@ export const betboomPassCaseStudy = {
             src: betboomDesktopAfterVideo,
             ratio: '1600 / 900',
             poster: betboomDesktopAfterPoster,
-            alt: 'Desktop task page after the redesign: the MSI 2025 hero, a scroll down to the category bar and the task grid, and hovers over categories',
+            alt: 'Desktop task page after the redesign: the MSI 2025 hero, a scroll down to the category bar and the task grid, hovers over categories, and the “Your tasks” widget opening on the right',
           },
-          caption: 'Desktop: category bar and task grid.',
+          caption: 'Desktop: category bar, task grid and the “Your tasks” widget opening on the right.',
+          credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
         },
         {
           type: 'blocks',
