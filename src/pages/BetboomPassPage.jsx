@@ -521,16 +521,16 @@ function BentoGrid({ part }) {
  * One line under a picture: what changed and why. `credit` names work that is
  * not mine (another designer's UI in the frame) and sits on its own line.
  */
-function MediaCaption({ caption, credit }) {
+function MediaCaption({ caption, credit, as: Tag = 'p' }) {
   if (!caption && !credit) {
     return null;
   }
 
   return (
-    <p className="case-media-caption">
+    <Tag className="case-media-caption">
       {caption}
       {credit ? <span className="case-media-caption__credit">{credit}</span> : null}
-    </p>
+    </Tag>
   );
 }
 
@@ -554,9 +554,7 @@ function PhoneRow({ part }) {
           </div>
         ))}
       </div>
-      {part.caption ? (
-        <figcaption className="case-media-caption">{part.caption}</figcaption>
-      ) : null}
+      <MediaCaption caption={part.caption} credit={part.credit} as="figcaption" />
     </figure>
   );
 }

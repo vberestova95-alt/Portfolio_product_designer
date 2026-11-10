@@ -49,7 +49,11 @@ const IMAGES = {
   'swap-return': { file: '11-switch-return-task.png', phone: true },
   'swap-switched': { file: '12-switch-task-switched.png', phone: true },
   'swap-cancel-limit': { file: '13-switch-cancel-limit-12h.png', phone: true },
-  'tasks-before': { file: '14-tasks-before-asis.png', phone: true },
+  // The chain task before the redesign, r2: the same screen with its tag row
+  // rebuilt (the timer was cut), then the expanded and collapsed chain.
+  'tasks-before': { file: 'ch-01-chain-detail-prophets-r2.png', phone: true },
+  'chain-secret-tasks': { file: 'ch-02-chain-secret-tasks-r2.png', phone: true },
+  'chain-collapsed': { file: 'ch-03-chain-collapsed-r2.png', phone: true },
   'tasks-after': { file: '15-tasks-after-anim-v3-poster.png', phone: true },
   'top-carousel': { file: '16-top-carousel-v2.png', phone: true },
   'category-bar-1': { file: '17-rubricator-step1-v2.png', phone: true },

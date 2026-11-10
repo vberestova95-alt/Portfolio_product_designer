@@ -29,6 +29,8 @@ import betboomSwapConflict from '../assets/cases/betboom/swap-conflict.webp';
 import betboomSwapSwitched from '../assets/cases/betboom/swap-switched.webp';
 import betboomSwapCancelLimit from '../assets/cases/betboom/swap-cancel-limit.webp';
 import betboomTasksBefore from '../assets/cases/betboom/tasks-before.webp';
+import betboomChainSecretTasks from '../assets/cases/betboom/chain-secret-tasks.webp';
+import betboomChainCollapsed from '../assets/cases/betboom/chain-collapsed.webp';
 import betboomTasksAfter from '../assets/cases/betboom/tasks-after.webp';
 import betboomCategoryBar2 from '../assets/cases/betboom/category-bar-2.webp';
 import betboomOnboardingWelcome from '../assets/cases/betboom/onboarding-welcome.webp';
@@ -698,18 +700,46 @@ export const betboomPassCaseStudy = {
             'An unknown audience. We did not know how classic sports fans would react to the changes.',
             'Tasks that conflict. So many new tasks brought limits. Some tasks conflict: one cannot be done while another is active.',
             'Cards without the facts. The picture and the title took most of the card. It needed more of the information people use to choose a task.',
+            'Chains nobody finished. A chain task ran 12 steps, and its next steps and rewards were hidden. Users stopped before the final reward.',
           ],
         },
         {
-          // TODO(p32): the frame shows the chain task sheet; the disabled button itself is below the fold — designer to re-export if needed.
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Why chains did not scale',
+              paragraphs: [
+                'A chain is one task split into 12 steps. Each step is a separate task with its own progress. The widget shows only the current step.',
+                'The next steps were locked as “Secret task”. In one chain type, the steps showed no reward at all, only the total at the end. Users did not reach the final reward and did not see every reward in the task.',
+                'Each new chain meant 12 more steps to track and its own rule for showing the reward. With many new tasks planned, the mechanic could not grow with the catalog.',
+              ],
+            },
+          ],
+        },
+        {
           type: 'phoneRow',
+          label: 'Chain tasks before the redesign',
           items: [
             {
               src: betboomTasksBefore,
-              alt: 'Before: a chain task sheet, 3 of 12 done, with a 2 000 token reward',
+              alt: 'Before: a chain task sheet, “The prophets were right”, 3 of 12 done, with a 2 000 token reward',
+              caption: '3 of 12 done, only the total reward',
+            },
+            {
+              src: betboomChainSecretTasks,
+              alt: 'Chain task “Tennis player” expanded: level Amateur 0/6 done, the first step “Place bets from 1 000 ₽” for +250, three locked “Secret task” steps, a 7 880 total and a disabled “You’re already doing this task” button',
+              caption: 'Next steps locked as “Secret task”',
+            },
+            {
+              src: betboomChainCollapsed,
+              alt: 'The same chain collapsed: Amateur 0/6 done, the condition, a 7 880 total and a disabled “You’re already doing this task” button; the dimmed task page with the category bar behind the sheet',
+              caption: 'Collapsed: no steps, no step rewards, a disabled button',
             },
           ],
           caption: 'Before: a chain task on a second visit led to a disabled button and no way to swap the task.',
+          // The third frame shows the category bar behind the sheet.
+          credit: 'Category bar UI: a second designer.',
         },
       ],
     },
@@ -882,6 +912,8 @@ export const betboomPassCaseStudy = {
             'I5 · Confirmed in tests. A newcomer did not understand the in-game currency.',
             'I6 · Confirmed by the AS IS audit. A task conflict reads as a bug: a disabled button and no explanation.',
             'I7 · Hypothesis. More tasks mean more repetition, and the section starts to read as noise.',
+            // TODO(p32): what showed the drop-off (analytics, tests, support or the team) is open — the editor's question 1.
+            'I8 · AS IS audit. Chains run 12 steps and hide the next rewards. Users stop before the final reward.',
           ],
         },
         {
@@ -1112,8 +1144,9 @@ export const betboomPassCaseStudy = {
               heading: 'D2. Levels',
               // TODO(p32): D2 is marked hypothesis — no research behind it unless the user has data; no frame yet.
               paragraphs: [
-                'From I7 · hypothesis.',
+                'From I7, I8 · hypothesis.',
                 'A levels mechanic with difficulty 1–3+. It gives the scenario a shape people can follow. The catalog grows without the interface growing with it.',
+                'In the new concept, the final reward became optional. Each step pays on its own, so finishing the whole chain is up to the user.',
               ],
             },
             {
