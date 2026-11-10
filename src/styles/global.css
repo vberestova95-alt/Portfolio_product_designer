@@ -3740,6 +3740,18 @@ ol.case-bullet-list li::before {
   box-shadow: 0 0 0 1px var(--line);
 }
 
+/*
+ * The hub's screens are cut-outs on the white row plate, and the light-theme
+ * hub melted into it. A hairline that follows each screen's own corners (a
+ * tight drop-shadow) goes under the row's soft shadow, so every screen, light
+ * or dark, keeps an edge without a plate of its own.
+ */
+.case-page--betboom-gamification-hub .case-phone-row__item img {
+  filter:
+    drop-shadow(0 0 0.75px rgba(13, 17, 23, 0.42))
+    drop-shadow(0 12px 24px rgba(13, 17, 23, 0.14));
+}
+
 /* Some exported Yandex boards contain a dark matte in their outermost pixels. */
 .case-page--yandex-turkey .case-hero__media,
 .case-page--yandex-turkey .case-feature-media,
