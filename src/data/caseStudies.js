@@ -856,7 +856,9 @@ export const betboomPassCaseStudy = {
               media: {
                 type: 'video',
                 src: betboomAbTestRuVideo,
-                ratio: '1600 / 924',
+                // The RU recording is 1600×924: held to the EN take's 16:9 so the
+                // two clips end on one line; the 24 px trimmed are card bottoms.
+                ratio: '1600 / 900',
                 alt: 'The original A/B test recording, in Russian: classic sports task cards in the existing esports catalog',
               },
               caption: 'Original, in Russian.',

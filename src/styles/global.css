@@ -4442,6 +4442,13 @@ ol.case-bullet-list li::before {
   margin: 0;
 }
 
+/* The two takes share one ratio (set in the data); a clip a few pixels taller
+   fills it from the top rather than leaving bars at the sides. */
+.case-media-pair__item video {
+  object-fit: cover;
+  object-position: center top;
+}
+
 @media (max-width: 640px) {
   .case-media-pair__items {
     grid-template-columns: minmax(0, 1fr);
