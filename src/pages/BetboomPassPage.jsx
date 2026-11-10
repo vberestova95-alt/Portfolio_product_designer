@@ -755,7 +755,7 @@ function CaseShowcase({ showcase }) {
                     }
               }
             >
-              {item.teaser.text}
+              <span>{item.teaser.text}</span>
               <span aria-hidden="true">{item.teaser.href ? '→' : '↓'}</span>
             </a>
           ))}
@@ -1199,7 +1199,7 @@ function NextProjects({ items }) {
             <span className="case-next__dot" aria-hidden="true" />
             <span className="case-next__title">{item.title}</span>
             <span className="case-next__cta">
-              {text.openCase}
+              <span className="case-next__label">{text.openCase}</span>
               <span className="case-next__arrow" aria-hidden="true">
                 →
               </span>

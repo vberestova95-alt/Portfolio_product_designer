@@ -1141,6 +1141,21 @@ html[lang='ru'] .error-page__visual > span {
   line-height: 1.4;
 }
 
+/*
+ * Manrope sits low in its line box (a tall ascender, a short descender), so a
+ * pill with even padding shows the caps under its middle — by a pixel in
+ * Safari. Where the browser can, the line is trimmed to the caps and the
+ * baseline, and the padding takes back the trimmed space (half of 1.4em minus
+ * the 0.72em cap height): the pill keeps its height, the caps sit dead centre.
+ */
+@supports (text-box: trim-both cap alphabetic) {
+  .contact-link,
+  .home-footer__links a {
+    padding-block: calc(10px + 0.34em);
+    text-box: trim-both cap alphabetic;
+  }
+}
+
 .contact-link,
 .home-footer__links a {
   transition:
@@ -2133,6 +2148,29 @@ html[lang='ru'] .error-page__visual > span {
   .mosaic-link__label {
     padding: 5px 8px;
     font-size: 11px;
+  }
+}
+
+/* Caps centred in the chip, as in the contact pills: the name and the arrow
+   are trimmed to caps and baseline, and each chip size takes back half of
+   1.2em minus the cap height in its padding, so it keeps its height. */
+@supports (text-box: trim-both cap alphabetic) {
+  .mosaic-link__label {
+    padding-block: calc(7px + 0.24em);
+  }
+
+  .mosaic-link__label > span {
+    text-box: trim-both cap alphabetic;
+  }
+
+  .mosaic-link--small .mosaic-link__label {
+    padding-block: calc(4px + 0.24em);
+  }
+
+  @media (max-width: 640px) {
+    .mosaic-link__label {
+      padding-block: calc(5px + 0.24em);
+    }
   }
 }
 
@@ -4813,6 +4851,17 @@ ol.case-bullet-list li::before {
   transition: background 160ms ease;
 }
 
+/* Caps centred in the pill, as in the contact pills (same height). */
+@supports (text-box: trim-both cap alphabetic) {
+  .case-showcase__teaser {
+    padding-block: calc(12px + 0.29em);
+  }
+
+  .case-showcase__teaser > span {
+    text-box: trim-both cap alphabetic;
+  }
+}
+
 .case-showcase__teaser:hover {
   background: rgba(255, 255, 255, 0.08);
 }
@@ -5028,6 +5077,14 @@ ol.case-bullet-list li::before {
   padding: 10px 16px;
   background: transparent;
   cursor: pointer;
+}
+
+/* Caps centred in the tab, as in the contact pills; the tab stays 42px tall. */
+@supports (text-box: trim-both cap alphabetic) {
+  .case-ba-tab {
+    padding-block: calc(21px - 0.36em);
+    text-box: trim-both cap alphabetic;
+  }
 }
 
 .case-ba-tab.is-active {
@@ -6002,6 +6059,11 @@ ol.case-bullet-list li::before {
   transition: color 200ms ease;
 }
 
+/* The label trimmed to its caps, so they centre on the arrow's circle. */
+.case-next__label {
+  text-box: trim-both cap alphabetic;
+}
+
 .case-next__arrow {
   display: grid;
   place-items: center;
@@ -6928,6 +6990,14 @@ ol.case-bullet-list li::before {
   transition:
     background-color 160ms ease,
     color 160ms ease;
+}
+
+/* Caps centred in the pill, as in the contact pills (same height). */
+@supports (text-box: trim-both cap alphabetic) {
+  .consent-banner__button {
+    padding-block: calc(10px + 0.34em);
+    text-box: trim-both cap alphabetic;
+  }
 }
 
 .consent-banner__button:hover,
