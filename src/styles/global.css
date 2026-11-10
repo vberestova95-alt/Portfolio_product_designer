@@ -1607,10 +1607,22 @@ html[lang='ru'] .error-page__visual > span {
   overflow: hidden;
 }
 
+/*
+ * The clip is taller than its box and was cut by the box's own edge, exactly
+ * where the fade ends. While the cover frame lifts in (home-cards.css), the cut
+ * and the fade's edge land on different subpixels, and the clip's bright row
+ * showed through as a thin line over the category bar. Fitted to the box and
+ * cut 3% short, the clip now ends inside the fade's opaque band (the last 8.3%),
+ * over the same #121212 ground; the picture itself is unchanged (it was scaled
+ * by width before as well).
+ */
 .cover-stage__motion video {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  clip-path: inset(0 0 3% 0);
 }
 
 .cover-stage__fade {

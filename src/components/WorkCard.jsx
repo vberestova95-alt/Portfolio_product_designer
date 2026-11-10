@@ -61,14 +61,20 @@ function CoverMotion({ motion }) {
 // How long a cover frame holds: the beat of the hero's pairs (PAIR_HOLD_MS).
 const FRAME_HOLD_MS = 7000;
 
+// Covers whose own picture holds for less before the frames: BetBoom PASS goes
+// on to the mobile app 2 s sooner (user's edit, 2026-11-10).
+const COVER_HOLD_MS = { 'betboom-pass': 5000 };
+
 /*
  * A cover with `frames` shows them in turn after its own picture: each holds
- * for the hero pairs' beat, then the next fades in over it. The count stands
+ * for the hero pairs' beat (the cover itself `coverHold`), then the next fades
+ * in over it. The count stands
  * while the card is off screen or the tab is hidden; with reduced motion the
  * first frame stays.
  */
-function useFrameTurn(ref, count) {
+function useFrameTurn(ref, count, coverHold = FRAME_HOLD_MS) {
   const [shown, setShown] = useState(0);
+  const shownRef = useRef(0);
 
   useEffect(() => {
     const node = ref.current;
@@ -92,9 +98,10 @@ function useFrameTurn(ref, count) {
 
       if (onScreen && !document.hidden) {
         timer = window.setTimeout(() => {
-          setShown((frame) => (frame + 1) % count);
+          shownRef.current = (shownRef.current + 1) % count;
+          setShown(shownRef.current);
           run();
-        }, FRAME_HOLD_MS);
+        }, shownRef.current === 0 ? coverHold : FRAME_HOLD_MS);
       }
     };
     const observer = new IntersectionObserver(([entry]) => {
@@ -110,7 +117,7 @@ function useFrameTurn(ref, count) {
       observer.disconnect();
       document.removeEventListener('visibilitychange', run);
     };
-  }, [ref, count]);
+  }, [ref, count, coverHold]);
 
   return shown;
 }
@@ -130,7 +137,7 @@ function CoverStage({ item }) {
 function CoverFrames({ item }) {
   const ref = useRef(null);
   const frames = [item.image, ...item.frames];
-  const shown = useFrameTurn(ref, frames.length);
+  const shown = useFrameTurn(ref, frames.length, COVER_HOLD_MS[item.id]);
 
   return (
     <div className="work-card__visual work-card__visual--frames" ref={ref}>
