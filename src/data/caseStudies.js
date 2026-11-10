@@ -631,8 +631,7 @@ export const betboomPassCaseStudy = {
   // Clips in production order; each hands over when it ends, a step can be
   // picked by hand. `duration` is the clip's length, for the progress bar.
   showcase: {
-    label: 'In production',
-    title: 'What is live now',
+    title: 'Result',
     frames: [
       {
         label: 'Tasks and top',
