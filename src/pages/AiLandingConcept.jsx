@@ -1,45 +1,89 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import {
-  ConceptFooter,
-  ConceptHeader,
-  CubeShape,
-  WorkIndex,
-  projectFrames,
-} from '../components/AiConcept.jsx';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { ConceptFooter, ConceptHeader, CubeShape, projectFrames } from '../components/AiConcept.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
 import { attachAiVortex } from '../lib/aiVortex.js';
 import '../styles/aiConcept.css';
 
+// How long each project stays in the middle before the next one comes up.
+const CYCLE_MS = 5000;
+
+// "~24 h" → ["~24", "h"]: the figure set large, its unit small beside it.
+function splitValue(value) {
+  const match = /^(~?[\d.,]+\+?)\s*(.*)$/.exec(value);
+  return match ? [match[1], match[2]] : [value, ''];
+}
+
 /*
- * The AI landing: the work spirals out of the blue cube on the first screen;
- * then how I run agents, the numbers, and the numbered index of the work on
- * black. Opened by the main site's AI projects link and, on its own, as the
- * home of the AI subdomain (`standalone`).
+ * The AI landing: the work spirals out of the blue cube on the first screen,
+ * and the frames are the way into the cases — pointing at one names its
+ * project in the middle, a click opens it. With nothing pointed at, the middle
+ * goes through the projects on its own. Then how I run agents and the numbers.
+ * Opened by the main site's AI projects link and, on its own, as the home of
+ * the AI subdomain (`standalone`).
  */
 export function AiLandingConcept({ page, projects, caseStudies, profile, standalone = false }) {
   const canvasRef = useRef(null);
   const shapeRef = useRef(null);
   const copyRef = useRef(null);
-  const { hero, pipeline, numbers, cases } = page;
+  const activeRef = useRef(0);
+  const [active, setActive] = useState(0);
+  const [held, setHeld] = useState(false);
+  const { hero, pipeline, numbers } = page;
 
-  const images = useMemo(
-    () => projects.flatMap((item) => projectFrames(item, caseStudies[item.href], 5)),
-    [projects, caseStudies],
-  );
+  activeRef.current = active;
+
+  // Projects take turns along the arms, so one project's frames never bunch up.
+  const frames = useMemo(() => {
+    const lists = projects.map((item) => projectFrames(item, caseStudies[item.href], 5));
+    const longest = Math.max(...lists.map((list) => list.length));
+    const mixed = [];
+    for (let round = 0; round < longest; round += 1) {
+      lists.forEach((list, project) => {
+        if (list[round]) {
+          mixed.push({ src: list[round], project });
+        }
+      });
+    }
+    return mixed;
+  }, [projects, caseStudies]);
 
   useEffect(
     () =>
       attachAiVortex(canvasRef.current, {
-        images,
+        frames,
         clear: shapeRef.current,
         avoid: [copyRef.current],
+        getFocus: () => activeRef.current,
+        onHover: (project) => {
+          setHeld(project !== null);
+          if (project !== null) {
+            setActive(project);
+          }
+        },
+        onPick: (project) => setActive(project),
+        onSelect: (project) => window.location.assign(projects[project].href),
       }),
-    [images],
+    [frames, projects],
   );
+
+  // The middle moves on by itself unless something is pointed at or motion is off.
+  useEffect(() => {
+    if (held || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return undefined;
+    }
+    const timer = window.setTimeout(
+      () => setActive((current) => (current + 1) % projects.length),
+      CYCLE_MS,
+    );
+    return () => window.clearTimeout(timer);
+  }, [active, held, projects.length]);
+
+  const current = projects[active];
+  const step = (by) => setActive((value) => (value + by + projects.length) % projects.length);
 
   return (
     <div className="ai-concept ai-concept--landing">
-      <section className="ai-hero">
+      <section className="ai-hero" id="cases">
         <canvas className="ai-hero__vortex" ref={canvasRef} aria-hidden="true" />
         {/* Reached from the main site, the page keeps the site's own header;
             on the subdomain it is the home, with a header of its own. */}
@@ -55,19 +99,54 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
 
         <div className="ai-hero__center">
           <CubeShape shapeRef={shapeRef} className="ai-hero__shape" />
-          <div className="ai-hero__copy" ref={copyRef}>
-            <p className="ai-hero__eyebrow">{hero.eyebrow}</p>
-            <h1>
-              {hero.title} <span>{hero.short}</span>
-            </h1>
-            <a className="ai-pill" href="#work">
-              See the work
-            </a>
+          <div
+            className="ai-hero__copy"
+            ref={copyRef}
+            onPointerEnter={() => setHeld(true)}
+            onPointerLeave={() => setHeld(false)}
+            onFocus={() => setHeld(true)}
+            onBlur={() => setHeld(false)}
+          >
+            <h1 className="ai-hero__eyebrow">{hero.title}</h1>
+
+            <div className="ai-hero__project" key={current.id} aria-live="polite">
+              <p className="ai-hero__meta">
+                <span>
+                  {String(active + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
+                </span>
+                <span>{current.category}</span>
+              </p>
+              <h2>{current.title}</h2>
+              <p className="ai-hero__description">{current.description}</p>
+            </div>
+
+            <div className="ai-hero__actions">
+              <button
+                type="button"
+                className="ai-step-button"
+                onClick={() => step(-1)}
+                aria-label="Previous project"
+              >
+                ←
+              </button>
+              <a className="ai-pill" href={current.href}>
+                View case
+              </a>
+              <button
+                type="button"
+                className="ai-step-button"
+                onClick={() => step(1)}
+                aria-label="Next project"
+              >
+                →
+              </button>
+            </div>
           </div>
         </div>
 
         <p className="ai-hero__foot" aria-hidden="true">
-          <span>Scroll</span>
+          <span className="ai-hero__hint ai-hero__hint--pointer">Click a frame to open its case</span>
+          <span className="ai-hero__hint ai-hero__hint--touch">Tap a frame to see its project</span>
           <span>{String(projects.length).padStart(3, '0')} projects</span>
         </p>
       </section>
@@ -97,30 +176,25 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
         </ul>
       </section>
 
-      <section className="ai-dark" id="work">
+      <section className="ai-dark">
         <div className="ai-numbers" aria-labelledby="ai-numbers-title">
           <p className="ai-label" id="ai-numbers-title">
             {numbers.title}
           </p>
           <ul className="ai-numbers__row">
-            {numbers.items.map((item) => (
-              <li key={`${item.value}-${item.label}`} data-reveal>
-                <strong>{item.value}</strong>
-                <span>{item.label}</span>
-              </li>
-            ))}
+            {numbers.items.map((item) => {
+              const [figure, unit] = splitValue(item.value);
+              return (
+                <li key={`${item.value}-${item.label}`} data-reveal>
+                  <strong>
+                    {figure}
+                    {unit ? <small>{unit}</small> : null}
+                  </strong>
+                  <span>{item.label}</span>
+                </li>
+              );
+            })}
           </ul>
-        </div>
-
-        <div className="ai-work" aria-labelledby="ai-work-title">
-          <header className="ai-work__head">
-            <p className="ai-label" id="ai-work-title">
-              {cases.title}
-            </p>
-            <p className="ai-work__lead">{cases.lead}</p>
-          </header>
-
-          <WorkIndex items={projects} />
         </div>
 
         <ConceptFooter profile={profile} />

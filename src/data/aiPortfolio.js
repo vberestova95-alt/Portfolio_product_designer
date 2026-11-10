@@ -13,8 +13,6 @@ export const aiPortfolio = {
   hero: {
     eyebrow: 'AI Portfolio',
     title: 'Product designer who ships with AI agents',
-    // The landing concept's grey half-line; same facts as the description.
-    short: 'Six products from spec to code, three of them live.',
     description:
       'In a year I went from my first Figma plugin to six products built with AI agents, three of them live. I set the goal and the direction, agents write the code, and the product decisions stay mine.',
   },
