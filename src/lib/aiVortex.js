@@ -19,6 +19,8 @@
  * as they pass over the `avoid` elements (the text in the middle).
  */
 
+import { createBeadRenderer } from './aiBeads.js';
+
 const ITEM_COUNT = 44;
 const ARMS = 4;
 // One trip from the centre to the edge, in seconds.
@@ -197,6 +199,8 @@ export function attachAiVortex(
   const trail = document.createElement('canvas');
   const trailContext = trail.getContext('2d');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // The beads as little 3D cubes; without WebGL they stay flat, drawn in 2D.
+  const beadRenderer = createBeadRenderer();
 
   let tiles = [];
   let drawn = [];
@@ -240,6 +244,7 @@ export function attachAiVortex(
     canvas.height = Math.round(height * ratio);
     trail.width = Math.max(1, Math.round(width / TRAIL_SCALE));
     trail.height = Math.max(1, Math.round(height / TRAIL_SCALE));
+    beadRenderer?.resize(canvas.width, canvas.height);
   }
 
   // Measured every frame: the text in the middle changes height as it changes.
@@ -307,6 +312,7 @@ export function attachAiVortex(
     trailContext.setTransform(1 / TRAIL_SCALE, 0, 0, 1 / TRAIL_SCALE, 0, 0);
     trailContext.lineCap = 'round';
     drawn = [];
+    const beads = [];
 
     // Far ones first, so the ones that have come closer lie on top.
     const ordered = items
@@ -355,6 +361,24 @@ export function attachAiVortex(
       const zoom = TILE * (0.9 + 0.04 * Math.sin(beat * 0.6));
       const driftX = Math.cos(beat * 0.5) * TILE * 0.012;
       const driftY = Math.sin(beat * 0.5) * TILE * 0.012;
+
+      // With WebGL the bead is a little cube like the one in the middle, drawn below.
+      if (beadRenderer && tile) {
+        beads.push({
+          x: point.x * ratio,
+          y: point.y * ratio,
+          radius: radius * ratio * 1.08,
+          alpha,
+          detail: tile.detail,
+          beat,
+          spin: item.spin,
+        });
+        if (alpha > 0.35) {
+          drawn.push({ x: point.x, y: point.y, radius, project: tile.project });
+        }
+        continue;
+      }
+
       context.save();
       context.globalAlpha = alpha;
       context.translate(point.x, point.y);
@@ -417,6 +441,11 @@ export function attachAiVortex(
       if (tile && alpha > 0.35) {
         drawn.push({ x: point.x, y: point.y, radius, project: tile.project });
       }
+    }
+
+    if (beadRenderer) {
+      beadRenderer.draw(beads);
+      context.drawImage(beadRenderer.canvas, 0, 0, width, height);
     }
 
     trailContext.globalAlpha = 1;
@@ -584,12 +613,18 @@ export function attachAiVortex(
       return;
     }
     const images = new Map(sources.map((src, index) => [src, loaded[index]]));
-    tiles = frames
-      .filter((entry) => images.get(entry.src))
-      .map((entry) => ({
+    const shown = frames.filter((entry) => images.get(entry.src));
+    if (beadRenderer) {
+      beadRenderer.setDetails(
+        shown.map((entry) => ({ image: images.get(entry.src), crop: entry.crop })),
+      );
+      tiles = shown.map((entry, detail) => ({ detail, project: entry.project }));
+    } else {
+      tiles = shown.map((entry) => ({
         ...toLensTiles(images.get(entry.src), entry.crop),
         project: entry.project,
       }));
+    }
     draw();
     start();
   });
