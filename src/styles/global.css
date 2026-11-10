@@ -437,6 +437,42 @@ html[lang='ru'] .error-page__visual > span {
 }
 
 /*
+ * The next pair of cases, for a keyboard or a screen reader (HomePage.jsx): a
+ * chip like the mosaics' own while focused, out of sight otherwise.
+ */
+.hero-panel__next {
+  position: absolute;
+  z-index: 6;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--inverse-line);
+  border-radius: 12px;
+  background: rgba(6, 8, 13, 0.82);
+  color: var(--inverse);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.hero-panel__next:focus-visible {
+  outline: 2px solid var(--inverse);
+  outline-offset: 2px;
+}
+
+.hero-panel__next:not(:focus-visible) {
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip-path: inset(50%);
+}
+
+/*
  * About me, at the foot of the page: a black card like the hero, the game's
  * mosaics along its top right and the copy in its bottom left.
  */
@@ -1105,6 +1141,21 @@ html[lang='ru'] .error-page__visual > span {
   line-height: 1.4;
 }
 
+/*
+ * Manrope sits low in its line box (a tall ascender, a short descender), so a
+ * pill with even padding shows the caps under its middle — by a pixel in
+ * Safari. Where the browser can, the line is trimmed to the caps and the
+ * baseline, and the padding takes back the trimmed space (half of 1.4em minus
+ * the 0.72em cap height): the pill keeps its height, the caps sit dead centre.
+ */
+@supports (text-box: trim-both cap alphabetic) {
+  .contact-link,
+  .home-footer__links a {
+    padding-block: calc(10px + 0.34em);
+    text-box: trim-both cap alphabetic;
+  }
+}
+
 .contact-link,
 .home-footer__links a {
   transition:
@@ -1571,10 +1622,22 @@ html[lang='ru'] .error-page__visual > span {
   overflow: hidden;
 }
 
+/*
+ * The clip is taller than its box and was cut by the box's own edge, exactly
+ * where the fade ends. While the cover frame lifts in (home-cards.css), the cut
+ * and the fade's edge land on different subpixels, and the clip's bright row
+ * showed through as a thin line over the category bar. Fitted to the box and
+ * cut 3% short, the clip now ends inside the fade's opaque band (the last 8.3%),
+ * over the same #121212 ground; the picture itself is unchanged (it was scaled
+ * by width before as well).
+ */
 .cover-stage__motion video {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  clip-path: inset(0 0 3% 0);
 }
 
 .cover-stage__fade {
@@ -1643,6 +1706,18 @@ html[lang='ru'] .error-page__visual > span {
 
 .work-card--iquoto .work-card__visual > img {
   --iquoto-art-width: max(100cqw, calc(100cqh * 1800 / 1418));
+  /*
+   * The panel's own corners are drawn small (20 of 1800px) and shrink with
+   * the image; its top two are cut to the page's 16px by this mask (used on
+   * tablets and phones, where the panel shows whole), the bottom two by the
+   * frame, which there ends at the panel's foot (art row 1631 of 1662,
+   * its top at 353). The phone above the panel stays whole.
+   */
+  --iquoto-panel-mask:
+    linear-gradient(to right, transparent var(--r-media), #000 var(--r-media) calc(100% - var(--r-media)), transparent calc(100% - var(--r-media))),
+    linear-gradient(to bottom, transparent calc(100% * 353 / 1662 + var(--r-media)), #000 calc(100% * 353 / 1662 + var(--r-media))),
+    radial-gradient(circle var(--r-media) at var(--r-media) calc(100% * 353 / 1662 + var(--r-media)), #000 calc(var(--r-media) - 0.5px), transparent var(--r-media)),
+    radial-gradient(circle var(--r-media) at calc(100% - var(--r-media)) calc(100% * 353 / 1662 + var(--r-media)), #000 calc(var(--r-media) - 0.5px), transparent var(--r-media));
   left: 0;
   top: calc(var(--iquoto-art-width) * -244 / 1800);
   width: var(--iquoto-art-width);
@@ -2036,6 +2111,23 @@ html[lang='ru'] .error-page__visual > span {
   }
 }
 
+/* After a turn to another case the new name comes in as the pieces land. */
+.mosaic-links--turned .mosaic-link__label {
+  animation: mosaic-link-name 320ms ease 700ms backwards;
+}
+
+@keyframes mosaic-link-name {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mosaic-links--turned .mosaic-link__label {
+    animation: none;
+  }
+}
+
 /* A small mosaic carries its name in a smaller chip. */
 .mosaic-link--small {
   padding: 6px;
@@ -2056,6 +2148,29 @@ html[lang='ru'] .error-page__visual > span {
   .mosaic-link__label {
     padding: 5px 8px;
     font-size: 11px;
+  }
+}
+
+/* Caps centred in the chip, as in the contact pills: the name and the arrow
+   are trimmed to caps and baseline, and each chip size takes back half of
+   1.2em minus the cap height in its padding, so it keeps its height. */
+@supports (text-box: trim-both cap alphabetic) {
+  .mosaic-link__label {
+    padding-block: calc(7px + 0.24em);
+  }
+
+  .mosaic-link__label > span {
+    text-box: trim-both cap alphabetic;
+  }
+
+  .mosaic-link--small .mosaic-link__label {
+    padding-block: calc(4px + 0.24em);
+  }
+
+  @media (max-width: 640px) {
+    .mosaic-link__label {
+      padding-block: calc(5px + 0.24em);
+    }
   }
 }
 
@@ -3126,24 +3241,36 @@ ol.case-bullet-list li::before {
 }
 
 /* Screens sit straight on the black ground, with no lighter plate of their own. */
-.case-page--betboom-pass .case-hero__media,
 .case-page--betboom-pass .bento-tile__media {
   background: #000;
 }
 
-/* Same interface artwork as the cover: fills the slot, anchored to the header. */
-.case-page--betboom-pass .case-hero__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+/*
+ * The PASS hero follows the Fluffy Chumb LinkedIn clip: a calm light grey with
+ * a faint haze of colour, so the dark phones read whole against it. The
+ * Gamification hub hero shares it: on black, its dark phone merged with the
+ * ground.
+ */
+.case-page--betboom-pass .case-hero,
+.case-page--betboom-gamification-hub .case-hero {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(246, 222, 210, 0.55), transparent 34%),
+    radial-gradient(circle at 92% 30%, rgba(240, 214, 226, 0.45), transparent 32%),
+    radial-gradient(circle at 40% 100%, rgba(214, 208, 236, 0.45), transparent 38%),
+    radial-gradient(circle at 96% 96%, rgba(204, 220, 236, 0.5), transparent 34%),
+    linear-gradient(180deg, #e4e3e3 0%, #dedde0 100%);
+  color: #141418;
+  --case-stat-plate: rgba(255, 255, 255, 0.5);
+  --case-stat-line: rgba(20, 20, 24, 0.08);
 }
 
-.case-page--betboom-pass .case-hero {
-  background: #000;
-  /* Black ground: a tenth of white would read as grey, not as a lift. */
-  --case-stat-plate: rgba(255, 255, 255, 0.06);
-  --case-stat-line: rgba(255, 255, 255, 0.1);
+.case-page--betboom-pass .case-hero__description,
+.case-page--betboom-pass .case-stat-card span,
+.case-page--betboom-pass .case-hero__meta,
+.case-page--betboom-gamification-hub .case-hero__description,
+.case-page--betboom-gamification-hub .case-stat-card span,
+.case-page--betboom-gamification-hub .case-hero__meta {
+  color: rgba(20, 20, 24, 0.68);
 }
 
 .case-page--yandex-turkey .case-hero {
@@ -3472,6 +3599,16 @@ ol.case-bullet-list li::before {
 }
 
 /*
+ * Stacked, the intro does not travel with the chapter, so the link stood
+ * between every title and its text. Once, in the first chapter, is enough.
+ */
+@media (max-width: 768px) {
+  .case-study-section:not(:first-child) .case-section-back {
+    display: none;
+  }
+}
+
+/*
  * The whole intro travels, not just the link. Sticking the link on its own made
  * it slide up over the chapter title on every scroll.
  */
@@ -3609,6 +3746,58 @@ ol.case-bullet-list li::before {
   }
 }
 
+/*
+ * Spotless and the genetics audit: the frames are cut free of their backdrop,
+ * so they show whole at their own ratio at every width — no slot to crop them
+ * into, no plate or fill behind them, only the 16px media corners.
+ */
+.case-page--spotless .case-hero__media,
+.case-page--genetics-audit .case-hero__media {
+  height: auto;
+  border: 0;
+  background: none;
+}
+
+.case-page--spotless .case-hero__media img,
+.case-page--genetics-audit .case-hero__media img {
+  display: block;
+  height: auto;
+  object-fit: contain;
+}
+
+.case-page--spotless .case-image-band img,
+.case-page--spotless .case-feature-media img,
+.case-page--genetics-audit .case-feature-media img {
+  border-radius: var(--r-media);
+  background: none;
+}
+
+/* The light Spotless windows would melt into the light page: a hairline edge. */
+.case-page--spotless .case-image-band--bare img,
+.case-page--spotless .case-feature-media img {
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+/*
+ * The hub's screens are cut-outs, and the light-theme hub melted into the
+ * white row plate even with a hairline. Its rows go bare, like the Fluffy
+ * Chumb bands: no plate, the screens stand on the page with their own edge —
+ * a hairline that follows each screen's corners (tight drop-shadows) and a
+ * soft shadow all round, so every screen, light or dark, reads the same way.
+ */
+.case-page--betboom-gamification-hub .case-phone-row {
+  padding: 0;
+  background: none;
+}
+
+.case-page--betboom-gamification-hub .case-phone-row__item img {
+  filter:
+    drop-shadow(0 0 0.5px rgba(13, 17, 23, 0.5))
+    drop-shadow(0 0 0.5px rgba(13, 17, 23, 0.5))
+    drop-shadow(0 2px 6px rgba(13, 17, 23, 0.08))
+    drop-shadow(0 14px 28px rgba(13, 17, 23, 0.16));
+}
+
 /* Some exported Yandex boards contain a dark matte in their outermost pixels. */
 .case-page--yandex-turkey .case-hero__media,
 .case-page--yandex-turkey .case-feature-media,
@@ -3652,6 +3841,27 @@ ol.case-bullet-list li::before {
   padding: 0 clamp(28px, 3vw, 48px);
   border-radius: var(--r-card);
   background: var(--paper);
+}
+
+/*
+ * A text plate that introduces the picture right under it, as a topic of its
+ * own (Illustration refresh in BetBoom PASS). Above, it stands off the part
+ * before by the gap between chapters (.case-chapters); below, it comes 20px
+ * from the picture's content. The picture opens with a band of the page's own
+ * ground, 48 of 1800 px (39 of 780 in the phone take), so the plate takes that
+ * band back as a share of the column's width and sits over it.
+ */
+.case-study-stack--leads-media {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(clamp(54px, 6vw, 96px) - 20px);
+  margin-bottom: calc(-48 / 1800 * 100%);
+}
+
+@media (max-width: 480px) {
+  .case-study-stack--leads-media {
+    margin-bottom: calc(-39 / 780 * 100%);
+  }
 }
 
 .case-study-stack .case-content-block {
@@ -3823,6 +4033,46 @@ ol.case-bullet-list li::before {
   font-size: 15px;
   line-height: 1.5;
   color: var(--ink-soft);
+}
+
+/*
+ * Whole phone screens instead of a zoomed crop: the picture brings its own
+ * hairline and shadow, sits on a light plate at its own proportions and is
+ * capped in height, so two screens in a half and four in a full tile come out
+ * the same size. The extra class beats the per-span ratios on phones.
+ */
+.bento-tile.bento-tile--phones .bento-tile__media,
+.bento-tile.bento-tile--phones-wide .bento-tile__media {
+  display: flex;
+  justify-content: center;
+  aspect-ratio: auto;
+  padding: 12px;
+  background: #f6f8fb;
+}
+
+.bento-tile--phones .bento-tile__media img,
+.bento-tile--phones-wide .bento-tile__media img {
+  position: static;
+  width: auto;
+  max-width: 100%;
+  max-height: 480px;
+  transform: none;
+  cursor: zoom-in;
+}
+
+/* Four screens in a row would shrink to thumbnails on a phone: keep them at
+   the height of a two-screen tile and let the row scroll sideways. */
+@media (max-width: 640px) {
+  .bento-tile.bento-tile--phones-wide .bento-tile__media {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .bento-tile--phones-wide .bento-tile__media img {
+    max-width: none;
+    height: 360px;
+    max-height: none;
+  }
 }
 
 .case-phone-pair {
@@ -4006,6 +4256,775 @@ ol.case-bullet-list li::before {
   transform: rotate(180deg);
 }
 
+.case-collapsible__subtitle {
+  display: block;
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* A folded mini case: whole parts inside, so no height cap once open, and
+   anchored a little below the top edge when scrolled to. */
+.case-collapsible--rich {
+  scroll-margin-top: 24px;
+}
+
+.case-collapsible--rich.is-open .case-collapsible__body {
+  max-height: none;
+  gap: 20px;
+  padding-top: 24px;
+}
+
+/* Inside the white plate the nested plates go flat: no second card. */
+.case-collapsible--rich .case-content-block,
+.case-collapsible--rich .case-phone-row {
+  padding: 0;
+}
+
+.case-collapsible--rich .case-study-stack {
+  padding: 0;
+}
+
+.case-collapsible--rich .case-study-stack .case-content-block {
+  padding: 14px 0;
+}
+
+.case-collapsible--rich .case-study-stack .case-content-block + .case-content-block {
+  padding-top: 14px;
+}
+
+/*
+ * Caption under a picture: one line on what changed and why; a credit for
+ * someone else's work in the frame goes on its own line below.
+ */
+.case-media-caption {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.case-feature-media .case-media-caption {
+  padding: 0 4px;
+}
+
+.case-image-band .case-media-caption__credit,
+.case-media-caption__credit {
+  display: block;
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+/* Two options compared row by row; the last column (mine) carries the accent. */
+.case-compare {
+  display: grid;
+  gap: 16px;
+  padding: clamp(24px, 2.2vw, 36px);
+  border-radius: var(--r-card);
+  background: var(--paper);
+}
+
+.case-compare h3 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.case-compare__intro,
+.case-compare__note {
+  margin: 0;
+  max-width: 74ch;
+  color: var(--ink-soft);
+}
+
+.case-compare__scroll {
+  overflow-x: auto;
+}
+
+.case-compare table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.case-compare th,
+.case-compare td {
+  padding: 14px 16px 14px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.case-compare thead th {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-faint);
+}
+
+.case-compare tbody th {
+  width: 22%;
+  font-weight: 600;
+}
+
+.case-compare tbody td {
+  color: var(--ink-soft);
+}
+
+.case-compare tbody td:last-child {
+  color: var(--ink);
+}
+
+.case-compare thead th:last-child {
+  color: var(--blue);
+}
+
+/* Phone: each row becomes a small stack — label, then both options, each
+   named by its column, so neither is pushed off screen. */
+@media (max-width: 640px) {
+  .case-compare table,
+  .case-compare tbody,
+  .case-compare tr,
+  .case-compare th,
+  .case-compare td {
+    display: block;
+    width: auto;
+    min-width: 0;
+  }
+
+  .case-compare thead {
+    display: none;
+  }
+
+  .case-compare tr {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .case-compare tbody th,
+  .case-compare tbody td {
+    padding: 0;
+    border: 0;
+  }
+
+  .case-compare tbody th {
+    width: auto;
+    margin-bottom: 8px;
+  }
+
+  .case-compare tbody td + td {
+    margin-top: 8px;
+  }
+
+  .case-compare tbody td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .case-compare tbody td:last-child::before {
+    color: var(--blue);
+  }
+}
+
+/* A card leading on to a related case: copy on the left, a screen on the right. */
+.case-teaser {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 220px);
+  align-items: center;
+  gap: clamp(20px, 3vw, 48px);
+  padding: clamp(24px, 2.2vw, 36px);
+  border-radius: var(--r-card);
+  background: #000;
+  color: var(--inverse);
+  transition: transform 200ms ease;
+}
+
+.case-teaser:hover {
+  transform: translateY(-2px);
+}
+
+.case-teaser:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.case-teaser__copy {
+  display: grid;
+  gap: 12px;
+}
+
+.case-teaser__label {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--inverse-soft);
+}
+
+.case-teaser__title {
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.case-teaser__text {
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--inverse-soft);
+}
+
+.case-teaser__cta {
+  display: block;
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.case-teaser__media img {
+  width: 100%;
+  height: auto;
+  /* Phone screen: the box is held until the lazy image loads. */
+  aspect-ratio: auto 390 / 844;
+}
+
+@media (max-width: 640px) {
+  .case-teaser {
+    grid-template-columns: minmax(0, 1fr) 110px;
+  }
+}
+
+/* Two clips or pictures side by side; stacked on a phone. */
+.case-media-pair__items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+}
+
+.case-media-pair__item {
+  margin: 0;
+}
+
+/* The two takes share one ratio (set in the data); a clip a few pixels taller
+   fills it from the top rather than leaving bars at the sides. */
+.case-media-pair__item video {
+  object-fit: cover;
+  object-position: center top;
+}
+
+@media (max-width: 640px) {
+  .case-media-pair__items {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Whole phone screens in a row (a flow or a set of states). */
+.case-phone-row {
+  margin: 0;
+  padding: clamp(24px, 2.2vw, 36px);
+  border-radius: var(--r-card);
+  background: var(--paper);
+}
+
+.case-feature-media__label,
+.case-phone-row__label {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-faint);
+}
+
+.case-phone-row__items {
+  --phone-gap: clamp(14px, 2vw, 28px);
+  display: grid;
+  grid-template-columns: repeat(var(--phone-cols, 4), minmax(0, 220px));
+  justify-content: center;
+  gap: var(--phone-gap);
+}
+
+.case-phone-row--1 { --phone-cols: 1; }
+.case-phone-row--2 { --phone-cols: 2; }
+.case-phone-row--3 { --phone-cols: 3; }
+
+.case-phone-row__item {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.case-phone-row__item img {
+  width: 100%;
+  height: auto;
+  /* Row frames are phone screens: a 390×844 box is held until the lazy image
+     loads (then its own ratio wins), so the page does not grow under the
+     reader. */
+  aspect-ratio: auto 390 / 844;
+  cursor: zoom-in;
+  filter: drop-shadow(0 12px 24px rgba(13, 17, 23, 0.14));
+}
+
+.case-phone-row__item span {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+/* A hero animation or picture shown whole, on no plate of its own. */
+.case-hero__media--contain {
+  background: none;
+}
+
+.case-hero__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.case-hero__media--contain img,
+.case-hero__media--contain video {
+  object-fit: contain;
+  object-position: center;
+}
+
+/*
+ * A row of phones in the hero (the LinkedIn clip's row): one line, even gaps,
+ * every phone whole and about 0.6 of the plate's height (0.52 read too small,
+ * user's edit 2026-11-10), one soft shadow each.
+ * Each picture is a 1080×1440 showcase frame; the frame crops it to the phone
+ * body (605×1260 at 237, 90), which also drops the shadow baked into the clips.
+ */
+.case-hero__media--phones {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2.2vw, 28px);
+  overflow: visible;
+  background: none;
+}
+
+.case-hero__phone {
+  flex: 0 0 auto;
+  width: calc(var(--case-hero-media-h) * 0.61 * 605 / 1260);
+  filter: drop-shadow(0 8px 12px rgba(20, 20, 24, 0.3));
+}
+
+/* A single phone (the hub) stands a little taller than a phone in the row. */
+.case-hero__phone:only-child {
+  width: calc(var(--case-hero-media-h) * 0.66 * 605 / 1260);
+}
+
+.case-hero__phone-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 605 / 1260;
+  border-radius: 14.9% / 7.1%;
+}
+
+.case-hero__phone-frame img,
+.case-hero__phone-frame video {
+  position: absolute;
+  top: calc(-90 / 1260 * 100%);
+  left: calc(-237 / 605 * 100%);
+  width: calc(1080 / 605 * 100%);
+  max-width: none;
+  height: auto;
+  aspect-ratio: 1080 / 1440;
+  object-fit: fill;
+}
+
+/* Stacked under the copy, the row is sized by the plate's width instead. */
+@media (max-width: 1240px) {
+  .case-hero__media--phones {
+    height: auto;
+    padding: clamp(12px, 3vw, 32px) 0;
+  }
+
+  .case-hero__phone {
+    width: min(28%, 190px);
+  }
+
+  .case-hero__phone:only-child {
+    width: min(44%, 230px);
+  }
+}
+
+/*
+ * On a phone the row takes the plate's full content width, so the screens are
+ * big enough to read: 8 px gaps, the plate's 24 px gap above (from the credit
+ * line) and 32 px to its bottom edge (20 px padding + 12). The fixed 280 px
+ * media height of small screens left empty bands over and under the row.
+ */
+@media (max-width: 480px) {
+  /* Two classes: the small-screen `.case-hero__media` height comes later. */
+  .case-hero__media.case-hero__media--phones {
+    height: auto;
+    gap: 8px;
+    padding: 0 0 12px;
+  }
+
+  .case-hero__phone {
+    width: calc((100% - 16px) / 3);
+  }
+}
+
+/* A clip in a phone row keeps the screen's own 44 px corner. */
+.case-phone-row__item video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 390 / 844;
+  object-fit: cover;
+  border-radius: calc(44 / 390 * 100%) / calc(44 / 844 * 100%);
+}
+
+/* A bento tile that shows its whole frame instead of a zoomed crop. Doubled
+   class: it has to win over the phone-width aspect ratios further down. */
+.bento-tile.bento-tile--whole .bento-tile__media {
+  aspect-ratio: auto;
+  background: none;
+}
+
+.case-page--betboom-pass .bento-tile--whole .bento-tile__media {
+  background: none;
+}
+
+/* Two whole phone frames open the PASS card anatomy: centred as a pair, so
+   the row has no empty third. Below 900px they go two to a row anyway. */
+@media (min-width: 901px) {
+  .case-page--betboom-pass .bento-tile--whole.bento-tile--third:first-child {
+    grid-column: 2 / span 2;
+  }
+}
+
+.bento-tile--whole .bento-tile__media img,
+.bento-tile--whole .bento-tile__media video {
+  position: static;
+  width: 100%;
+  transform: none;
+}
+
+/*
+ * Showcase under the hero: the product as it is now. A phone on the left plays
+ * the clips; on the right, the steps with a bar that fills while each clip
+ * plays. Same black ground as the BetBoom hero.
+ */
+.case-showcase {
+  display: grid;
+  grid-template-columns: 45% minmax(0, 520px);
+  justify-content: center;
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+  margin-top: var(--gap-block);
+  padding: 40px clamp(24px, 4vw, 64px);
+  border-radius: var(--r-shell);
+  background: #000;
+  color: var(--inverse);
+}
+
+/*
+ * The clips are 1080×1440 with the phone in the middle on a transparent
+ * ground. The stage keeps only the phone (x 220–860, y 80–1366 of the clip)
+ * and the clip is placed so that box fills it: the empty margins never take
+ * room, and the phone is as tall as the stage.
+ */
+.case-showcase__stage {
+  position: relative;
+  justify-self: center;
+  /* A step down from the full block height: the same phone as the hero row,
+     large enough to read the clip, with air above and below it. */
+  height: min(640px, calc(100vh - 200px));
+  /* Cropped to the phone body like the hero row, so the clips' baked shadow
+     leaves no lighter box around the phone on the black ground. */
+  aspect-ratio: 605 / 1260;
+  overflow: hidden;
+  border-radius: 14.9% / 7.1%;
+}
+
+.case-showcase__frame {
+  position: absolute;
+  top: calc(-90 / 1260 * 100%);
+  left: calc(-237 / 605 * 100%);
+  width: calc(1080 / 605 * 100%);
+  max-width: none;
+  height: calc(1440 / 1260 * 100%);
+  object-fit: contain;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+}
+
+.case-showcase__frame.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.case-showcase__copy {
+  display: grid;
+  gap: 18px;
+}
+
+.case-showcase .section-label {
+  color: var(--inverse-soft);
+}
+
+.case-showcase h2 {
+  margin: 0;
+  font-size: clamp(28px, 2.9vw, 44px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.case-showcase__steps {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-showcase__steps button {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 0 16px;
+  border: 0;
+  border-bottom: 1px solid var(--inverse-line);
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.case-showcase__step-label {
+  font-size: 18px;
+  line-height: 1.2;
+  opacity: 0.56;
+  transition: opacity 160ms ease;
+}
+
+.case-showcase__step-caption {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--inverse-soft);
+  opacity: 0.56;
+}
+
+.case-showcase__steps .is-active .case-showcase__step-label,
+.case-showcase__steps .is-active .case-showcase__step-caption {
+  opacity: 1;
+}
+
+.case-showcase__progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 0;
+  height: 1px;
+  background: var(--inverse);
+}
+
+.case-showcase__steps .is-active .case-showcase__progress {
+  animation: case-showcase-progress var(--showcase-duration, 3.2s) linear forwards;
+}
+
+.case-showcase[data-paused] .case-showcase__steps .is-active .case-showcase__progress {
+  width: 100%;
+  animation: none;
+}
+
+@keyframes case-showcase-progress {
+  to {
+    width: 100%;
+  }
+}
+
+.case-showcase__steps button:focus-visible,
+.case-showcase__teaser:focus-visible {
+  outline: 2px solid var(--inverse);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.case-showcase__credit {
+  /* Two lines held for every frame, so a credit does not move the block. */
+  min-height: 3em;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--inverse-soft);
+}
+
+.case-showcase__teaser {
+  justify-self: start;
+  display: inline-flex;
+  gap: 10px;
+  padding: 12px 18px;
+  border: 1px solid var(--inverse-line);
+  border-radius: var(--r-chip);
+  font-size: 15px;
+  line-height: 1.3;
+  transition: background 160ms ease;
+}
+
+/* Caps centred in the pill, as in the contact pills (same height). */
+@supports (text-box: trim-both cap alphabetic) {
+  .case-showcase__teaser {
+    padding-block: calc(12px + 0.29em);
+  }
+
+  .case-showcase__teaser > span {
+    text-box: trim-both cap alphabetic;
+  }
+}
+
+.case-showcase__teaser:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* On a phone the dots stand in for the list of steps. */
+.case-showcase__dots {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .case-showcase {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    border-radius: var(--r-card);
+  }
+
+  .case-showcase__stage {
+    height: min(600px, 62vh);
+  }
+
+  .case-phone-row__items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-phone-row--1 .case-phone-row__items {
+    grid-template-columns: minmax(0, 240px);
+  }
+
+  /* Two to a line: a screen left alone on the last line (three in a row)
+     sits in the middle at the same width, not under the left one. */
+  .case-phone-row__item:last-child:nth-child(odd):not(:first-child) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - var(--phone-gap)) / 2);
+  }
+}
+
+/* On a phone the steps stay short: only the active one shows its caption. */
+@media (max-width: 640px) {
+  .case-showcase {
+    padding: 28px 20px;
+  }
+
+  .case-showcase__steps button {
+    padding: 10px 0 12px;
+  }
+
+  .case-showcase__step-label {
+    font-size: 16px;
+  }
+
+  .case-showcase__steps li:not(.is-active) .case-showcase__step-caption {
+    display: none;
+  }
+
+  /* The one caption shown holds two lines, so the block keeps its height. */
+  .case-showcase__steps .is-active .case-showcase__step-caption {
+    min-height: calc(2 * 1.45em);
+  }
+
+  /*
+   * The whole block fits one phone screen: a big phone, then only the active
+   * step with its caption. The dots switch steps and name them for screen
+   * readers, so the hidden steps stay reachable.
+   */
+  .case-showcase {
+    gap: 16px;
+    padding: 20px 20px 24px;
+  }
+
+  .case-showcase__stage {
+    height: min(440px, 52vh);
+  }
+
+  .case-showcase__copy {
+    gap: 12px;
+  }
+
+  .case-showcase .section-label {
+    display: none;
+  }
+
+  .case-showcase h2 {
+    font-size: 26px;
+  }
+
+  .case-showcase__steps {
+    margin: 0;
+  }
+
+  .case-showcase__steps li:not(.is-active) {
+    display: none;
+  }
+
+  .case-showcase__steps button {
+    padding-top: 0;
+  }
+
+  .case-showcase__dots {
+    display: flex;
+    gap: 4px;
+    margin: -4px 0 0 -10px;
+  }
+
+  .case-showcase__dots button {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .case-showcase__dots button::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--inverse);
+    opacity: 0.32;
+    transition: opacity 160ms ease;
+  }
+
+  .case-showcase__dots button[aria-current='true']::before {
+    opacity: 1;
+  }
+
+  .case-showcase__dots button:focus-visible {
+    outline: 2px solid var(--inverse);
+    outline-offset: -2px;
+    border-radius: 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-showcase__frame {
+    transition: none;
+  }
+}
+
 .case-note-card--compact .case-bullet-list,
 .case-note-card--compact .case-rich-text {
   margin-top: 14px;
@@ -4081,6 +5100,14 @@ ol.case-bullet-list li::before {
   cursor: pointer;
 }
 
+/* Caps centred in the tab, as in the contact pills; the tab stays 42px tall. */
+@supports (text-box: trim-both cap alphabetic) {
+  .case-ba-tab {
+    padding-block: calc(21px - 0.36em);
+    text-box: trim-both cap alphabetic;
+  }
+}
+
 .case-ba-tab.is-active {
   background: var(--ink);
   color: var(--inverse);
@@ -4105,6 +5132,17 @@ ol.case-bullet-list li::before {
 .case-ba-slider__before {
   position: absolute;
   inset: 0;
+}
+
+/* Two frames of one size: the slider keeps their ratio at every width, so the
+   before side is not stretched past the after side by a minimum height. */
+.case-ba-slider.case-ba-slider--ratio {
+  min-height: 0;
+  aspect-ratio: var(--ba-ratio);
+}
+
+.case-ba-slider--ratio .case-ba-slider__img {
+  display: block;
 }
 
 .case-ba-slider__handle {
@@ -4139,6 +5177,13 @@ ol.case-bullet-list li::before {
 .case-ba-slider__grip svg {
   width: 20px;
   height: 20px;
+}
+
+/* The third hero figure on the cat app is ∞: the glyph is only as tall as a
+   lowercase letter, so next to 2 and 12 it reads small. Scale it to the digits'
+   height; a transform keeps the line box, so the labels stay aligned. */
+.case-page--cat-app .case-stat-grid--hero .case-stat-card:nth-child(3) strong {
+  transform: scale(1.6);
 }
 
 .case-lightbox {
@@ -4362,6 +5407,11 @@ ol.case-bullet-list li::before {
   .bento-tile--third .bento-tile__media,
   .bento-tile--full .bento-tile__media {
     aspect-ratio: 16 / 10;
+  }
+
+  /* Whole phone frames go two to a row rather than one screen-tall each. */
+  .bento-tile--whole.bento-tile--third {
+    grid-column: span 3;
   }
 
   .hero-panel h1,
@@ -4661,6 +5711,8 @@ ol.case-bullet-list li::before {
     padding-bottom: var(--hero-pad-bottom);
     border: 0;
     border-radius: 0 0 22px 22px;
+    /* A tap on the panel turns the mosaics (HomePage.jsx): no grey flash over it. */
+    -webkit-tap-highlight-color: transparent;
   }
 
   /*
@@ -4744,6 +5796,12 @@ ol.case-bullet-list li::before {
   /* No room for the category beside the metrics here — the category goes. */
   .work-card__kicker {
     display: none;
+  }
+
+  /* A card without metrics keeps its category, on the left where they would be. */
+  .work-card__meta--no-stats .work-card__kicker {
+    display: block;
+    text-align: left;
   }
 
   /*
@@ -4844,8 +5902,9 @@ ol.case-bullet-list li::before {
 
   /*
    * Fitted to the frame's width rather than covering it, so the white panel is
-   * never cut at the side and shows all four of its own small corners. The
-   * frame takes the artwork's ratio below the trimmed band (1418 of 1662px).
+   * never cut at the side and shows all four of its corners. The
+   * frame takes the artwork's ratio from the trimmed band to the panel's foot
+   * (1387 of 1662px).
    */
   /*
    * Width set outright: with an aspect ratio Safari no longer stretches a grid
@@ -4858,16 +5917,18 @@ ol.case-bullet-list li::before {
     width: 100%;
     height: auto;
     min-height: 0;
-    aspect-ratio: 1800 / 1418;
+    aspect-ratio: 1800 / 1387;
     margin-bottom: 0;
-    /* Small as the panel's own corners, so the frame never rounds them more. */
-    border-radius: 6px;
+    /* The same 16px as every other cover on the page. */
+    border-radius: var(--r-media);
   }
 
-  /* The trimmed 244px band, as a share of the frame's 1418px height. */
+  /* The trimmed 244px band, as a share of the frame's 1387px height. */
   .work-card--iquoto .work-card__visual > img {
-    top: calc(-100% * 244 / 1418);
+    top: calc(-100% * 244 / 1387);
     width: 100%;
+    -webkit-mask-image: var(--iquoto-panel-mask);
+    mask-image: var(--iquoto-panel-mask);
   }
 
   /*
@@ -4955,9 +6016,11 @@ ol.case-bullet-list li::before {
   letter-spacing: -0.035em;
 }
 
+/* One row however many projects there are (five since the hub case). */
 .case-next__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   gap: 16px;
 }
 
@@ -5023,6 +6086,11 @@ ol.case-bullet-list li::before {
   transition: color 200ms ease;
 }
 
+/* The label trimmed to its caps, so they centre on the arrow's circle. */
+.case-next__label {
+  text-box: trim-both cap alphabetic;
+}
+
 .case-next__arrow {
   display: grid;
   place-items: center;
@@ -5070,6 +6138,7 @@ ol.case-bullet-list li::before {
   }
 
   .case-next__grid {
+    grid-auto-flow: row;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -5688,14 +6757,17 @@ ol.case-bullet-list li::before {
     container-type: normal;
     width: 100%;
     height: auto;
-    aspect-ratio: 1800 / 1418;
+    aspect-ratio: 1800 / 1387;
     margin-bottom: 0;
-    border-radius: 6px;
+    border-radius: var(--r-media);
   }
 
   .work-card--iquoto .work-card__visual > img {
-    top: calc(-100% * 244 / 1418);
+    top: calc(-100% * 244 / 1387);
     width: 100%;
+    /* The panel's corners cut to 16px — see the mask on the base rule. */
+    -webkit-mask-image: var(--iquoto-panel-mask);
+    mask-image: var(--iquoto-panel-mask);
   }
 
   .work-card--ds-plugins .work-card__visual > img,
@@ -5945,6 +7017,14 @@ ol.case-bullet-list li::before {
   transition:
     background-color 160ms ease,
     color 160ms ease;
+}
+
+/* Caps centred in the pill, as in the contact pills (same height). */
+@supports (text-box: trim-both cap alphabetic) {
+  .consent-banner__button {
+    padding-block: calc(10px + 0.34em);
+    text-box: trim-both cap alphabetic;
+  }
 }
 
 .consent-banner__button:hover,

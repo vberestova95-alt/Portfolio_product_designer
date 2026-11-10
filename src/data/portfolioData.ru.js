@@ -6,6 +6,7 @@
 import * as en from './portfolioData.js';
 // The one asset kept here: the Fluffy Chumb preview has Russian screens.
 import fluffyChumbV2CoverRu from '../assets/cases/fluffy-chumb-v2-cover.ru.webp';
+import fluffyChumbHomeCoverRu from '../assets/cases/fluffy-chumb-home-cover.ru.webp';
 
 function byIndex(list, texts) {
   return list.map((item, index) => ({ ...item, ...texts[index] }));
@@ -60,8 +61,21 @@ export const cases = byId(en.cases, {
     description:
       'Редизайн core-продукта геймификации, который вырос из киберспортивных механик и вышел на широкую спортивную аудиторию.',
     metrics: ['+60% DAU', '+75% retention'],
-    image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Интерфейс BetBoom PASS' },
-    mobileImage: { ...entryOf(en.cases, 'betboom-pass').mobileImage, alt: 'Мобильный интерфейс BetBoom PASS' },
+    image: { ...entryOf(en.cases, 'betboom-pass').image, alt: 'Страница задания BetBoom PASS на десктопе, живой интерфейс на русском' },
+    frames: [
+      {
+        ...entryOf(en.cases, 'betboom-pass').frames[0],
+        alt: 'Страница заданий BetBoom PASS в приложении: топ-задание MSI 2025, рубрикатор и карточки заданий',
+      },
+      {
+        ...entryOf(en.cases, 'betboom-pass').frames[1],
+        alt: 'Деталь хоккейного задания: старт другой ступени открывает «Эти задания конфликтуют», Switch меняет задания местами, появляется тост «Task switched»',
+      },
+      {
+        ...entryOf(en.cases, 'betboom-pass').frames[2],
+        alt: 'Открытый виджет «Your tasks» над страницей заданий: три активных задания с наградами и прогрессом',
+      },
+    ],
   },
   'yandex-news': {
     title: 'Яндекс Новости Турция',
@@ -83,8 +97,8 @@ export const cases = byId(en.cases, {
     category: 'Здоровье питомцев / Пет-проект',
     description:
       'От трекера инсулина для одного кота — к приложению, где семья и пет-ситтер настраивают свои трекеры и делят дела на день. Пересобрано после интервью с пользователями MVP.',
-    metrics: ['MVP → v2', '12 бета-тестеров'],
-    image: { ...entryOf(en.cases, 'cat-app').image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
+    metrics: ['MVP → v2', '12 заявок на бету'],
+    image: { ...entryOf(en.cases, 'cat-app').image, src: fluffyChumbHomeCoverRu, alt: 'Три экрана Fluffy Chumb: все трекеры, главная с трекерами питомца и инсулин с дозами за неделю' },
   },
   iquoto: {
     category: 'Финтех / Регистрация',
@@ -92,6 +106,21 @@ export const cases = byId(en.cases, {
       'Редизайн воронки регистрации онлайн-брокера: много трения и сильный отвал на шаге с персональными данными.',
     metrics: ['5 → 3 шага', 'Меньше трения'],
     image: { ...entryOf(en.cases, 'iquoto').image, alt: 'Экраны редизайна регистрации IQuoto' },
+  },
+  // TODO(p32b): RU copy from the editor; RU case page shows the EN text for now.
+  'betboom-gamification-hub': {
+    title: 'BetBoom — Gamification hub',
+    category: 'Геймификация / Приложение BetBoom',
+    description:
+      'Новый раздел приложения BetBoom, который собирает сезоны, задания и магазин. В брифе была страница сезонов — я предложила хаб.',
+    metrics: [],
+    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: профиль с виджетом зимнего сезона и хаб в светлой теме' },
+    frames: [
+      {
+        ...entryOf(en.cases, 'betboom-gamification-hub').frames[0],
+        alt: 'Экраны BetBoom: хаб геймификации с заданиями, магазином и сезонами в тёмной и светлой теме',
+      },
+    ],
   },
 });
 
@@ -134,7 +163,7 @@ export const aiProjects = {
       category: 'Здоровье питомцев / Пет-проект',
       description:
         'Свои трекеры ухода и общая рутина дня для семьи и пет-ситтера — вторая версия, пересобранная после интервью с пользователями MVP.',
-      metrics: ['MVP → v2', '12 бета-тестеров'],
+      metrics: ['MVP → v2', '12 заявок на бету'],
       image: { ...entryOf(en.aiProjects.items, 'cat-app').image, src: fluffyChumbV2CoverRu, alt: 'Два экрана трекера ухода: главная с трекерами и дела на сегодня' },
     },
     'design-cringe': {

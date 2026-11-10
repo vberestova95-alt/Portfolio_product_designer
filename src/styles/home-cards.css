@@ -1,0 +1,161 @@
+/*
+ * Home cards whose cover changes frames (WorkCard, `frames`): BetBoom PASS — the
+ * desktop with the banner clip, then the mobile app — and the Gamification hub —
+ * the profile's season widget, then the hub. The frames lie on top of one
+ * another and the next one fades in, with a short lift, over the pairs' beat.
+ *
+ * The screen frames are laid out as the Yandex News and Fluffy Chumb covers
+ * (global.css): flat screens on a transparent ground, held to the bottom of the
+ * slot, and from 1240px down set wider and held to the top, so the screens'
+ * headers read. A frame that is a clip (the PASS switch) is laid out as a still.
+ */
+.work-card .work-card__visual.work-card__visual--frames {
+  border: 0;
+  background: transparent;
+}
+
+.work-card__frame {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 500ms ease 250ms,
+    transform 0ms linear 750ms;
+}
+
+/*
+ * A cross-fade with no dark beat between frames: the next one fades in at
+ * once and the one on show leaves a little later, so the ground never shows
+ * through both (the screens come in over the still opaque desktop, and the
+ * desktop comes back under the screens before they go).
+ */
+.work-card__frame.is-shown {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 600ms ease,
+    transform 900ms cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+/* The desktop: the same stage as the live cover, on the interface's own ground. */
+.work-card__frame--stage {
+  container-type: size;
+  overflow: hidden;
+  border-radius: inherit;
+  background: #121212;
+}
+
+.work-card__frame > img,
+.work-card__frame > video {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-card__frame,
+  .work-card__frame.is-shown {
+    transition: none;
+  }
+}
+
+@media (max-width: 1240px) {
+  .work-card__frame > img,
+.work-card__frame > video {
+    object-position: center top;
+  }
+}
+
+/* Edge to edge on a tablet, as the Yandex News card. */
+@media (min-width: 641px) and (max-width: 1240px) {
+  .work-card.work-card--betboom-gamification-hub .work-card__visual {
+    margin-right: calc(var(--card-pad-x) * -1);
+    margin-left: calc(var(--card-pad-x) * -1);
+    border: 0;
+    border-radius: 0;
+  }
+
+  .work-card__frame > img,
+.work-card__frame > video {
+    left: 50%;
+    width: min(100%, 820px);
+    height: auto;
+    object-fit: initial;
+    transform: translate(-50%, -9%);
+  }
+}
+
+/* On a phone the screens run half again as wide, the middle one centred. */
+@media (max-width: 640px) {
+  .work-card.work-card--betboom-gamification-hub .work-card__visual {
+    margin-right: -24px;
+    margin-left: -24px;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .work-card__frame > img,
+.work-card__frame > video {
+    left: 50%;
+    width: 150%;
+    height: auto;
+    object-fit: initial;
+    transform: translate(-50%, -9%);
+  }
+}
+
+/*
+ * BetBoom PASS from 1240px down shows its three screens whole, not run out
+ * through the card's floor: the frame takes the canvas's ratio from just
+ * above the screens (they start 174px down the 1627×1536 canvas) to its foot,
+ * and the card keeps a bottom padding, as the IQuoto card does. The desktop
+ * frame fills the same box. Width set outright: with an aspect ratio Safari
+ * no longer stretches the grid item (see the IQuoto note in global.css).
+ */
+@media (max-width: 1240px) {
+  .work-card.work-card--betboom-pass {
+    padding-bottom: var(--card-pad-x, 24px);
+  }
+
+  .work-card.work-card--betboom-pass .work-card__visual--frames {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1627 / 1386;
+    margin-bottom: 0;
+    border-radius: var(--r-media);
+  }
+
+  .work-card--betboom-pass .work-card__frame > img,
+  .work-card--betboom-pass .work-card__frame > video {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    object-fit: initial;
+    transform: none;
+  }
+}
+
+/* On a phone the frame runs edge to edge as before, and the screens are set
+   4% in from each side, so the outer two clear the card's edge. */
+@media (max-width: 640px) {
+  .work-card.work-card--betboom-pass .work-card__visual--frames {
+    width: calc(100% + 48px);
+    aspect-ratio: 1627 / 1275;
+    border-radius: 0;
+  }
+
+  .work-card--betboom-pass .work-card__frame > img,
+  .work-card--betboom-pass .work-card__frame > video {
+    left: 4%;
+    width: 92%;
+  }
+}

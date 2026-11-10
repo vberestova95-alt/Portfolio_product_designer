@@ -1,0 +1,232 @@
+/*
+ * Cat app case parts (catAppParts.js). The plates, trigger, tabs and slider
+ * copy the shared .case-collapsible and .case-ba-* rules in global.css, so the
+ * blocks look the same; keep them in step when those change.
+ */
+
+.cat-collapsible,
+.cat-ba-wrap {
+  padding: clamp(24px, 2.2vw, 36px);
+  border-radius: var(--r-card);
+  background: var(--paper);
+}
+
+/* Collapsible with pictures */
+
+.cat-collapsible__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cat-collapsible__title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.cat-collapsible__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  transition: transform 200ms ease;
+}
+
+.cat-collapsible.is-open .cat-collapsible__icon {
+  transform: rotate(180deg);
+}
+
+.cat-collapsible__body {
+  overflow: hidden;
+  transition: max-height 220ms ease;
+}
+
+/* The gap under the trigger lives inside the measured height. */
+.cat-collapsible__inner {
+  display: grid;
+  gap: 24px;
+  padding-top: 18px;
+}
+
+.cat-collapsible__tiles {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px 12px;
+}
+
+.cat-collapsible__tile,
+.cat-collapsible__wide {
+  margin: 0;
+}
+
+/* Every picture fits whole on a plate of one size, centred, never cropped. */
+.cat-collapsible__plate {
+  position: relative;
+  aspect-ratio: 352 / 240;
+  border-radius: var(--r-media);
+  background: var(--page-bg);
+}
+
+.cat-collapsible__plate img {
+  position: absolute;
+  inset: 8px;
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  object-fit: contain;
+  cursor: zoom-in;
+}
+
+.cat-collapsible__wide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-media);
+  background: var(--page-bg);
+  cursor: zoom-in;
+}
+
+.cat-collapsible__tile figcaption,
+.cat-collapsible__wide figcaption {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.cat-collapsible__tile figcaption span,
+.cat-collapsible__wide figcaption span {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+/* Before / after in pairs */
+
+.cat-ba-tabs {
+  display: inline-flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.cat-ba-tab,
+.cat-ba-pairs__chip {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.cat-ba-tab.is-active,
+.cat-ba-pairs__chip.is-active {
+  background: var(--ink);
+  color: var(--inverse);
+}
+
+.cat-ba-slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-media);
+  background: #edf1f7;
+  user-select: none;
+}
+
+/* Both layers fill the frame; the picture inside is shifted to the window. */
+.cat-ba-slider__layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.cat-ba-slider__img {
+  display: block;
+  max-width: none;
+  height: 100%;
+}
+
+.cat-ba-slider__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ew-resize;
+}
+
+.cat-ba-slider__line {
+  width: 1px;
+  height: 100%;
+  background: rgba(247, 248, 252, 0.96);
+  transition: opacity 200ms ease;
+}
+
+.cat-ba-slider__line.is-hidden {
+  opacity: 0;
+}
+
+.cat-ba-slider__grip {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgba(13, 17, 23, 0.16);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.cat-ba-slider__grip svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cat-ba-pairs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.cat-ba-pairs__chip {
+  padding: 8px 14px;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.cat-ba-pairs__chip.is-active {
+  box-shadow: none;
+}
+
+.cat-collapsible__trigger:focus-visible,
+.cat-ba-tab:focus-visible,
+.cat-ba-pairs__chip:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+
+@media (max-width: 900px) {
+  .cat-collapsible,
+  .cat-ba-wrap {
+    border-radius: 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .cat-collapsible__tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

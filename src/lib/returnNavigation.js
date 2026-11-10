@@ -84,8 +84,8 @@ function getAnchorContainer(anchor) {
   return anchor.closest(RETURN_CONTAINER_SELECTOR) || anchor;
 }
 
-function findDestinationAnchor(destinationPath, normalizePathname) {
-  return Array.from(document.querySelectorAll('a[href]')).find((anchor) => {
+function findDestinationAnchors(destinationPath, normalizePathname) {
+  return Array.from(document.querySelectorAll('a[href]')).filter((anchor) => {
     try {
       const url = new URL(anchor.href, window.location.href);
       return (
@@ -96,6 +96,16 @@ function findDestinationAnchor(destinationPath, normalizePathname) {
       return false;
     }
   });
+}
+
+/*
+ * A page can link to one case twice (the PASS case: a teaser up top and a card
+ * in Other projects), so the entry keeps which of those links was followed.
+ * Taking the first one brought the reader back to the teaser instead.
+ */
+function findDestinationAnchor(entry, normalizePathname) {
+  const anchors = findDestinationAnchors(entry.destinationPath, normalizePathname);
+  return anchors[entry.anchorIndex] || anchors[0];
 }
 
 /*
@@ -122,7 +132,7 @@ function getDocumentTop(element) {
  * the target with it instead of shifting the page under the reader.
  */
 function resolveTarget(entry, normalizePathname) {
-  const anchor = findDestinationAnchor(entry.destinationPath, normalizePathname);
+  const anchor = findDestinationAnchor(entry, normalizePathname);
 
   if (anchor && typeof entry.anchorDelta === 'number') {
     return Math.max(0, getDocumentTop(getAnchorContainer(anchor)) + entry.anchorDelta);
@@ -306,6 +316,7 @@ export function attachReturnNavigation({
       const updatedEntry = {
         ...returnEntry,
         destinationPath,
+        anchorIndex: 0,
         anchorDelta: -24,
         createdAt: Date.now(),
       };
@@ -333,6 +344,10 @@ export function attachReturnNavigation({
       scrollX: window.scrollX,
       scrollY: window.scrollY,
       anchorDelta: window.scrollY - getDocumentTop(container),
+      anchorIndex: Math.max(
+        0,
+        findDestinationAnchors(destinationPath, normalizePathname).indexOf(anchor),
+      ),
       createdAt: Date.now(),
     };
 

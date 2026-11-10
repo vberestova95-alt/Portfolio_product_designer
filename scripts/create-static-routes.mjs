@@ -4,11 +4,12 @@
  * target — see deploy-targets.mjs.
  */
 import { copyFile, mkdir } from 'node:fs/promises'
-import { resolveDeployTarget } from './deploy-targets.mjs'
+import { resolveDeployTarget, resolveDistDirectory } from './deploy-targets.mjs'
 
-const { routes } = resolveDeployTarget()
+const target = resolveDeployTarget()
+const { routes } = target
 
-const distDirectory = new URL('../dist/', import.meta.url)
+const distDirectory = resolveDistDirectory(target)
 const source = new URL('index.html', distDirectory)
 
 await Promise.all(

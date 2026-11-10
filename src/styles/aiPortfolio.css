@@ -1,0 +1,342 @@
+/*
+ * The AI portfolio landing (/ai-portfolio, and / on the AI subdomain).
+ * Built from the site's own pieces — the mosaic intro, section headers, the
+ * case hero's metric plates, the work card stack — so only the joins between
+ * them live here. Colours and sizes come from the tokens in global.css.
+ */
+
+/* The hero's top row: the way back (main site only) and the eyebrow. */
+.ai-portfolio-hero__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.ai-portfolio-hero__top .concept-hero__back {
+  margin-bottom: 0;
+  color: var(--inverse-soft);
+}
+
+.ai-portfolio-hero__eyebrow {
+  margin: 0 0 0 auto;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--inverse-soft);
+}
+
+/* The blocks below the hero start one section step down from it. */
+.ai-pipeline {
+  margin-top: var(--gap-section);
+}
+
+/* ---------- How I work with AI ---------- */
+
+.ai-pipeline__steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--gap-block);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-pipeline__step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(20px, 1.8vw, 28px);
+  border-radius: var(--r-card);
+  background: var(--paper);
+}
+
+.ai-pipeline__index {
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: var(--tracking-caps);
+  color: var(--blue);
+}
+
+.ai-pipeline__step h3 {
+  margin: 0;
+  font-size: clamp(19px, 1.5vw, 22px);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.ai-pipeline__step p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.ai-pipeline__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: var(--gap-block) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-pipeline__tools li {
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-chip);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ---------- Numbers ---------- */
+
+/*
+ * A dark panel like the hero, so the case hero's plates (a white wash over the
+ * ground, --case-stat-plate) and their light labels read as they do in a case.
+ */
+.ai-numbers {
+  --case-stat-plate: rgba(255, 255, 255, 0.08);
+
+  display: grid;
+  gap: clamp(24px, 2.6vw, 40px);
+  margin-bottom: var(--gap-section);
+  padding: clamp(28px, 3vw, 48px);
+  border-radius: var(--r-shell);
+  background: #06080d;
+  color: var(--inverse);
+}
+
+.ai-numbers__title {
+  margin: 0;
+  font-size: clamp(40px, 5vw, 76px);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+/* The hero grid sits on the panel's floor in a case; here it is just a row. */
+.ai-numbers .case-stat-grid--hero {
+  margin-top: 0;
+}
+
+.ai-numbers .case-stat-card strong {
+  color: var(--inverse);
+}
+
+/*
+ * Five plates: one row where they have the room. Below that, three and two on
+ * a six-column grid — the two left over take half the row each, so both rows
+ * run edge to edge and none of the plates hangs on its own. A phone keeps the
+ * case hero's own two-by-two with the fifth across the row.
+ */
+@media (min-width: 641px) and (max-width: 1279px) {
+  .ai-numbers .case-stat-grid--hero {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-flow: row;
+  }
+
+  .ai-numbers .case-stat-grid--hero .case-stat-card {
+    grid-column: span 2;
+  }
+
+  .ai-numbers .case-stat-grid--hero .case-stat-card:nth-child(3n + 1):nth-last-child(2),
+  .ai-numbers .case-stat-grid--hero .case-stat-card:nth-child(3n + 2):last-child {
+    grid-column: span 3;
+  }
+
+  .ai-numbers .case-stat-grid--hero .case-stat-card:nth-child(3n + 1):last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- Work ---------- */
+
+/*
+ * The work is the end of the page. The stack's run-out (16vh, 10vh on a phone)
+ * and the section's bottom gap stood as an empty strip over the footer, which
+ * brings its own top gap — that one is left, the same as between the blocks.
+ */
+.ai-work.section {
+  padding-bottom: 0;
+}
+
+.ai-work .work-stack {
+  padding-bottom: 0;
+}
+
+.ai-work__group + .ai-work__group {
+  margin-top: var(--gap-section);
+}
+
+.ai-work__group-header {
+  display: grid;
+  gap: 8px;
+  margin-bottom: var(--gap-block);
+}
+
+.ai-work__group-header h3 {
+  margin: 0;
+  font-size: clamp(26px, 2.6vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.ai-work__group-header p {
+  margin: 0;
+  max-width: 42rem;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/*
+ * Spotless and the genetics audit: covers cut free of their backdrop, shown
+ * whole at their own ratio — no plate behind them and nothing cropped, on a
+ * phone too (they do not run out through the card's floor like the others).
+ */
+.work-card--spotless .work-card__visual,
+.work-card--genetics-audit .work-card__visual {
+  align-self: center;
+  min-height: 0;
+  border: 0;
+  background: none;
+}
+
+.work-card--spotless .work-card__visual > img,
+.work-card--genetics-audit .work-card__visual > img {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: none;
+  border-radius: var(--r-media);
+}
+
+/* ---------- Tablet and phone ---------- */
+
+/* Stacked, the other covers run out through the card's floor; these two keep
+   the whole frame and the card keeps its bottom padding, like IQuoto. */
+@media (max-width: 1240px) {
+  .work-card.work-card--spotless,
+  .work-card.work-card--genetics-audit {
+    padding-bottom: clamp(24px, 2.4vw, 40px);
+  }
+
+  .work-card.work-card--spotless .work-card__visual,
+  .work-card.work-card--genetics-audit .work-card__visual {
+    height: auto;
+    margin-bottom: 0;
+    border-radius: var(--r-media);
+  }
+}
+
+/*
+ * Stacked, the screen-led covers (Fluffy Chumb, the plugins, Cringe-meter)
+ * would run out through the card's floor and past its sides, as on the home
+ * page. In this list they sit next to Spotless and the audit, so they show the
+ * same way: the whole composition inside the card, its padding round it.
+ */
+@media (max-width: 1240px) {
+  .ai-work .work-card.work-card--cat-app,
+  .ai-work .work-card.work-card--ds-plugins,
+  .ai-work .work-card.work-card--design-cringe {
+    padding-bottom: clamp(24px, 2.4vw, 40px);
+  }
+
+  .ai-work .work-card.work-card--cat-app .work-card__visual,
+  .ai-work .work-card.work-card--ds-plugins .work-card__visual,
+  .ai-work .work-card.work-card--design-cringe .work-card__visual {
+    align-self: center;
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+    border: 0;
+    border-radius: var(--r-media);
+    background: none;
+  }
+
+  /* The plugin windows: the artwork whole, at its own ratio. */
+  .ai-work .work-card.work-card--ds-plugins .work-card__visual {
+    height: auto;
+    aspect-ratio: auto;
+  }
+
+  .ai-work .work-card.work-card--ds-plugins .work-card__visual > img {
+    position: static;
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    transform: none;
+  }
+
+  /* Fluffy Chumb: the frame is trimmed to the two phones (885x1029 of the
+     1352x1220 cover, its transparent band left out), so they read large and
+     both show whole. Capped on a tablet so they do not outgrow the card. */
+  .ai-work .work-card.work-card--cat-app .work-card__visual {
+    width: min(100%, 520px);
+    height: auto;
+    aspect-ratio: 885 / 1029;
+    margin: 0 auto;
+    border-radius: 0;
+  }
+
+  .ai-work .work-card.work-card--cat-app .work-card__visual > img {
+    position: absolute;
+    top: calc(-100% * 130 / 1029);
+    left: calc(-100% * 233 / 885);
+    width: calc(100% * 1352 / 885);
+    max-width: none;
+    height: auto;
+    object-fit: initial;
+    transform: none;
+  }
+
+  /* Cringe-meter: the fan in a frame of its own, nothing sunk below the floor. */
+  .ai-work .work-card.work-card--design-cringe .work-card__visual--shots {
+    --plate: 1;
+
+    height: auto;
+    aspect-ratio: 4 / 3;
+    overflow: visible;
+  }
+}
+
+/* On a phone the pair (the score and the phone result) stays inside the frame. */
+@media (max-width: 640px) {
+  .ai-work .work-card.work-card--design-cringe .work-shot:nth-child(2) {
+    --x: 43%; --y: 50%; --w: 76cqw; --h: 80cqh; --r: -4deg;
+  }
+
+  .ai-work .work-card.work-card--design-cringe .work-shot:nth-child(3) {
+    --x: 81%; --y: 52%; --w: 26cqw; --h: 88cqh; --r: 5deg;
+  }
+}
+
+@media (max-width: 1279px) {
+  .ai-pipeline__steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .ai-pipeline__steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .ai-pipeline__steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ai-numbers {
+    border-radius: 22px;
+  }
+
+  .ai-portfolio-hero__eyebrow {
+    margin-left: 0;
+  }
+}

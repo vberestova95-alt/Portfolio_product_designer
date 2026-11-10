@@ -1,14 +1,21 @@
+import betboomPassHomeTasks from '../assets/cases/betboom-pass-home-mobile-01-tasks.webp';
+import betboomPassHomeSwitchPoster from '../assets/cases/betboom-pass-home-mobile-02-switch-poster.webp';
+import betboomPassHomeSwitchMov from '../assets/cases/betboom-pass-home-mobile-02-switch.mov';
+import betboomPassHomeSwitchWebm from '../assets/cases/betboom-pass-home-mobile-02-switch.webm';
+import betboomPassHomeWidget from '../assets/cases/betboom-pass-home-mobile-03-widget-open.webp';
+import betboomHubHomeProfile from '../assets/cases/betboom-hub-home-profile.webp';
+import betboomHubHomeHub from '../assets/cases/betboom-hub-home-hub.webp';
 import betboomFeaturedDesktop from '../assets/cases/betboom-featured-desktop.png';
-import betboomFeaturedMobile from '../assets/cases/betboom-featured-mobile.png';
 import iquotoDesktop from '../assets/cases/iquoto-desktop.png';
 import kokocMainDesktop from '../assets/cases/kokoc-main-desktop.png';
 import fluffyChumbV2Cover from '../assets/cases/fluffy-chumb-v2-cover.webp';
+import fluffyChumbHomeCover from '../assets/cases/fluffy-chumb-home-cover.webp';
 import dsPluginsCard from '../assets/cases/ds-plugins-card.webp';
 import designCringeCard from '../assets/cases/design-cringe-card.webp';
 import designCringeLandingShot from '../assets/cases/design-cringe-landing.jpg';
 import designCringeMobileShot from '../assets/cases/design-cringe-mobile-clean.jpg';
 import designCringeScoreShot from '../assets/cases/design-cringe-score.jpg';
-import yandexCoverScreens from '../assets/cases/yandex-cover-screens.png';
+import yandexCoverR16 from '../assets/cases/yandex-cover-r16.webp';
 import conceptBeauty from '../assets/concepts/beauty-commerce.png';
 import conceptEdtechTutorMarketplace from '../assets/concepts/edtech-tutor-marketplace.png';
 import conceptEyewearAr from '../assets/concepts/eyewear-ar.png';
@@ -122,12 +129,38 @@ export const cases = [
     surface: 'ink',
     image: {
       src: betboomCoverImage,
-      alt: 'BetBoom PASS interface preview',
+      alt: 'BetBoom PASS live desktop task page, in Russian',
     },
-    mobileImage: {
-      src: betboomFeaturedMobile,
-      alt: 'BetBoom PASS mobile interface preview',
-    },
+    /*
+     * Then the mobile app, in English: flat screens, as on the other covers.
+     * The three screens come in one by one, each in its own place on one
+     * canvas: the task list, a task detail where a conflicting task is
+     * switched (a clip, held for its 6.6 s; .mov is 1 px wider, a transparent
+     * column, as HEVC needs an even width), and the open “Your tasks” widget.
+     */
+    stackFrames: true,
+    frames: [
+      {
+        src: betboomPassHomeTasks,
+        alt: 'BetBoom PASS task page in the app: the MSI 2025 top task, the category bar, task cards and the collapsed “Your tasks” widget',
+        hold: 3000,
+      },
+      {
+        src: betboomPassHomeSwitchPoster,
+        alt: 'A hockey task detail: starting another tier opens “These tasks conflict”, Switch swaps the tasks and a “Task switched” toast shows',
+        video: {
+          sources: [
+            { src: betboomPassHomeSwitchMov, type: 'video/quicktime; codecs="hvc1"' },
+            { src: betboomPassHomeSwitchWebm, type: 'video/webm; codecs="vp9"' },
+          ],
+        },
+        hold: 6600,
+      },
+      {
+        src: betboomPassHomeWidget,
+        alt: 'The “Your tasks” widget open over the task page: three active tasks with their rewards and progress',
+      },
+    ],
     href: '/betboom-pass',
   },
   {
@@ -140,7 +173,7 @@ export const cases = [
     metrics: ['Mobile-first', 'Concept validation'],
     surface: 'paper',
     image: {
-      src: yandexCoverScreens,
+      src: yandexCoverR16,
       alt: 'Three mobile screens from the Yandex News Turkey concept',
     },
     href: '/yandex-turkey',
@@ -152,11 +185,11 @@ export const cases = [
     category: 'Pet Health / Side Project',
     description:
       'From an insulin tracker for one cat to an app where a family and a pet sitter set up their own trackers and share the day’s tasks. Rebuilt after interviews with MVP users.',
-    metrics: ['MVP → v2', '12 beta testers'],
+    metrics: ['MVP → v2', '12 beta sign-ups'],
     surface: 'pet',
     image: {
-      src: fluffyChumbV2Cover,
-      alt: 'Two Fluffy Chumb screens: home with the pet’s trackers and today’s routine with tasks done, skipped and due now',
+      src: fluffyChumbHomeCover,
+      alt: 'Three Fluffy Chumb screens: all trackers, home with the pet’s trackers, and insulin with the week’s doses',
     },
     href: '/cat-app',
   },
@@ -189,6 +222,29 @@ export const cases = [
       alt: 'IQuoto registration redesign screens',
     },
     href: '/iquoto',
+  },
+  {
+    id: 'betboom-gamification-hub',
+    title: 'BetBoom — Gamification hub',
+    year: '2026',
+    category: 'Gamification / BetBoom app',
+    // TODO(p32b): card copy and cover — from the editor and the designer.
+    description:
+      'A new section of the BetBoom app that brings seasons, tasks and the shop together. The brief asked for a seasons page; I proposed a hub.',
+    metrics: [],
+    surface: 'ink',
+    // The way in: the season widget in the profile, then the hub it opens.
+    image: {
+      src: betboomHubHomeProfile,
+      alt: 'BetBoom screens: the app profile with the Winter season widget, and the hub in the light theme',
+    },
+    frames: [
+      {
+        src: betboomHubHomeHub,
+        alt: 'BetBoom screens: the gamification hub with tasks, shop and seasons, in the dark and light themes',
+      },
+    ],
+    href: '/betboom-gamification-hub',
   },
 ];
 
@@ -253,7 +309,7 @@ export const aiProjects = {
       category: 'Pet Health / Side Project',
       description:
         'Custom care trackers and a shared daily routine for the family and the pet sitter — the second version, rebuilt after interviews with MVP users.',
-      metrics: ['MVP → v2', '12 beta testers'],
+      metrics: ['MVP → v2', '12 beta sign-ups'],
       surface: 'pet',
       image: {
         src: fluffyChumbV2Cover,
