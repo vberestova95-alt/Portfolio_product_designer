@@ -109,3 +109,53 @@
     transform: translate(-50%, -9%);
   }
 }
+
+/*
+ * BetBoom PASS from 1240px down shows its three screens whole, not run out
+ * through the card's floor: the frame takes the canvas's ratio from just
+ * above the screens (they start 174px down the 1627×1536 canvas) to its foot,
+ * and the card keeps a bottom padding, as the IQuoto card does. The desktop
+ * frame fills the same box. Width set outright: with an aspect ratio Safari
+ * no longer stretches the grid item (see the IQuoto note in global.css).
+ */
+@media (max-width: 1240px) {
+  .work-card.work-card--betboom-pass {
+    padding-bottom: var(--card-pad-x, 24px);
+  }
+
+  .work-card.work-card--betboom-pass .work-card__visual--frames {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1627 / 1386;
+    margin-bottom: 0;
+    border-radius: var(--r-media);
+  }
+
+  .work-card--betboom-pass .work-card__frame > img,
+  .work-card--betboom-pass .work-card__frame > video {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    object-fit: initial;
+    transform: none;
+  }
+}
+
+/* On a phone the frame runs edge to edge as before, and the screens are set
+   4% in from each side, so the outer two clear the card's edge. */
+@media (max-width: 640px) {
+  .work-card.work-card--betboom-pass .work-card__visual--frames {
+    width: calc(100% + 48px);
+    aspect-ratio: 1627 / 1275;
+    border-radius: 0;
+  }
+
+  .work-card--betboom-pass .work-card__frame > img,
+  .work-card--betboom-pass .work-card__frame > video {
+    left: 4%;
+    width: 92%;
+  }
+}
