@@ -98,6 +98,89 @@
   background: var(--ai-blue);
 }
 
+button.ai-pill {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.ai-pill:focus-visible {
+  outline: 2px solid var(--ai-blue);
+  outline-offset: 3px;
+}
+
+/* The second answer: an outline instead of ink. */
+.ai-pill--ghost {
+  background: transparent;
+  color: var(--ai-ink) !important;
+  box-shadow: inset 0 0 0 1.5px var(--ai-ink);
+}
+
+.ai-pill--ghost:hover {
+  background: var(--ai-ink);
+  color: var(--ai-paper) !important;
+}
+
+/* ---- The switch that stops the carousel ---- */
+
+.ai-switch {
+  position: absolute;
+  top: calc(var(--ai-gutter) + 6px);
+  left: 50%;
+  z-index: 25;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ai-ink);
+  font: 600 12px/1 var(--ai-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.ai-concept:not(:has(.ai-header)) .ai-switch {
+  top: 96px;
+}
+
+.ai-switch:focus-visible {
+  outline: 2px solid var(--ai-blue);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+.ai-switch__track {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--ai-line);
+  transition: background 0.25s ease;
+}
+
+.ai-switch__knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(11, 12, 12, 0.25);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ai-switch[aria-checked='true'] .ai-switch__track {
+  background: var(--ai-blue);
+}
+
+.ai-switch[aria-checked='true'] .ai-switch__knob {
+  transform: translateX(14px);
+}
+
 /* ---- Cube ---- */
 
 .ai-shape {
@@ -200,6 +283,109 @@
   line-height: 1.5;
   color: var(--ai-mute);
   text-wrap: balance;
+}
+
+.ai-hero__answers {
+  display: flex;
+  gap: 10px;
+}
+
+.ai-hero__answers .ai-pill {
+  min-width: 84px;
+}
+
+/* ---- The cases as a list ---- */
+
+.ai-concept--list .ai-hero {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 100svh;
+  overflow: visible;
+}
+
+.ai-list {
+  position: relative;
+  flex: 1;
+  display: grid;
+  align-content: center;
+  padding: 140px var(--ai-gutter) 40px;
+}
+
+.ai-list__rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ai-line);
+}
+
+.ai-list__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+  align-items: center;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--ai-line);
+  transition: padding 0.35s ease, color 0.3s ease;
+}
+
+.ai-list__title {
+  font-size: clamp(30px, 3.8vw, 58px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.ai-list__description {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ai-mute);
+}
+
+@media (hover: hover) {
+  .ai-list__rows:hover .ai-list__row {
+    color: var(--ai-mute);
+  }
+
+  .ai-list__rows .ai-list__row:hover {
+    padding-left: 16px;
+    color: var(--ai-ink);
+  }
+}
+
+.ai-list__preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: clamp(200px, 20vw, 300px);
+  pointer-events: none;
+}
+
+.ai-list__preview img {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  opacity: 0;
+  transform: translate(24px, -50%) scale(0.92);
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ai-list__preview.is-on img {
+  opacity: 1;
+  transform: translate(24px, -50%) scale(1);
+}
+
+@media (hover: none) {
+  .ai-list__preview {
+    display: none;
+  }
+}
+
+.ai-concept--list .ai-hero__foot {
+  position: relative;
+  inset: auto;
+  margin: 0 var(--ai-gutter) var(--ai-gutter);
 }
 
 .ai-hero__foot {
@@ -316,6 +502,32 @@
   .ai-tools {
     font-size: 11px;
     gap: 2px 12px;
+  }
+
+  .ai-switch {
+    top: 64px;
+  }
+
+  .ai-concept:not(:has(.ai-header)) .ai-switch {
+    top: 84px;
+  }
+
+  .ai-list {
+    padding-top: 116px;
+  }
+
+  .ai-list__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 14px 0;
+  }
+
+  .ai-list__title {
+    font-size: 30px;
+  }
+
+  .ai-list__description {
+    font-size: 12px;
   }
 }
 

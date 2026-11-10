@@ -71,3 +71,58 @@ export function ConceptHeader({ profile }) {
     </header>
   );
 }
+
+/*
+ * The cases as a plain list, for those who would rather not ride the
+ * carousel: each title over a line, its one-line pitch beside it, and a
+ * preview of the case following the pointer along the list.
+ */
+export function WorkList({ items }) {
+  const previewRef = useRef(null);
+  const imageRef = useRef(null);
+
+  function move(event) {
+    const preview = previewRef.current;
+    if (!preview) {
+      return;
+    }
+    const box = preview.parentElement.getBoundingClientRect();
+    preview.style.transform = `translate(${event.clientX - box.left}px, ${event.clientY - box.top}px)`;
+  }
+
+  function show(event, item) {
+    if (!previewRef.current || !item.image?.src) {
+      return;
+    }
+    imageRef.current.src = item.image.src;
+    previewRef.current.classList.add('is-on');
+    move(event);
+  }
+
+  function hide() {
+    previewRef.current?.classList.remove('is-on');
+  }
+
+  return (
+    <div className="ai-list" onPointerLeave={hide}>
+      <ul className="ai-list__rows">
+        {items.map((item) => (
+          <li key={item.id}>
+            <a
+              className="ai-list__row"
+              href={item.href}
+              onPointerEnter={(event) => show(event, item)}
+              onPointerMove={move}
+            >
+              <span className="ai-list__title">{item.title}</span>
+              <span className="ai-list__description">{item.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div className="ai-list__preview" ref={previewRef} aria-hidden="true">
+        <img ref={imageRef} alt="" />
+      </div>
+    </div>
+  );
+}

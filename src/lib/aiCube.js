@@ -40,7 +40,7 @@ mat3 turn;
 
 float core(vec3 p) {
   vec3 q = turn * p;
-  return roundBox(q, vec3(0.4), 0.13) + ripple(q, 0.012, 0.9);
+  return roundBox(q, vec3(0.4), 0.13) + ripple(q, 0.032, 1.2);
 }
 
 float shell(vec3 p) {
@@ -105,20 +105,28 @@ void main() {
     float diffuse = max(dot(n, light), 0.0);
     float soft = max(dot(n, fill), 0.0);
     float rim = pow(1.0 - clamp(dot(n, -inside), 0.0, 1.0), 2.5);
-    float glint = pow(max(dot(reflect(inside, n), light), 0.0), 10.0);
-    // A dense, matte blue: the faces differ only a little, the way pigment
-    // does, with a broad soft sheen instead of a plastic highlight.
-    vec3 deep = vec3(0.02, 0.05, 0.4);
-    vec3 bright = vec3(0.14, 0.3, 1.0);
-    vec3 blue = mix(deep, bright, smoothstep(0.0, 1.0, 0.1 + 0.9 * diffuse));
-    blue += vec3(0.03, 0.07, 0.3) * soft * 0.35;
-    blue += vec3(0.2, 0.3, 0.8) * rim * 0.15 + vec3(0.5, 0.6, 1.0) * glint * 0.06;
+    float glint = pow(max(dot(reflect(inside, n), light), 0.0), 36.0);
+    // Liquid blue: a rich blue all over, lighter towards the top, the faces
+    // apart in tone, small wet highlights that slide with the ripple.
+    float height = clamp(p.y * 1.1 + 0.5, 0.0, 1.0);
+    vec3 deep = vec3(0.02, 0.07, 0.62);
+    vec3 bright = vec3(0.2, 0.42, 1.0);
+    vec3 blue = mix(deep, bright, clamp(0.35 * height + 0.6 * diffuse, 0.0, 1.0));
+    blue += vec3(0.04, 0.1, 0.35) * soft * 0.35;
+    // The sheen: a cyan-to-violet shimmer, as on oil on water, strongest
+    // where a face turns away and drifting as the cube turns.
+    vec3 play = 0.5 + 0.5 * cos(6.2831 * (dot(n, -inside) * 0.9 + p.y * 0.6 + time * 0.05) +
+                                vec3(0.0, 2.1, 4.2));
+    vec3 sheen = mix(vec3(0.3, 0.85, 1.0), vec3(0.75, 0.45, 1.0), play.x) * (0.6 + 0.4 * play.y);
+    blue += sheen * (0.08 + rim * 0.55);
+    blue += vec3(1.0) * glint * 0.55;
     // The shell's milk lies over the core, thicker towards its edges.
-    color = mix(blue, vec3(0.92, 0.95, 1.0), 0.03 + fresnel * 0.45);
-    alpha = 1.0;
+    color = mix(blue, vec3(0.92, 0.95, 1.0), 0.04 + fresnel * 0.45);
+    // Not quite solid: a breath of the paper shows through the faces.
+    alpha = 0.88 + 0.12 * rim;
   }
 
-  shine *= 0.35;
+  shine *= 0.5;
   color += vec3(1.0) * shine;
   alpha = clamp(alpha + shine, 0.0, 1.0);
   gl_FragColor = vec4(color * alpha, alpha);
