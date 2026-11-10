@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ConceptFooter, ConceptHeader, CubeShape, projectFrames } from '../components/AiConcept.jsx';
+import { ConceptHeader, CubeShape, projectFrames } from '../components/AiConcept.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
 import { attachAiVortex } from '../lib/aiVortex.js';
 import '../styles/aiConcept.css';
@@ -7,24 +7,19 @@ import '../styles/aiConcept.css';
 // How long each project stays in the middle before the next one comes up.
 const CYCLE_MS = 7000;
 
-// "~24 h" → ["~24", "h"]: the figure set large, its unit small beside it.
-function splitValue(value) {
-  const match = /^(~?[\d.,]+\+?)\s*(.*)$/.exec(value);
-  return match ? [match[1], match[2]] : [value, ''];
-}
-
 /*
- * The AI landing: the work spirals out of the blue cube on the first screen,
+ * The AI landing, all on one screen: the work spirals out of the blue cube,
  * and the frames are the way into the cases — pointing at one names its
  * project in the middle, a click opens it. With nothing pointed at, the middle
- * goes through the projects on its own. Then how I run agents and the numbers.
- * Opened by the main site's AI projects link and, on its own, as the home of
- * the AI subdomain (`standalone`).
+ * goes through the projects on its own. Along the bottom, the numbers on the
+ * left and the tools on the right. Opened by the main site's AI projects link
+ * and, on its own, as the home of the AI subdomain (`standalone`).
  */
 export function AiLandingConcept({ page, projects, caseStudies, profile, standalone = false }) {
   const canvasRef = useRef(null);
   const shapeRef = useRef(null);
   const copyRef = useRef(null);
+  const footRef = useRef(null);
   const activeRef = useRef(0);
   const [active, setActive] = useState(0);
   // The middle holds still while the mouse is on a frame or on the text itself.
@@ -55,7 +50,7 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
       attachAiVortex(canvasRef.current, {
         frames,
         clear: shapeRef.current,
-        avoid: [copyRef.current],
+        avoid: [copyRef.current, footRef.current],
         getFocus: () => activeRef.current,
         onHover: (project) => {
           setOnFrame(project !== null);
@@ -85,7 +80,7 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
 
   return (
     <div className="ai-concept ai-concept--landing">
-      <section className="ai-hero" id="cases">
+      <section className="ai-hero">
         <canvas className="ai-hero__vortex" ref={canvasRef} aria-hidden="true" />
         {/* Reached from the main site, the page keeps the site's own header;
             on the subdomain it is the home, with a header of its own. */}
@@ -123,60 +118,22 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
           </div>
         </div>
 
-        <p className="ai-hero__foot" aria-hidden="true">
-          <span className="ai-hero__hint ai-hero__hint--pointer">Click a frame to open its case</span>
-          <span className="ai-hero__hint ai-hero__hint--touch">Tap a frame to see its project</span>
-          <span>{String(projects.length).padStart(3, '0')} projects</span>
-        </p>
-      </section>
+        <div className="ai-hero__foot" ref={footRef}>
+          <ul className="ai-facts" aria-label={numbers.title}>
+            {numbers.items.map((item) => (
+              <li key={`${item.value}-${item.label}`}>
+                <strong>{item.value}</strong>
+                <span>{item.label}</span>
+              </li>
+            ))}
+          </ul>
 
-      <section className="ai-manifesto" id="how" aria-labelledby="ai-how">
-        <p className="ai-label" id="ai-how">
-          {pipeline.title}
-        </p>
-        <p className="ai-manifesto__lead" data-reveal>
-          {pipeline.lead}
-        </p>
-
-        <ol className="ai-steps">
-          {pipeline.steps.map((step, index) => (
-            <li key={step.title} className="ai-step" data-reveal>
-              <span className="ai-step__index">{String(index + 1).padStart(2, '0')}</span>
-              <h2 className="ai-step__title">{step.title}</h2>
-              <p className="ai-step__text">{step.text}</p>
-            </li>
-          ))}
-        </ol>
-
-        <ul className="ai-tools" aria-label="Tools">
-          {pipeline.tools.map((tool) => (
-            <li key={tool}>{tool}</li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="ai-dark">
-        <div className="ai-numbers" aria-labelledby="ai-numbers-title">
-          <p className="ai-label" id="ai-numbers-title">
-            {numbers.title}
-          </p>
-          <ul className="ai-numbers__row">
-            {numbers.items.map((item) => {
-              const [figure, unit] = splitValue(item.value);
-              return (
-                <li key={`${item.value}-${item.label}`} data-reveal>
-                  <strong>
-                    {figure}
-                    {unit ? <small>{unit}</small> : null}
-                  </strong>
-                  <span>{item.label}</span>
-                </li>
-              );
-            })}
+          <ul className="ai-tools" aria-label="Tools">
+            {pipeline.tools.map((tool) => (
+              <li key={tool}>{tool}</li>
+            ))}
           </ul>
         </div>
-
-        <ConceptFooter profile={profile} />
       </section>
     </div>
   );

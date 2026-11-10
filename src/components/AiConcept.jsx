@@ -1,12 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { attachAiCube } from '../lib/aiCube.js';
 import { BrandLogo } from './BrandLogo.jsx';
-import { PrivacyLinks } from './ConsentBanner.jsx';
 
 /*
  * Parts of the AI landing (/ai-portfolio, /ai-projects and the AI subdomain):
- * a quiet header with the site's mark, the blue cube and the closing line. The look borrows from editorial studio sites — a light
- * grey page, small caps labels, a black close — set in the site's own face.
+ * the frames it shows, the blue cube, and the subdomain's own header.
  */
 
 const IMAGE_PATTERN = /\.(webp|jpe?g|png|avif)(\?.*)?$/i;
@@ -47,11 +45,13 @@ export function CubeShape({ className = '', shapeRef }) {
   );
 }
 
-/* The subdomain's header: the site's mark, the page's anchors, a way to write. */
+/*
+ * The subdomain's header: the site's mark, a way to write, and the privacy
+ * page — the one-screen page has no footer to carry it.
+ */
 export function ConceptHeader({ profile }) {
   const links = [
-    { key: 'cases', href: '#cases', label: 'Cases' },
-    { key: 'how', href: '#how', label: 'How I work' },
+    { key: 'privacy', href: '/privacy', label: 'Privacy' },
     { key: 'contact', href: `mailto:${profile.email}`, label: 'Contact' },
   ];
 
@@ -69,29 +69,5 @@ export function ConceptHeader({ profile }) {
         ))}
       </nav>
     </header>
-  );
-}
-
-export function ConceptFooter({ profile }) {
-  return (
-    <footer className="ai-footer">
-      <a className="ai-footer__line" href={`mailto:${profile.email}`}>
-        Let’s build the next one
-      </a>
-
-      <div className="ai-footer__row">
-        <a href={`mailto:${profile.email}`}>{profile.email}</a>
-        <ul>
-          {profile.contacts.map((contact) => (
-            <li key={contact.label}>
-              <a href={contact.href} target="_blank" rel="noreferrer">
-                {contact.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <PrivacyLinks />
-      </div>
-    </footer>
   );
 }
