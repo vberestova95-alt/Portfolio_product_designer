@@ -994,7 +994,7 @@ export const betboomPassCaseStudy = {
         },
         {
           type: 'phoneRow',
-          label: 'Swap a task, with 10 seconds to undo',
+          label: 'Swap a task: popup, switch, 12-hour limit',
           items: [
             {
               src: betboomSwapConflict,
