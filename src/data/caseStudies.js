@@ -1464,8 +1464,8 @@ export const betboomGamificationHubCaseStudy = {
           compact: true,
           title: 'Role · platforms',
           items: [
-            'The only designer. Hub architecture, every state, and the entry point in the app profile.',
-            'BetBoom app (iOS, Android) and desktop web.',
+            'The only designer. Hub architecture and the entry point in the app profile.',
+            'BetBoom app, iOS and Android.',
           ],
         },
       ],
@@ -1690,7 +1690,7 @@ export const betboomGamificationHubCaseStudy = {
               heading: 'Entry point',
               paragraphs: [
                 'A widget in the Profile tab of the main BetBoom app, not inside PASS. It sits next to the avatar without competing with it: the avatar stands for the profile, the widget for gamification.',
-                'V.2 states: no progress, progress, timer, max level. On error, the widget is hidden.',
+                'Widget states: no progress, progress, timer, max level. On error, the widget is hidden.',
                 'It shares the profile carousel with identification, identity proof, loyalty programme and offer widgets. The order is Offer → Profile levels → Loyalty programme. For users not yet identified, it sits under the welcome bonus banner.',
               ],
             },
@@ -1774,7 +1774,7 @@ export const betboomGamificationHubCaseStudy = {
               heading: 'Where it stands',
               items: [
                 'The hub is in production.',
-                'The profile entry point V.2 is in production.',
+                'The profile entry point is in production.',
               ],
             },
           ],

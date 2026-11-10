@@ -5798,6 +5798,12 @@ ol.case-bullet-list li::before {
     display: none;
   }
 
+  /* A card without metrics keeps its category, on the left where they would be. */
+  .work-card__meta--no-stats .work-card__kicker {
+    display: block;
+    text-align: left;
+  }
+
   /*
    * Case cards on a phone. Air above the tags (40px), the tags well apart from
    * the heading (40px), the heading and description one unit (10px), and the

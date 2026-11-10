@@ -259,12 +259,14 @@ export function WorkCard({ item, index, total }) {
         <span className="visually-hidden">{`${text.openCase}: ${item.title}`}</span>
       </a>
 
-      <div className="work-card__meta">
-        <ul className="work-card__stats">
-          {item.metrics.map((metric) => (
-            <li key={metric}>{metric}</li>
-          ))}
-        </ul>
+      <div className={`work-card__meta${item.metrics?.length ? '' : ' work-card__meta--no-stats'}`}>
+        {item.metrics?.length ? (
+          <ul className="work-card__stats">
+            {item.metrics.map((metric) => (
+              <li key={metric}>{metric}</li>
+            ))}
+          </ul>
+        ) : null}
         <span className="work-card__kicker">{item.category}</span>
       </div>
       <div className="work-card__body">
