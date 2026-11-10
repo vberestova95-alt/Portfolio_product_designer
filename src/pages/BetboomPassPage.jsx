@@ -993,7 +993,18 @@ function SectionPart({ part }) {
     return (
       <div className={`case-feature-media${part.wide ? ' case-feature-media--wide' : ''}`}>
         {part.label ? <span className="case-feature-media__label">{part.label}</span> : null}
-        <CaseMedia media={part.media} />
+        {part.media.mobileSrc ? (
+          // A phone gets its own take on the picture (`mobileUpTo`, 640 px by default).
+          <picture>
+            <source
+              media={`(max-width: ${part.media.mobileUpTo ?? 640}px)`}
+              srcSet={part.media.mobileSrc}
+            />
+            <CaseMedia media={part.media} />
+          </picture>
+        ) : (
+          <CaseMedia media={part.media} />
+        )}
         <MediaCaption caption={part.caption} credit={part.credit} />
       </div>
     );

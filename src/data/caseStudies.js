@@ -68,6 +68,8 @@ import betboomDraftD3ModalA from '../assets/cases/betboom/draft-d3-modal-a.webp'
 import betboomDraftD3ModalB from '../assets/cases/betboom/draft-d3-modal-b.webp';
 import betboomDraftD3Undo from '../assets/cases/betboom/draft-d3-undo.webp';
 import betboomDraftD3CancelTask from '../assets/cases/betboom/draft-d3-cancel-task.webp';
+import betboomIllustrationRefresh from '../assets/cases/betboom/illustration-rebrand.webp';
+import betboomIllustrationRefreshMobile from '../assets/cases/betboom/illustration-rebrand-mobile.webp';
 import betboomRedesignVideo from '../assets/cases/betboom/redesign-cards.mp4';
 import betboomRedesignPoster from '../assets/cases/betboom/redesign-cards-poster.webp';
 import betboomAbTestVideo from '../assets/cases/betboom/ab-test.mp4';
@@ -789,6 +791,7 @@ export const betboomPassCaseStudy = {
                 'Prototypes and the visual concept',
                 'Stakeholder presentations',
                 'Brought in a second designer. “Your tasks” widget: concept by me, UI by a second designer. Category bar: concept and logic by me; UI, components and specs by a second designer.',
+                'Illustration refresh with the graphic designers: approval, feedback, planning',
               ],
             },
             {
@@ -1313,6 +1316,31 @@ export const betboomPassCaseStudy = {
           },
           caption: 'Desktop: category bar, task grid and the “Your tasks” widget opening on the right.',
           credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
+        },
+        {
+          // TODO(p32): dates and the number of refreshed pictures are open — left out.
+          type: 'blocks',
+          blocks: [
+            {
+              type: 'text',
+              heading: 'Illustration refresh',
+              paragraphs: [
+                'I also worked on the illustration refresh with the graphic designers. I approved the graphics and animation on the site, gave feedback and took part in planning the updates.',
+              ],
+            },
+          ],
+        },
+        {
+          // Before on top and after below; on a phone the pairs sit in rows.
+          type: 'featureMedia',
+          wide: true,
+          media: {
+            src: betboomIllustrationRefresh,
+            mobileSrc: betboomIllustrationRefreshMobile,
+            mobileUpTo: 480,
+            alt: 'Three illustrations before and after the refresh: a Desert Eagle pistol, a silenced rifle and a horned skull. Before: dark realistic 3D. After: glossy 3D in coloured glass, and a white skull in barbed wire with yellow shells',
+          },
+          caption: 'The same objects in the earlier style and after the refresh.',
         },
         {
           type: 'blocks',
