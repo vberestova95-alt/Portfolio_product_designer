@@ -156,6 +156,8 @@ button.ai-pill {
    header (global.css .site-topbar) pads its foot more than its head. */
 .ai-topbar__shell > .ai-switch {
   position: absolute;
+  /* Over the header (z-index 40), whose menu box spans the middle of the row. */
+  z-index: 50;
   top: calc((100% + 4px - clamp(16px, 1.6vw, 24px)) / 2);
   left: 50%;
   transform: translate(-50%, -50%);
@@ -536,13 +538,20 @@ button.ai-pill {
     justify-self: center;
   }
 
+  /* Below the header here, so under its menu sheet and backdrop, not over them. */
   .ai-topbar__shell > .ai-switch {
     top: calc(100% + 16px);
+    z-index: 10;
     transform: translateX(-50%);
   }
 
   .ai-list {
     padding-top: 116px;
+  }
+
+  /* The main site's header is taller, and the switch sits under it. */
+  .ai-topbar ~ .ai-list {
+    padding-top: 156px;
   }
 
   .ai-list__row {
