@@ -715,6 +715,14 @@ export const betboomPassCaseStudy = {
                 'Each new chain meant 12 more steps to track and its own rule for showing the reward. With many new tasks planned, the mechanic could not grow with the catalog.',
               ],
             },
+            {
+              // One note for the whole case: the frames keep the illustrations
+              // of their time (the user's edit, p. 6), so it is not repeated below.
+              type: 'text',
+              paragraphs: [
+                'The screens below show the illustrations in their earlier style. The style changed over time. The current look is in Result at the top and in “Illustration refresh”.',
+              ],
+            },
           ],
         },
         {

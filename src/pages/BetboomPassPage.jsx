@@ -457,9 +457,10 @@ function ContentBlock({ block }) {
     );
   }
 
+  // Without a heading, a text block is a quiet note (e.g. about the frames below).
   return (
     <section className="case-content-block">
-      <h3>{block.heading}</h3>
+      {block.heading ? <h3>{block.heading}</h3> : null}
       <div className="case-rich-text">
         {block.paragraphs.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
