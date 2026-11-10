@@ -1110,7 +1110,7 @@ export const betboomPassCaseStudy = {
             },
             {
               src: betboomDetailRewardDeadline,
-              alt: 'Reward and deadline: two task cards with a category chip, timer, token reward and XP',
+              alt: 'Reward and deadline: a Gaming task card with a timer and a table tennis card with its stake range, each with a token reward and XP',
               span: 'full',
               variant: 'whole',
               caption: 'Reward and deadline are readable without opening the card.',
