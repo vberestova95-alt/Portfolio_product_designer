@@ -639,6 +639,7 @@ export const betboomPassCaseStudy = {
       {
         label: 'Tasks and top',
         caption: 'Top tasks rotate up front, then one feed for esports and classic sports.',
+        credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
         src: betboomShowcaseTasksPoster,
         video: betboomShowcaseClip(betboomShowcaseTasksMov, betboomShowcaseTasksWebm),
         duration: 8.4,
@@ -647,7 +648,7 @@ export const betboomPassCaseStudy = {
       {
         label: 'Your tasks widget',
         caption: 'Active tasks and their progress, one tap from any screen.',
-        credit: '“Your tasks” widget UI: a second designer.',
+        credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
         src: betboomShowcaseWidgetPoster,
         video: betboomShowcaseClip(betboomShowcaseWidgetMov, betboomShowcaseWidgetWebm),
         duration: 7,
@@ -656,6 +657,7 @@ export const betboomPassCaseStudy = {
       {
         label: 'Task detail',
         caption: 'Pick the stake tier and see its reward before you start.',
+        credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
         src: betboomShowcaseTaskDetailPoster,
         video: betboomShowcaseClip(betboomShowcaseTaskDetailMov, betboomShowcaseTaskDetailWebm),
         duration: 9,
@@ -664,6 +666,7 @@ export const betboomPassCaseStudy = {
       {
         label: 'Switching tasks',
         caption: 'One active task per category: a popup offers the swap.',
+        credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
         src: betboomShowcaseSwitchingPoster,
         video: betboomShowcaseClip(betboomShowcaseSwitchingMov, betboomShowcaseSwitchingWebm),
         duration: 9.7,
@@ -672,7 +675,7 @@ export const betboomPassCaseStudy = {
       {
         label: 'Category bar · mobile web',
         caption: 'Pick a sport, and the feed narrows to its tasks.',
-        credit: 'Category bar concept and logic: me; UI: a second designer.',
+        credit: 'Category bar concept and logic: me. UI of the category bar and the “Your tasks” widget: a second designer.',
         src: betboomShowcaseCategoryBarPoster,
         video: betboomShowcaseClip(betboomShowcaseCategoryBarMov, betboomShowcaseCategoryBarWebm),
         duration: 6.6,
@@ -737,7 +740,7 @@ export const betboomPassCaseStudy = {
             },
             {
               src: betboomChainSecretTasks,
-              alt: 'Chain task “Tennis player” expanded: level Amateur 0/6 done, the first step “Place bets from 1 000 ₽” for +250, three locked “Secret task” steps, a 7 880 total and a disabled “You’re already doing this task” button',
+              alt: 'Chain task “Tennis player” expanded: level Amateur 0/6 done, the first step “Place bets from 1 000 ₽” with a 250 token reward, three locked “Secret task” steps, a 7 880 total and a disabled “You’re already doing this task” button',
               caption: 'Next steps locked as “Secret task”',
             },
             {
@@ -1099,10 +1102,11 @@ export const betboomPassCaseStudy = {
             },
             {
               src: betboomDetailPromoTask,
-              alt: 'Task page on mobile web: the MSI 2025 promo task leads the top carousel above the category bar and task cards',
+              alt: 'Task page on mobile web: the MSI 2025 promo task leads the top carousel above the category bar, task cards and the “Your tasks” widget',
               span: 'third',
               variant: 'whole',
               caption: 'Promo tasks reuse the same anatomy.',
+              credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
             },
             {
               src: betboomDetailRewardDeadline,
@@ -1277,7 +1281,7 @@ export const betboomPassCaseStudy = {
             poster: betboomCategoryBarPoster,
             alt: 'The category bar on desktop: esports and sports icons with sort chips below; Valorant, then Hockey, then All are picked in turn',
           },
-          caption: 'Category bar concept and logic: me; UI: a second designer.',
+          credit: 'Category bar concept and logic: me; UI: a second designer.',
         },
       ],
     },
@@ -1297,15 +1301,16 @@ export const betboomPassCaseStudy = {
           type: 'beforeAfterSlider',
           before: {
             src: betboomDesktopBefore,
-            alt: 'Desktop task page before the redesign: the BB PASS header, chips for sorting and task types (Cheapest first, Daily, CS2, Dota 2, Deadlock, Betting, Social) and large art cards with a title and a 2 000 token reward',
+            alt: 'Desktop task page before the redesign: the BB PASS header, chips for sorting and task types (Cheapest first, Daily, CS2, Dota 2, Deadlock, Betting, Social, Chains), large art cards with a title and a 2 000 token reward, and the “Your tasks” column on the right',
           },
           after: {
             src: betboomDesktopAfter,
             alt: 'Desktop task page after the redesign: one category bar for sports and esports, sort chips and three columns of cards with a condition, timer, token reward and XP; the closed “Your tasks” widget in the bottom right corner',
           },
-          // The after frame shows the closed “Your tasks” widget: its credit.
+          // Both frames show the “Your tasks” widget and the after one the
+          // category bar: their credit.
           caption: 'Drag to compare the task page before and after the redesign.',
-          credit: '“Your tasks” widget UI: a second designer.',
+          credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
           // Both frames are 16:9: the slider keeps it at every width.
           ratio: '16 / 9',
         },

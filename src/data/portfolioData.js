@@ -142,7 +142,7 @@ export const cases = [
     frames: [
       {
         src: betboomPassHomeTasks,
-        alt: 'BetBoom PASS task page in the app: the MSI 2025 top task, the category bar and task cards',
+        alt: 'BetBoom PASS task page in the app: the MSI 2025 top task, the category bar, task cards and the collapsed “Your tasks” widget',
         hold: 3000,
       },
       {
