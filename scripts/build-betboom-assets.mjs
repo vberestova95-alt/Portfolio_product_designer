@@ -29,10 +29,12 @@ const PHONE = { width: 390, radius: 44 }
 const IMAGES = {
   // The static PASS cover, for its card on the home page. Not `cover`: that
   // file is the Gamification hub card's picture.
-  'pass-cover': { file: '06-cover-v4.png' },
+  // r2 (with the files below marked -r2): the season level reads “100M”, not
+  // “100 000 000”; nothing else in the frames changed.
+  'pass-cover': { file: '06-cover-v4-r2.png' },
   // The season widget frame; the showcase itself is animated now, it stays
   // as the picture of the next case teaser.
-  'showcase-entry-point': { file: '05-showcase-entry-point.png', phone: true },
+  'showcase-entry-point': { file: '05-showcase-entry-point-r2.png', phone: true },
   // Showcase posters: the first frame of each WebM, with its alpha, so nothing
   // shows behind the phone before the clip starts. Four of the clips open on
   // the same task page, so their posters come out the same picture.
@@ -71,10 +73,10 @@ const IMAGES = {
   'entry-no-level': { file: '23-entry-profile-no-level.png', phone: true },
   // v2: the designer's take with a thin light edge (22 %), so the dark screen
   // does not merge with a dark ground.
-  'entry-progress': { file: '24-entry-profile-progress-v2.png', phone: true },
-  'entry-season-timer': { file: '25-entry-profile-season-timer.png', phone: true },
+  'entry-progress': { file: '24-entry-profile-progress-v2-r2.png', phone: true },
+  'entry-season-timer': { file: '25-entry-profile-season-timer-r2.png', phone: true },
   'entry-max-level': { file: '26-entry-profile-max-level.png', phone: true },
-  'entry-web': { file: '27-entry-web-sidebar.png', radius: 24 },
+  'entry-web': { file: '27-entry-web-sidebar-r2.png', radius: 24 },
   // The very first "before": the old Tasks page (123:675655) in EN, r2. Its
   // header, rule and columns line up with the "after" frame for the slider.
   'desktop-before': { file: '28-desktop-before-en-r2.png', width: 1920 },
@@ -155,10 +157,10 @@ const COPIES = Object.fromEntries(
  * screen of a showcase frame, and the Dynamic Island is laid back on top.
  */
 const HERO_PHONES = {
-  'hero-phone-profile': { frame: 'showcase-widget-anim-v3-poster.png', screen: '05-showcase-entry-point.png' },
+  'hero-phone-profile': { frame: 'showcase-widget-anim-v3-poster.png', screen: '05-showcase-entry-point-r2.png' },
   // The Gamification hub hero: the profile with season progress, in the same
   // phone (the screen without the v2 edge — the phone gives it one).
-  'hub-hero-phone': { frame: 'showcase-widget-anim-v3-poster.png', screen: '24-entry-profile-progress.png' },
+  'hub-hero-phone': { frame: 'showcase-widget-anim-v3-poster.png', screen: '24-entry-profile-progress-r2.png' },
 }
 // The screen and the island in the 1080×1440 v3 frame.
 const V3_SCREEN = { left: 258, top: 110, width: 563, height: 1218, radius: 69 }
