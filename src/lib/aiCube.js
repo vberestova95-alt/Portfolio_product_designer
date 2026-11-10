@@ -40,7 +40,7 @@ mat3 turn;
 
 float core(vec3 p) {
   vec3 q = turn * p;
-  return roundBox(q, vec3(0.4), 0.13) + ripple(q, 0.03, 0.9);
+  return roundBox(q, vec3(0.4), 0.13) + ripple(q, 0.012, 0.9);
 }
 
 float shell(vec3 p) {
@@ -92,7 +92,7 @@ void main() {
   float shine = pow(max(dot(reflect(direction, normal), light), 0.0), 60.0);
 
   // Through the shell to the core, bent a little as through water.
-  vec3 inside = refract(direction, normal, 0.75);
+  vec3 inside = refract(direction, normal, 0.92);
   float coreHit = march(surface + inside * 0.01, inside, true);
 
   // Clear glass: barely there face-on, milky and bright towards its edges.
@@ -105,19 +105,21 @@ void main() {
     float diffuse = max(dot(n, light), 0.0);
     float soft = max(dot(n, fill), 0.0);
     float rim = pow(1.0 - clamp(dot(n, -inside), 0.0, 1.0), 2.5);
-    float glint = pow(max(dot(reflect(inside, n), light), 0.0), 28.0);
-    vec3 deep = vec3(0.01, 0.03, 0.32);
-    vec3 bright = vec3(0.16, 0.36, 1.0);
-    // Faces turned from the light sink to ink blue, so the cube reads solid.
-    vec3 blue = mix(deep, bright, pow(0.15 + 0.85 * diffuse, 1.4));
-    blue += vec3(0.1, 0.2, 0.7) * soft * 0.35;
-    blue += vec3(0.45, 0.6, 1.0) * rim * 0.5 + vec3(1.0) * glint * 0.9;
+    float glint = pow(max(dot(reflect(inside, n), light), 0.0), 10.0);
+    // A dense, matte blue: the faces differ only a little, the way pigment
+    // does, with a broad soft sheen instead of a plastic highlight.
+    vec3 deep = vec3(0.02, 0.05, 0.4);
+    vec3 bright = vec3(0.14, 0.3, 1.0);
+    vec3 blue = mix(deep, bright, smoothstep(0.0, 1.0, 0.1 + 0.9 * diffuse));
+    blue += vec3(0.03, 0.07, 0.3) * soft * 0.35;
+    blue += vec3(0.2, 0.3, 0.8) * rim * 0.15 + vec3(0.5, 0.6, 1.0) * glint * 0.06;
     // The shell's milk lies over the core, thicker towards its edges.
-    color = mix(blue, vec3(0.92, 0.95, 1.0), 0.08 + fresnel * 0.55);
+    color = mix(blue, vec3(0.92, 0.95, 1.0), 0.03 + fresnel * 0.45);
     alpha = 1.0;
   }
 
-  color += vec3(1.0) * shine * 0.9;
+  shine *= 0.35;
+  color += vec3(1.0) * shine;
   alpha = clamp(alpha + shine, 0.0, 1.0);
   gl_FragColor = vec4(color * alpha, alpha);
 }
