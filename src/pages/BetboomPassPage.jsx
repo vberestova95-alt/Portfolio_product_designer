@@ -210,7 +210,7 @@ function FlowVideos({ part }) {
   );
 }
 
-function BeforeAfterSlider({ before, after, caption, credit }) {
+function BeforeAfterSlider({ before, after, caption, credit, ratio }) {
   const text = useUi().case;
   const [position, setPosition] = useState(50);
   const [animated, setAnimated] = useState(false);
@@ -297,7 +297,8 @@ function BeforeAfterSlider({ before, after, caption, credit }) {
       </div>
 
       <div
-        className="case-ba-slider"
+        className={`case-ba-slider${ratio ? ' case-ba-slider--ratio' : ''}`}
+        style={ratio ? { '--ba-ratio': ratio } : undefined}
         onMouseMove={handlePointerMove}
         onMouseUp={() => setIsDragging(false)}
         onMouseLeave={() => setIsDragging(false)}
@@ -1147,6 +1148,7 @@ function SectionPart({ part }) {
         after={part.after}
         caption={part.caption}
         credit={part.credit}
+        ratio={part.ratio}
       />
     );
   }

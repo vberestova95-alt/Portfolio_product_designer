@@ -5031,6 +5031,17 @@ ol.case-bullet-list li::before {
   inset: 0;
 }
 
+/* Two frames of one size: the slider keeps their ratio at every width, so the
+   before side is not stretched past the after side by a minimum height. */
+.case-ba-slider.case-ba-slider--ratio {
+  min-height: 0;
+  aspect-ratio: var(--ba-ratio);
+}
+
+.case-ba-slider--ratio .case-ba-slider__img {
+  display: block;
+}
+
 .case-ba-slider__handle {
   position: absolute;
   top: 0;

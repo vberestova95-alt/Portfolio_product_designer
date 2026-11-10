@@ -1304,6 +1304,8 @@ export const betboomPassCaseStudy = {
           // The after frame shows the closed “Your tasks” widget: its credit.
           caption: 'Drag to compare the task page before and after the redesign.',
           credit: '“Your tasks” widget UI: a second designer.',
+          // Both frames are 16:9: the slider keeps it at every width.
+          ratio: '16 / 9',
         },
         {
           type: 'featureMedia',
