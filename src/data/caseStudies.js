@@ -701,7 +701,7 @@ export const betboomPassCaseStudy = {
             'An unknown audience. We did not know how classic sports fans would react to the changes.',
             'Tasks that conflict. So many new tasks brought limits. Some tasks conflict: one cannot be done while another is active.',
             'Cards without the facts. The picture and the title took most of the card. It needed more of the information people use to choose a task.',
-            'Chains nobody finished. A chain task ran 12 steps, and its next steps and rewards were hidden. Users stopped before the final reward.',
+            'Chains people did not finish. A chain task ran up to 12 steps, and its next steps and rewards were hidden. Users stopped before the final reward.',
           ],
         },
         {
@@ -711,9 +711,9 @@ export const betboomPassCaseStudy = {
               type: 'text',
               heading: 'Why chains did not scale',
               paragraphs: [
-                'A chain is one task split into 12 steps. Each step is a separate task with its own progress. The widget shows only the current step.',
+                'A chain is one long task, up to 12 steps. Each step is a separate task with its own progress. The widget shows only the current step.',
                 'The next steps were locked as “Secret task”. In one chain type, the steps showed no reward at all, only the total at the end. Users did not reach the final reward and did not see every reward in the task.',
-                'Each new chain meant 12 more steps to track and its own rule for showing the reward. With many new tasks planned, the mechanic could not grow with the catalog.',
+                'Each new chain added more steps to track and one of three rules for showing the reward. With many new tasks planned, that did not scale.',
               ],
             },
             {
@@ -721,14 +721,14 @@ export const betboomPassCaseStudy = {
               // of their time (the user's edit, p. 6), so it is not repeated below.
               type: 'text',
               paragraphs: [
-                'The screens below show the illustrations in their earlier style. The style changed over time. The current look is in Result at the top and in “Illustration refresh”.',
+                'The screens below show the illustrations in their earlier style. The style changed over time: Result at the top shows the current look in part, and “Illustration refresh” shows it in full.',
               ],
             },
           ],
         },
         {
           type: 'phoneRow',
-          label: 'Chain tasks before the redesign',
+          label: 'Chain tasks, AS IS',
           items: [
             {
               src: betboomTasksBefore,
@@ -925,7 +925,7 @@ export const betboomPassCaseStudy = {
             'I6 · Confirmed by the AS IS audit. A task conflict reads as a bug: a disabled button and no explanation.',
             'I7 · Hypothesis. More tasks mean more repetition, and the section starts to read as noise.',
             // TODO(p32): what showed the drop-off (analytics, tests, support or the team) is open — the editor's question 1.
-            'I8 · AS IS audit. Chains run 12 steps and hide the next rewards. Users stop before the final reward.',
+            'I8 · Confirmed by the AS IS audit. Chains run up to 12 steps and hide the next rewards.',
           ],
         },
         {
@@ -986,7 +986,7 @@ export const betboomPassCaseStudy = {
               heading: 'Flow 2. Swap a task',
               items: [
                 'Tap a task in a category that already has an active one.',
-                'A popup names the active task: “The new one will replace it and reset progress. Switch?”',
+                'A popup names the active task: “The new one will replace it and reset your progress. Switch?”',
                 'Replace it, or look at another sport.',
                 'For 10 seconds, “Return task” undoes the swap.',
                 'Cancel returns you where you came from: the widget or the home page.',
@@ -1159,7 +1159,7 @@ export const betboomPassCaseStudy = {
               paragraphs: [
                 'From I7, I8 · hypothesis.',
                 'A levels mechanic with difficulty 1–3+. It gives the scenario a shape people can follow. The catalog grows without the interface growing with it.',
-                'In the new concept, the final reward became optional. Each step pays on its own, so finishing the whole chain is up to the user.',
+                'In the new concept, the reward no longer waits at the end of a long chain: you pick a stake tier and see its reward before you start.',
               ],
             },
             {
@@ -1218,7 +1218,7 @@ export const betboomPassCaseStudy = {
           ],
           // TODO(p32): the Undo part of this caption waits for the user's answer.
           caption:
-            'The conflict popup names the active task and its progress, and warns that a swap resets it. After a swap, ‘Undo’ stays for 10 seconds.',
+            'The conflict popup names the active task and its progress, and warns that a swap resets it. After a swap, “Undo” stays for 10 seconds.',
         },
         {
           // The second designer's credit is on the frame itself, so not repeated here.
@@ -1229,7 +1229,7 @@ export const betboomPassCaseStudy = {
             alt: 'Draft “From “You’re already doing this task” to “Cancel task””: the AS IS flow and production screens with the disabled button on top, the new flow for cancelling a task from its card below',
           },
           caption:
-            'Before: a returning user hit a disabled button, ‘You’re already doing this task’. After: any task can be cancelled from its card, with a warning that progress resets.',
+            'Before: a returning user hit a disabled button, “You’re already doing this task”. After: any task can be cancelled from its card, with a warning that progress resets.',
         },
         {
           type: 'blocks',
