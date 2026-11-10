@@ -1119,8 +1119,10 @@ function SectionPart({ part }) {
           {part.label ? <span className="case-teaser__label">{part.label}</span> : null}
           <span className="case-teaser__title">{part.title}</span>
           {part.text ? <span className="case-teaser__text">{part.text}</span> : null}
+          {/* The arrow is tied to the last word, so a wrapped link keeps it. */}
           <span className="case-teaser__cta">
             {part.cta}
+            {'\u00a0'}
             <span aria-hidden="true">→</span>
           </span>
         </span>

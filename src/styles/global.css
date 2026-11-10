@@ -4412,10 +4412,11 @@ ol.case-bullet-list li::before {
 }
 
 .case-teaser__cta {
-  display: inline-flex;
-  gap: 8px;
+  display: block;
   margin-top: 6px;
   font-size: 15px;
+  line-height: 1.4;
+  text-wrap: balance;
 }
 
 .case-teaser__media img {
