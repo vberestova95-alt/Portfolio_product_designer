@@ -56,17 +56,16 @@ function loadImage(src) {
 // Each detail is drawn once into tiles this many pixels across.
 const TILE = 240;
 // How much the lens swells the middle of a detail: 0 is flat glass.
-const LENS = 0.45;
-// The shell's glass: a cool white, a touch whiter than the page.
-const GLASS = [246, 249, 255];
+const LENS = 0.55;
 
 /*
  * A bead is the cube in the middle made small: a soft, very round clear shell
  * (`outer`, the superellipse's power) with a firmer rounded square inside
  * (`inner`) that holds the photo, takes `size` of the shell and turns up to
- * `turn` radians either way.
+ * `turn` radians either way. Both outlines ripple by up to `wobble` of their
+ * size, as the cube's surfaces do, so the photo reads as liquid held in glass.
  */
-const LOOK = { outer: 3, inner: 6, size: 0.7, turn: 0.09 };
+const LOOK = { outer: 3, inner: 5, size: 0.86, turn: 0.07, wobble: 0.035 };
 
 // The middle square of a screenshot, for a frame given without a crop.
 function middleSquare(image) {
@@ -79,15 +78,18 @@ function reach(u, v, power) {
   return (Math.abs(u) ** power + Math.abs(v) ** power) ** (1 / power);
 }
 
-// The outline of power `power` around (0, 0) as the current path.
-function outline(context, radius, power) {
+// The outline of power `power` around (0, 0) as the current path, rippling
+// by `wobble` of its size; `phase` moves the ripple along.
+function outline(context, radius, power, wobble = 0, phase = 0) {
   context.beginPath();
   for (let step = 0; step < 72; step += 1) {
     const angle = (step / 72) * Math.PI * 2;
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);
-    const x = Math.sign(cos) * Math.abs(cos) ** (2 / power) * radius;
-    const y = Math.sign(sin) * Math.abs(sin) ** (2 / power) * radius;
+    const swell =
+      radius * (1 + wobble * Math.sin(angle * 3 + phase) * Math.sin(angle * 2 - phase * 0.7));
+    const x = Math.sign(cos) * Math.abs(cos) ** (2 / power) * swell;
+    const y = Math.sign(sin) * Math.abs(sin) ** (2 / power) * swell;
     if (step) {
       context.lineTo(x, y);
     } else {
@@ -98,12 +100,11 @@ function outline(context, radius, power) {
 }
 
 /*
- * A detail as three tiles. `content`: the crop seen through a fisheye lens,
- * its middle swollen and its edges bent round, filling the tile so it can
- * move. `face`: laid over the content, a milk thickening towards the inner
- * outline, light across it and a cyan-to-violet play near its edge. `glass`: the clear shell over all of it, milky and bright towards
- * its own outline, with a glint at the top left. The first two are in the
- * inner shape's own frame, so it can turn and breathe inside the shell.
+ * A detail as two tiles in the inner shape's own frame. `content`: the crop
+ * seen through a fisheye lens, its middle swollen and its edges bent round,
+ * filling the tile so it can move. `face`: laid over the content, a milk
+ * thickening towards the outline, light across it and a cyan-to-violet play
+ * near its edge. The glass shell is drawn live, so it can ripple.
  */
 function toLensTiles(image, crop) {
   const [left, top, side] = crop ?? middleSquare(image);
@@ -117,18 +118,12 @@ function toLensTiles(image, crop) {
   const flat = contentContext.getImageData(0, 0, TILE, TILE).data;
   const lensed = contentContext.createImageData(TILE, TILE);
   const face = document.createElement('canvas');
-  const glass = document.createElement('canvas');
   face.width = TILE;
   face.height = TILE;
-  glass.width = TILE;
-  glass.height = TILE;
   const faceContext = face.getContext('2d');
-  const glassContext = glass.getContext('2d');
   const faceData = faceContext.createImageData(TILE, TILE);
-  const glassData = glassContext.createImageData(TILE, TILE);
   const half = TILE / 2;
   const last = TILE - 1;
-  const pixel = 1 / half;
 
   for (let y = 0; y < TILE; y += 1) {
     for (let x = 0; x < TILE; x += 1) {
@@ -175,29 +170,11 @@ function toLensTiles(image, crop) {
         }
         faceData.data[out + 3] = alpha * 255;
       }
-
-      // Glass: (u, v) across the whole shell.
-      const shellReach = reach(u, v, LOOK.outer);
-      if (shellReach > 1) {
-        continue;
-      }
-      const inside = reach(u, v, LOOK.inner) / LOOK.size;
-      // 1 over the inner shape, 0 in the clear shell around it.
-      const over = Math.min(1, Math.max(0, (1 - inside) / (pixel / LOOK.size) + 0.5));
-      const fresnel = Math.max(0, (shellReach - LOOK.size) / (1 - LOOK.size)) ** 2;
-      const glint = Math.max(0, 1 - Math.hypot(u + 0.4, v + 0.48) / 0.42) ** 2 * 0.45;
-      const white = Math.min(1, 0.35 + 0.65 * fresnel + glint);
-      const alpha = Math.min(1, over * (0.02 + glint) + (1 - over) * (0.16 + 0.66 * fresnel + glint));
-      for (let channel = 0; channel < 3; channel += 1) {
-        glassData.data[out + channel] = GLASS[channel] * (1 - white) + 255 * white;
-      }
-      glassData.data[out + 3] = alpha * Math.min(1, (1 - shellReach) / pixel) * 255;
     }
   }
   contentContext.putImageData(lensed, 0, 0);
   faceContext.putImageData(faceData, 0, 0);
-  glassContext.putImageData(glassData, 0, 0);
-  return { content, face, glass };
+  return { content, face };
 }
 
 export function attachAiVortex(
@@ -231,6 +208,9 @@ export function attachAiVortex(
   let last = performance.now();
   let clock = 0;
   let breath = 0;
+  let seconds = 0;
+  // How far into a rush the swirl is: 0 calm, 1 at its peak.
+  let rush = 0;
   let pace = 1;
   let hovered = null;
   let pointerType = 'mouse';
@@ -365,45 +345,73 @@ export function attachAiVortex(
         continue;
       }
 
-      // A bead: the shell stays level; inside it the photo's shape turns a
-      // little and breathes, and the photo drifts and zooms under the lens.
+      // A bead: a thin rippling glass shell, and inside it the photo as a
+      // liquid that fills its shape and presses at the walls — squeezed one
+      // way, then the other, its shape turning a little as it rocks.
       const radius = size * 0.85;
       const beat = breath + item.spin;
-      const core = radius * LOOK.size * (1 + 0.03 * Math.sin(beat * 0.8));
-      const zoom = TILE * (0.93 + 0.05 * Math.sin(beat * 0.6));
-      const driftX = Math.cos(beat * 0.5) * TILE * 0.01;
-      const driftY = Math.sin(beat * 0.5) * TILE * 0.01;
+      const core = radius * LOOK.size;
+      const squeeze = 0.07 * (1 + rush * 0.6) * Math.sin(beat * 0.9);
+      const zoom = TILE * (0.9 + 0.04 * Math.sin(beat * 0.6));
+      const driftX = Math.cos(beat * 0.5) * TILE * 0.012;
+      const driftY = Math.sin(beat * 0.5) * TILE * 0.012;
       context.save();
       context.globalAlpha = alpha;
       context.translate(point.x, point.y);
+
       context.save();
-      outline(context, radius, LOOK.outer);
+      outline(context, radius, LOOK.outer, LOOK.wobble, beat * 1.1);
       context.shadowColor = 'rgba(13, 17, 23, 0.12)';
       context.shadowBlur = size * 0.35;
       context.shadowOffsetY = size * 0.12;
-      context.fillStyle = 'rgba(246, 249, 255, 0.3)';
+      context.fillStyle = 'rgba(246, 249, 255, 0.4)';
       context.fill();
       context.restore();
+
       if (tile) {
         context.save();
-        context.rotate(Math.sin(beat * 0.45) * LOOK.turn);
-        outline(context, core, LOOK.inner);
+        context.rotate(Math.sin(beat * 0.45) * LOOK.turn * (1 + rush * 2.5));
+        outline(context, core, LOOK.inner, LOOK.wobble * 1.4, -beat * 1.3);
         context.clip();
+        // Always a little larger than its shape, so it never comes loose from the walls.
+        const across = core * 2 * (1.08 + squeeze);
+        const down = core * 2 * (1.08 - squeeze);
         context.drawImage(
           tile.content,
           (TILE - zoom) / 2 + driftX,
           (TILE - zoom) / 2 + driftY,
           zoom,
           zoom,
-          -core,
-          -core,
-          core * 2,
-          core * 2,
+          -across / 2,
+          -down / 2,
+          across,
+          down,
         );
-        context.drawImage(tile.face, -core, -core, core * 2, core * 2);
+        context.drawImage(tile.face, -core * 1.04, -core * 1.04, core * 2.08, core * 2.08);
+        // The milk where the liquid meets the glass.
+        context.lineWidth = core * 0.12;
+        context.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        context.stroke();
         context.restore();
-        context.drawImage(tile.glass, -radius, -radius, radius * 2, radius * 2);
       }
+
+      // The shell's bright rim and its glint, over everything.
+      outline(context, radius, LOOK.outer, LOOK.wobble, beat * 1.1);
+      context.lineWidth = Math.max(1, radius * 0.035);
+      context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      context.stroke();
+      const glint = context.createRadialGradient(
+        -radius * 0.42,
+        -radius * 0.5,
+        0,
+        -radius * 0.42,
+        -radius * 0.5,
+        radius * 0.38,
+      );
+      glint.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
+      glint.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      context.fillStyle = glint;
+      context.fillRect(-radius, -radius, radius, radius);
       context.restore();
 
       if (tile && alpha > 0.35) {
@@ -461,13 +469,16 @@ export function attachAiVortex(
     last = now;
     // Stops quickly under the pointer, picks up again slowly once it leaves.
     pace += hovered === null ? (1 - pace) * 0.04 : (HOVER_PACE - pace) * 0.25;
-    // The photos breathe on even while the swirl rests under the pointer.
-    breath += delta;
     // Every SURGE_EVERY seconds the swirl rushes forward a few steps, then settles.
-    const sinceSurge = breath % SURGE_EVERY;
+    seconds += delta;
+    const sinceSurge = seconds % SURGE_EVERY;
     const surge =
       sinceSurge < SURGE_LENGTH ? Math.sin((Math.PI * sinceSurge) / SURGE_LENGTH) ** 2 * SURGE_BOOST : 0;
     clock += delta * pace * (1 + surge);
+    // The photos breathe on even while the swirl rests under the pointer, and
+    // a rush shakes them up too: they rock faster and further, then calm down.
+    rush = surge / SURGE_BOOST;
+    breath += delta * (1 + surge * 0.6);
     pointer.x += (pointer.tx - pointer.x) * 0.04;
     pointer.y += (pointer.ty - pointer.y) * 0.04;
     draw();
