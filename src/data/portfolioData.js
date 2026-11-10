@@ -231,7 +231,7 @@ export const cases = [
     // TODO(p32b): card copy and cover — from the editor and the designer.
     description:
       'A new section of the BetBoom app that brings seasons, tasks and the shop together. The brief asked for a seasons page; I proposed a hub.',
-    metrics: ['App and web', '4 edge cases'],
+    metrics: [],
     surface: 'ink',
     // The way in: the season widget in the profile, then the hub it opens.
     image: {

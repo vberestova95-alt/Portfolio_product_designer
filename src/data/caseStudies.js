@@ -40,7 +40,6 @@ import betboomEntryNoLevel from '../assets/cases/betboom/entry-no-level.webp';
 import betboomEntryProgress from '../assets/cases/betboom/entry-progress.webp';
 import betboomEntrySeasonTimer from '../assets/cases/betboom/entry-season-timer.webp';
 import betboomEntryMaxLevel from '../assets/cases/betboom/entry-max-level.webp';
-import betboomEntryWeb from '../assets/cases/betboom/entry-web.webp';
 import betboomDesktopBefore from '../assets/cases/betboom/desktop-before.webp';
 import betboomDesktopAfter from '../assets/cases/betboom/desktop-after.webp';
 import betboomDetailRewardDeadline from '../assets/cases/betboom/detail-reward-deadline.webp';
@@ -77,18 +76,11 @@ import betboomAbTestRuVideo from '../assets/cases/betboom/ab-test-ru.mp4';
 import hubSchemeUserPath from '../assets/cases/betboom-hub/scheme-r-user-path.webp';
 import hubSchemeBusinessVsHub from '../assets/cases/betboom-hub/scheme-s1-business-vs-hub.webp';
 import hubSchemeArchitecture from '../assets/cases/betboom-hub/scheme-s2-hub-ia.webp';
-import hubWidgetV1V2Dark from '../assets/cases/betboom-hub/d1-widget-v1-v2-dark.webp';
 import hubCardLarge from '../assets/cases/betboom-hub/d2-card-large.webp';
 import hubCardSmall from '../assets/cases/betboom-hub/d2-card-small.webp';
 import hubHeaderId from '../assets/cases/betboom-hub/d3-header-id.webp';
-import hubHeaderName from '../assets/cases/betboom-hub/d3-header-name.webp';
 import hubHeaderNickname from '../assets/cases/betboom-hub/d3-header-nickname.webp';
 import hubScreen from '../assets/cases/betboom-hub/k1-hub.webp';
-import hubSeasonLifecycle from '../assets/cases/betboom-hub/k2-season-lifecycle.webp';
-import hubSeasonLifecycleMobile from '../assets/cases/betboom-hub/k2-season-lifecycle.mobile.webp';
-import hubEdgeCases from '../assets/cases/betboom-hub/k3-edge-cases.webp';
-import hubWebDesktop from '../assets/cases/betboom-hub/k4-web-desktop.webp';
-import hubWebMobile from '../assets/cases/betboom-hub/k4-web-mobile.webp';
 import hubDark from '../assets/cases/betboom-hub/s3-hub-dark.webp';
 import hubLight from '../assets/cases/betboom-hub/s3-hub-light.webp';
 import iquotoCaseHero from '../assets/cases/iquoto-desktop.png';
@@ -1439,16 +1431,10 @@ export const betboomGamificationHubCaseStudy = {
     // The profile with season progress in the same phone as the PASS hero, on
     // the same light ground.
     image: {
-      // TODO(p32b): cover from the designer — the hub with an active season, the profile widget and the web season list.
       alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
       phones: [{ src: betboomHubHeroPhone }],
     },
-    // No metrics yet: facts from the layouts, as the editor proposed.
-    stats: [
-      { value: '2', label: 'platforms: app and desktop web' },
-      { value: '2', label: 'themes: dark and light' },
-      { value: '4', label: 'edge cases designed: signed out, no seasons, error, outdated app' },
-    ],
+    // No stats: the user dropped metrics from this case (10.11).
     points: ['Figma', 'FigJam'],
   },
   sections: [
@@ -1583,13 +1569,6 @@ export const betboomGamificationHubCaseStudy = {
             },
             {
               type: 'text',
-              heading: 'Entry widget, V.1 → V.2',
-              paragraphs: [
-                'V.1 was a compact 72 px row with the season, level and progress. V.2 is 102 px tall: the season name reads first, and progress gets its own line. Both have dark and light themes and a skeleton.',
-              ],
-            },
-            {
-              type: 'text',
               heading: 'Season cards',
               paragraphs: [
                 'A large card for the current or upcoming season. Small cards for the archive. Variants with and without a level bar.',
@@ -1599,18 +1578,10 @@ export const betboomGamificationHubCaseStudy = {
               type: 'text',
               heading: 'Profile header',
               paragraphs: [
-                'Three data cases: full name + ID, nickname + ID, ID only. The token balance sits on the right.',
+                'Two data cases: nickname + ID, or ID only. The token balance sits on the right.',
               ],
             },
           ],
-        },
-        {
-          type: 'featureMedia',
-          media: {
-            src: hubWidgetV1V2Dark,
-            alt: 'Two profile screens, dark theme: widget V.1 as a 72 px season row, and V.2 as a 102 px card with the season name and progress',
-          },
-          caption: 'Widget V.1 and V.2: V.1 squeezed the season into one row, V.2 gives the name and progress room.',
         },
         {
           type: 'phoneRow',
@@ -1635,17 +1606,12 @@ export const betboomGamificationHubCaseStudy = {
               caption: 'ID only',
             },
             {
-              src: hubHeaderName,
-              alt: 'Hub header with the user’s name, ID and token balance',
-              caption: 'Name + ID',
-            },
-            {
               src: hubHeaderNickname,
               alt: 'Hub header with the user’s nickname, ID and token balance',
               caption: 'Nickname + ID',
             },
           ],
-          caption: 'Profile header with three data cases: name, nickname or just an ID.',
+          caption: 'Profile header: a nickname, or just an ID.',
         },
       ],
     },
@@ -1659,12 +1625,11 @@ export const betboomGamificationHubCaseStudy = {
           blocks: [
             {
               type: 'ordered-list',
-              heading: 'Flow 1. Getting in',
+              heading: 'Getting in',
               items: [
                 'Open the Profile tab in the BetBoom app.',
                 'The widget shows season progress if a season is active. Otherwise it invites you to start.',
                 'Tap it to open the hub.',
-                'On web, the way in is the account menu.',
               ],
             },
           ],
@@ -1684,94 +1649,6 @@ export const betboomGamificationHubCaseStudy = {
             },
           ],
           caption: 'From the profile to the hub in one tap.',
-        },
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'ordered-list',
-              heading: 'Flow 2. A season’s life cycle',
-              items: [
-                'Planned: the card shows the start date. If no season is active, the upcoming one comes first.',
-                'Active, no progress yet.',
-                'Active with progress: level and progress bar.',
-                'Less than 24 hours left: a timer.',
-                'Finished: the user joined but earned nothing, or did not join.',
-                'For 7 days after the end, users can still see levels and rewards.',
-              ],
-            },
-            {
-              type: 'text',
-              heading: 'Rewards and the archive',
-              paragraphs: [
-                'A gift icon flags a reward waiting. Seasons can be combined: active + planned, planned + finished, or a single season in history. Past seasons move to the archive as cards.',
-              ],
-            },
-          ],
-        },
-        {
-          type: 'imageBand',
-          media: {
-            type: 'image',
-            src: hubSeasonLifecycle,
-            mobileSrc: hubSeasonLifecycleMobile,
-            alt: 'Seven hub screens of a season’s life cycle: planned, active without progress, active with progress, under 24 hours left, no gift, ended and joined, ended and not joined',
-          },
-          caption: 'Planned, active, ending, finished: one card, every stage.',
-        },
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'list',
-              heading: 'Flow 3. Edge cases',
-              items: [
-                'Signed out: the hub shows seasons, or “Seasons coming soon” with a link to tasks.',
-                'No seasons: the same empty state.',
-                'Error: “Something went wrong” and a refresh button.',
-                'Outdated app: an “Update” screen for iOS and Android when the page opens in an old version.',
-                'Missing nickname or balance, broken image links, long names: each has a fallback.',
-              ],
-            },
-          ],
-        },
-        {
-          type: 'imageBand',
-          media: {
-            type: 'image',
-            src: hubEdgeCases,
-            alt: 'Four hub edge cases: signed out, “Seasons coming soon”, “Something went wrong” with a refresh button, and “Time to update!”',
-          },
-          caption: 'Signed out, no seasons, error, outdated app.',
-        },
-        {
-          type: 'blocks',
-          blocks: [
-            {
-              type: 'text',
-              heading: 'Flow 4. Web',
-              paragraphs: [
-                'The season list on desktop and mobile web: active and planned seasons, the archive, an empty archive and an error. Dark and light themes.',
-              ],
-            },
-          ],
-        },
-        {
-          type: 'featureMedia',
-          media: {
-            src: hubWebDesktop,
-            alt: 'BetBoom website, desktop, dark theme: the Seasons page with active and planned seasons and the archive',
-          },
-          caption: 'The season list on web, desktop and mobile. In progress.',
-        },
-        {
-          type: 'phoneRow',
-          items: [
-            {
-              src: hubWebMobile,
-              alt: 'BetBoom mobile website, dark theme: the Seasons page with two seasons and the archive',
-            },
-          ],
         },
       ],
     },
@@ -1814,11 +1691,6 @@ export const betboomGamificationHubCaseStudy = {
                 'V.2 states: no progress, progress, timer, max level. On error, the widget is hidden.',
                 'It shares the profile carousel with identification, identity proof, loyalty programme and offer widgets. The order is Offer → Profile levels → Loyalty programme. For users not yet identified, it sits under the welcome bonus banner.',
               ],
-            },
-            {
-              type: 'text',
-              heading: 'Desktop',
-              paragraphs: ['On web, the entry point sits in the account menu.'],
             },
           ],
         },
@@ -1881,16 +1753,6 @@ export const betboomGamificationHubCaseStudy = {
           ],
           caption: 'The profile widget: no progress, progress, timer, max level reached.',
         },
-        {
-          type: 'phoneRow',
-          items: [
-            {
-              src: betboomEntryWeb,
-              alt: 'Web account menu, dark theme: Winter season widget above Account, Bet history and other items',
-            },
-          ],
-          caption: 'On web, the hub is one click away in the account menu.',
-        },
       ],
     },
     {
@@ -1903,7 +1765,6 @@ export const betboomGamificationHubCaseStudy = {
           paragraphs: ['Gamification now has a home in the main app, not only inside PASS.'],
         },
         {
-          // Metrics, if any appear.
           type: 'blocks',
           blocks: [
             {
@@ -1912,8 +1773,6 @@ export const betboomGamificationHubCaseStudy = {
               items: [
                 'The hub is in production.',
                 'The profile entry point V.2 is in production.',
-                'The web version: in progress.',
-                'No metrics yet.',
               ],
             },
           ],

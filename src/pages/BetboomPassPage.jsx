@@ -359,6 +359,7 @@ function BeforeAfterSlider({ before, after, caption, credit, ratio }) {
 }
 
 function StatGrid({ items, className = '' }) {
+  if (!items?.length) return null;
   return (
     <div className={`case-stat-grid${className ? ` ${className}` : ''}`}>
       {items.map((item) => (

@@ -113,7 +113,7 @@ export const cases = byId(en.cases, {
     category: 'Геймификация / Приложение BetBoom',
     description:
       'Новый раздел приложения BetBoom, который собирает сезоны, задания и магазин. В брифе была страница сезонов — я предложила хаб.',
-    metrics: ['Приложение и веб', '4 крайних случая'],
+    metrics: [],
     image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: сезоны, профиль с виджетом зимнего сезона и хаб в светлой теме' },
     frames: [
       {
