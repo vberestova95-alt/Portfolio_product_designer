@@ -6,7 +6,7 @@ import { spotlessCard, spotlessCaseStudy } from './data/spotlessCase.js';
 import { useLanguage, useUi } from './i18n/LanguageContext.jsx';
 import { observeReveal } from './lib/reveal.js';
 import { attachReturnNavigation } from './lib/returnNavigation.js';
-import { AiPortfolioPage } from './pages/AiPortfolioPage.jsx';
+import { AiLandingConcept } from './pages/AiLandingConcept.jsx';
 import { ExperiencePage } from './pages/ExperiencePage.jsx';
 import { HomePage } from './pages/HomePage.jsx';
 import { PrivacyPage } from './pages/PrivacyPage.jsx';
@@ -164,6 +164,13 @@ export function App() {
   const currentBrowserPathname =
     typeof window === 'undefined' ? '/' : normalizePathname(window.location.pathname);
   const aiWork = [...aiProjects.items, spotlessCard, geneticsCard];
+  // The landing's hero shows frames from each AI case, found by the card's link.
+  const aiCaseStudies = {
+    '/ds-plugins': caseStudies.dsPluginsCaseStudy,
+    '/cat-app': caseStudies.catAppCaseStudy,
+    '/design-cringe': caseStudies.designCringeCaseStudy,
+    ...AI_LANDING_CASES_BY_PATH,
+  };
   const pathname = CASE_ONLY_MODE
     ? PET_INJECTION_TRACKER_PATH
     : getAiOnlyPathname(currentBrowserPathname, aiWork);
@@ -260,9 +267,10 @@ export function App() {
   // The AI projects link opens the landing as well (user, 2026-11-09).
   if (LISTING_PATHS.has(pathname)) {
     return (
-      <AiPortfolioPage
+      <AiLandingConcept
         page={aiPortfolio}
-        aiWork={aiWork}
+        projects={aiWork}
+        caseStudies={aiCaseStudies}
         profile={profile}
         standalone={AI_ONLY_MODE}
       />

@@ -42,7 +42,7 @@ export const aiPortfolio = {
         text: 'Nothing is pushed or deployed until I approve it. What goes into the product is my call.',
       },
     ],
-    tools: ['Claude Code', 'Codex', 'Figma MCP', 'Figma Make', 'Claude Docs', 'Playwright'],
+    tools: ['Claude Code', 'Codex', 'Figma MCP', 'Figma Make'],
   },
 
   numbers: {

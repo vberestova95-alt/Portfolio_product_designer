@@ -36,7 +36,11 @@ try {
     for (const [route, label, expected] of [['/', 'home', NEW[0]], ['/ai-projects', 'ai-projects', NEW[1]]]) {
       const tag = `${RU ? 'RU' : 'EN'} ${label} ${width}`;
       const ctx = await browser.newContext({ viewport: { width, height: 900 } });
-      await ctx.addInitScript(() => localStorage.setItem('vb_consent', JSON.stringify({ choice: 'denied', until: Date.now() + 864e5 })));
+      await ctx.addInitScript(() => {
+        localStorage.setItem('vb_consent', JSON.stringify({ choice: 'denied', until: Date.now() + 864e5 }));
+        // The AI landing asks "Do you like carousels?" first; "No" shows the cases as a list.
+        localStorage.setItem('vb_ai_view', 'list');
+      });
       const page = await ctx.newPage();
       const problems = [];
       page.on('pageerror', (e) => problems.push(e.message));
@@ -60,6 +64,11 @@ try {
       check(`${tag}: link(s) to /cat-app`, link >= 1, `${link}`);
       const broken = await page.evaluate(() => [...document.images].filter((i) => !(i.complete && i.naturalWidth > 0) && i.loading !== 'lazy').map((i) => i.src));
       check(`${tag}: no broken images`, broken.length === 0, broken.join(', '));
+      // In the AI landing's list the cover shows as a preview on pointing at the row.
+      if (label === 'ai-projects') {
+        await page.hover('.ai-list__row[href="/cat-app"]');
+        await page.waitForTimeout(800);
+      }
       const cover = await page.evaluate(() => [...document.images].filter((i) => /fluffy-chumb/.test(i.currentSrc || i.src)).map((i) => i.complete && i.naturalWidth > 0));
       check(`${tag}: Fluffy Chumb cover loaded`, cover.length > 0 && cover.every(Boolean), JSON.stringify(cover));
       check(`${tag}: no horizontal scroll`, await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), '');
