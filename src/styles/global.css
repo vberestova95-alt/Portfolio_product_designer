@@ -3741,15 +3741,23 @@ ol.case-bullet-list li::before {
 }
 
 /*
- * The hub's screens are cut-outs on the white row plate, and the light-theme
- * hub melted into it. A hairline that follows each screen's own corners (a
- * tight drop-shadow) goes under the row's soft shadow, so every screen, light
- * or dark, keeps an edge without a plate of its own.
+ * The hub's screens are cut-outs, and the light-theme hub melted into the
+ * white row plate even with a hairline. Its rows go bare, like the Fluffy
+ * Chumb bands: no plate, the screens stand on the page with their own edge —
+ * a hairline that follows each screen's corners (tight drop-shadows) and a
+ * soft shadow all round, so every screen, light or dark, reads the same way.
  */
+.case-page--betboom-gamification-hub .case-phone-row {
+  padding: 0;
+  background: none;
+}
+
 .case-page--betboom-gamification-hub .case-phone-row__item img {
   filter:
-    drop-shadow(0 0 0.75px rgba(13, 17, 23, 0.42))
-    drop-shadow(0 12px 24px rgba(13, 17, 23, 0.14));
+    drop-shadow(0 0 0.5px rgba(13, 17, 23, 0.5))
+    drop-shadow(0 0 0.5px rgba(13, 17, 23, 0.5))
+    drop-shadow(0 2px 6px rgba(13, 17, 23, 0.08))
+    drop-shadow(0 14px 28px rgba(13, 17, 23, 0.16));
 }
 
 /* Some exported Yandex boards contain a dark matte in their outermost pixels. */
