@@ -420,7 +420,7 @@ export const additionalAchievements = [
 export const experiences = [
   {
     id: 'betboom',
-    period: 'Apr 2025 — Present',
+    period: 'Apr 2025 — Sep 2026',
     company: 'BetBoom',
     role: 'Product Designer',
     summary:
