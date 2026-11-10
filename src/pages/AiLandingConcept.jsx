@@ -116,6 +116,22 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
 
   const current = projects[active];
 
+  // Sits in the header's row, once the visitor has answered the question.
+  const switcher = view ? (
+    <button
+      type="button"
+      className="ai-switch"
+      role="switch"
+      aria-checked={!carousel}
+      onClick={() => choose(carousel ? 'list' : 'carousel')}
+    >
+      <span className="ai-switch__track" aria-hidden="true">
+        <span className="ai-switch__knob" />
+      </span>
+      Stop the carousel
+    </button>
+  ) : null;
+
   return (
     <div className={`ai-concept ai-concept--landing ai-concept--${view ?? 'ask'}`}>
       <section className="ai-hero">
@@ -123,32 +139,18 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
         {/* Reached from the main site, the page keeps the site's own header;
             on the subdomain it is the home, with a header of its own. */}
         {standalone ? (
-          <ConceptHeader profile={profile} />
+          <ConceptHeader profile={profile} switcher={switcher} />
         ) : (
           <div className="ai-topbar">
-            <div className="case-page__shell">
+            <div className="case-page__shell ai-topbar__shell">
               <SiteHeader profile={profile} />
+              {switcher}
             </div>
           </div>
         )}
 
         {/* The page's title, for screen readers and search; on screen the work leads. */}
         <h1 className="visually-hidden">{hero.title}</h1>
-
-        {view ? (
-          <button
-            type="button"
-            className="ai-switch"
-            role="switch"
-            aria-checked={!carousel}
-            onClick={() => choose(carousel ? 'list' : 'carousel')}
-          >
-            <span className="ai-switch__track" aria-hidden="true">
-              <span className="ai-switch__knob" />
-            </span>
-            Stop the carousel
-          </button>
-        ) : null}
 
         {view === 'list' ? (
           <WorkList items={projects} />

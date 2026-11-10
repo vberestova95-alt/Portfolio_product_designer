@@ -47,9 +47,10 @@ export function CubeShape({ className = '', shapeRef }) {
 
 /*
  * The subdomain's header: the site's mark, a way to write, and the privacy
- * page — the one-screen page has no footer to carry it.
+ * page — the one-screen page has no footer to carry it. `switcher` sits in
+ * the middle of its row.
  */
-export function ConceptHeader({ profile }) {
+export function ConceptHeader({ profile, switcher = null }) {
   const links = [
     { key: 'privacy', href: '/privacy', label: 'Privacy' },
     { key: 'contact', href: `mailto:${profile.email}`, label: 'Contact' },
@@ -60,6 +61,8 @@ export function ConceptHeader({ profile }) {
       <a className="ai-header__mark" href="/">
         <BrandLogo name={profile.name} />
       </a>
+
+      {switcher}
 
       <nav className="ai-header__nav" aria-label="AI portfolio">
         {links.map((link) => (
