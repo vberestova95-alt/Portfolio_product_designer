@@ -586,8 +586,7 @@ export const catAppCaseStudy = {
 };
 
 // The “Your tasks” widget is a second designer's UI: every frame that shows it
-// carries this credit (the user's condition for showing it at all).
-const betboomWidgetCredit = '“Your tasks” widget UI by a second designer.';
+// carries a credit (the user's condition for showing it at all).
 
 // A showcase clip with alpha: HEVC .mov for Safari first (other browsers skip
 // the type), VP9 WebM for the rest; the MP4 export has a solid ground, so not used.
@@ -971,7 +970,8 @@ export const betboomPassCaseStudy = {
               caption: 'Pick a category',
             },
           ],
-          caption: betboomWidgetCredit,
+          // The logic is mine; both frames show the second designer's UI.
+          credit: 'Logic: me; UI of the “Your tasks” widget and the category bar: a second designer.',
         },
         {
           type: 'blocks',
