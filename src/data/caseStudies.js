@@ -54,7 +54,9 @@ import betboomSchemeOnboarding from '../assets/cases/betboom/scheme-onboarding.w
 import betboomSchemeEntryPoints from '../assets/cases/betboom/scheme-entry-points.webp';
 import betboomHeroPhoneProfile from '../assets/cases/betboom/hero-phone-profile.webp';
 import betboomHeroPhoneSwitching from '../assets/cases/betboom/hero-phone-switching.webp';
-import betboomHubHeroPhone from '../assets/cases/betboom/hub-hero-phone.webp';
+import betboomHubHeroPoster from '../assets/cases/betboom/hub-hero-poster.webp';
+import betboomHubHeroWebm from '../assets/cases/betboom/hub-hero.webm';
+import betboomHubHeroMov from '../assets/cases/betboom/hub-hero.mov';
 import betboomTasksAfterVideo from '../assets/cases/betboom/tasks-after.mp4';
 import betboomSwitchFlowVideo from '../assets/cases/betboom/switch-flow.mp4';
 import betboomCategoryBarVideo from '../assets/cases/betboom/category-bar.mp4';
@@ -1433,8 +1435,9 @@ export const betboomGamificationHubCaseStudy = {
     // The profile with season progress in the same phone as the PASS hero, on
     // the same light ground.
     image: {
-      alt: 'BetBoom app profile with the Winter season widget: level 99 and progress to level 100',
-      phones: [{ src: betboomHubHeroPhone }],
+      // The season widget runs through its states: no level, progress, timer, max level.
+      alt: 'BetBoom app profile with the Winter season widget filling up from no level to level 100',
+      phones: [{ src: betboomHubHeroPoster, video: betboomShowcaseClip(betboomHubHeroMov, betboomHubHeroWebm) }],
     },
     // No stats: the user dropped metrics from this case (10.11).
     points: ['Figma', 'FigJam'],

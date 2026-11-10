@@ -236,12 +236,12 @@ export const cases = [
     // The way in: the season widget in the profile, then the hub it opens.
     image: {
       src: betboomHubHomeProfile,
-      alt: 'BetBoom screens: seasons, the app profile with the Winter season widget, and the hub in the light theme',
+      alt: 'BetBoom screens: the app profile with the Winter season widget, and the hub in the light theme',
     },
     frames: [
       {
         src: betboomHubHomeHub,
-        alt: 'BetBoom screens: seasons, the gamification hub with tasks, shop and seasons, and the hub in the light theme',
+        alt: 'BetBoom screens: the gamification hub with tasks, shop and seasons, in the dark and light themes',
       },
     ],
     href: '/betboom-gamification-hub',

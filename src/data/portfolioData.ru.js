@@ -114,11 +114,11 @@ export const cases = byId(en.cases, {
     description:
       'Новый раздел приложения BetBoom, который собирает сезоны, задания и магазин. В брифе была страница сезонов — я предложила хаб.',
     metrics: [],
-    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: сезоны, профиль с виджетом зимнего сезона и хаб в светлой теме' },
+    image: { ...entryOf(en.cases, 'betboom-gamification-hub').image, alt: 'Экраны BetBoom: профиль с виджетом зимнего сезона и хаб в светлой теме' },
     frames: [
       {
         ...entryOf(en.cases, 'betboom-gamification-hub').frames[0],
-        alt: 'Экраны BetBoom: сезоны, хаб геймификации с заданиями, магазином и сезонами и хаб в светлой теме',
+        alt: 'Экраны BetBoom: хаб геймификации с заданиями, магазином и сезонами в тёмной и светлой теме',
       },
     ],
   },
