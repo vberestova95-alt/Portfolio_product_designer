@@ -26,7 +26,6 @@ import betboomShowcaseCategoryBarPoster from '../assets/cases/betboom/showcase-c
 import betboomShowcaseCategoryBarWebm from '../assets/cases/betboom/showcase-category-bar.webm';
 import betboomShowcaseCategoryBarMov from '../assets/cases/betboom/showcase-category-bar.mov';
 import betboomSwapConflict from '../assets/cases/betboom/swap-conflict.webp';
-import betboomSwapReturn from '../assets/cases/betboom/swap-return.webp';
 import betboomSwapSwitched from '../assets/cases/betboom/swap-switched.webp';
 import betboomSwapCancelLimit from '../assets/cases/betboom/swap-cancel-limit.webp';
 import betboomTasksBefore from '../assets/cases/betboom/tasks-before.webp';
@@ -958,11 +957,6 @@ export const betboomPassCaseStudy = {
               video: betboomSwitchFlowVideo,
               alt: 'Popup “These tasks conflict” naming the active hockey task; after Switch, a “Task switched” toast and the list of tasks to switch to',
               caption: 'The popup names the active task',
-            },
-            {
-              src: betboomSwapReturn,
-              alt: 'After the swap: a “Return task 00:10” button counts down',
-              caption: '10 seconds to bring it back',
             },
             {
               src: betboomSwapSwitched,
