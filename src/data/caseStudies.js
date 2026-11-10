@@ -1315,19 +1315,8 @@ export const betboomPassCaseStudy = {
           ratio: '16 / 9',
         },
         {
-          type: 'featureMedia',
-          wide: true,
-          media: {
-            type: 'video',
-            src: betboomDesktopAfterVideo,
-            ratio: '1600 / 900',
-            poster: betboomDesktopAfterPoster,
-            alt: 'Desktop task page after the redesign: the MSI 2025 hero, a scroll down to the category bar and the task grid, hovers over categories, and the “Your tasks” widget opening on the right',
-          },
-          caption: 'Desktop: category bar, task grid and the “Your tasks” widget opening on the right.',
-          credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
-        },
-        {
+          // Right under the slider: its “before” cards carry the same art
+          // (Desert Eagle, the skull), so the refresh reads next to it.
           // TODO(p32): dates and the number of refreshed pictures are open — left out.
           type: 'blocks',
           blocks: [
@@ -1351,6 +1340,19 @@ export const betboomPassCaseStudy = {
             alt: 'Three illustrations before and after the refresh: a Desert Eagle pistol, a silenced rifle and a horned skull. Before: dark realistic 3D. After: glossy 3D in coloured glass, and a white skull in barbed wire with yellow shells',
           },
           caption: 'The same objects in the earlier style and after the refresh.',
+        },
+        {
+          type: 'featureMedia',
+          wide: true,
+          media: {
+            type: 'video',
+            src: betboomDesktopAfterVideo,
+            ratio: '1600 / 900',
+            poster: betboomDesktopAfterPoster,
+            alt: 'Desktop task page after the redesign: the MSI 2025 hero, a scroll down to the category bar and the task grid, hovers over categories, and the “Your tasks” widget opening on the right',
+          },
+          caption: 'Desktop: category bar, task grid and the “Your tasks” widget opening on the right.',
+          credit: 'UI of the “Your tasks” widget and the category bar: a second designer.',
         },
         {
           type: 'blocks',
