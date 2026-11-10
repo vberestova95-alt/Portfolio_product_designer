@@ -5,7 +5,7 @@ import { attachAiVortex } from '../lib/aiVortex.js';
 import '../styles/aiConcept.css';
 
 // How long each project stays in the middle before the next one comes up.
-const CYCLE_MS = 5000;
+const CYCLE_MS = 7000;
 
 // "~24 h" → ["~24", "h"]: the figure set large, its unit small beside it.
 function splitValue(value) {
@@ -27,7 +27,10 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
   const copyRef = useRef(null);
   const activeRef = useRef(0);
   const [active, setActive] = useState(0);
-  const [held, setHeld] = useState(false);
+  // The middle holds still while the mouse is on a frame or on the text itself.
+  const [onFrame, setOnFrame] = useState(false);
+  const [onText, setOnText] = useState(false);
+  const held = onFrame || onText;
   const { hero, pipeline, numbers } = page;
 
   activeRef.current = active;
@@ -55,7 +58,7 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
         avoid: [copyRef.current],
         getFocus: () => activeRef.current,
         onHover: (project) => {
-          setHeld(project !== null);
+          setOnFrame(project !== null);
           if (project !== null) {
             setActive(project);
           }
@@ -66,7 +69,7 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
     [frames, projects],
   );
 
-  // The middle moves on by itself unless something is pointed at or motion is off.
+  // Every 7 s the middle moves on by itself, unless the mouse holds it or motion is off.
   useEffect(() => {
     if (held || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return undefined;
@@ -79,7 +82,6 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
   }, [active, held, projects.length]);
 
   const current = projects[active];
-  const step = (by) => setActive((value) => (value + by + projects.length) % projects.length);
 
   return (
     <div className="ai-concept ai-concept--landing">
@@ -102,45 +104,22 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
           <div
             className="ai-hero__copy"
             ref={copyRef}
-            onPointerEnter={() => setHeld(true)}
-            onPointerLeave={() => setHeld(false)}
-            onFocus={() => setHeld(true)}
-            onBlur={() => setHeld(false)}
+            onPointerEnter={() => setOnText(true)}
+            onPointerLeave={() => setOnText(false)}
+            onFocus={() => setOnText(true)}
+            onBlur={() => setOnText(false)}
           >
-            <h1 className="ai-hero__eyebrow">{hero.title}</h1>
+            {/* The page's title, for screen readers and search; on screen the project leads. */}
+            <h1 className="visually-hidden">{hero.title}</h1>
 
             <div className="ai-hero__project" key={current.id} aria-live="polite">
-              <p className="ai-hero__meta">
-                <span>
-                  {String(active + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
-                </span>
-                <span>{current.category}</span>
-              </p>
               <h2>{current.title}</h2>
               <p className="ai-hero__description">{current.description}</p>
             </div>
 
-            <div className="ai-hero__actions">
-              <button
-                type="button"
-                className="ai-step-button"
-                onClick={() => step(-1)}
-                aria-label="Previous project"
-              >
-                ←
-              </button>
-              <a className="ai-pill" href={current.href}>
-                View case
-              </a>
-              <button
-                type="button"
-                className="ai-step-button"
-                onClick={() => step(1)}
-                aria-label="Next project"
-              >
-                →
-              </button>
-            </div>
+            <a className="ai-pill" href={current.href}>
+              View case
+            </a>
           </div>
         </div>
 

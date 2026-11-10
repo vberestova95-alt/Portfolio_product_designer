@@ -178,23 +178,13 @@
   pointer-events: auto;
 }
 
-.ai-hero__eyebrow {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ai-mute);
-}
-
 /* The project in the middle; a new one rises in as the last one goes. */
 .ai-hero__project {
   display: grid;
   align-content: start;
   justify-items: center;
   gap: 8px;
-  min-height: 128px;
+  min-height: 100px;
   animation: ai-project-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -203,24 +193,6 @@
     opacity: 0;
     transform: translateY(8px);
   }
-}
-
-.ai-hero__meta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px 12px;
-  margin: 0;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ai-mute);
-}
-
-.ai-hero__meta span:first-child {
-  color: var(--ai-blue);
-  font-variant-numeric: tabular-nums;
 }
 
 .ai-hero__project h2 {
@@ -239,37 +211,6 @@
   line-height: 1.5;
   color: var(--ai-mute);
   text-wrap: balance;
-}
-
-.ai-hero__actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.ai-step-button {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: 1px solid var(--ai-line);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--ai-ink);
-  font: inherit;
-  font-size: 15px;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
-
-.ai-step-button:hover {
-  border-color: var(--ai-ink);
-}
-
-.ai-step-button:focus-visible {
-  outline: 2px solid var(--ai-blue);
-  outline-offset: 3px;
 }
 
 /* One hint for a mouse, one for a finger. */
@@ -572,7 +513,7 @@
   }
 
   .ai-hero__project {
-    min-height: 150px;
+    min-height: 136px;
   }
 
   .ai-hero__description {

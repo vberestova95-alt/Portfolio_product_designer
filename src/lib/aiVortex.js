@@ -1,7 +1,8 @@
 /*
  * The AI landing's hero: frames of the AI projects leave the shape in the
  * middle along spiral arms, grow as they travel out and, near the edge of the
- * screen, smear into coloured comets. One 2D canvas; the comets are drawn on a
+ * screen, smear into coloured comets. Each frame is a card with a piece of a
+ * case's interface on it. One 2D canvas; the comets are drawn on a
  * small offscreen canvas and scaled up, which is what blurs them for free.
  *
  * The frames are the way into the cases. Pointing at one brings the swirl to rest,
@@ -45,17 +46,99 @@ function loadImage(src) {
   });
 }
 
-// A square, cover-cropped copy of each image, so drawing a frame is one call.
-function toTile(image, size = 160) {
+// The cards are pieces cut from the screenshots, at this aspect.
+const CARD_ASPECT = 1.5;
+// Each piece is this share of the screenshot's width (or of what fits).
+const PIECE_SHARE = 0.32;
+const PIECES_PER_IMAGE = 2;
+
+/*
+ * The liveliest pieces of a screenshot: a grid of candidate crops, each
+ * scored on a tiny copy by its contrast and colour, with mostly blank paper
+ * counting against it. That finds the buttons, charts and cards instead of a
+ * white margin with a line of small type, which is what a whole screen
+ * shrunk into a frame reads as.
+ */
+function pickPieces(image, count) {
+  const width = image.naturalWidth;
+  const height = image.naturalHeight;
+  const cropWidth = Math.min(width, height * CARD_ASPECT) * PIECE_SHARE;
+  const cropHeight = cropWidth / CARD_ASPECT;
+  const probe = document.createElement('canvas');
+  probe.width = 30;
+  probe.height = 20;
+  const context = probe.getContext('2d', { willReadFrequently: true });
+  const candidates = [];
+
+  for (let row = 0; row < 5; row += 1) {
+    for (let column = 0; column < 6; column += 1) {
+      const x = ((width - cropWidth) * column) / 5;
+      const y = ((height - cropHeight) * row) / 4;
+      context.drawImage(image, x, y, cropWidth, cropHeight, 0, 0, 30, 20);
+      const { data } = context.getImageData(0, 0, 30, 20);
+      let sum = 0;
+      let sumSquares = 0;
+      let saturation = 0;
+      let blank = 0;
+      for (let index = 0; index < data.length; index += 4) {
+        const r = data[index];
+        const g = data[index + 1];
+        const b = data[index + 2];
+        const light = 0.299 * r + 0.587 * g + 0.114 * b;
+        const max = Math.max(r, g, b);
+        sum += light;
+        sumSquares += light * light;
+        saturation += max ? (max - Math.min(r, g, b)) / max : 0;
+        if (light > 236 || light < 14) {
+          blank += 1;
+        }
+      }
+      const pixels = data.length / 4;
+      const mean = sum / pixels;
+      const spread = Math.sqrt(Math.max(0, sumSquares / pixels - mean * mean));
+      const score = spread + (saturation / pixels) * 90 - (blank / pixels) * 120;
+      candidates.push({ x, y, score });
+    }
+  }
+
+  candidates.sort((a, b) => b.score - a.score);
+  const chosen = [];
+  for (const candidate of candidates) {
+    // Pieces of one screenshot should not repeat each other.
+    const apart = chosen.every(
+      (piece) =>
+        Math.abs(piece.x - candidate.x) > cropWidth * 0.6 ||
+        Math.abs(piece.y - candidate.y) > cropHeight * 0.6,
+    );
+    if (apart) {
+      chosen.push(candidate);
+    }
+    if (chosen.length === count) {
+      break;
+    }
+  }
+  return chosen.map((piece) => ({ ...piece, width: cropWidth, height: cropHeight }));
+}
+
+// A piece, cut once into its own canvas so drawing a card is one call.
+function toTile(image, piece, tileWidth = 300) {
   const tile = document.createElement('canvas');
-  tile.width = size;
-  tile.height = size;
-  const context = tile.getContext('2d');
-  const side = Math.min(image.naturalWidth, image.naturalHeight);
-  // Cropped from the top, as the site's cubes are: the head of a screen reads.
-  const sx = (image.naturalWidth - side) / 2;
-  context.drawImage(image, sx, 0, side, side, 0, 0, size, size);
+  tile.width = tileWidth;
+  tile.height = Math.round(tileWidth / CARD_ASPECT);
+  tile
+    .getContext('2d')
+    .drawImage(image, piece.x, piece.y, piece.width, piece.height, 0, 0, tile.width, tile.height);
   return tile;
+}
+
+function roundedRect(context, x, y, width, height, radius) {
+  context.beginPath();
+  context.moveTo(x + radius, y);
+  context.arcTo(x + width, y, x + width, y + height, radius);
+  context.arcTo(x + width, y + height, x, y + height, radius);
+  context.arcTo(x, y + height, x, y, radius);
+  context.arcTo(x, y, x + width, y, radius);
+  context.closePath();
 }
 
 export function attachAiVortex(
@@ -104,6 +187,8 @@ export function attachAiVortex(
     // A little scatter, so the arms read as a swirl and not as four lines.
     jitter: ((index * 37) % 11) / 11 - 0.5,
     speed: 0.85 + ((index * 13) % 7) / 20,
+    // Cards keep roughly level, each with a slight lean of its own.
+    tilt: (((index * 29) % 13) / 13 - 0.5) * 0.42,
   }));
 
   function resize() {
@@ -173,7 +258,7 @@ export function attachAiVortex(
     const zones = measureZones();
     const focus = hovered ?? getFocus();
     // Pointing at a frame dims the rest far more than the page's slow cycle does.
-    const dim = hovered === null ? 0.55 : 0.2;
+    const dim = hovered === null ? 0.8 : 0.2;
 
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, width, height);
@@ -192,7 +277,7 @@ export function attachAiVortex(
       const point = place(item, phase, inner, outer, cx, cy);
       const tile = tiles.length ? tiles[item.tile % tiles.length] : null;
       const lit = !tile || focus === null || tile.project === focus;
-      const size = base * (0.022 + phase * 0.07) * (lit && focus !== null ? 1.08 : 1);
+      const size = base * (0.024 + phase * 0.088) * (lit && focus !== null ? 1.06 : 1);
       const fadeIn = Math.min(1, phase / 0.08);
 
       // Past ~70% of the trip an item starts to leave a comet behind it.
@@ -220,24 +305,40 @@ export function attachAiVortex(
         continue;
       }
 
+      // A card: the piece of interface on a white tile, lifted by a soft shadow.
+      const cardWidth = size * 1.85;
+      const cardHeight = cardWidth / CARD_ASPECT;
+      const tilt = item.tilt + Math.sin(point.angle) * 0.12;
+      const radius = cardHeight * 0.16;
       context.save();
       context.globalAlpha = alpha;
       context.translate(point.x, point.y);
-      // Each frame lies along its path, stretched the way it moves.
-      context.rotate(point.angle + Math.PI / 2);
-      context.beginPath();
-      context.ellipse(0, 0, size * 0.78, size, 0, 0, Math.PI * 2);
+      context.rotate(tilt);
+      roundedRect(context, -cardWidth / 2, -cardHeight / 2, cardWidth, cardHeight, radius);
+      context.shadowColor = 'rgba(13, 17, 23, 0.16)';
+      context.shadowBlur = size * 0.4;
+      context.shadowOffsetY = size * 0.14;
+      context.fillStyle = '#ffffff';
+      context.fill();
+      context.shadowColor = 'transparent';
       context.clip();
       if (tile) {
-        context.drawImage(tile.canvas, -size, -size, size * 2, size * 2);
-      } else {
-        context.fillStyle = '#c9cfd1';
-        context.fill();
+        context.drawImage(tile.canvas, -cardWidth / 2, -cardHeight / 2, cardWidth, cardHeight);
       }
+      context.lineWidth = Math.max(1, size * 0.03);
+      context.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+      context.stroke();
       context.restore();
 
       if (tile && alpha > 0.35) {
-        drawn.push({ x: point.x, y: point.y, angle: point.angle, size, project: tile.project });
+        drawn.push({
+          x: point.x,
+          y: point.y,
+          tilt,
+          halfWidth: cardWidth / 2,
+          halfHeight: cardHeight / 2,
+          project: tile.project,
+        });
       }
     }
 
@@ -251,14 +352,12 @@ export function attachAiVortex(
   }
 
   function covers(frameAt, x, y, scale) {
-    const turn = -(frameAt.angle + Math.PI / 2);
+    const turn = -frameAt.tilt;
     const dx = x - frameAt.x;
     const dy = y - frameAt.y;
     const lx = dx * Math.cos(turn) - dy * Math.sin(turn);
     const ly = dx * Math.sin(turn) + dy * Math.cos(turn);
-    const rx = frameAt.size * 0.78 * scale;
-    const ry = frameAt.size * scale;
-    return (lx / rx) ** 2 + (ly / ry) ** 2 <= 1;
+    return Math.abs(lx) <= frameAt.halfWidth * scale && Math.abs(ly) <= frameAt.halfHeight * scale;
   }
 
   // The project of the frame under a point, the frame on top winning. The lit
@@ -399,11 +498,19 @@ export function attachAiVortex(
     if (cancelled) {
       return;
     }
-    tiles = loaded
-      .map((image, index) =>
-        image ? { canvas: toTile(image), project: frames[index].project } : null,
-      )
-      .filter(Boolean);
+    // Pieces of the same screenshot go to different places in the swirl.
+    const pieces = loaded.map((image, index) =>
+      image
+        ? pickPieces(image, PIECES_PER_IMAGE).map((piece) => ({
+            canvas: toTile(image, piece),
+            project: frames[index].project,
+          }))
+        : [],
+    );
+    tiles = [];
+    for (let round = 0; round < PIECES_PER_IMAGE; round += 1) {
+      pieces.forEach((list) => list[round] && tiles.push(list[round]));
+    }
     draw();
     start();
   });
