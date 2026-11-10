@@ -124,7 +124,8 @@ export function WorkList({ items }) {
         ))}
       </ul>
       <div className="ai-list__preview" ref={previewRef} aria-hidden="true">
-        <img ref={imageRef} alt="" />
+        {/* Starts on the first cover, so the image is never empty before a hover. */}
+        <img ref={imageRef} src={items[0]?.image?.src} alt="" />
       </div>
     </div>
   );
