@@ -77,6 +77,7 @@ const aiPortfolioSite = {
   origin: 'https://ai.vberestova.com',
   outDir: 'dist-ai',
   routes: [
+    'ai-projects',
     'betboom-pass',
     'cat-app',
     'design-cringe',
@@ -91,6 +92,7 @@ const aiPortfolioSite = {
   // The privacy page is reachable but not worth indexing here.
   sitemap: [
     '',
+    'ai-projects',
     'spotless',
     'genetics-audit',
     'ds-plugins',

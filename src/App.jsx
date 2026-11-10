@@ -6,7 +6,8 @@ import { spotlessCard, spotlessCaseStudy } from './data/spotlessCase.js';
 import { useLanguage, useUi } from './i18n/LanguageContext.jsx';
 import { observeReveal } from './lib/reveal.js';
 import { attachReturnNavigation } from './lib/returnNavigation.js';
-import { AiPortfolioPage } from './pages/AiPortfolioPage.jsx';
+import { AiLandingConcept } from './pages/AiLandingConcept.jsx';
+import { AiProjectsConcept } from './pages/AiProjectsConcept.jsx';
 import { ExperiencePage } from './pages/ExperiencePage.jsx';
 import { HomePage } from './pages/HomePage.jsx';
 import { PrivacyPage } from './pages/PrivacyPage.jsx';
@@ -83,8 +84,12 @@ function getAiOnlyPathname(pathname, cards) {
     return pathname;
   }
 
-  if (pathname === '/' || LISTING_PATHS.has(pathname)) {
+  if (pathname === '/' || pathname === AI_PORTFOLIO_PATH) {
     return AI_PORTFOLIO_PATH;
+  }
+
+  if (pathname === AI_PROJECTS_PATH) {
+    return AI_PROJECTS_PATH;
   }
 
   const allowed = new Set([...cards.map((item) => item.href), PRIVACY_PATH]);
@@ -117,6 +122,13 @@ function getPageMetadata(pathname, currentCaseStudy, petCaseStudy, meta) {
     return {
       title: meta.privacyTitle,
       description: meta.privacyDescription,
+    };
+  }
+
+  if (pathname === AI_PROJECTS_PATH) {
+    return {
+      title: meta.aiProjectsTitle,
+      description: meta.aiProjectsDescription,
     };
   }
 
@@ -164,6 +176,13 @@ export function App() {
   const currentBrowserPathname =
     typeof window === 'undefined' ? '/' : normalizePathname(window.location.pathname);
   const aiWork = [...aiProjects.items, spotlessCard, geneticsCard];
+  // The concept pages show frames from each AI case, found by the card's link.
+  const aiCaseStudies = {
+    '/ds-plugins': caseStudies.dsPluginsCaseStudy,
+    '/cat-app': caseStudies.catAppCaseStudy,
+    '/design-cringe': caseStudies.designCringeCaseStudy,
+    ...AI_LANDING_CASES_BY_PATH,
+  };
   const pathname = CASE_ONLY_MODE
     ? PET_INJECTION_TRACKER_PATH
     : getAiOnlyPathname(currentBrowserPathname, aiWork);
@@ -257,12 +276,25 @@ export function App() {
     return <PrivacyPage profile={profile} />;
   }
 
-  // The AI projects link opens the landing as well (user, 2026-11-09).
-  if (LISTING_PATHS.has(pathname)) {
+  // Concept (feat/37): the AI projects ring and the landing are two pages again.
+  if (pathname === AI_PROJECTS_PATH) {
     return (
-      <AiPortfolioPage
+      <AiProjectsConcept
+        intro={aiProjects.intro}
+        projects={aiWork}
+        caseStudies={aiCaseStudies}
+        profile={profile}
+        standalone={AI_ONLY_MODE}
+      />
+    );
+  }
+
+  if (pathname === AI_PORTFOLIO_PATH) {
+    return (
+      <AiLandingConcept
         page={aiPortfolio}
-        aiWork={aiWork}
+        projects={aiWork}
+        caseStudies={aiCaseStudies}
         profile={profile}
         standalone={AI_ONLY_MODE}
       />
