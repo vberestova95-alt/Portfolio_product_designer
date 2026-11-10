@@ -1280,9 +1280,10 @@ export const betboomPassCaseStudy = {
       ],
     },
     {
+      // Not 'Result': the showcase at the top already carries that title.
       id: 'result',
-      navLabel: 'Result',
-      title: 'Result',
+      navLabel: 'Impact',
+      title: 'Impact',
       parts: [
         {
           type: 'richTextLead',
