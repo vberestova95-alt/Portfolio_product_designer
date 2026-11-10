@@ -71,10 +71,11 @@ const IMAGES = {
   'entry-season-timer': { file: '25-entry-profile-season-timer.png', phone: true },
   'entry-max-level': { file: '26-entry-profile-max-level.png', phone: true },
   'entry-web': { file: '27-entry-web-sidebar.png', radius: 24 },
-  // The user's pick: the very first "before" (Figma 14-2), not the v3 frame,
-  // which already showed the new category bar.
-  'desktop-before': { file: '28-desktop-before-slider.png', width: 1920 },
-  'desktop-after': { file: '29-desktop-after-slider-v3b.png', width: 1920 },
+  // The very first "before": the old Tasks page (123:675655) in EN, r2. Its
+  // header, rule and columns line up with the "after" frame for the slider.
+  'desktop-before': { file: '28-desktop-before-en-r2.png', width: 1920 },
+  // v3c: the same frame with the closed “Your tasks” widget bottom right.
+  'desktop-after': { file: '29-desktop-after-slider-v3c.png', width: 1920 },
   // Two thin edges of the card stacked behind the right one showed over its
   // top edge (y 424–447); the strip above the card is painted with the ground.
   'detail-reward-deadline': {
@@ -83,7 +84,7 @@ const IMAGES = {
     paint: [{ left: 1780, top: 400, width: 1820, height: 62, from: [3000, 400] }],
   },
   'detail-category-filters': { file: '32-category-filters-screen-v3.png', phone: true },
-  'desktop-after-anim-poster': { file: '29-desktop-after-anim-v3-poster.png', width: 1600 },
+  'desktop-after-anim-poster': { file: '29-desktop-after-anim-r2-poster.png', width: 1600 },
   // Drafts behind D1 and D3, picked by the user (v3, EN).
   // The fourth column (a phone) sat 100 px from the plate's right edge, the
   // first one 120 px from its left: the plate is widened by 20 px there.
@@ -122,7 +123,7 @@ const CLIPS = {
   'switch-flow': { file: '10-switch-flow-anim-v3.mp4', width: 750 },
   'tasks-after': { file: '15-tasks-after-anim-v3.mp4', width: 750 },
   'category-bar': { file: '33-category-bar-anim-v3.mp4', width: 1800 },
-  'desktop-after': { file: '29-desktop-after-anim-v3.mp4', width: 1600 },
+  'desktop-after': { file: '29-desktop-after-anim-r2.mp4', width: 1600 },
   'ab-test': { file: '61-anim-ab-test.mp4', width: 1600 },
   // The original A/B clip, in Russian, shown next to the EN re-shoot. It lives
   // in the repo already (4.5 MB, 60 fps), so it is read from there, not --src.

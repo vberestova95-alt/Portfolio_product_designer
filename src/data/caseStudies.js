@@ -1248,14 +1248,15 @@ export const betboomPassCaseStudy = {
           type: 'beforeAfterSlider',
           before: {
             src: betboomDesktopBefore,
-            alt: 'Desktop task page before the redesign: the BetBoom site header, the MSI 2025 promo banner, category icons and cards led by sport conditions',
+            alt: 'Desktop task page before the redesign: the BB PASS header, chips for sorting and task types (Cheapest first, Daily, CS2, Dota 2, Deadlock, Betting, Social) and large art cards with a title and a 2 000 token reward',
           },
           after: {
             src: betboomDesktopAfter,
-            alt: 'Desktop task page after the redesign: one category bar for sports and esports, sort chips and three columns of cards with a condition, timer, token reward and XP',
+            alt: 'Desktop task page after the redesign: one category bar for sports and esports, sort chips and three columns of cards with a condition, timer, token reward and XP; the closed “Your tasks” widget in the bottom right corner',
           },
-          // The after frame has no “Your tasks” widget, so no widget credit here.
+          // The after frame shows the closed “Your tasks” widget: its credit.
           caption: 'Drag to compare the task page before and after the redesign.',
+          credit: '“Your tasks” widget UI: a second designer.',
         },
         {
           type: 'featureMedia',

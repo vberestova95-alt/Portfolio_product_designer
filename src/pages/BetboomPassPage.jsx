@@ -210,7 +210,7 @@ function FlowVideos({ part }) {
   );
 }
 
-function BeforeAfterSlider({ before, after, caption }) {
+function BeforeAfterSlider({ before, after, caption, credit }) {
   const text = useUi().case;
   const [position, setPosition] = useState(50);
   const [animated, setAnimated] = useState(false);
@@ -352,7 +352,7 @@ function BeforeAfterSlider({ before, after, caption }) {
           </div>
         </div>
       </div>
-      <MediaCaption caption={caption} />
+      <MediaCaption caption={caption} credit={credit} />
     </div>
   );
 }
@@ -1131,7 +1131,14 @@ function SectionPart({ part }) {
   }
 
   if (part.type === 'beforeAfterSlider') {
-    return <BeforeAfterSlider before={part.before} after={part.after} caption={part.caption} />;
+    return (
+      <BeforeAfterSlider
+        before={part.before}
+        after={part.after}
+        caption={part.caption}
+        credit={part.credit}
+      />
+    );
   }
 
   if (part.type === 'siteLink') {
