@@ -3843,6 +3843,27 @@ ol.case-bullet-list li::before {
   background: var(--paper);
 }
 
+/*
+ * A text plate that introduces the picture right under it, as a topic of its
+ * own (Illustration refresh in BetBoom PASS). Above, it stands off the part
+ * before by the gap between chapters (.case-chapters); below, it comes 20px
+ * from the picture's content. The picture opens with a band of the page's own
+ * ground, 48 of 1800 px (39 of 780 in the phone take), so the plate takes that
+ * band back as a share of the column's width and sits over it.
+ */
+.case-study-stack--leads-media {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(clamp(54px, 6vw, 96px) - 20px);
+  margin-bottom: calc(-48 / 1800 * 100%);
+}
+
+@media (max-width: 480px) {
+  .case-study-stack--leads-media {
+    margin-bottom: calc(-39 / 780 * 100%);
+  }
+}
+
 .case-study-stack .case-content-block {
   border-radius: 0;
   background: none;

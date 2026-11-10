@@ -1309,8 +1309,10 @@ export const betboomPassCaseStudy = {
         {
           // Right under the slider: its “before” cards carry the same art
           // (Desert Eagle, the skull), so the refresh reads next to it.
+          // A topic of its own: set off from the slider, held to its picture.
           // TODO(p32): dates and the number of refreshed pictures are open — left out.
           type: 'blocks',
+          leadsMedia: true,
           blocks: [
             {
               type: 'text',

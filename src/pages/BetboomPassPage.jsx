@@ -960,7 +960,7 @@ function SectionPart({ part }) {
 
   if (part.type === 'blocks') {
     return (
-      <div className="case-study-stack">
+      <div className={`case-study-stack${part.leadsMedia ? ' case-study-stack--leads-media' : ''}`}>
         {part.blocks.map((block) => (
           <ContentBlock key={`${block.type}-${block.heading}`} block={block} />
         ))}
