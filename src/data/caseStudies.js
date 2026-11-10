@@ -50,6 +50,7 @@ import yandexMvpScreens from '../assets/cases/yandex-mvp-screens.png';
 import yandexCoverScreens from '../assets/cases/yandex-cover-screens.png';
 import yandexProcessCards from '../assets/cases/yandex-process-cards.png';
 import yandexStoryFocus from '../assets/cases/yandex-story-focus.png';
+import insulinTrackerVideo from '../assets/cases/fluffy-chumb/insulin-tracker.mp4';
 import flowSc1A from '../assets/cases/fluffy-chumb/flows/sc1-a.mp4';
 import flowSc1AWebm from '../assets/cases/fluffy-chumb/flows/sc1-a.webm';
 import flowSc1APoster from '../assets/cases/fluffy-chumb/flows/sc1-a.poster.webp';
@@ -278,6 +279,16 @@ export const catAppCaseStudy = {
               ],
             },
           ],
+        },
+        {
+          type: 'imageBand',
+          label: 'Insulin tracker',
+          variant: 'portrait',
+          media: {
+            type: 'video',
+            src: insulinTrackerVideo,
+            alt: 'Animation: Insulin and History screens with dose and glucose charts merge into one phone; on the Log insulin screen a photo of the cat’s back is added from the library, the dose is checked and saved, and a Done! card appears',
+          },
         },
         {
           type: 'flowVideos',
