@@ -671,7 +671,7 @@ export const betboomPassCaseStudy = {
         credit: 'Category bar concept and logic: me; UI: a second designer.',
         src: betboomShowcaseCategoryBarPoster,
         video: betboomShowcaseClip(betboomShowcaseCategoryBarMov, betboomShowcaseCategoryBarWebm),
-        duration: 6.2,
+        duration: 6.6,
         alt: 'Task page on mobile web: the category bar scrolls to Table tennis, and the feed shows table tennis tasks',
         teaser: { text: 'Next case: the Gamification hub in the BetBoom app', href: '/betboom-gamification-hub' },
       },
