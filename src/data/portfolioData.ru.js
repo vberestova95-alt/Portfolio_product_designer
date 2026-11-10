@@ -222,7 +222,7 @@ export const additionalAchievements = [
 
 export const experiences = byId(en.experiences, {
   betboom: {
-    period: 'Апр 2025 — сейчас',
+    period: 'Апр 2025 — Сен 2026',
     role: 'Продуктовый дизайнер',
     summary:
       'BB PASS — система геймификации внутри core-продукта. Опыт, новые механики, эксперименты, реферальный рост — и процессная работа, благодаря которой команда спокойнее выпускает изменения.',
