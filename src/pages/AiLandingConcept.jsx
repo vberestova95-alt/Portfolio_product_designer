@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ConceptHeader, CubeShape, projectFrames } from '../components/AiConcept.jsx';
 import { SiteHeader } from '../components/SiteHeader.jsx';
+import { aiLandingDetails } from '../data/aiLandingDetails.js';
 import { attachAiVortex } from '../lib/aiVortex.js';
 import '../styles/aiConcept.css';
 
@@ -31,14 +32,19 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
   activeRef.current = active;
 
   // Projects take turns along the arms, so one project's frames never bunch up.
+  // A case shows its picked details; one without them, its own screenshots.
   const frames = useMemo(() => {
-    const lists = projects.map((item) => projectFrames(item, caseStudies[item.href], 5));
+    const lists = projects.map(
+      (item) =>
+        aiLandingDetails[item.href] ??
+        projectFrames(item, caseStudies[item.href], 5).map((src) => ({ src })),
+    );
     const longest = Math.max(...lists.map((list) => list.length));
     const mixed = [];
     for (let round = 0; round < longest; round += 1) {
       lists.forEach((list, project) => {
         if (list[round]) {
-          mixed.push({ src: list[round], project });
+          mixed.push({ ...list[round], project });
         }
       });
     }

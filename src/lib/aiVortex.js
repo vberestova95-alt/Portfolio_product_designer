@@ -1,8 +1,8 @@
 /*
  * The AI landing's hero: frames of the AI projects leave the shape in the
  * middle along spiral arms, grow as they travel out and, near the edge of the
- * screen, smear into coloured comets. Each frame is a card with a piece of a
- * case's interface on it. One 2D canvas; the comets are drawn on a
+ * screen, smear into coloured comets. Each frame is a round bead with one
+ * detail of a case's interface under a fisheye lens. One 2D canvas; the comets are drawn on a
  * small offscreen canvas and scaled up, which is what blurs them for free.
  *
  * The frames are the way into the cases. Pointing at one brings the swirl to rest,
@@ -12,7 +12,8 @@
  * whose frames stay brighter than the rest.
  *
  * attachAiVortex(canvas, { frames, clear, avoid, getFocus, onHover, onPick,
- * onSelect }) → cleanup. `frames` are { src, project }. `clear` is the element
+ * onSelect }) → cleanup. `frames` are { src, crop, project }, `crop` being
+ * [left, top, side] in the image's pixels (the middle square if left out). `clear` is the element
  * the arms start around (the shape), so they never cover it; frames fade out
  * as they pass over the `avoid` elements (the text in the middle).
  */
@@ -46,99 +47,89 @@ function loadImage(src) {
   });
 }
 
-// The cards are pieces cut from the screenshots, at this aspect.
-const CARD_ASPECT = 1.5;
-// Each piece is this share of the screenshot's width (or of what fits).
-const PIECE_SHARE = 0.32;
-const PIECES_PER_IMAGE = 2;
+// Each detail is drawn once into a round tile this many pixels across.
+const TILE = 240;
+// How much the lens swells the middle of a detail: 0 is flat glass.
+const LENS = 0.45;
+
+// The middle square of a screenshot, for a frame given without a crop.
+function middleSquare(image) {
+  const side = Math.min(image.naturalWidth, image.naturalHeight);
+  return [(image.naturalWidth - side) / 2, (image.naturalHeight - side) / 2, side];
+}
 
 /*
- * The liveliest pieces of a screenshot: a grid of candidate crops, each
- * scored on a tiny copy by its contrast and colour, with mostly blank paper
- * counting against it. That finds the buttons, charts and cards instead of a
- * white margin with a line of small type, which is what a whole screen
- * shrunk into a frame reads as.
+ * A detail seen through a fisheye lens: the square crop is remapped so its
+ * middle swells and its edges bend round, then a soft rim shade and a glint
+ * make the circle read as a glass bead. Done once per detail, not per frame.
  */
-function pickPieces(image, count) {
-  const width = image.naturalWidth;
-  const height = image.naturalHeight;
-  const cropWidth = Math.min(width, height * CARD_ASPECT) * PIECE_SHARE;
-  const cropHeight = cropWidth / CARD_ASPECT;
-  const probe = document.createElement('canvas');
-  probe.width = 30;
-  probe.height = 20;
-  const context = probe.getContext('2d', { willReadFrequently: true });
-  const candidates = [];
-
-  for (let row = 0; row < 5; row += 1) {
-    for (let column = 0; column < 6; column += 1) {
-      const x = ((width - cropWidth) * column) / 5;
-      const y = ((height - cropHeight) * row) / 4;
-      context.drawImage(image, x, y, cropWidth, cropHeight, 0, 0, 30, 20);
-      const { data } = context.getImageData(0, 0, 30, 20);
-      let sum = 0;
-      let sumSquares = 0;
-      let saturation = 0;
-      let blank = 0;
-      for (let index = 0; index < data.length; index += 4) {
-        const r = data[index];
-        const g = data[index + 1];
-        const b = data[index + 2];
-        const light = 0.299 * r + 0.587 * g + 0.114 * b;
-        const max = Math.max(r, g, b);
-        sum += light;
-        sumSquares += light * light;
-        saturation += max ? (max - Math.min(r, g, b)) / max : 0;
-        if (light > 236 || light < 14) {
-          blank += 1;
-        }
-      }
-      const pixels = data.length / 4;
-      const mean = sum / pixels;
-      const spread = Math.sqrt(Math.max(0, sumSquares / pixels - mean * mean));
-      const score = spread + (saturation / pixels) * 90 - (blank / pixels) * 120;
-      candidates.push({ x, y, score });
-    }
-  }
-
-  candidates.sort((a, b) => b.score - a.score);
-  const chosen = [];
-  for (const candidate of candidates) {
-    // Pieces of one screenshot should not repeat each other.
-    const apart = chosen.every(
-      (piece) =>
-        Math.abs(piece.x - candidate.x) > cropWidth * 0.6 ||
-        Math.abs(piece.y - candidate.y) > cropHeight * 0.6,
-    );
-    if (apart) {
-      chosen.push(candidate);
-    }
-    if (chosen.length === count) {
-      break;
-    }
-  }
-  return chosen.map((piece) => ({ ...piece, width: cropWidth, height: cropHeight }));
-}
-
-// A piece, cut once into its own canvas so drawing a card is one call.
-function toTile(image, piece, tileWidth = 300) {
+function toLensTile(image, crop) {
+  const [left, top, side] = crop ?? middleSquare(image);
   const tile = document.createElement('canvas');
-  tile.width = tileWidth;
-  tile.height = Math.round(tileWidth / CARD_ASPECT);
-  tile
-    .getContext('2d')
-    .drawImage(image, piece.x, piece.y, piece.width, piece.height, 0, 0, tile.width, tile.height);
-  return tile;
-}
+  tile.width = TILE;
+  tile.height = TILE;
+  const tileContext = tile.getContext('2d', { willReadFrequently: true });
+  tileContext.fillStyle = '#ffffff';
+  tileContext.fillRect(0, 0, TILE, TILE);
+  tileContext.drawImage(image, left, top, side, side, 0, 0, TILE, TILE);
+  const flat = tileContext.getImageData(0, 0, TILE, TILE).data;
+  const lens = tileContext.createImageData(TILE, TILE);
+  const half = TILE / 2;
+  const last = TILE - 1;
 
-function roundedRect(context, x, y, width, height, radius) {
-  context.beginPath();
-  context.moveTo(x + radius, y);
-  context.arcTo(x + width, y, x + width, y + height, radius);
-  context.arcTo(x + width, y + height, x, y + height, radius);
-  context.arcTo(x, y + height, x, y, radius);
-  context.arcTo(x, y, x + width, y, radius);
-  context.closePath();
+  for (let y = 0; y < TILE; y += 1) {
+    for (let x = 0; x < TILE; x += 1) {
+      const u = (x + 0.5 - half) / half;
+      const v = (y + 0.5 - half) / half;
+      const r = Math.hypot(u, v);
+      if (r > 1) {
+        continue;
+      }
+      // Smaller steps through the source near the middle, so it comes up larger.
+      const bend = 1 - LENS + LENS * r * r;
+      const sx = Math.min(last, Math.max(0, half + u * bend * half - 0.5));
+      const sy = Math.min(last, Math.max(0, half + v * bend * half - 0.5));
+      const x0 = Math.floor(sx);
+      const y0 = Math.floor(sy);
+      const x1 = Math.min(last, x0 + 1);
+      const y1 = Math.min(last, y0 + 1);
+      const fx = sx - x0;
+      const fy = sy - y0;
+      const out = (y * TILE + x) * 4;
+      for (let channel = 0; channel < 3; channel += 1) {
+        const top0 = flat[(y0 * TILE + x0) * 4 + channel];
+        const top1 = flat[(y0 * TILE + x1) * 4 + channel];
+        const bottom0 = flat[(y1 * TILE + x0) * 4 + channel];
+        const bottom1 = flat[(y1 * TILE + x1) * 4 + channel];
+        lens.data[out + channel] =
+          (top0 * (1 - fx) + top1 * fx) * (1 - fy) + (bottom0 * (1 - fx) + bottom1 * fx) * fy;
+      }
+      // A one-pixel soft edge, so the circle is not jagged.
+      lens.data[out + 3] = Math.min(1, (1 - r) * half) * 255;
+    }
+  }
+  tileContext.clearRect(0, 0, TILE, TILE);
+  tileContext.putImageData(lens, 0, 0);
+
+  tileContext.globalCompositeOperation = 'source-atop';
+  const rim = tileContext.createRadialGradient(half, half, half * 0.55, half, half, half);
+  rim.addColorStop(0, 'rgba(11, 12, 12, 0)');
+  rim.addColorStop(1, 'rgba(11, 12, 12, 0.22)');
+  tileContext.fillStyle = rim;
+  tileContext.fillRect(0, 0, TILE, TILE);
+  const glint = tileContext.createRadialGradient(
+    half * 0.62,
+    half * 0.5,
+    0,
+    half * 0.62,
+    half * 0.5,
+    half * 0.7,
+  );
+  glint.addColorStop(0, 'rgba(255, 255, 255, 0.42)');
+  glint.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  tileContext.fillStyle = glint;
+  tileContext.fillRect(0, 0, TILE, TILE);
+  return tile;
 }
 
 export function attachAiVortex(
@@ -187,8 +178,6 @@ export function attachAiVortex(
     // A little scatter, so the arms read as a swirl and not as four lines.
     jitter: ((index * 37) % 11) / 11 - 0.5,
     speed: 0.85 + ((index * 13) % 7) / 20,
-    // Cards keep roughly level, each with a slight lean of its own.
-    tilt: (((index * 29) % 13) / 13 - 0.5) * 0.42,
   }));
 
   function resize() {
@@ -305,40 +294,28 @@ export function attachAiVortex(
         continue;
       }
 
-      // A card: the piece of interface on a white tile, lifted by a soft shadow.
-      const cardWidth = size * 1.85;
-      const cardHeight = cardWidth / CARD_ASPECT;
-      const tilt = item.tilt + Math.sin(point.angle) * 0.12;
-      const radius = cardHeight * 0.16;
+      // A bead: the detail under its lens, on white, lifted by a soft shadow.
+      const radius = size * 0.85;
       context.save();
       context.globalAlpha = alpha;
-      context.translate(point.x, point.y);
-      context.rotate(tilt);
-      roundedRect(context, -cardWidth / 2, -cardHeight / 2, cardWidth, cardHeight, radius);
+      context.beginPath();
+      context.arc(point.x, point.y, radius, 0, Math.PI * 2);
       context.shadowColor = 'rgba(13, 17, 23, 0.16)';
       context.shadowBlur = size * 0.4;
       context.shadowOffsetY = size * 0.14;
       context.fillStyle = '#ffffff';
       context.fill();
       context.shadowColor = 'transparent';
-      context.clip();
       if (tile) {
-        context.drawImage(tile.canvas, -cardWidth / 2, -cardHeight / 2, cardWidth, cardHeight);
+        context.drawImage(tile.canvas, point.x - radius, point.y - radius, radius * 2, radius * 2);
       }
-      context.lineWidth = Math.max(1, size * 0.03);
+      context.lineWidth = Math.max(1, size * 0.04);
       context.strokeStyle = 'rgba(255, 255, 255, 0.9)';
       context.stroke();
       context.restore();
 
       if (tile && alpha > 0.35) {
-        drawn.push({
-          x: point.x,
-          y: point.y,
-          tilt,
-          halfWidth: cardWidth / 2,
-          halfHeight: cardHeight / 2,
-          project: tile.project,
-        });
+        drawn.push({ x: point.x, y: point.y, radius, project: tile.project });
       }
     }
 
@@ -352,12 +329,7 @@ export function attachAiVortex(
   }
 
   function covers(frameAt, x, y, scale) {
-    const turn = -frameAt.tilt;
-    const dx = x - frameAt.x;
-    const dy = y - frameAt.y;
-    const lx = dx * Math.cos(turn) - dy * Math.sin(turn);
-    const ly = dx * Math.sin(turn) + dy * Math.cos(turn);
-    return Math.abs(lx) <= frameAt.halfWidth * scale && Math.abs(ly) <= frameAt.halfHeight * scale;
+    return Math.hypot(x - frameAt.x, y - frameAt.y) <= frameAt.radius * scale;
   }
 
   // The project of the frame under a point, the frame on top winning. The lit
@@ -494,23 +466,19 @@ export function attachAiVortex(
   document.addEventListener('visibilitychange', onVisibility);
 
   let cancelled = false;
-  Promise.all(frames.map((entry) => loadImage(entry.src))).then((loaded) => {
+  // Several details share a screenshot, so each one is loaded once.
+  const sources = [...new Set(frames.map((entry) => entry.src))];
+  Promise.all(sources.map(loadImage)).then((loaded) => {
     if (cancelled) {
       return;
     }
-    // Pieces of the same screenshot go to different places in the swirl.
-    const pieces = loaded.map((image, index) =>
-      image
-        ? pickPieces(image, PIECES_PER_IMAGE).map((piece) => ({
-            canvas: toTile(image, piece),
-            project: frames[index].project,
-          }))
-        : [],
-    );
-    tiles = [];
-    for (let round = 0; round < PIECES_PER_IMAGE; round += 1) {
-      pieces.forEach((list) => list[round] && tiles.push(list[round]));
-    }
+    const images = new Map(sources.map((src, index) => [src, loaded[index]]));
+    tiles = frames
+      .filter((entry) => images.get(entry.src))
+      .map((entry) => ({
+        canvas: toLensTile(images.get(entry.src), entry.crop),
+        project: entry.project,
+      }));
     draw();
     start();
   });
