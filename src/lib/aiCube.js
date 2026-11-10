@@ -109,8 +109,8 @@ void main() {
     // Liquid blue: a rich blue all over, lighter towards the top, the faces
     // apart in tone, small wet highlights that slide with the ripple.
     float height = clamp(p.y * 1.1 + 0.5, 0.0, 1.0);
-    vec3 deep = vec3(0.02, 0.07, 0.62);
-    vec3 bright = vec3(0.2, 0.42, 1.0);
+    vec3 deep = vec3(0.05, 0.13, 0.78);
+    vec3 bright = vec3(0.22, 0.45, 1.0);
     vec3 blue = mix(deep, bright, clamp(0.35 * height + 0.6 * diffuse, 0.0, 1.0));
     blue += vec3(0.04, 0.1, 0.35) * soft * 0.35;
     // The sheen: a cyan-to-violet shimmer, as on oil on water, strongest

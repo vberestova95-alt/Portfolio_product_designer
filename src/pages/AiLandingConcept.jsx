@@ -88,8 +88,6 @@ export function AiLandingConcept({ page, projects, caseStudies, profile, standal
     }
     return attachAiVortex(canvasRef.current, {
       frames,
-      // A trial look: `?beads=square` shows little cubes, like the one in the middle, instead of circles.
-      shape: new URLSearchParams(window.location.search).get('beads') === 'square' ? 'square' : 'circle',
       clear: shapeRef.current,
       avoid: [copyRef.current, footRef.current],
       getFocus: () => activeRef.current,

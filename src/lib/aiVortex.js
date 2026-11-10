@@ -2,9 +2,8 @@
  * The AI landing's hero: frames of the AI projects leave the shape in the
  * middle along spiral arms, grow as they travel out and, near the edge of the
  * screen, smear into coloured comets. Each frame is a bead with one detail of
- * a case's interface under a fisheye lens: a circle in a thin clear shell or,
- * with `shape: 'square'`, the cube in the middle made small — a rounded square
- * holding the photo inside a soft clear shell. One 2D canvas; the comets are drawn on a
+ * a case's interface under a fisheye lens — the cube in the middle made small:
+ * a rounded square holding the photo inside a soft clear shell. One 2D canvas; the comets are drawn on a
  * small offscreen canvas and scaled up, which is what blurs them for free.
  *
  * The frames are the way into the cases. Pointing at one brings the swirl to rest,
@@ -13,7 +12,7 @@
  * the page's button opens it. `getFocus` names the project the page is showing,
  * whose frames stay brighter than the rest.
  *
- * attachAiVortex(canvas, { frames, shape, clear, avoid, getFocus, onHover, onPick,
+ * attachAiVortex(canvas, { frames, clear, avoid, getFocus, onHover, onPick,
  * onSelect }) → cleanup. `frames` are { src, crop, project }, `crop` being
  * [left, top, side] in the image's pixels (the middle square if left out). `clear` is the element
  * the arms start around (the shape), so they never cover it; frames fade out
@@ -62,15 +61,12 @@ const LENS = 0.45;
 const GLASS = [246, 249, 255];
 
 /*
- * The two looks. A circle is a bead: the detail fills it, under a thin shell.
- * A square is the cube in the middle made small: a soft, very round clear
- * shell (`outer`, the superellipse's power) with a firmer rounded square
- * inside (`inner`) that holds the photo and takes `size` of the shell.
+ * A bead is the cube in the middle made small: a soft, very round clear shell
+ * (`outer`, the superellipse's power) with a firmer rounded square inside
+ * (`inner`) that holds the photo, takes `size` of the shell and turns up to
+ * `turn` radians either way.
  */
-const LOOKS = {
-  circle: { outer: 2, inner: 2, size: 0.9, turn: 0 },
-  square: { outer: 3, inner: 6, size: 0.7, turn: 0.09 },
-};
+const LOOK = { outer: 3, inner: 6, size: 0.7, turn: 0.09 };
 
 // The middle square of a screenshot, for a frame given without a crop.
 function middleSquare(image) {
@@ -80,18 +76,12 @@ function middleSquare(image) {
 
 // How far a point is from the middle, 1 on the outline of power `power`.
 function reach(u, v, power) {
-  return power === 2
-    ? Math.hypot(u, v)
-    : (Math.abs(u) ** power + Math.abs(v) ** power) ** (1 / power);
+  return (Math.abs(u) ** power + Math.abs(v) ** power) ** (1 / power);
 }
 
 // The outline of power `power` around (0, 0) as the current path.
 function outline(context, radius, power) {
   context.beginPath();
-  if (power === 2) {
-    context.arc(0, 0, radius, 0, Math.PI * 2);
-    return;
-  }
   for (let step = 0; step < 72; step += 1) {
     const angle = (step / 72) * Math.PI * 2;
     const cos = Math.cos(angle);
@@ -111,12 +101,11 @@ function outline(context, radius, power) {
  * A detail as three tiles. `content`: the crop seen through a fisheye lens,
  * its middle swollen and its edges bent round, filling the tile so it can
  * move. `face`: laid over the content, a milk thickening towards the inner
- * outline and, on a square, light across it with a cyan-to-violet play near
- * its edge. `glass`: the clear shell over all of it, milky and bright towards
+ * outline, light across it and a cyan-to-violet play near its edge. `glass`: the clear shell over all of it, milky and bright towards
  * its own outline, with a glint at the top left. The first two are in the
  * inner shape's own frame, so it can turn and breathe inside the shell.
  */
-function toLensTiles(image, crop, look) {
+function toLensTiles(image, crop) {
   const [left, top, side] = crop ?? middleSquare(image);
   const content = document.createElement('canvas');
   content.width = TILE;
@@ -140,7 +129,6 @@ function toLensTiles(image, crop, look) {
   const half = TILE / 2;
   const last = TILE - 1;
   const pixel = 1 / half;
-  const square = look.inner !== 2;
 
   for (let y = 0; y < TILE; y += 1) {
     for (let x = 0; x < TILE; x += 1) {
@@ -149,7 +137,7 @@ function toLensTiles(image, crop, look) {
       const out = (y * TILE + x) * 4;
 
       // Content and face: (u, v) across the inner shape.
-      const r = reach(u, v, look.inner);
+      const r = reach(u, v, LOOK.inner);
       const bend = 1 - LENS + LENS * r * r;
       const sx = Math.min(last, Math.max(0, half + u * bend * half - 0.5));
       const sy = Math.min(last, Math.max(0, half + v * bend * half - 0.5));
@@ -173,10 +161,10 @@ function toLensTiles(image, crop, look) {
         // The face keeps `keep` of the photo and adds `added`, written as one
         // colour at one opacity.
         const milk = 0.03 + 0.3 * r ** 10;
-        const slant = square ? (u + v) / 2 : 0;
+        const slant = (u + v) / 2;
         const shade = 1 - Math.max(0, slant) * 0.18;
         const lift = Math.max(0, -slant) * 0.1;
-        const play = square ? 0.22 * r ** 5 : 0;
+        const play = 0.22 * r ** 5;
         const hue = Math.atan2(v, u);
         const keep = shade * (1 - lift) * (1 - milk) * (1 - play);
         const alpha = 1 - keep;
@@ -189,14 +177,14 @@ function toLensTiles(image, crop, look) {
       }
 
       // Glass: (u, v) across the whole shell.
-      const shellReach = reach(u, v, look.outer);
+      const shellReach = reach(u, v, LOOK.outer);
       if (shellReach > 1) {
         continue;
       }
-      const inside = reach(u, v, look.inner) / look.size;
+      const inside = reach(u, v, LOOK.inner) / LOOK.size;
       // 1 over the inner shape, 0 in the clear shell around it.
-      const over = Math.min(1, Math.max(0, (1 - inside) / (pixel / look.size) + 0.5));
-      const fresnel = Math.max(0, (shellReach - look.size) / (1 - look.size)) ** 2;
+      const over = Math.min(1, Math.max(0, (1 - inside) / (pixel / LOOK.size) + 0.5));
+      const fresnel = Math.max(0, (shellReach - LOOK.size) / (1 - LOOK.size)) ** 2;
       const glint = Math.max(0, 1 - Math.hypot(u + 0.4, v + 0.48) / 0.42) ** 2 * 0.45;
       const white = Math.min(1, 0.35 + 0.65 * fresnel + glint);
       const alpha = Math.min(1, over * (0.02 + glint) + (1 - over) * (0.16 + 0.66 * fresnel + glint));
@@ -216,7 +204,6 @@ export function attachAiVortex(
   canvas,
   {
     frames = [],
-    shape = 'circle',
     clear = null,
     avoid = [],
     getFocus = () => null,
@@ -244,7 +231,6 @@ export function attachAiVortex(
   let last = performance.now();
   let clock = 0;
   let breath = 0;
-  const look = LOOKS[shape] ?? LOOKS.circle;
   let pace = 1;
   let hovered = null;
   let pointerType = 'mouse';
@@ -383,7 +369,7 @@ export function attachAiVortex(
       // little and breathes, and the photo drifts and zooms under the lens.
       const radius = size * 0.85;
       const beat = breath + item.spin;
-      const core = radius * look.size * (1 + 0.03 * Math.sin(beat * 0.8));
+      const core = radius * LOOK.size * (1 + 0.03 * Math.sin(beat * 0.8));
       const zoom = TILE * (0.93 + 0.05 * Math.sin(beat * 0.6));
       const driftX = Math.cos(beat * 0.5) * TILE * 0.01;
       const driftY = Math.sin(beat * 0.5) * TILE * 0.01;
@@ -391,7 +377,7 @@ export function attachAiVortex(
       context.globalAlpha = alpha;
       context.translate(point.x, point.y);
       context.save();
-      outline(context, radius, look.outer);
+      outline(context, radius, LOOK.outer);
       context.shadowColor = 'rgba(13, 17, 23, 0.12)';
       context.shadowBlur = size * 0.35;
       context.shadowOffsetY = size * 0.12;
@@ -400,8 +386,8 @@ export function attachAiVortex(
       context.restore();
       if (tile) {
         context.save();
-        context.rotate(Math.sin(beat * 0.45) * look.turn);
-        outline(context, core, look.inner);
+        context.rotate(Math.sin(beat * 0.45) * LOOK.turn);
+        outline(context, core, LOOK.inner);
         context.clip();
         context.drawImage(
           tile.content,
@@ -437,7 +423,7 @@ export function attachAiVortex(
   function covers(frameAt, x, y, scale) {
     const u = (x - frameAt.x) / frameAt.radius;
     const v = (y - frameAt.y) / frameAt.radius;
-    return reach(u, v, look.outer) <= scale;
+    return reach(u, v, LOOK.outer) <= scale;
   }
 
   // The project of the frame under a point, the frame on top winning. The lit
@@ -590,7 +576,7 @@ export function attachAiVortex(
     tiles = frames
       .filter((entry) => images.get(entry.src))
       .map((entry) => ({
-        ...toLensTiles(images.get(entry.src), entry.crop, look),
+        ...toLensTiles(images.get(entry.src), entry.crop),
         project: entry.project,
       }));
     draw();
